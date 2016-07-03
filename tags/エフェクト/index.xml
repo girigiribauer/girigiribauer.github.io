@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ばうあーろぐ </title>
+    <link>http://girigiribauer.com/tags/%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88/</link>
+    <atom:link href="http://girigiribauer.com/tags/%E3%82%A8%E3%83%95%E3%82%A7%E3%82%AF%E3%83%88/index.xml" rel="self" type="application/rss+xml" />
+    <language>ja-jp</language>
+    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
+
+    
+      
+        <item>
+          <title>位置を変えずに、斜めにエフェクトをかける方法</title>
+          <link>http://girigiribauer.com/archives/818</link>
+          <pubDate>Wed, 13 Feb 2013 15:13:02 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/818</guid>
+          <description>昔使った、tips的な内容のメモです。 斜めにさらっと流れるエフェクトをかけたい 何かの写真を、ちょっと上品な感じで魅せたいときに、斜めにさらっ</description>
+        </item>
+      
+    
+  </channel>
+</rss>

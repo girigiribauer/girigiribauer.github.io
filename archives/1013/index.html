@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+
+    <title>Vagrant と Chef で仮想マシンの環境をいろいろいじれるようにしたい！ - ばうあーろぐ</title>
+    <meta property='og:title' content="Vagrant と Chef で仮想マシンの環境をいろいろいじれるようにしたい！ - ばうあーろぐ">
+    <meta property="og:type" content="article">
+
+    <meta property="og:url" content="http://girigiribauer.com/archives/1013">
+    
+    
+    <meta name="generator" content="Hugo 0.15" />
+</head>
+<body>
+  <div class="wrapper">
+    <header class="blogheader">
+
+      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="ばうあーろぐ"></a>
+
+    </header>
+
+
+    <div class="maincontents" role="main">
+      <header class="postheader">
+        <h1 class="posttitle">Vagrant と Chef で仮想マシンの環境をいろいろいじれるようにしたい！</h1>
+        <div class="poststatus">
+          <span class="poststatus__date">2013年5月10日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Chef</li>
+
+            <li><i class="icon-tag"></i>Vagrant</li>
+
+            <li><i class="icon-tag"></i>VirtualBox</li>
+
+            <li><i class="icon-tag"></i>仮想化</li>
+
+          </ul>
+          
+        </div>
+
+      </header>
+
+      <article class="postcontents freetext">
+
+
+<p><a href="/archives/966/">前々回</a>、<a href="/archives/1003/">前回</a>までで、ようやく気軽に作って壊せる仮想環境が用意できたので、 ここからは実際に仮想環境に作っていくところをやりたいと思います。</p>
+
+<p><strong>※まだあやふやな部分が多いので、明らかに違っていた箇所はあとで修正する可能性があります。</strong></p>
+
+<p>もちろんゴールは、実際に少し作れるところまでです。（ファイルを自動で配置するとか、アプリケーションインストール済みの状態にするとか）</p>
+
+<p>ただ、そこまで大規模なものは想定していないので（数百台を一元管理とかは絶対やらない）、ローカル環境だけで気軽に試せる方法をとっていきます。</p>
+
+<p>以下、こんな感じで最小構成で進めていきます。</p>
+
+<ol>
+<li>Vagrant を最低限使えるようにする（終わってます）</li>
+<li>Chef を最低限使えるようにする</li>
+<li>簡単な Cookbook を用意する</li>
+<li>Vagrant, Chef を連携させて、仮想環境が変化するか見てみる</li>
+</ol>
+
+<h2 id="chef-とは">Chef とは？</h2>
+
+<p>最近かなり頻繁に聞くワードです。</p>
+
+<p>サーバ構築、システム管理の自動化を助けてくれるツールです。アプリケーションのインストールや、OS・ミドルウェアの設定などを、Cookbook と呼ばれる設定ファイルに落とし込んでおくと、各プラットフォームの差異を吸収したうえで、その設定ファイルの状態に保ってくれます。</p>
+
+<p>詳しくはまだまだこれからです。ただ気軽に試せる環境を用意したので、ここからどんどんと試してみようと思います。</p>
+
+<p>また、自動化というメリットの他にも、こういう気軽に試して壊してが出来るってところは大きなメリットだなーと思います。 では早速。</p>
+
+<h2 id="chef-をインストール">Chef をインストール</h2>
+
+<p>まず Chef に関連したパッケージを gem でインストールしてみます。gem ならば比較的すぐです。</p>
+
+<pre><code>$ gem install chef
+Fetching: chef-11.4.4.gem (100%)
+Successfully installed chef-11.4.4
+1 gem installed
+$ chef-solo -v
+Chef: 11.4.4
+</code></pre>
+
+<p>chefというパッケージを入れると、<strong>chef-solo, chef-client, knife</strong> などのコマンドが一式用意されるようです。試しに chef-solo -v と打ってみたら、「Chef のバージョンは11.4.4ですよー」と表示されました。</p>
+
+<p>ちなみに、数百、数千台とか管理するわけでもないので、Chef Server を用意してうんぬん・・・というのは今回やらずに、 サーバの役割を内包しつつ単独で動く、<strong>Chef Solo</strong> を使っていきます。</p>
+
+<p>さてさて、何か Cookbook を作ってみることにします。</p>
+
+<h2 id="cookbook-を作る">Cookbook を作る！</h2>
+
+<p>※以下、2012年10月に発売された『Software Design / Chef 入門』を参考に進めます。</p>
+
+<p>Cookbook 自体は、<strong>ただのディレクトリとテキストファイル群</strong>にすぎないので、 実際 Chef のコマンド一式なくても作れます。 （knife というひな形を作ってくれるコマンドがあるものの、後回しにしようと思います。）</p>
+
+<p>また、設定ファイルも最近よくある、設定ファイルっぽく書いていたら実はそれが Ruby のスクリプトだった（DSL）という類のものなので、 これもエディタさえあれば用意できてしまいます。</p>
+
+<p>実際に Chef が担当するのは、その Cookbook に書かれた設定項目に沿って、アプリケーションなり設定値なりを反映するところになるので、 そのあたりを理解するためにも、最初は手書きで用意してみようと思います。</p>
+
+<h3 id="vagrantfile-を若干見直し">Vagrantfile を若干見直し</h3>
+
+<p>Cookbook を用意する前に、1つだけ Vagrantfile の見直しをしたいと思います。 というのも、今後こちらに Cookbook の置き場所の指定などをするためです。</p>
+
+<pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;CentOS_6.4_x86_64_Minimal&quot;
+
+  config.vm.define :vmclient1 do |vmclient|
+    vmclient.vm.hostname = &quot;vmclient1&quot;
+    vmclient.vm.network :private_network, ip: &quot;192.168.100.11&quot;
+  end
+
+  config.vm.define :vmclient2 do |vmclient|
+    vmclient.vm.hostname = &quot;vmclient2&quot;
+    vmclient.vm.network :private_network, ip: &quot;192.168.100.12&quot;
+  end
+end
+</code></pre>
+
+<p>こんな感じで、<code>config.vm.define</code> で仮想マシンを複数立ち上げることが可能です。 先にも書いたようにこれ実際は Ruby のコードなので、ループとかで回すこともできますね。 （とはいえ、ゲストOS立ち上げまくったらホストOSが重くなるのは必然ですし、それぞれの起動時間もそれなりにかかります。）</p>
+
+<p>ゆくゆくは仮想マシン間のネットワークの検証なども行っていきたいので、最小構成は2台としておきたいなーと思います。</p>
+
+<p>それぞれを、vmclient1, vmclient2 として管理していき、 vmclient1 の方は<strong>簡単なテキストファイルの設置</strong> (/tmp/test.txt) を、 vmclient2 の方は<strong>簡単なアプリケーションの設置</strong> (Webサーバ, Apache) を行ってみようと思います。</p>
+
+<h3 id="レシピを用意する">レシピを用意する</h3>
+
+<p>前回までで、Vagrant 用のディレクトリを作っていたので、その中で Cookbook 用のディレクトリを用意します。</p>
+
+<pre><code>$ cd ~/Vagrant
+$ mkdir cookbooks
+</code></pre>
+
+<p>vmclient1, vmclient2 用のレシピを用意します。まず vmclient1 から。</p>
+
+<pre><code>cat cookbooks/vmclient1/recipes/default.rb
+# Cookbook ファイル設置テスト
+
+file &quot;/tmp/test.txt&quot; do
+  content &quot;vmclient1 にダミーテキストファイルを作りました！&quot;
+end
+</code></pre>
+
+<p>こちらは、content に書かれた内容のファイルを、仮想マシンの /tmp/test.txt へと作成するレシピです。</p>
+
+<p>続けて vmclient2 の方です。</p>
+
+<pre><code>cat cookbooks/vmclient2/recipes/default.rb
+# Cookbook アプリケーション設置テスト
+
+package &quot;httpd&quot; do
+  action :install
+end
+</code></pre>
+
+<p>こちらは、httpd（つまりApache）をインストールするというレシピになります。</p>
+
+<p>※まだこのあたりが完全に分かってないのですが、CentOS では httpd で良さげでも、他ディストリビューションなどでは apache2 というパッケージ名にしたりする必要があるらしく、この辺のパッケージ名は吸収してくれないのかなーとか、ちょっと疑問でした。</p>
+
+<h2 id="vagrant-chef-の連携">Vagrant, Chef の連携</h2>
+
+<p>Vagrantfile の中には、<strong>chef-solo</strong> の設定項目も存在します。</p>
+
+<p><a href="http://docs.vagrantup.com/v2/provisioning/chef_solo.html" target="_blank">http://docs.vagrantup.com/v2/provisioning/chef_solo.html</a></p>
+
+<p>これを使って、Vagrant 経由で起動した仮想マシンに対して、レシピを適用してみます。</p>
+
+<h3 id="再度-vagrantfile-を見直し">再度 Vagrantfile を見直し</h3>
+
+<pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;CentOS_6.4_x86_64_Minimal&quot;
+
+  config.vm.define :vmclient1 do |vmclient|
+    vmclient.vm.hostname = &quot;vmclient1&quot;
+    vmclient.vm.network :private_network, ip: &quot;192.168.100.11&quot;
+
+    vmclient.vm.provision :chef_solo do |chef|
+      chef.cookbooks_path = &quot;cookbooks&quot;
+      chef.run_list = &quot;recipe[vmclient1]&quot;
+    end
+  end
+
+  config.vm.define :vmclient2 do |vmclient|
+    vmclient.vm.hostname = &quot;vmclient2&quot;
+    vmclient.vm.network :private_network, ip: &quot;192.168.100.12&quot;
+
+    vmclient.vm.provision :chef_solo do |chef|
+      chef.cookbooks_path = &quot;cookbooks&quot;
+      chef.run_list = &quot;recipe[vmclient2]&quot;
+    end
+  end
+end
+</code></pre>
+
+<p>やってることは簡単で、今回用意した2つの仮想マシンそれぞれに対して、chef-solo の設定項目を設け、 Cookbook のパスとレシピ名を指定しているだけです。</p>
+
+<p>とりあえずここまでやったら、一旦仮想マシンを壊して初期状態に戻しておきます。</p>
+
+<pre><code>$ vagrant destroy
+Are you sure you want to destroy the 'vmclient2' VM? [y/N] y
+[vmclient2] Forcing shutdown of VM...
+[vmclient2] Destroying VM and associated drives...
+Are you sure you want to destroy the 'vmclient1' VM? [y/N] y
+[vmclient1] Forcing shutdown of VM...
+[vmclient1] Destroying VM and associated drives...
+</code></pre>
+
+<h3 id="レシピの適用">レシピの適用！</h3>
+
+<p>さて、いよいよレシピを適用してみます。<strong>vagrant up!! vagrant up!!</strong></p>
+
+<pre><code>$ vagrant up
+</code></pre>
+
+<p>すると、ずらずらーっとログが出力されます。</p>
+
+<pre><code>Bringing machine 'vmclient1' up with 'virtualbox' provider...
+Bringing machine 'vmclient2' up with 'virtualbox' provider...
+[vmclient1] Importing base box 'CentOS_6.4_x86_64_Minimal'...
+
+[vmclient1] Matching MAC address for NAT networking...
+[vmclient1] Setting the name of the VM...
+[vmclient1] Clearing any previously set forwarded ports...
+[vmclient1] Fixed port collision for 22 =&gt; 2222. Now on port 2202.
+[vmclient1] Creating shared folders metadata...
+[vmclient1] Clearing any previously set network interfaces...
+[vmclient1] Preparing network interfaces based on configuration...
+[vmclient1] Forwarding ports...
+[vmclient1] -- 22 =&gt; 2202 (adapter 1)
+[vmclient1] Booting VM...
+[vmclient1] Waiting for VM to boot. This can take a few minutes.
+[vmclient1] VM booted and ready for use!
+[vmclient1] Setting hostname...
+[vmclient1] Configuring and enabling network interfaces...
+[vmclient1] Mounting shared folders...
+[vmclient1] -- /vagrant
+</code></pre>
+
+<p>2つの仮想マシンを立ち上げているので、それぞれログにも名前がついてます。 ただ基本的に1台のときとやっていることは同じで、 ネットワークの設定やら共有ディレクトリの設定やらをやってくれてます。</p>
+
+<p>ここまでは同じですね！　さらに出力は続きます。</p>
+
+<pre><code>[vmclient1] -- /tmp/vagrant-chef-1/chef-solo-1/cookbooks
+[vmclient1] Running provisioner: chef_solo...
+Generating chef JSON and uploading...
+Running chef-solo...
+</code></pre>
+
+<p>おっと、ここから chef-solo が起動してることが確認できました。</p>
+
+<pre><code>[2013-05-09T22:14:33+00:00] INFO: *** Chef 11.4.0 ***
+[2013-05-09T22:14:33+00:00] INFO: Setting the run_list to &quot;recipe[vmclient1]&quot; from JSON
+[2013-05-09T22:14:33+00:00] INFO: Run List is [recipe[vmclient1]]
+[2013-05-09T22:14:33+00:00] INFO: Run List expands to [vmclient1]
+[2013-05-09T22:14:33+00:00] INFO: Starting Chef Run for vmclient1
+[2013-05-09T22:14:33+00:00] INFO: Running start handlers
+[2013-05-09T22:14:33+00:00] INFO: Start handlers complete.
+[2013-05-09T22:14:33+00:00] INFO: Processing file[/tmp/test.txt] action create (vmclient1::default line 3)
+[2013-05-09T22:14:33+00:00] INFO: entered create
+[2013-05-09T22:14:33+00:00] INFO: file[/tmp/test.txt] created file /tmp/test.txt
+[2013-05-09T22:14:33+00:00] INFO: Chef Run complete in 0.060882068 seconds
+[2013-05-09T22:14:33+00:00] INFO: Running report handlers
+[2013-05-09T22:14:33+00:00] INFO: Report handlers complete
+</code></pre>
+
+<p>・・・vmclient1 のログはここまでのようですね。</p>
+
+<p>Vagrantfile に指定されたレシピが、 chef-solo を介して実行され、実際にファイルの設置が行われていたようです。</p>
+
+<p>確認は後回しにして、さらに vmclient2 のログも見てみます。</p>
+
+<pre><code>[vmclient2] Importing base box 'CentOS_6.4_x86_64_Minimal'...
+
+[vmclient2] Matching MAC address for NAT networking...
+[vmclient2] Setting the name of the VM...
+[vmclient2] Clearing any previously set forwarded ports...
+[vmclient2] Fixed port collision for 22 =&gt; 2202. Now on port 2203.
+[vmclient2] Creating shared folders metadata...
+[vmclient2] Clearing any previously set network interfaces...
+[vmclient2] Preparing network interfaces based on configuration...
+[vmclient2] Forwarding ports...
+[vmclient2] -- 22 =&gt; 2203 (adapter 1)
+[vmclient2] Booting VM...
+[vmclient2] Waiting for VM to boot. This can take a few minutes.
+[vmclient2] VM booted and ready for use!
+[vmclient2] Setting hostname...
+[vmclient2] Configuring and enabling network interfaces...
+[vmclient2] Mounting shared folders...
+[vmclient2] -- /vagrant
+</code></pre>
+
+<p>vmclient2 も、ここまでは今までと同様です。</p>
+
+<pre><code>[vmclient2] -- /tmp/vagrant-chef-1/chef-solo-1/cookbooks
+[vmclient2] Running provisioner: chef_solo...
+Generating chef JSON and uploading...
+Running chef-solo...
+[2013-05-09T22:15:42+00:00] INFO: *** Chef 11.4.0 ***
+[2013-05-09T22:15:42+00:00] INFO: Setting the run_list to &quot;recipe[vmclient2]&quot; from JSON
+[2013-05-09T22:15:42+00:00] INFO: Run List is [recipe[vmclient2]]
+[2013-05-09T22:15:42+00:00] INFO: Run List expands to [vmclient2]
+[2013-05-09T22:15:42+00:00] INFO: Starting Chef Run for vmclient2
+[2013-05-09T22:15:42+00:00] INFO: Running start handlers
+[2013-05-09T22:15:42+00:00] INFO: Start handlers complete.
+[2013-05-09T22:15:42+00:00] INFO: Processing package[httpd] action install (vmclient2::default line 3)
+[2013-05-09T22:15:59+00:00] INFO: package[httpd] installing httpd-2.2.15-26.el6.centos from base repository
+[2013-05-09T22:16:06+00:00] INFO: Chef Run complete in 23.898427112 seconds
+[2013-05-09T22:16:06+00:00] INFO: Running report handlers
+[2013-05-09T22:16:06+00:00] INFO: Report handlers complete
+</code></pre>
+
+<p>こちらのログは、httpd 関連のログになってますね。ログを見る限りではインストールは正しく行われたようです。</p>
+
+<h3 id="正しくレシピが反映されたか確認してみる">正しくレシピが反映されたか確認してみる</h3>
+
+<p>まず vmclient1 の方へログインしてみます。</p>
+
+<pre><code>$ vagrant ssh vmclient1
+Welcome to your Vagrant-built virtual machine.
+</code></pre>
+
+<p>さて、ファイルは存在しているでしょうか？</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ cat /tmp/test.txt
+vmclient1 にダミーテキストファイルを作りました！[vagrant@vmclient1 ~]$
+</code></pre>
+
+<p>あ・・・最後に改行が入ってなかったのでちょっとアレですが、 でも<strong>ファイルはちゃんと出来てました！</strong></p>
+
+<p>ついでに、こちらに httpd がインストールされていないことを確認しておきます。</p>
+
+<pre><code>$ which httpd
+/usr/bin/which: no httpd in (/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/vagrant/bin)
+</code></pre>
+
+<p>入ってませんでした。</p>
+
+<p>続けて、vmclient2 の方へログインしてみます。</p>
+
+<pre><code>$ vagrant ssh vmclient2
+Welcome to your Vagrant-built virtual machine.
+
+[vagrant@vmclient2 ~]$ which httpd
+/usr/sbin/httpd
+</code></pre>
+
+<p><strong>おおー、入ってますね。</strong></p>
+
+<p>こちらもついでに、上記パスにテキストファイルが置かれていないことを確認しておきます。</p>
+
+<pre><code>[vagrant@vmclient2 ~]$ cat /tmp/test.txt
+cat: /tmp/test.txt: そのようなファイルやディレクトリはありません
+</code></pre>
+
+<p>無かったですね。レシピがきちんと環境ごとに分かれて適用されてました。すげー。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>Cookbook をローカルで気軽に試してレシピが書ける環境があれば、 <strong>物理マシンや VPS 上などでの作業が格段に減り、かなりの効率化が図れるなーという印象です。</strong></p>
+
+<p>個人的には、何よりも作って試して、時には壊して、という<strong>気持ち的な敷居が低いところがとてもいいなー</strong>と思います。 かなり楽しんでやれちゃいそうです。</p>
+
+<p>ここから先は、Cookbook の書き方を種類ごとに覚えつつも、 自分で作った Cookbook を実践配備するところも併せてやっていけたらなーと思います！</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://docs.vagrantup.com/v2/" target="_blank">Vagrant Documentation</a></li>
+<li><a href="http://blog.madoro.org/mn/81" target="_blank">Chefを最速で使いこなすためのいくつかのポイント &#8211; Masatomo Nakano Blog</a></li>
+</ul>
+
+      </article>
+
+      <footer class="postfooter">
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+        <div class="poststatus">
+          <span class="poststatus__date">2013年5月10日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Chef</li>
+
+            <li><i class="icon-tag"></i>Vagrant</li>
+
+            <li><i class="icon-tag"></i>VirtualBox</li>
+
+            <li><i class="icon-tag"></i>仮想化</li>
+
+          </ul>
+          
+        </div>
+
+      </footer>
+    </div>
+
+      <footer class="blogfooter">
+        <div class="inner">
+          <ul class="links">
+            <li><a href="/categories/tech/" target="_blank"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
+            <li><a href="/categories/twentyfour/" target="_blank"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
+            <li><a href="/categories/tech/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで技術系の記事のみ取得（おすすめ）</a></li>
+            <li><a href="/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで全ての記事を取得</a></li>
+          </ul>
+          <p class="attention"><i class="icon icon-attention"></i>このブログは個人の見解であり、所属する組織の公式見解ではありません</p>
+          <p class="copyright"><i class="copyright-mark">&copy;</i> ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a></p>
+        </div>
+      </footer>
+    </div>
+
+    
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36767095-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+
+    
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  </body>
+</html>
+
