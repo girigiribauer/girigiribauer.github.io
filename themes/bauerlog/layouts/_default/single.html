@@ -1,0 +1,19 @@
+{{ partial "header.html" . }}
+
+    <div class="maincontents" role="main">
+      <header class="postheader">
+        <h1 class="posttitle">{{ .Title }}</h1>
+{{ partial "poststatus.html" . }}
+      </header>
+
+      <article class="postcontents freetext">
+{{ .Content }}
+      </article>
+
+      <footer class="postfooter">
+{{ partial "socialbuttons.html" . }}
+{{ partial "poststatus.html" . }}
+      </footer>
+    </div>
+
+{{ partial "footer.html" . }}

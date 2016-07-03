@@ -1,0 +1,4 @@
+name = "bauerlog"
+license = "MIT"
+description = "bauerlog hugo theme"
+tags = ["blog"]

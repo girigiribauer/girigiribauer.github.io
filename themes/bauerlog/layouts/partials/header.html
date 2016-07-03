@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="{{ .Site.BaseURL }}css/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ .Site.BaseURL }}index.xml">
+{{ if eq .URL "/" }}
+    <title>{{ .Title }}</title>
+    <meta property='og:title' content="{{ .Title }}">
+    <meta property="og:type" content="website">
+{{ else }}
+    <title>{{ .Title }} - {{ .Site.Title }}</title>
+    <meta property='og:title' content="{{ .Title }} - {{ .Site.Title }}">
+    <meta property="og:type" content="article">
+{{ end }}
+    <meta property="og:url" content="{{ .Permalink }}">
+    {{ with .Description }}<meta name="description" content="{{ . }}">{{ end }}
+    {{ with .Params.image }}<meta property="og:image" content="{{ $.Site.BaseURL }}images/{{ . }}">{{ end }}
+    {{ .Hugo.Generator }}
+</head>
+<body>
+  <div class="wrapper">
+    <header class="blogheader">
+{{ if eq .URL "/" }}
+      <h1 class="blogtitle"><img src="/images/sitetitle.png" alt="{{ .Site.Title }}"></h1>
+{{ else }}
+      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="{{ .Site.Title }}"></a>
+{{ end }}
+    </header>

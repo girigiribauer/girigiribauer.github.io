@@ -1,0 +1,14 @@
+{{ partial "header.html" . }}
+
+    <div class="maincontents" role="main">
+      <h1 class="archivetitle">{{ .Data.Plural }} - {{ .Title }}</h1>
+      <ul class="articlelist">
+{{ range .Paginator.Pages }}
+{{ partial "item.html" . }}
+{{ end }}
+      </ul>
+{{ partial "pagination.html" . }}
+    </div>
+
+{{ partial "footer.html" . }}
+

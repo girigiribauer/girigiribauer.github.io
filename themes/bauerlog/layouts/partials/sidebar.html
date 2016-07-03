@@ -1,0 +1,11 @@
+<aside class="site">
+  {{ range $key, $value := .Site.Taxonomies }}
+  <section>
+    <header>{{ $key | singularize }}</header>
+      <ul>
+        {{ range $value.ByCount }}<li><a href="{{ $.Site.BaseURL}}{{ $key }}/{{ .Name | urlize }}">{{ .Name }}</a></li>{{ end }}
+      </ul>
+  </section>
+  {{ end }}
+
+</aside>
