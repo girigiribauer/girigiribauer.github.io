@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+
+    <title>HTML5のタグで書いてはいけないレアケース - ばうあーろぐ</title>
+    <meta property='og:title' content="HTML5のタグで書いてはいけないレアケース - ばうあーろぐ">
+    <meta property="og:type" content="article">
+
+    <meta property="og:url" content="http://girigiribauer.com/archives/690">
+    
+    
+    <meta name="generator" content="Hugo 0.15" />
+</head>
+<body>
+  <div class="wrapper">
+    <header class="blogheader">
+
+      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="ばうあーろぐ"></a>
+
+    </header>
+
+
+    <div class="maincontents" role="main">
+      <header class="postheader">
+        <h1 class="posttitle">HTML5のタグで書いてはいけないレアケース</h1>
+        <div class="poststatus">
+          <span class="poststatus__date">2013年1月29日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>HTML5</li>
+
+          </ul>
+          
+        </div>
+
+      </header>
+
+      <article class="postcontents freetext">
+
+
+<p>個人的には、</p>
+
+<ol>
+<li><strong>IE8以前</strong>のブラウザが対応ブラウザに入っていて、</li>
+<li>かなり公共性の高いと思われる（≒<strong>JavaScriptの動作によらず閲覧できる</strong>必要あり）</li>
+</ol>
+
+<p>というケースでは、<strong>HTML5の新しいタグは使ってはいけない</strong>と思っています。</p>
+
+<p>実際に書いてみて考えてみようと思います。</p>
+
+<h2 id="try">試しにHTML書いてみる</h2>
+
+<p>こんな感じのものを書いてみました。</p>
+
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;sample&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;index.css&quot;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;header class=&quot;block1&quot;&gt;
+      block1
+    &lt;/header&gt;
+    &lt;section class=&quot;block2&quot;&gt;
+      block2
+    &lt;/section&gt;
+    &lt;footer class=&quot;block3&quot;&gt;
+      block3
+    &lt;/footer&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>スタイルシートは省略しますが、実際に表示するとこんな感じになりました。</p>
+
+<p><img src="/img/2013/01/html5study02.png" alt="" /></p>
+
+<p>さて、これをIE8で見てみます。わくわく。</p>
+
+<p><img src="/img/2013/01/html5study03.png" alt="" /></p>
+
+<p><strong>これはひどい。</strong></p>
+
+<p>崩れというか、もうスタイルがあたってないです。 スタイルがあたってないせいで、ブロックの大きさも判別できず、色もついていないです。</p>
+
+<h2 id="parse">古いブラウザでのHTML5のタグの解釈について</h2>
+
+<p>IE8以前と書きましたが、そもそもHTML5の新しいタグは、どのブラウザで解釈ができるのかをまず調べてみます。</p>
+
+<p><img src="/img/2013/01/html5study01.png" alt="" /></p>
+
+<p><a href="http://caniuse.com/#feat=html5semantic" target="_blank">http://caniuse.com/#feat=html5semantic</a></p>
+
+<p>こちらのサイトに各種ブラウザのサポート具合がまとめてあるのですが、その中の『New semantic elements』がそれにあたります。</p>
+
+<p>これによると、HTML5の新しいセマンティックな要素はIE8以前じゃ効きませんよー、とあります。</p>
+
+<p>こういうときは、html5shiv.jsを読み込んで、対応してないブラウザで未知の要素として扱われてしまうsection, headerなどの要素を、きちんと解釈させる必要が出てきます。（html5shiv.jsの話は、また別の機会に書けたらいいな）</p>
+
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;sample&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;index.css&quot;&gt;
+    &lt;!–[if lt IE 9]&gt;
+      &lt;script src=&quot;html5shiv.js&quot;&gt;&lt;/script&gt;
+    &lt;![endif]–&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;header class=&quot;block1&quot;&gt;
+      block1
+    &lt;/header&gt;
+    &lt;section class=&quot;block2&quot;&gt;
+      block2
+    &lt;/section&gt;
+    &lt;footer class=&quot;block3&quot;&gt;
+      block3
+    &lt;/footer&gt;
+  &lt;/body&gt;
+&lt;/html&gt; 
+</code></pre>
+
+<p>IEで有効となる条件付きコメントではさみつつ、html5shiv.jsを読み込む記述を入れてます。</p>
+
+<p>このスクリプトを読み込むことで、HTML5の新しいタグで書かれたページを上手く意図通りに表示することができます。</p>
+
+<p>逆に言うと、JavaScriptが動作していない場合にHTML5の新しいタグを読み込むと、上記のキャプチャのような大幅に崩れた意味をなさないページになってしまうため、</p>
+
+<ol>
+<li><strong>IE8以前</strong>のブラウザが対応ブラウザに入っていて、</li>
+<li>かなり公共性の高いと思われる（≒<strong>JavaScriptの動作によらず閲覧できる</strong>必要あり）</li>
+</ol>
+
+<p>というケースでは、新しいタグを使わずに書いた方が良いと思います。</p>
+
+<h2 id="じゃあ-新しいdoctype宣言も使ったらダメなんじゃないの">じゃあ、新しいdoctype宣言も使ったらダメなんじゃないの？</h2>
+
+<p>ちなみに、一番上にあるdoctype宣言については、元々は <code>で考えられていたのですが、古いIEなどでもきちんと標準準拠モードで解釈されつつ、極力シンプルになるように</code> に結局落ち着いたという経緯があるようです。</p>
+
+<p>一般的な用語として、今正しく動くものが将来出て来るであろう新しいバージョンで動くことが予想されるものを<strong>前方互換性(forward compatibility)</strong>、その逆に今正しく動くものが、過去のバージョンで動くことが予想されるものを<strong>後方互換性(backward compatibility)</strong>と言います。</p>
+
+<p>それとは別に、ブラウザのレンダリングモードには、<strong>後方互換モード</strong>と<strong>標準準拠モード</strong>があり、最近では<strong>標準準拠モード</strong>でのレンダリングが求められます。（ここでいう後方というのは、IE6よりも前の話ですね。）</p>
+
+<p>つまり、新しい書き方をしつつ、古いIEなどで標準準拠モードでレンダリングさせるためには、後方互換性を持たせた記述の仕方が必要となり、&#8220; となった、という話です。ちょっとややこしいですね。</p>
+
+<p>なので、レアケースであったとしても、新しいタグさえ使わなければ新しいdoctype宣言の書き方でも問題ないようなので、<strong>今すぐにでも使って良さそうです。</strong>ただし、先ほども言ったようなレアケースも頭の片隅に入れつつ、積極的にHTML5を取り入れていけるといいのではないでしょうか。</p>
+
+<h2 id="条件付きコメントの書き方-おまけ">条件付きコメントの書き方（おまけ）</h2>
+
+<p>ちなみに、条件付きコメントにある <code>lt IE 9</code> というのは、<strong>less than IE 9</strong> のことで、IE9未満という意味になります。</p>
+
+<pre><code>&lt;!--[if lt IE 9]&gt;
+  &lt;script src=&quot;html5shiv.js&quot;&gt;&lt;/script&gt;
+&lt;![endif]--&gt;
+</code></pre>
+
+<p>IE8以下、という意味合いで書きたいのなら、</p>
+
+<pre><code>&lt;!--[if lte IE 8]&gt;
+  &lt;script src=&quot;html5shiv.js&quot;&gt;&lt;/script&gt;
+&lt;![endif]--&gt;
+</code></pre>
+
+<p><code>lte IE 8</code>のように書くと、<strong>less than equal IE 8</strong> になるので、IE8未満と、IE8、つまりIE8以下という意味になりますね。</p>
+
+<p>どちらも結局IE8以下のものを指します。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://code.google.com/p/html5shiv/" target="_blank">html5shiv.js</a></li>
+<li><a href="http://annevankesteren.nl/2005/07/html5-doctype" target="_blank">DOCTYPE of HTML5（HTML5でのdoctype宣言についての経緯など）</a></li>
+</ul>
+
+      </article>
+
+      <footer class="postfooter">
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+        <div class="poststatus">
+          <span class="poststatus__date">2013年1月29日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>HTML5</li>
+
+          </ul>
+          
+        </div>
+
+      </footer>
+    </div>
+
+      <footer class="blogfooter">
+        <div class="inner">
+          <ul class="links">
+            <li><a href="/categories/tech/" target="_blank"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
+            <li><a href="/categories/twentyfour/" target="_blank"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
+            <li><a href="/categories/tech/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで技術系の記事のみ取得（おすすめ）</a></li>
+            <li><a href="/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで全ての記事を取得</a></li>
+          </ul>
+          <p class="attention"><i class="icon icon-attention"></i>このブログは個人の見解であり、所属する組織の公式見解ではありません</p>
+          <p class="copyright"><i class="copyright-mark">&copy;</i> ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a></p>
+        </div>
+      </footer>
+    </div>
+
+    
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36767095-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+
+    
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  </body>
+</html>
+

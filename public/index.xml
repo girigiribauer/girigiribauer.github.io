@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ばうあーろぐ </title>
+    <link>http://girigiribauer.com/</link>
+    <atom:link href="http://girigiribauer.com/index.xml" rel="self" type="application/rss+xml" />
+    <language>ja-jp</language>
+    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
+
+    
+      
+        <item>
+          <title>Docker と Vagrant の明確な違い</title>
+          <link>http://girigiribauer.com/archives/1878</link>
+          <pubDate>Thu, 06 Aug 2015 04:22:20 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1878</guid>
+          <description>そもそも比較するようなものではないものの、分かりづらい解説しかなかったので、 超個人的な主観でまとめておこうと思いました。 Docker の特徴 Linux 上でのみ動</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>コマンド履歴の Ctrl-R 使ってますか？</title>
+          <link>http://girigiribauer.com/archives/1873</link>
+          <pubDate>Tue, 23 Jun 2015 11:01:36 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1873</guid>
+          <description>大学で初めて Linux を触りつつも、 その後働き始めてほぼ GUI オンリーの生活を送り、 iTerm, tmux, Vim 達とのと出会いを経て、 コマンドライン中心の生活を送っている girigiribauer で</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Chef を本番投入してみた</title>
+          <link>http://girigiribauer.com/archives/1867</link>
+          <pubDate>Tue, 09 Jun 2015 23:39:55 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1867</guid>
+          <description>メモレベルでごめんなさい。 サーバを移設してみました。 せっかくなので、移設ついでにブログのリニューアル（簡素化）と Chef cookbook を利用したプロビジョニン</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた</title>
+          <link>http://girigiribauer.com/archives/1749</link>
+          <pubDate>Wed, 01 Apr 2015 10:28:44 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1749</guid>
+          <description>2013年に書いていた、『Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話』（http://girigiribaue</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant を開発用 Web サーバとして利用するときの注意点</title>
+          <link>http://girigiribauer.com/archives/1742</link>
+          <pubDate>Wed, 25 Mar 2015 08:43:58 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1742</guid>
+          <description>罠があるのでまとめておきます。（体験談） なお、box ファイルは CentOS6 ベースのもの、Web サーバは apache です。（本番環境を想定した開発環境なので、ng</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant で個人的に必須なプラグイン</title>
+          <link>http://girigiribauer.com/archives/1736</link>
+          <pubDate>Wed, 04 Mar 2015 17:30:31 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1736</guid>
+          <description>先に Vagrant の使いどころ・考えどころ を見ると良いかもです。 先に列挙します。 Vagrant 1.6.5 時点で入れたやつなので、すぐに変わる可能性ありです。 vagrant-omnibus (1.4.1) vagrant-vbguest (0.10.0) sahara (0.0.17) vagrant-dnsmasq (0.1.1)</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant の使いどころ・考えどころ</title>
+          <link>http://girigiribauer.com/archives/1729</link>
+          <pubDate>Tue, 03 Mar 2015 10:17:52 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1729</guid>
+          <description>Vagrant, Chef 周りの知見が溜まってきたのでそろそろまとめていきたいと思っているのですが、 まだまだ自分の中で分からない部分も多く、 かつ自分はインフラエン</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>tmux でプロジェクト用のウィンドウをたくさん扱いたい</title>
+          <link>http://girigiribauer.com/archives/1716</link>
+          <pubDate>Mon, 19 Jan 2015 08:28:33 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1716</guid>
+          <description>2015年最初の投稿です。本年もよろしくお願いいたします。 全然書いてなかったので書きます。 ブログは定期的に書いてないと書き方を忘れてしまいが</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ようやくdotfilesをアップしました</title>
+          <link>http://girigiribauer.com/archives/1698</link>
+          <pubDate>Mon, 27 Oct 2014 11:57:58 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1698</guid>
+          <description>https://github.com/girigiribauer/dotfiles ようやく dotfiles 一式をアップできました・・・。一応メモ。 相当いろいろと削りまくったため、これから必要なものは順次追加していく必要がありますが、ま</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>CSS3 PIE の動作の仕組みと副作用について</title>
+          <link>http://girigiribauer.com/archives/1636</link>
+          <pubDate>Thu, 23 Oct 2014 09:56:36 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1636</guid>
+          <description>2014年9月現在、IE のシェアは過去と比べて劇的に変化しています。 http://gs.statcounter.com/#desktop-browser_version_partially_combined-JP-monthly-201309-201409 を見ると分かるように、 IE11 が全ブラウザの 30% を上回り、IE8,9,10 がそ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>iOS8 on iPhone6 で設定によって viewport の値が変わる件</title>
+          <link>http://girigiribauer.com/archives/1665</link>
+          <pubDate>Thu, 25 Sep 2014 01:45:36 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1665</guid>
+          <description>これはさすがに書いておいた方がよいかと思ったので書いておきます。 結論だけ先に言うと、設定によって viewport の値が変わるので注意です。 設定によって viewport の</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>SSH パスフレーズの手動入力を強いられているんだ！</title>
+          <link>http://girigiribauer.com/archives/1638</link>
+          <pubDate>Tue, 12 Aug 2014 10:05:26 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1638</guid>
+          <description>どうしても環境を変えられず SSH のパスフレーズを手動入力せざるをえないときってありますよね？ それが1回、2回であればまだ良いのですが、ある程度定</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>比較的大きめのtechイベントやるとき用メモ</title>
+          <link>http://girigiribauer.com/archives/1630</link>
+          <pubDate>Fri, 11 Jul 2014 10:32:50 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1630</guid>
+          <description>メモだけ残しておきます。 予約系 100名規模の会場は3か月前だとぎりぎり、もうちょっと手前で押さえるべき オプション品（マイクやらプロジェクタ、</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その3</title>
+          <link>http://girigiribauer.com/archives/1269</link>
+          <pubDate>Wed, 12 Feb 2014 15:00:46 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1269</guid>
+          <description>意図せずシリーズ化してしまった、前回からの続き3回目です。 jQuery から卒業するための第1歩を polyfills から学ぼう jQuery から卒業するための第1歩を polyfills から学ぼう –</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>iPad（iOS7.0.4）のランドスケープモードで height: 100% だとバグる</title>
+          <link>http://girigiribauer.com/archives/1287</link>
+          <pubDate>Wed, 05 Feb 2014 15:00:52 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1287</guid>
+          <description>タイトル通りなのですが、色々調べたりするのに時間かかったので一応メモしておきます。 ひょっとすると、iOS7.1 以降にアップデートすると解消さ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その2</title>
+          <link>http://girigiribauer.com/archives/1254</link>
+          <pubDate>Sun, 02 Feb 2014 15:00:10 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1254</guid>
+          <description>前回からの続きです。 jQuery から卒業するための第1歩を polyfills から学ぼう https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込ま</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>jQuery から卒業するための第1歩を polyfills から学ぼう</title>
+          <link>http://girigiribauer.com/archives/1233</link>
+          <pubDate>Thu, 30 Jan 2014 15:00:53 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1233</guid>
+          <description>jQuery というライブラリは非常に便利な JavaScript ライブラリであります。 jQuery 便利！ いやー、便利ですよね。便利すぎて、JavaScript を書いてHTML要素を</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>mediaQuery における max-width, max-device-width の違い</title>
+          <link>http://girigiribauer.com/archives/1179</link>
+          <pubDate>Wed, 13 Nov 2013 09:29:57 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1179</guid>
+          <description>最近改めて使い分けないとなーと実感したので、その実感を忘れないうちにメモしておこうと思います。 デバイスの幅(width)と device-width の違いについて そ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話</title>
+          <link>http://girigiribauer.com/archives/1127</link>
+          <pubDate>Fri, 26 Jul 2013 11:35:52 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1127</guid>
+          <description>2015/04/01追記：続き書きました。Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた 最近は、隙を見つけて（あ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>大なごやJSで Yeoman 意外に使えるかも？的な話をしてきました</title>
+          <link>http://girigiribauer.com/archives/1119</link>
+          <pubDate>Sun, 07 Jul 2013 07:21:37 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1119</guid>
+          <description>すみません、ブログしばらく書いておりませんでしたので、先週土曜の大なごやJSで発表した内容でも貼付けておきます。 http://www.slideshare.net/girigiribauer/20130629-yeoman Yeoman って？ 一言で言うと、「よ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Chef の サードパーティ Cookbook を利用して、yum のリポジトリを追加してみる</title>
+          <link>http://girigiribauer.com/archives/1095</link>
+          <pubDate>Fri, 17 May 2013 08:05:27 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1095</guid>
+          <description>よーし、いろいろアプリケーションのインストールの自動化しちゃうぞー！ と思っていましたが、 先に試しておいた方が良さそうなものがあったので、そち</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Chef の Data Bag を使ってユーザー作成の自動化をしてみる</title>
+          <link>http://girigiribauer.com/archives/1066</link>
+          <pubDate>Tue, 14 May 2013 11:00:29 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1066</guid>
+          <description>Chef のユーザー管理を突き詰めてみるだけでも、色々と勉強になっていますね。 前回までで、Chef の Cookbook にユーザー作成やグループ作成のレシピを記述する</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant と Chef でユーザー作成の自動化をしてみる</title>
+          <link>http://girigiribauer.com/archives/1048</link>
+          <pubDate>Mon, 13 May 2013 00:24:37 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1048</guid>
+          <description>だんだんと Chef いじりが楽しくなってきた girigiribauer です、こんにちは。 この前『入門 Chef Solo』というKindle本（電子書籍）を購入して、休憩時などに少し</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant と Chef で仮想マシンの環境をいろいろいじれるようにしたい！</title>
+          <link>http://girigiribauer.com/archives/1013</link>
+          <pubDate>Fri, 10 May 2013 03:11:38 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1013</guid>
+          <description>前々回、前回までで、ようやく気軽に作って壊せる仮想環境が用意できたので、 ここからは実際に仮想環境に作っていくところをやりたいと思います。 ※ま</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant に仮想マシンのスナップショットがとれる sahara というプラグインを入れた</title>
+          <link>http://girigiribauer.com/archives/1003</link>
+          <pubDate>Tue, 07 May 2013 01:06:17 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1003</guid>
+          <description>個々の仮想マシンのアプリケーションを入れていく前に、仮想マシンの操作でよくある『スナップショット機能』的なものが使えるように、 Vagrant のプラグイン</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>仮想環境を CUI（コマンドライン）でいじれる Vagrant を試してみた</title>
+          <link>http://girigiribauer.com/archives/966</link>
+          <pubDate>Sun, 05 May 2013 12:53:44 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/966</guid>
+          <description>もう最近では、OSの上にOSを動かす仮想環境が当たり前になってきていますが、そのソフトウェアの1つに VirtualBox というものがあります。 Vagrant は、元々この VirtualBox</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>wgetが超絶便利なwebクローラー、クローリングツールだとは知らなかった・・・！</title>
+          <link>http://girigiribauer.com/archives/925</link>
+          <pubDate>Mon, 08 Apr 2013 00:20:54 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/925</guid>
+          <description>ええ、知りませんでした。無知もいいところです・・・。 webコンテンツをざっくりローカルで見られるようにしたいなー。と思って、いろいろぐぐって</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>関西のHTML5など勉強会に参加してきた話</title>
+          <link>http://girigiribauer.com/archives/905</link>
+          <pubDate>Sun, 24 Mar 2013 00:26:26 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/905</guid>
+          <description>最近、こんな勉強会に参加して、 こんなこと話しました、こんなこと聞きましたという記事を けっこう頻繁にアウトプット出来るようになってきて、個人的</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>HTMLの名前空間(namespace)について掘り下げてみる</title>
+          <link>http://girigiribauer.com/archives/860</link>
+          <pubDate>Mon, 11 Mar 2013 00:08:58 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/860</guid>
+          <description>例えば、 &amp;lt;html xmlns=&amp;quot;http://www.w3.org/1999/xhtml&amp;quot; xmlns:og=&amp;quot;http://ogp.me/ns#&amp;quot; xmlns:fb=&amp;quot;https://www.facebook.com/2008/fbml&amp;quot;&amp;gt; 『こういうのを HTML に埋め込んでください』とか、 &amp;lt;meta property=&amp;quot;og:title&amp;quot; content=&amp;quot;ソーシャル用のタイトルがここに入る&amp;quot;&amp;</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>大なごやJS vol.5 に行ってきたまとめ</title>
+          <link>http://girigiribauer.com/archives/846</link>
+          <pubDate>Fri, 01 Mar 2013 14:14:23 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/846</guid>
+          <description>大なごやJS(#daiNagoyaJS) 数か月に1回、みんながやりたくなったタイミングで行い、主催がころころ入れ替わっていくという謎の勉強会</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>大なごやJS vol.5 で『WebRTC &#43; Web Audio API = スーパーサイヤ人』のネタを話してきた</title>
+          <link>http://girigiribauer.com/archives/834</link>
+          <pubDate>Sun, 24 Feb 2013 09:16:03 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/834</guid>
+          <description>とりあえず各セッションの感想などは一旦置いといて、 自分の発表したやつだけ、軽くまとめておきます。 当日発表した資料は slideshare にアップしてあります。 WebRTC</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>位置を変えずに、斜めにエフェクトをかける方法</title>
+          <link>http://girigiribauer.com/archives/818</link>
+          <pubDate>Wed, 13 Feb 2013 15:13:02 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/818</guid>
+          <description>昔使った、tips的な内容のメモです。 斜めにさらっと流れるエフェクトをかけたい 何かの写真を、ちょっと上品な感じで魅せたいときに、斜めにさらっ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>スマートフォンサイト構築に役立ちそうな本を読んでみた</title>
+          <link>http://girigiribauer.com/archives/798</link>
+          <pubDate>Mon, 11 Feb 2013 11:16:14 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/798</guid>
+          <description>知り合いの方が本を出されたと聞いたので、早速読んでみました。 簡単に内容をさらっと紹介しつつ、どんな人向けの本なのかも考えてみようと思います。</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>HTML5勉強会 名古屋 #1 に参加してきた話</title>
+          <link>http://girigiribauer.com/archives/785</link>
+          <pubDate>Sat, 09 Feb 2013 05:52:26 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/785</guid>
+          <description>特にしゃべってもないので、参加者目線でログを残したいなと思います。 HTML5勉強会 名古屋 #1 今まで名古屋でこういう会が無かったので、こういう月</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>html5shiv.jsの使いどころ</title>
+          <link>http://girigiribauer.com/archives/719</link>
+          <pubDate>Mon, 04 Feb 2013 14:00:12 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/719</guid>
+          <description>HTML5のタグで書いてはいけないレアケース にて、『html5shiv.jsを読み込んで・・・』みたいな記事を書いたのですが、そもそも html5shiv.js とは</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>CSS Nite in Nagoyaに行ってきた話</title>
+          <link>http://girigiribauer.com/archives/762</link>
+          <pubDate>Sat, 02 Feb 2013 13:40:47 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/762</guid>
+          <description>内容は、どちらかというと後追いで追加されたワード、『&amp;#8220;伝える&amp;#8221;のがうまくなる！』っていうところが全面に出た内容だった</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ベクターデータで軽量だと噂のアイコンフォントを導入してみた</title>
+          <link>http://girigiribauer.com/archives/733</link>
+          <pubDate>Sat, 02 Feb 2013 04:43:25 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/733</guid>
+          <description>表示スピードを速くするために、ベクターデータであるSVGを用いるのは、最近よく見られる手法だと思います。 ただ、特に古いIEなどでは、SVGは</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>コマンドラインでcdとかしたら勝手にlsするシェルスクリプト</title>
+          <link>http://girigiribauer.com/archives/724</link>
+          <pubDate>Wed, 30 Jan 2013 14:15:23 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/724</guid>
+          <description>ちょっと書いてみました！ # 移動したらすぐls -lah # ただしファイルなどが20より多かった場合は # lsで簡易表示 function chpwd() { if [ 20 -gt `ls -1 | wc -l` ]; then ls -lah else</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>HTML5のタグで書いてはいけないレアケース</title>
+          <link>http://girigiribauer.com/archives/690</link>
+          <pubDate>Tue, 29 Jan 2013 17:22:07 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/690</guid>
+          <description>個人的には、 IE8以前のブラウザが対応ブラウザに入っていて、 かなり公共性の高いと思われる（≒JavaScriptの動作によらず閲覧できる必要</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>LinuxサーバとPHPの初心者向け勉強会に参加してみた</title>
+          <link>http://girigiribauer.com/archives/673</link>
+          <pubDate>Tue, 22 Jan 2013 15:49:43 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/673</guid>
+          <description>先週末の 1/19（土）に、株式会社 音生（ねお）さんにお邪魔してきました。 その時の勉強会のレポートなどを軽くまとめてみようと思います。 概要 勉強</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>HTML5のタグを見直してみる（骨格編）</title>
+          <link>http://girigiribauer.com/archives/619</link>
+          <pubDate>Mon, 14 Jan 2013 08:12:04 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/619</guid>
+          <description>HTML5カルタ大会にて思ったこと。 分からないものを分からないままにするの、良くなーい！！ ってことで、少しあやふやなところもあったHTML5</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ScalaでFizzBuzz（Scalaことはじめ）</title>
+          <link>http://girigiribauer.com/archives/654</link>
+          <pubDate>Mon, 14 Jan 2013 07:17:05 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/654</guid>
+          <description>（ことはじめ、って書いておいたらたぶん叩かれることはないだろうと思って・・・） ScalaでFizzBuzz書いてみる まだまだScalaは書き</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vimのset relativenumberで、あの子のハートを狙い撃ち！</title>
+          <link>http://girigiribauer.com/archives/631</link>
+          <pubDate>Wed, 09 Jan 2013 13:01:19 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/631</guid>
+          <description>今日、Vimでとてもいい設定項目を知って、とても嬉しかったのでブログに残しておきます。 set relativenumberやばい！ set relativ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>『新春!!HTML5KARUTA大会』名古屋も盛況でした！</title>
+          <link>http://girigiribauer.com/archives/604</link>
+          <pubDate>Sun, 06 Jan 2013 17:00:51 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/604</guid>
+          <description>新年あけましておめでとうございます！ 今年もぎりぎりで行くのでどうぞよろしくお願いします！ 今年初のブログ記事は、HTML5のカルタ大会というイ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ジャックバウアーの名言AdventCalendarはいかがでしたか？</title>
+          <link>http://girigiribauer.com/archives/581</link>
+          <pubDate>Mon, 24 Dec 2012 15:08:58 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/581</guid>
+          <description>ジャックバウアーの名言Advent Calendarのまとめ記事です。 もしそう思っていただける方が少しでも居れば、やった甲斐があったというもの</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ジャックバウアーの名言 #24</title>
+          <link>http://girigiribauer.com/archives/575</link>
+          <pubDate>Sun, 23 Dec 2012 15:03:24 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/575</guid>
+          <description>明日はまとめ記事なので、名言の紹介は今回がラストの24日目です！ シーズン5 午前5時から6時の出来事 今日はもう多くを語ることは必要ないでしょう</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ジャックバウアーの名言 #23</title>
+          <link>http://girigiribauer.com/archives/560</link>
+          <pubDate>Sun, 23 Dec 2012 10:07:46 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/560</guid>
+          <description>シーズン2 午後10時から11時の出来事 そろそろジャックバウアーの真髄、ディレクション能力についてをご紹介したいと思います。 たかが1ドラマであ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ジャックバウアーの名言 #22</title>
+          <link>http://girigiribauer.com/archives/551</link>
+          <pubDate>Sat, 22 Dec 2012 11:54:06 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/551</guid>
+          <description>シーズン8 午後1時から2時の出来事 相手に『こいつは口だけじゃなく実際にやるやつだ』と思わせられれば、もうこちらのペースでやれると言ってもいい</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>3Dグラフィックスのド素人がGLSLについて調べてみた</title>
+          <link>http://girigiribauer.com/archives/511</link>
+          <pubDate>Fri, 21 Dec 2012 14:50:51 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/511</guid>
+          <description>こちらの記事は、LL/ML Advent Calendarの21日目の記事です。 #LLAdventJPとは？ 僕も知りません。なごやって素敵ですね！ （※時間</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ジャックバウアーの名言 #21</title>
+          <link>http://girigiribauer.com/archives/524</link>
+          <pubDate>Fri, 21 Dec 2012 12:41:51 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/524</guid>
+          <description>シーズン7 午前8時から9時の出来事 プロジェクトにおける作業スコープの明確化は、プロジェクトを成功に導くための第一歩と言えるのではないでしょう</description>
+        </item>
+      
+    
+  </channel>
+</rss>
