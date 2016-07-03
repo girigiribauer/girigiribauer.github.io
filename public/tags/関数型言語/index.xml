@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ばうあーろぐ </title>
+    <link>http://girigiribauer.com/tags/%E9%96%A2%E6%95%B0%E5%9E%8B%E8%A8%80%E8%AA%9E/</link>
+    <atom:link href="http://girigiribauer.com/tags/%E9%96%A2%E6%95%B0%E5%9E%8B%E8%A8%80%E8%AA%9E/index.xml" rel="self" type="application/rss+xml" />
+    <language>ja-jp</language>
+    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
+
+    
+      
+        <item>
+          <title>大なごやJS vol.5 に行ってきたまとめ</title>
+          <link>http://girigiribauer.com/archives/846</link>
+          <pubDate>Fri, 01 Mar 2013 14:14:23 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/846</guid>
+          <description>大なごやJS(#daiNagoyaJS) 数か月に1回、みんながやりたくなったタイミングで行い、主催がころころ入れ替わっていくという謎の勉強会</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>関数脳の考え方の重要性（なごやかScala勉強会に参加してみた）</title>
+          <link>http://girigiribauer.com/archives/279</link>
+          <pubDate>Sun, 16 Sep 2012 09:14:15 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/279</guid>
+          <description>そもそもScalaとは何か？ まだまだ素人レベルなので、あんまり下手なことを言うとここちがうよーと言われてしまうのでちゃんとしたことは言えない</description>
+        </item>
+      
+    
+  </channel>
+</rss>

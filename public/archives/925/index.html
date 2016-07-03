@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+
+    <title>wgetが超絶便利なwebクローラー、クローリングツールだとは知らなかった・・・！ - ばうあーろぐ</title>
+    <meta property='og:title' content="wgetが超絶便利なwebクローラー、クローリングツールだとは知らなかった・・・！ - ばうあーろぐ">
+    <meta property="og:type" content="article">
+
+    <meta property="og:url" content="http://girigiribauer.com/archives/925">
+    
+    
+    <meta name="generator" content="Hugo 0.15" />
+</head>
+<body>
+  <div class="wrapper">
+    <header class="blogheader">
+
+      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="ばうあーろぐ"></a>
+
+    </header>
+
+
+    <div class="maincontents" role="main">
+      <header class="postheader">
+        <h1 class="posttitle">wgetが超絶便利なwebクローラー、クローリングツールだとは知らなかった・・・！</h1>
+        <div class="poststatus">
+          <span class="poststatus__date">2013年4月8日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>wget</li>
+
+            <li><i class="icon-tag"></i>クローラー</li>
+
+          </ul>
+          
+        </div>
+
+      </header>
+
+      <article class="postcontents freetext">
+
+
+<p><strong>ええ、知りませんでした。無知もいいところです・・・。</strong></p>
+
+<p>webコンテンツをざっくりローカルで見られるようにしたいなー。と思って、いろいろぐぐってました。</p>
+
+<p>基点のURLからリンクやらリソースやらを辿って、それらをすべて落としてきて、 そこからさらにパスとかを変換してやればいいのかなーとか思っていたのですが、 ぐぐってみると、もうすでに<strong>全部やってくれる便利なコマンドがある</strong>のではないですか。</p>
+
+<p>それが、wget というソースコードをダウンロードするのによく使うコマンドだったことに驚きでした。</p>
+
+<p>ちなみに mac は入ってないっぽいのでさくっと入れました。</p>
+
+<pre><code>brew install wget
+</code></pre>
+
+<p>普通の使い方は、wget のあとにダウンロードしたい URL を続けて引数として渡してやるだけです。</p>
+
+<pre><code>wget example.com/path/to/contents.tar.gz
+</code></pre>
+
+<p>GUI の無い環境などで、何かアプリケーションをインストールするときなど、tarball や zip などで固められた圧縮ファイルを、コマンドライン上から落としてくるようなシーンでよく使うのではないかと思います。 実際僕もそれしか知りませんでした。</p>
+
+<p><strong>だがしかし！</strong></p>
+
+<p>ぐぐってみると色々なオプションがあるらしいじゃないですか。さっそくオプション読んでみましょう。</p>
+
+<pre><code>man wget
+</code></pre>
+
+<h2 id="webクローラーとしての-wget">webクローラーとしての wget</h2>
+
+<p><code>--recursive</code> やら、<code>--convert-links</code> やら、便利なオプションが色々あります。</p>
+
+<p>使えそうなやつ、面白そうなやつをピックアップしてみます。</p>
+
+<h3 id="8211-recursive-r">&#8211;recursive, -r</h3>
+
+<p>再帰的にリンクを辿ってくれます。求めてたのはまさにこれだー。</p>
+
+<h3 id="8211-level-depth-l-depth">&#8211;level=depth, -l depth</h3>
+
+<p>どこまで辿るのか指定できます。 デフォルトは5階層のようですが、<code>--level=inf</code> と指定することで、いけるところまで辿ってくれるようですね。素敵だー。</p>
+
+<h3 id="8211-convert-links-k">&#8211;convert-links, -k</h3>
+
+<p>ちゃんとローカルでも（webサーバ動いてなくても）閲覧できるように、相対パスに書き換えてくれます。 <strong>素敵すぎる！</strong></p>
+
+<h3 id="8211-no-clobber-nc">&#8211;no-clobber, -nc</h3>
+
+<p>同じパスにすでにファイルがあった場合、file.1, file.2 のように別名ではなく、上書きしてくれます。とりあえずざっと閲覧できるものが欲しいときは（動的にコロコロ内容が変わるものでなければ）、つけておいた方が良さげ。</p>
+
+<h3 id="8211-random-wait">&#8211;random-wait</h3>
+
+<p>ファイルを一気にダウンロードすることになるので、サーバ側からしてみたら一気にリクエストを受け付けることになります。 攻撃と勘違いされないよう、適度に空き時間を作ってくれるオプションです。 何回かのリクエストの後、0.5秒から1.5秒の空き時間を自動的にとってくれます。<strong>賢い〜。</strong></p>
+
+<h3 id="8211-restrict-file-names-modes">&#8211;restrict-file-names=modes</h3>
+
+<p>例えば、 index.html?p=123 みたいなパスを、そのまま保存して閲覧すると、Windowsではエンコードの関係上うまく閲覧できません。</p>
+
+<p>そんなときに、&#8211;restrict-file-names=windows とつけてやることで、使えない文字を別のものに置き換えてくれます。</p>
+
+<p><img src="/img/2013/04/wget01.png" alt="" /></p>
+
+<p>ダウンロードされるファイル名もリネーム済みで、ファイルの中身のパス部分もリネーム後のリンクになっています。 <strong>素敵すぎるじゃないですか！</strong></p>
+
+<h3 id="8211-adjust-extension-e">&#8211;adjust-extension, -E</h3>
+
+<p>URLにクエリ文字列がついたり、サーバサイドプログラムで動的に生成されたりするものは、URLの最後が .html になっていないことが多いです。</p>
+
+<p>これらのURLを、最終的に .html で終わるように調整してくれます。 <strong>なんというおもてなし機能なんだ・・・。</strong></p>
+
+<h3 id="8211-no-parent-np">&#8211;no-parent, -np</h3>
+
+<p>再帰的にダウンロードしてるときに、親に辿らないようにしてくれます。今回はつけておくべきですね。</p>
+
+<h3 id="8211-mirror-m">&#8211;mirror, -m</h3>
+
+<p>最後にミラーリングのオプションもあります。これは、以下の複数オプションをつけたときと同じようです。</p>
+
+<pre><code>-r -N -l inf --no-remove-listing
+</code></pre>
+
+<p>つまり、 -r(&#8211;recursive), 再帰的にダウンロードして、 -N(&#8211;timestamping), タイムスタンプをチェックして新しいものを保持して、 -l inf(&#8211;level=inf), いけるとこまで辿るあたりの略ですね。</p>
+
+<p>&#8211;no-remove-listing, これはFTPによる接続を用いたときのオプションで、FTPで引っ張ってくるときに生成される .listing ファイルを、消さずにとっておくオプションです。今は目的から考えて不要ですね。</p>
+
+<h3 id="必要なオプション全部つけて試してみる">必要なオプション全部つけて試してみる</h3>
+
+<p>これらをざっと見たうえで、必要なオプションを全てつけて試してみます。</p>
+
+<pre><code>wget --recursive
+--level inf
+--no-clobber
+--random-wait
+--restrict-file-names=windows
+--convert-links
+--no-parent
+--adjust-extension
+example.com
+</code></pre>
+
+<p><img src="/img/2013/04/wget02.png" alt="" /></p>
+
+<p>いやー、試してみましたけど、wget が便利すぎます。</p>
+
+<p>普段 tarball のダウンロードくらいしかやってなかったのですが、wget が「今から本気出す」と言っているかのようです。すごい。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>当然のことながら、クライアントサイドで動く JavaScript なんかは、動作したものが HTML ファイルとして落とせるわけではないので、そのページを開いて非同期に処理がなされる類のものは落とせません。</p>
+
+<p>そういう意味で、<strong>ざっくりローカルで見たい場合に用途は限られる</strong>とは思いますが、知ってて損は無いツール（というかオプション）ではないかと思います。</p>
+
+<p>というか、知らなかったから損をしていたという言い方のが正しいですね。ホント、無知は罪です。。。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://d.hatena.ne.jp/kanonji/20121011/1349931815" target="_blank">http://d.hatena.ne.jp/kanonji/20121011/1349931815</a></li>
+<li><a href="http://d.hatena.ne.jp/ctrlshift/20080129/1201612626" target="_blank">http://d.hatena.ne.jp/ctrlshift/20080129/1201612626</a></li>
+</ul>
+
+      </article>
+
+      <footer class="postfooter">
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+        <div class="poststatus">
+          <span class="poststatus__date">2013年4月8日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>wget</li>
+
+            <li><i class="icon-tag"></i>クローラー</li>
+
+          </ul>
+          
+        </div>
+
+      </footer>
+    </div>
+
+      <footer class="blogfooter">
+        <div class="inner">
+          <ul class="links">
+            <li><a href="/categories/tech/" target="_blank"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
+            <li><a href="/categories/twentyfour/" target="_blank"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
+            <li><a href="/categories/tech/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで技術系の記事のみ取得（おすすめ）</a></li>
+            <li><a href="/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで全ての記事を取得</a></li>
+          </ul>
+          <p class="attention"><i class="icon icon-attention"></i>このブログは個人の見解であり、所属する組織の公式見解ではありません</p>
+          <p class="copyright"><i class="copyright-mark">&copy;</i> ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a></p>
+        </div>
+      </footer>
+    </div>
+
+    
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36767095-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+
+    
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  </body>
+</html>
+
