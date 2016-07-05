@@ -10,6 +10,16 @@
     
       
         <item>
+          <title>WordPress を捨てて Hugo に移行した</title>
+          <link>http://girigiribauer.com/archives/20160705/</link>
+          <pubDate>Mon, 04 Jul 2016 14:32:37 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160705/</guid>
+          <description>例によって書いてない期間がどんどん開いていきますが、今は管理画面からではなく、Vim から記事を書いているのでだいぶ気分的にラクです。 さて、決</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Docker と Vagrant の明確な違い</title>
           <link>http://girigiribauer.com/archives/1878</link>
           <pubDate>Thu, 06 Aug 2015 04:22:20 +0900</pubDate>
@@ -495,16 +505,6 @@
           <pubDate>Fri, 21 Dec 2012 14:50:51 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/511</guid>
           <description>こちらの記事は、LL/ML Advent Calendarの21日目の記事です。 #LLAdventJPとは？ 僕も知りません。なごやって素敵ですね！ （※時間</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>ジャックバウアーの名言 #21</title>
-          <link>http://girigiribauer.com/archives/524</link>
-          <pubDate>Fri, 21 Dec 2012 12:41:51 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/524</guid>
-          <description>シーズン7 午前8時から9時の出来事 プロジェクトにおける作業スコープの明確化は、プロジェクトを成功に導くための第一歩と言えるのではないでしょう</description>
         </item>
       
     
