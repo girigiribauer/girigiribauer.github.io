@@ -2,8 +2,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ばうあーろぐ </title>
-    <link>http://girigiribauer.com/categories/tech/</link>
-    <atom:link href="http://girigiribauer.com/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <link>http://girigiribauer.com/</link>
+    <atom:link href="http://girigiribauer.com/index.xml" rel="self" type="application/rss+xml" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
 
@@ -14,7 +14,7 @@
           <link>http://girigiribauer.com/archives/20160705/</link>
           <pubDate>Tue, 05 Jul 2016 11:10:37 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/20160705/</guid>
-          <description>RSS の URL が変わってしまったので、一時的に元の URL に静的な RSS の XML ファイルをおいてますが、この記事以降の更新は反映されないので、以下より再取得してい</description>
+          <description>例によって書いてない期間がどんどん開いていきますが、今は管理画面からではなく、Vim から記事を書いているのでだいぶ気分的にラクです。 さて、決</description>
         </item>
       
     
@@ -460,41 +460,51 @@
     
       
         <item>
+          <title>ジャックバウアーの名言AdventCalendarはいかがでしたか？</title>
+          <link>http://girigiribauer.com/archives/581</link>
+          <pubDate>Mon, 24 Dec 2012 15:08:58 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/581</guid>
+          <description>ジャックバウアーの名言Advent Calendarのまとめ記事です。 もしそう思っていただける方が少しでも居れば、やった甲斐があったというもの</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ジャックバウアーの名言 #24</title>
+          <link>http://girigiribauer.com/archives/575</link>
+          <pubDate>Sun, 23 Dec 2012 15:03:24 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/575</guid>
+          <description>明日はまとめ記事なので、名言の紹介は今回がラストの24日目です！ シーズン5 午前5時から6時の出来事 今日はもう多くを語ることは必要ないでしょう</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ジャックバウアーの名言 #23</title>
+          <link>http://girigiribauer.com/archives/560</link>
+          <pubDate>Sun, 23 Dec 2012 10:07:46 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/560</guid>
+          <description>シーズン2 午後10時から11時の出来事 そろそろジャックバウアーの真髄、ディレクション能力についてをご紹介したいと思います。 たかが1ドラマであ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ジャックバウアーの名言 #22</title>
+          <link>http://girigiribauer.com/archives/551</link>
+          <pubDate>Sat, 22 Dec 2012 11:54:06 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/551</guid>
+          <description>シーズン8 午後1時から2時の出来事 相手に『こいつは口だけじゃなく実際にやるやつだ』と思わせられれば、もうこちらのペースでやれると言ってもいい</description>
+        </item>
+      
+    
+      
+        <item>
           <title>3Dグラフィックスのド素人がGLSLについて調べてみた</title>
           <link>http://girigiribauer.com/archives/511</link>
           <pubDate>Fri, 21 Dec 2012 14:50:51 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/511</guid>
           <description>こちらの記事は、LL/ML Advent Calendarの21日目の記事です。 #LLAdventJPとは？ 僕も知りません。なごやって素敵ですね！ （※時間</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>関数脳の考え方の重要性（なごやかScala勉強会に参加してみた）</title>
-          <link>http://girigiribauer.com/archives/279</link>
-          <pubDate>Sun, 16 Sep 2012 09:14:15 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/279</guid>
-          <description>そもそもScalaとは何か？ まだまだ素人レベルなので、あんまり下手なことを言うとここちがうよーと言われてしまうのでちゃんとしたことは言えない</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Retinaだけじゃない！Retina MacBookProの威力</title>
-          <link>http://girigiribauer.com/archives/217</link>
-          <pubDate>Mon, 09 Jul 2012 00:23:42 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/217</guid>
-          <description>以前のMacBookProと、Retina MacBookPro を、簡単に比較検証してみました。 ※あらかじめ補足しておきますが、ただ単に動かして目視で確認しただ</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>画像のプリローダーを使ってみよう！</title>
-          <link>http://girigiribauer.com/archives/127</link>
-          <pubDate>Sun, 15 Apr 2012 23:54:19 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/127</guid>
-          <description>Webアプリっぽいものを作るときは、画像などのリソースを読み込むタイミングが、ページを表示したタイミングと同じではなく、ユーザーがボタンを押</description>
         </item>
       
     
