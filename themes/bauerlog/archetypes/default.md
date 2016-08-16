@@ -4,4 +4,5 @@ layout     = "post"
 categories = ["tech"]
 tags       = []
 url = "/archives/yyyymmdd/"
+draft = true
 +++
