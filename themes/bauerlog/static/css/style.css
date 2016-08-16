@@ -269,7 +269,7 @@ body {
   background-color: #f9f9f9;
   color: #000;
   font-size: 100%;
-  font-family: 'ヒラギノ明朝 ProN W3', 'HiraMinProN-W3', 'HG明朝E', 'ＭＳ Ｐ明朝', 'MS PMincho', 'MS 明朝', serif;
+  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'モトヤLマルベリ3等幅', 'MotoyaLMaru', 'Droid Sans', sans-serif;
 }
 
 .wrapper {
@@ -425,7 +425,6 @@ body {
 .posttitle {
   font-size: 150%;
   font-weight: bold;
-  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'モトヤLマルベリ3等幅', 'MotoyaLMaru', 'Droid Sans', sans-serif;
   line-height: 1.1;
 }
 @media only screen and (max-width: 479px) {
@@ -437,7 +436,6 @@ body {
 .poststatus {
   margin-top: 15px;
   color: #686868;
-  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'モトヤLマルベリ3等幅', 'MotoyaLMaru', 'Droid Sans', sans-serif;
 }
 .poststatus .poststatus__date {
   font-size: 87.5%;
@@ -527,7 +525,6 @@ body {
   padding: 30px 10px;
   font-size: 150%;
   font-weight: bold;
-  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'モトヤLマルベリ3等幅', 'MotoyaLMaru', 'Droid Sans', sans-serif;
   line-height: 1.1;
 }
 @media only screen and (max-width: 479px) {
@@ -559,7 +556,6 @@ body {
 .articlelist .articlelist__title {
   font-size: 150%;
   font-weight: bold;
-  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'モトヤLマルベリ3等幅', 'MotoyaLMaru', 'Droid Sans', sans-serif;
   line-height: 1.1;
 }
 @media only screen and (max-width: 479px) {
@@ -586,7 +582,6 @@ body {
   padding-left: 10px;
   border-left: 7px solid #444;
   font-weight: bold;
-  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'モトヤLマルベリ3等幅', 'MotoyaLMaru', 'Droid Sans', sans-serif;
   line-height: 1.0;
   word-break: break-all;
 }
@@ -647,12 +642,9 @@ body {
 .freetext a {
   word-break: break-all;
 }
-.freetext a[href^='http'] {
-  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'モトヤLマルベリ3等幅', 'MotoyaLMaru', 'Droid Sans', sans-serif;
-}
 .freetext strong {
   padding: 0 7px;
-  background-color: #eee;
+  background-color: #ee9;
   font-weight: bold;
 }
 .freetext img {
@@ -823,7 +815,6 @@ body {
 .freetext .syntaxhighlighter table thead,
 .freetext .syntaxhighlighter table caption,
 .freetext .syntaxhighlighter textarea {
-  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'モトヤLマルベリ3等幅', 'MotoyaLMaru', 'Droid Sans', sans-serif;
   line-height: 1.55 !important;
 }
 .freetext .syntaxhighlighter .line.alt1,

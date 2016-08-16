@@ -10,6 +10,16 @@
     
       
         <item>
+          <title>Chef を捨てて Ansible に移行した</title>
+          <link>http://girigiribauer.com/archives/20160816/</link>
+          <pubDate>Tue, 16 Aug 2016 10:00:00 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160816/</guid>
+          <description>前の記事の WordPress を捨てて Hugo に移行した よりも前に、 ずいぶん前に &amp;ldquo;Chef を捨てて Ansible に移行&amp;rdquo; していたのですが、 書いておかないと忘れるので自分用に</description>
+        </item>
+      
+    
+      
+        <item>
           <title>WordPress を捨てて Hugo に移行した</title>
           <link>http://girigiribauer.com/archives/20160705/</link>
           <pubDate>Tue, 05 Jul 2016 11:10:37 +0900</pubDate>
@@ -495,16 +505,6 @@
           <pubDate>Sat, 22 Dec 2012 11:54:06 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/551</guid>
           <description>シーズン8 午後1時から2時の出来事 相手に『こいつは口だけじゃなく実際にやるやつだ』と思わせられれば、もうこちらのペースでやれると言ってもいい</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>3Dグラフィックスのド素人がGLSLについて調べてみた</title>
-          <link>http://girigiribauer.com/archives/511</link>
-          <pubDate>Fri, 21 Dec 2012 14:50:51 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/511</guid>
-          <description>こちらの記事は、LL/ML Advent Calendarの21日目の記事です。 #LLAdventJPとは？ 僕も知りません。なごやって素敵ですね！ （※時間</description>
         </item>
       
     

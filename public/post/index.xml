@@ -10,6 +10,16 @@
     
       
         <item>
+          <title>Chef を捨てて Ansible に移行した</title>
+          <link>http://girigiribauer.com/archives/20160816/</link>
+          <pubDate>Tue, 16 Aug 2016 10:00:00 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160816/</guid>
+          <description>前の記事の WordPress を捨てて Hugo に移行した よりも前に、 ずいぶん前に &amp;ldquo;Chef を捨てて Ansible に移行&amp;rdquo; していたのですが、 書いておかないと忘れるので自分用に</description>
+        </item>
+      
+    
+      
+        <item>
           <title>WordPress を捨てて Hugo に移行した</title>
           <link>http://girigiribauer.com/archives/20160705/</link>
           <pubDate>Tue, 05 Jul 2016 11:10:37 +0900</pubDate>

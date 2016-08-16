@@ -14,7 +14,6 @@
 .posttitle {
   font-size: $font-size-24px;
   font-weight: bold;
-  @include font-family-gothic;
   line-height: 1.1;
   @media #{$small} {
     font-size: $font-size-18px;
@@ -23,7 +22,6 @@
 .poststatus {
   margin-top: 15px;
   color: #686868;
-  @include font-family-gothic;
   #{&}__date {
     font-size: $font-size-14px;
     @media #{$small} {
@@ -93,7 +91,6 @@
   padding: 30px 10px;
   font-size: $font-size-24px;
   font-weight: bold;
-  @include font-family-gothic;
   line-height: 1.1;
   @media #{$small} {
     font-size: $font-size-18px;
@@ -119,7 +116,6 @@
   #{&}__title {
     font-size: $font-size-24px;
     font-weight: bold;
-    @include font-family-gothic;
     line-height: 1.1;
     @media #{$small} {
       font-size: $font-size-18px;

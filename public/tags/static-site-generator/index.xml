@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ばうあーろぐ </title>
+    <link>http://girigiribauer.com/tags/static-site-generator/</link>
+    <atom:link href="http://girigiribauer.com/tags/static-site-generator/index.xml" rel="self" type="application/rss+xml" />
+    <language>ja-jp</language>
+    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
+
+    
+      
+        <item>
+          <title>WordPress を捨てて Hugo に移行した</title>
+          <link>http://girigiribauer.com/archives/20160705/</link>
+          <pubDate>Tue, 05 Jul 2016 11:10:37 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160705/</guid>
+          <description>RSS の URL が変わってしまったので、一時的に元の URL に静的な RSS の XML ファイルをおいてますが、 =&amp;gt; 置いたけどダメでした・・・ この記事以降の更新は反映されな</description>
+        </item>
+      
+    
+  </channel>
+</rss>
