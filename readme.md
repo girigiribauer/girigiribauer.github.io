@@ -46,6 +46,6 @@ develop から master へ push
 
 
 
-## 参考URL {#ref}
+## 参考URL
 
 * <https://help.github.com/articles/using-a-custom-domain-with-github-pages/>
