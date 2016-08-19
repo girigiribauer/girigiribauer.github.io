@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+
+    <title>vagrant global-status の代替方法、あるいは jq コマンドの使い方 - ばうあーろぐ</title>
+    <meta property='og:title' content="vagrant global-status の代替方法、あるいは jq コマンドの使い方 - ばうあーろぐ">
+    <meta property="og:type" content="article">
+
+    <meta property="og:url" content="http://girigiribauer.com/archives/20160819/">
+    
+    
+    <meta name="generator" content="Hugo 0.15" />
+</head>
+<body>
+  <div class="wrapper">
+    <header class="blogheader">
+
+      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="ばうあーろぐ"></a>
+
+    </header>
+
+
+    <div class="maincontents" role="main">
+      <header class="postheader">
+        <h1 class="posttitle">vagrant global-status の代替方法、あるいは jq コマンドの使い方</h1>
+        <div class="poststatus">
+          <span class="poststatus__date">2016年8月19日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Vagrant</li>
+
+            <li><i class="icon-tag"></i>jq</li>
+
+          </ul>
+          
+        </div>
+
+      </header>
+
+      <article class="postcontents freetext">
+
+
+<p>VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。</p>
+
+<p>tmux の <code>set-option -g status-right</code> で指定できるスクリプトは
+一定間隔で常に呼ばれるような仕組みなのですが、
+（更新間隔は set-option -g status-interval で設定可能）
+あまり間隔を空けすぎると確認しづらくなってしまうので 5 秒くらいに指定しています。</p>
+
+<p>このスクリプト内で Vagrant 経由で起動している VM 名と Docker サービスが立ち上がっているかどうかを
+集約して表示しているのですが、
+この中で <strong><code>vagrant global-status</code> を呼ぶコストが意外にも高い</strong> ことに今更ながらに気づきました。
+（たぶんディレクトリツリーを全走査とかしてるんですかね・・・？）</p>
+
+<p>top とか ps とかで詳しく調べてみるとすげー CPU を使ってたっぽかったので、
+（5 秒間隔で常に動作してるわけじゃなかったので気づかずにスルーしてました）
+これはなんとかしなくてはと思い、代替方法を検討しました。</p>
+
+<h2 id="vagrant-d-内の設定ファイル">~/vagrant.d 内の設定ファイル</h2>
+
+<p>後の Vagrant のバージョンアップで変わるかもしれませんが、
+以下の場所に仮想マシンの一覧情報がまとめられていて、
+Vagrant の仮想マシンのステータスが変更されるたびにこのファイルが更新されます。</p>
+
+<pre><code>~/.vagrant.d/data/machine-index/index
+</code></pre>
+
+<p>こちらはただのテキストファイルなので、
+5 秒間隔で tmux から重いコマンドを実行するよりは、
+こちらの設定ファイルを読みにいった方がはるかに軽いです。</p>
+
+<p>ただ、こちらのファイルは JSON ファイルを圧縮したようなファイルになっているので、
+こちらを（あまりコストかけずに）さくっとフィルタリングして
+必要な情報だけ抜き出したいですね。</p>
+
+<h2 id="jq-は-json-ファイルをフィルタリングするコマンド">jq は JSON ファイルをフィルタリングするコマンド</h2>
+
+<p><a href="https://stedolan.github.io/jq/" target="_blank">https://stedolan.github.io/jq/</a></p>
+
+<p>ずいぶん前から簡易的に利用してはいたのですが、
+JSON ファイルから必要な情報をフィルタリングなどするコマンドとして
+<strong>jq コマンド</strong> というのがあります。</p>
+
+<p>これは jq コマンドを使うところだ！と思い、
+この Vagrant の設定ファイルから必要な情報を jq コマンドを使って抜き出してみました。</p>
+
+<pre><code>{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}
+</code></pre>
+
+<p>ちょっと固有パス、ID などは修正してますが、だいたいこんな感じで入っています。</p>
+
+<p>ここから、machines オブジェクト内に入っているものを抜き出したいので、
+<code>jq &quot;.machines&quot;</code> でパイプをつなげてやることで、フィルタリングされた出力結果が出ます。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines&quot;
+{
+  &quot;aaabbbccc&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;alpha&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;poweroff&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;bento/centos-7.2&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;2.2.7&quot;
+      }
+    }
+  },
+  &quot;dddeeefff&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;bravo&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;running&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;0&quot;
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>さらに、1つずつのオブジェクトごとに分けつつ、name と state だけ配列形式にして引っこ抜きます。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines | .[] | [.name, .state]&quot;
+[
+  &quot;alpha&quot;,
+  &quot;poweroff&quot;
+]
+[
+  &quot;bravo&quot;,
+  &quot;running&quot;
+]
+</code></pre>
+
+<p>これを半角スペースでつないで1行ごとに出力したかったので、[] で囲んで join で繋ぎ直しました。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;[ .machines | .[] | [.name, .state] | join(\&quot; \&quot;) ] | join(\&quot;\n\&quot;)&quot;
+&quot;alpha poweroff\nbravo running&quot;
+</code></pre>
+
+<p>これで目的の文字列になったので、running がある行だけ簡易的に引っこ抜いて tmux に表示すれば OK です。</p>
+
+<p>jq のマニュアルページには色々な機能が載っていますが、
+実際に使うのはそこまで多くないんじゃないかなーという印象です。
+正直見ながらじゃないと使えないです・・・。</p>
+
+<p><a href="https://stedolan.github.io/jq/manual/" target="_blank">https://stedolan.github.io/jq/manual/</a></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>そのまま <code>vagrant global-status</code> を使っていたころよりも圧倒的に軽くなり、
+排熱もほとんどなくなりました。
+（もしかして最近の排熱の主因はほぼこれだったんじゃあ・・・）</p>
+
+<p>jq コマンドは、こういった使い方以外にも外部の API を直接叩いてそのまま jq コマンドに通して使う、
+といった使い方も多いので、もう少しさらっと使いこなせるようになりたいですね。</p>
+
+      </article>
+
+      <footer class="postfooter">
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+        <div class="poststatus">
+          <span class="poststatus__date">2016年8月19日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Vagrant</li>
+
+            <li><i class="icon-tag"></i>jq</li>
+
+          </ul>
+          
+        </div>
+
+      </footer>
+    </div>
+
+      <footer class="blogfooter">
+        <div class="inner">
+          <ul class="links">
+            <li><a href="/categories/tech/" target="_blank"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
+            <li><a href="/categories/twentyfour/" target="_blank"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
+            <li><a href="/categories/tech/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで技術系の記事のみ取得（おすすめ）</a></li>
+            <li><a href="/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで全ての記事を取得</a></li>
+          </ul>
+          <p class="attention"><i class="icon icon-attention"></i>このブログは個人の見解であり、所属する組織の公式見解ではありません</p>
+          <p class="copyright"><i class="copyright-mark">&copy;</i> ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a></p>
+        </div>
+      </footer>
+    </div>
+
+    
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36767095-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+
+    
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  </body>
+</html>
+

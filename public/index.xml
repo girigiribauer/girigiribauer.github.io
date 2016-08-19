@@ -10,6 +10,16 @@
     
       
         <item>
+          <title>vagrant global-status の代替方法、あるいは jq コマンドの使い方</title>
+          <link>http://girigiribauer.com/archives/20160819/</link>
+          <pubDate>Fri, 19 Aug 2016 11:00:00 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160819/</guid>
+          <description>VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。 tmux の set-option -g status-right で指定できるスクリプトは 一定間隔</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Chef を捨てて Ansible に移行した</title>
           <link>http://girigiribauer.com/archives/20160816/</link>
           <pubDate>Tue, 16 Aug 2016 10:00:00 +0900</pubDate>
@@ -495,16 +505,6 @@
           <pubDate>Sun, 23 Dec 2012 10:07:46 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/560</guid>
           <description>シーズン2 午後10時から11時の出来事 そろそろジャックバウアーの真髄、ディレクション能力についてをご紹介したいと思います。 たかが1ドラマであ</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>ジャックバウアーの名言 #22</title>
-          <link>http://girigiribauer.com/archives/551</link>
-          <pubDate>Sat, 22 Dec 2012 11:54:06 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/551</guid>
-          <description>シーズン8 午後1時から2時の出来事 相手に『こいつは口だけじゃなく実際にやるやつだ』と思わせられれば、もうこちらのペースでやれると言ってもいい</description>
         </item>
       
     
