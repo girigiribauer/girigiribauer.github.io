@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+
+    <title>Hugo で URL のカスタマイズ - ばうあーろぐ</title>
+    <meta property='og:title' content="Hugo で URL のカスタマイズ - ばうあーろぐ">
+    <meta property="og:type" content="article">
+
+    <meta property="og:url" content="http://girigiribauer.com/archives/20160824/">
+    
+    
+    <meta name="generator" content="Hugo 0.15" />
+</head>
+<body>
+  <div class="wrapper">
+    <header class="blogheader">
+
+      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="ばうあーろぐ"></a>
+
+    </header>
+
+
+    <div class="maincontents" role="main">
+      <header class="postheader">
+        <h1 class="posttitle">Hugo で URL のカスタマイズ</h1>
+        <div class="poststatus">
+          <span class="poststatus__date">2016年8月24日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Hugo</li>
+
+          </ul>
+          
+        </div>
+
+      </header>
+
+      <article class="postcontents freetext">
+
+
+<p>ちょっとしたメモも気軽に残せるので、WordPress から Hugo （というか Static Site Generator）に移行して本当に良かったですね。</p>
+
+<p>Hugo の URL のカスタマイズに関して、ちょっと勘違いしてたのでメモっておきます。</p>
+
+<h2 id="hugo-で-url-の設定が有効になる順番">Hugo で URL の設定が有効になる順番</h2>
+
+<ol>
+<li>各記事の content/post/foobar.md, frontmatter 内にある url = &ldquo;/archives/foobar/&rdquo; などの記述</li>
+<li>config.toml 内にある permalinks の設定</li>
+</ol>
+
+<p>まず WordPress から Hugo に移設した時点で、移設された記事には url = &ldquo;/archives/1003&rdquo; などのように
+元々の URL がこちらの url の値に入ってくれるので、
+こちらを元に移設前と同じ URL で問題なく表示してくれます。</p>
+
+<p>ちなみに frontmatter というのは、記事の上にあるメタ情報一式がある部分のことです。（プラス3つの行で挟まれた部分のこと）</p>
+
+<p>うちのブログの場合は、元が WordPress の post テーブルに紐付いた形の連番になっていたので、
+この /archives/1003 の数字の部分がけっこうな歯抜けになってました。
+これをそのまま踏襲するのはちょっと考えにくかったため、
+（それと1日に何記事も書くことはないというのもあって、）
+新たに書いた記事からは /archives/yyyymmdd/ といった日付8桁になるように URL のルールを設けました。</p>
+
+<p>こういった場合、大元の設定ファイルにきちんとパーマリンクの設定項目があるので、
+そちらに沿ってルールを記載することで適切にパブリッシュされます。</p>
+
+<p><a href="https://gohugo.io/extras/permalinks/" target="_blank">https://gohugo.io/extras/permalinks/</a></p>
+
+<p>なので、今回以下のような修正を加えてその辺りを改善しています。
+差分を貼り付けるとこんな感じです。</p>
+
+<pre><code>diff --combined themes/bauerlog/archetypes/default.md
+index f610471,f17a62b..0000000
+--- a/themes/bauerlog/archetypes/default.md
++++ b/themes/bauerlog/archetypes/default.md
+@@@ -3,5 -3,6 +3,5 @@@ author     = &quot;girigiribauer
+  layout     = &quot;post&quot;
+  categories = [&quot;tech&quot;]
+  tags       = []
+ -url = &quot;/archives/yyyymmdd/&quot;
+  +++
+</code></pre>
+
+<p>url = &ldquo;/archives/yyyymmdd/&rdquo; という仮の記述を入れておき、あとで記事内容が決まったら日付を入れようと思ってたのですが、そもそも入れなくて良かったので削除しています。</p>
+
+<p>代わりに config.toml にこんな設定を追加しました。（抜粋）</p>
+
+<pre><code>[permalinks]
+post = &quot;/archives/:year:month:day/&quot;
+</code></pre>
+
+<p><code>hugo</code> コマンドを入力してパブリッシュされた時点の日付がここに入るので、こちらの意図した URL になってくれます。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://gohugo.io/overview/configuration/" target="_blank">https://gohugo.io/overview/configuration/</a></li>
+<li><a href="https://yet.unresolved.xyz/blog/2015/01/07/how-to-use-multibyte-title-in-hugo/" target="_blank">https://yet.unresolved.xyz/blog/2015/01/07/how-to-use-multibyte-title-in-hugo/</a></li>
+</ul>
+
+      </article>
+
+      <footer class="postfooter">
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+        <div class="poststatus">
+          <span class="poststatus__date">2016年8月24日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Hugo</li>
+
+          </ul>
+          
+        </div>
+
+      </footer>
+    </div>
+
+      <footer class="blogfooter">
+        <div class="inner">
+          <ul class="links">
+            <li><a href="/categories/tech/" target="_blank"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
+            <li><a href="/categories/twentyfour/" target="_blank"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
+            <li><a href="/categories/tech/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで技術系の記事のみ取得（おすすめ）</a></li>
+            <li><a href="/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで全ての記事を取得</a></li>
+          </ul>
+          <p class="attention"><i class="icon icon-attention"></i>このブログは個人の見解であり、所属する組織の公式見解ではありません</p>
+          <p class="copyright"><i class="copyright-mark">&copy;</i> ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a></p>
+        </div>
+      </footer>
+    </div>
+
+    
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36767095-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+
+    
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  </body>
+</html>
+

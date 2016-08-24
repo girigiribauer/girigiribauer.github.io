@@ -10,6 +10,16 @@
     
       
         <item>
+          <title>Hugo で URL のカスタマイズ</title>
+          <link>http://girigiribauer.com/archives/20160824/</link>
+          <pubDate>Wed, 24 Aug 2016 20:37:36 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160824/</guid>
+          <description>ちょっとしたメモも気軽に残せるので、WordPress から Hugo （というか Static Site Generator）に移行して本当に良かったですね。 Hugo の URL のカスタ</description>
+        </item>
+      
+    
+      
+        <item>
           <title>WordPress を捨てて Hugo に移行した</title>
           <link>http://girigiribauer.com/archives/20160705/</link>
           <pubDate>Tue, 05 Jul 2016 11:10:37 +0900</pubDate>

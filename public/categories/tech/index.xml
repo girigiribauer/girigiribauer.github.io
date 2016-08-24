@@ -10,6 +10,16 @@
     
       
         <item>
+          <title>Hugo で URL のカスタマイズ</title>
+          <link>http://girigiribauer.com/archives/20160824/</link>
+          <pubDate>Wed, 24 Aug 2016 20:37:36 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160824/</guid>
+          <description>ちょっとしたメモも気軽に残せるので、WordPress から Hugo （というか Static Site Generator）に移行して本当に良かったですね。 Hugo の URL のカスタ</description>
+        </item>
+      
+    
+      
+        <item>
           <title>vagrant global-status の代替方法、あるいは jq コマンドの使い方</title>
           <link>http://girigiribauer.com/archives/20160819/</link>
           <pubDate>Fri, 19 Aug 2016 11:00:00 +0900</pubDate>
