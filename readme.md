@@ -20,8 +20,9 @@ WordPress から Hugo に移行した話は別にまとめてあるのでそち�
 
 	hugo undraft content/post/foobar.md
 
-公開用ファイル生成（先に公開用 URL とファイル名を日付にする）
+公開用ファイル生成（管理上の理由で、先にファイル名を日付にする）
 
+	mv content/post/foobar.md content/post/yyyymmdd.md
 	hugo
 	git add content/post/yyyymmdd.md
 	git add public/

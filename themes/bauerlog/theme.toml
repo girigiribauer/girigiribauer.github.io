@@ -1,4 +1,3 @@
-name = "bauerlog"
-license = "MIT"
+name        = "bauerlog"
+license     = "MIT"
 description = "bauerlog hugo theme"
-tags = ["blog"]

@@ -9,7 +9,10 @@ Paginate       = 25
 author         = "girigiribauer"
 description    = "Webテクノロジーに関するメモ、あるいはTwentyFour"
 
+[permalinks]
+post = "/archives/:year:month:day/"
+
 [blackfriday]
-fractions = false
+fractions       = false
 hrefTargetBlank = true
-plainIDAnchors = true
+plainIDAnchors  = true
