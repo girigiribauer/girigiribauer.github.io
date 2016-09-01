@@ -10,6 +10,16 @@
     
       
         <item>
+          <title>iTerm2 で円マークとバックスラッシュで困ったときの設定</title>
+          <link>http://girigiribauer.com/archives/20160901/</link>
+          <pubDate>Thu, 01 Sep 2016 17:48:32 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160901/</guid>
+          <description>なんか iTerm2 3.0.1 あたりから円マークとバックスラッシュが入れ替わったらしいです。 どっちがどっちであっても、Option キーを押しながら入力すると、 も</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Hugo で URL のカスタマイズ</title>
           <link>http://girigiribauer.com/archives/20160824/</link>
           <pubDate>Wed, 24 Aug 2016 20:37:36 +0900</pubDate>
