@@ -10,6 +10,16 @@
     
       
         <item>
+          <title>FTP でも rsync みたいにコマンドからファイル転送したい</title>
+          <link>http://girigiribauer.com/archives/20160903/</link>
+          <pubDate>Sat, 03 Sep 2016 17:29:24 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160903/</guid>
+          <description>ターミナルで何でも行う人にとって、FTP の GUI クライアントはもう辛すぎるのです。 コマンド1つで rsync のようにアップロードしたいのです。 同じように考</description>
+        </item>
+      
+    
+      
+        <item>
           <title>iTerm2 で円マークとバックスラッシュで困ったときの設定</title>
           <link>http://girigiribauer.com/archives/20160901/</link>
           <pubDate>Thu, 01 Sep 2016 17:48:32 +0900</pubDate>
