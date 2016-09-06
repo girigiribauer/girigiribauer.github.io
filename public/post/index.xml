@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ばうあーろぐ </title>
+    <title>ばうあーろぐ</title>
     <link>http://girigiribauer.com/post/</link>
-    <atom:link href="http://girigiribauer.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link rel="self" href="http://girigiribauer.com/post/index.xml" type="application/rss+xml" />
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
 
+    
+      
+        <item>
+          <title>Ansible で再起動後にも playbook を継続する方法</title>
+          <link>http://girigiribauer.com/archives/20160906/</link>
+          <pubDate>Tue, 06 Sep 2016 09:14:39 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160906/</guid>
+          <description>タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。 Chef では少なくともそういった機能は無かったように思えますが（僕</description>
+        </item>
+      
     
       
         <item>

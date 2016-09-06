@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+
+    <title>Ansible で再起動後にも playbook を継続する方法 - ばうあーろぐ</title>
+    <meta property='og:title' content="Ansible で再起動後にも playbook を継続する方法 - ばうあーろぐ">
+    <meta property="og:type" content="article">
+
+    <meta property="og:url" content="http://girigiribauer.com/archives/10101/">
+    
+    
+    <meta name="generator" content="Hugo 0.15" />
+</head>
+<body>
+  <div class="wrapper">
+    <header class="blogheader">
+
+      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="ばうあーろぐ"></a>
+
+    </header>
+
+
+    <div class="maincontents" role="main">
+      <header class="postheader">
+        <h1 class="posttitle">Ansible で再起動後にも playbook を継続する方法</h1>
+        <div class="poststatus">
+          <span class="poststatus__date">0001年1月1日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Ansible</li>
+
+          </ul>
+          
+        </div>
+
+      </header>
+
+      <article class="postcontents freetext">
+
+
+<p>タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。</p>
+
+<p>Chef では少なくともそういった機能は無かったように思えますが（僕が知らないだけかもしれない）、
+<strong>Ansible はプッシュベース</strong> だからでしょうか。
+実行する主体がいつもローカル側にあるからこそ、
+一旦接続を切ってまた繋げるといったことがやりやすいのかもしれません。</p>
+
+<h2 id="そもそもなぜ再接続したいのか">そもそもなぜ再接続したいのか？</h2>
+
+<p>ほとんどの playbook では問題ないのですが、
+SELinux の設定の反映（一時的な設定だけなら問題なし）などの一部のセットアップにて、
+<strong>再起動が必要になるものが存在しています。</strong></p>
+
+<p>他にもあるかもしれませんが、
+例えば SELinux の設定をいじる場合は以下のような手順を踏みます。</p>
+
+<pre><code>$ getenforce #=&gt; 今の設定確認
+Enforcing
+$ sudo vi /etc/sysconfig/selinux #=&gt; SELINUX=disabled を設定
+$ sudo reboot #=&gt; 再起動
+</code></pre>
+
+<p>Ansible では playbook 上で reboot すると、
+<strong>playbook のステータスが unreachable になってそのまま終了</strong> してしまいます。</p>
+
+<pre><code>fatal: [machine_name]: UNREACHABLE! =&gt; {&quot;changed&quot;: false, &quot;msg&quot;: &quot;Failed to connect to the host via ssh.&quot;, &quot;unreachable&quot;: true}
+</code></pre>
+
+<p>繋がらなくなるのでまあ当然ですよね。</p>
+
+<p>これを一連の playbook で再起動をはさんで実行できると、
+playbook を書くときにトリッキーなことをせずに済むこともあるかもしれません。
+（SELinux だけみると、最後にまとめて再起動すれば事足りるっちゃあそうですが・・・。）</p>
+
+<p>ちょっと話が逸れますが、 reboot するのが通常の task ではなく handler だった場合、
+（handler は変化があった場合のみ、最後にまとめて実行するタスクのこと）
+単に再起動だけ実行させて、あとはほったらかしで問題ないケースも出てきます。
+その場合は playbook の実行完了を待たない poll の値を設定することで、handler で再起動をさせて終了させることは可能です。</p>
+
+<p><a href="http://docs.ansible.com/ansible/playbooks_async.html" target="_blank">http://docs.ansible.com/ansible/playbooks_async.html</a></p>
+
+<h2 id="再接続を可能にする-ansible-のモジュール">再接続を可能にする Ansible のモジュール</h2>
+
+<p>Ansible で再接続を行うために必要な関連モジュールをメモっておきます。
+最初のやつは正確にはモジュールではないかもしれません。キーワード？</p>
+
+<h3 id="local-action">local_action</h3>
+
+<p><a href="http://docs.ansible.com/ansible/playbooks_delegation.html" target="_blank">http://docs.ansible.com/ansible/playbooks_delegation.html</a></p>
+
+<p>この local_action は他のモジュールと同じように使うことが出来るのですが、
+モジュールのさらに頭につけることで
+<strong>ローカルに処理を委譲することができます。</strong></p>
+
+<p>ちなみに <code>delegate_to</code> というキーワードも存在していて、以下は同じ意味を指すようです。
+（先ほどのリンク内から抜粋）</p>
+
+<pre><code>- name: add back to load balancer pool
+command: /usr/bin/add_back_to_pool {{ inventory_hostname }}
+delegate_to: 127.0.0.1
+
+- name: take out of load balancer pool
+local_action: command /usr/bin/take_out_of_pool {{ inventory_hostname }}
+</code></pre>
+
+<h3 id="wait-for-モジュール">wait_for モジュール</h3>
+
+<p><a href="http://docs.ansible.com/ansible/wait_for_module.html" target="_blank">http://docs.ansible.com/ansible/wait_for_module.html</a></p>
+
+<p>wait_for モジュールは、 <strong>指定したホスト名・ポートを監視し、有効になるまで待機します。</strong></p>
+
+<p>先に非同期で再起動するような playbook を用意しておき、
+その後 local_action をはさんだ wait_for モジュールを利用して、
+再起動で処理が戻るまで待機するような playbook を書くことが可能です。</p>
+
+<h3 id="set-fact-モジュール">set_fact モジュール</h3>
+
+<p><a href="http://docs.ansible.com/ansible/set_fact_module.html" target="_blank">http://docs.ansible.com/ansible/set_fact_module.html</a></p>
+
+<p>set_fact モジュールは、ansible-playbook の <strong>実行時の変数を途中で上書きできるモジュール</strong> です。</p>
+
+<p>今回は結局使わなかったのですが、
+例えばポート番号を変えたり、パスワード認証から公開鍵認証に変えたりした場合に、
+接続するための情報を途中で変更する際に用いました。</p>
+
+<p>あくまで僕のケースですが、個人的には接続方法が大きく変わった時には無理をせず、
+強制的に fail などのメッセージを出して（鍵認証に変えたから接続し直してね的なやつ）、
+変更後の接続方法で改めて playbook を実行するようにしています。
+（この辺の話はまた長くなるので、余裕があれば改めて取りまとめたいですね・・・）</p>
+
+<h2 id="selinux-の-playbook">SELinux の playbook</h2>
+
+<p>他 playbook も参考にしながら、冪等性も踏まえて書いてみたのがこれです。
+（抜粋＆本筋じゃないところは省略）</p>
+
+<pre><code>- name: SELinux のステータス取得
+  shell: getenforce
+  register: selinux_status
+  changed_when: False
+  tags: selinux
+  become: True
+
+- name: SELinux をコントロールするためのパッケージ導入
+  yum: name=libselinux-python state=installed
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: True
+
+- name: SELinux の無効化
+  selinux: state=disabled
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: True
+
+- name: SELinux 設定後の再起動
+  shell: &quot;sleep 2 &amp;&amp; reboot&quot;
+  async: 1
+  poll: 0
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: True
+
+- name: SELinux 設定後の再起動完了まで待機
+  local_action: wait_for host={{ inventory_hostname }} port={{ ssh_port }} delay=30
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: False
+</code></pre>
+
+<p>inventory_hostname は <a href="http://docs.ansible.com/ansible/playbooks_variables.html" target="_blank">http://docs.ansible.com/ansible/playbooks_variables.html</a> にあるように
+Ansible のインベントリファイルがあるローカルを指しています。予め用意されている変数です。</p>
+
+<p>register については
+<a href="http://docs.ansible.com/ansible/playbooks_conditionals.html#register-variables" target="_blank">http://docs.ansible.com/ansible/playbooks_conditionals.html#register-variables</a> にありますが、
+実行結果などを後で参照するために一時保存してくれる機能です。</p>
+
+<p>SELinux の設定を取得して、有効になっていた場合のみ無効となるような playbook を実行しています（冪等性）。
+逆に <strong>2回目以降の playbook の実行ですでに無効になっていた場合は、
+when と書いてあるところが False になるので playbook の実行がスキップされます。</strong>
+毎回再起動をはさんでいては時間がかかってしまいますので、
+時間短縮のため register や when などを用いて変更する必要があるときだけ処理をするようにしています。</p>
+
+<p>ちなみに、再起動自体の playbook ですが、
+sleep 2 や async: 1 がないと一番最初の例と同じく unreachable でストップしてしまいます。
+shell モジュール内で sleep 2 などを頭につけて実行直後に再起動が実行されないようにしつつ、
+async でこの playbook の終了タイミング自体も直後ではなく後ろにずらす必要がありました。</p>
+
+<p>様々な環境で試したところ、両方ずらす必要があるようです。
+最初は単にタイミングをずらすだけで良いかと思って sleep 1 になってたんですが、
+Vagrant 上は問題がなくとも VPS 上では sleep 2 にしないと unreachable になってしまったりと、
+再起動周りは多少経験則が必要なようです・・・。</p>
+
+<p>ここに関しては内部の処理を見たわけではないのですが、
+タイミングをずらすことで、再起動の処理の前に
+次の local_action &amp; wait_for モジュールに処理を渡してから再起動を行う必要があるようです。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>Ansible のプッシュベースであるメリットが出てて便利だなーと思います。</p>
+
+<p>再起動の playbook については、今まで問題があったわけではないのですが、
+selinux の部分だけで設定完了することになるので、
+playbook の依存関係が少しすっきりした気がします。
+ただ、再起動タスクが多ければ多いほど、
+最後にまとめて handler として実行した方が playbook 全体の処理時間は短くなると思います。</p>
+
+<p>あと playbook の書き順によっては接続ポートの変更とかぶった場合、
+<strong>再起動後に SSH のポートが変わっちゃって接続できなくなっちゃった、</strong> みたいなケースもありうるので
+そこは注意が必要かと思います。（今回使っていないset_fact モジュールである程度いけるかと思います）</p>
+
+<p>ちなみに再起動に関してはこの記事の通りなのですが、
+再ログインに関してはまだまとめきれてないので、
+改めて記事にメモっておこうと思います。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://qiita.com/volanja/items/d38fe0678848bae6902f" target="_blank">http://qiita.com/volanja/items/d38fe0678848bae6902f</a></li>
+<li><a href="https://gyagya1111.blogspot.jp/2015/02/ansibleselinux.html" target="_blank">https://gyagya1111.blogspot.jp/2015/02/ansibleselinux.html</a></li>
+<li><a href="http://jinja.pocoo.org/docs/dev/templates/" target="_blank">http://jinja.pocoo.org/docs/dev/templates/</a></li>
+<li><a href="http://stackoverflow.com/questions/23877781/how-to-wait-for-server-restart-using-ansible" target="_blank">http://stackoverflow.com/questions/23877781/how-to-wait-for-server-restart-using-ansible</a></li>
+</ul>
+
+      </article>
+
+      <footer class="postfooter">
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+        <div class="poststatus">
+          <span class="poststatus__date">0001年1月1日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Ansible</li>
+
+          </ul>
+          
+        </div>
+
+      </footer>
+    </div>
+
+      <footer class="blogfooter">
+        <div class="inner">
+          <ul class="links">
+            <li><a href="/categories/tech/" target="_blank"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
+            <li><a href="/categories/twentyfour/" target="_blank"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
+            <li><a href="/categories/tech/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで技術系の記事のみ取得（おすすめ）</a></li>
+            <li><a href="/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで全ての記事を取得</a></li>
+          </ul>
+          <p class="attention"><i class="icon icon-attention"></i>このブログは個人の見解であり、所属する組織の公式見解ではありません</p>
+          <p class="copyright"><i class="copyright-mark">&copy;</i> ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a></p>
+        </div>
+      </footer>
+    </div>
+
+    
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36767095-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+
+    
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  </body>
+</html>
+

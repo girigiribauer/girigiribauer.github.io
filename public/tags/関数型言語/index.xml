@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ばうあーろぐ </title>
+    <title>ばうあーろぐ</title>
     <link>http://girigiribauer.com/tags/%E9%96%A2%E6%95%B0%E5%9E%8B%E8%A8%80%E8%AA%9E/</link>
-    <atom:link href="http://girigiribauer.com/tags/%E9%96%A2%E6%95%B0%E5%9E%8B%E8%A8%80%E8%AA%9E/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link rel="self" href="http://girigiribauer.com/tags/%E9%96%A2%E6%95%B0%E5%9E%8B%E8%A8%80%E8%AA%9E/index.xml" type="application/rss+xml" />
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
 
