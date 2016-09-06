@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>Ansible で Docker のインストール</title>
+          <link>http://girigiribauer.com/archives/20160907/</link>
+          <pubDate>Wed, 07 Sep 2016 08:31:34 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160907/</guid>
+          <description>Ansible で再起動後にも playbook を継続する方法 で 再ログインに関しても一緒にまとめておこうと思ったのですが、 Docker の方が話の割合として多くなりそうだったので別記</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Docker と Vagrant の明確な違い</title>
           <link>http://girigiribauer.com/archives/1878</link>
           <pubDate>Thu, 06 Aug 2015 04:22:20 +0900</pubDate>

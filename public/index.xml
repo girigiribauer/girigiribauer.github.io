@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>Ansible で Docker のインストール</title>
+          <link>http://girigiribauer.com/archives/20160907/</link>
+          <pubDate>Wed, 07 Sep 2016 08:31:34 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160907/</guid>
+          <description>Ansible で再起動後にも playbook を継続する方法 で 再ログインに関しても一緒にまとめておこうと思ったのですが、 Docker の方が話の割合として多くなりそうだったので別記</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Ansible で再起動後にも playbook を継続する方法</title>
           <link>http://girigiribauer.com/archives/20160906/</link>
           <pubDate>Tue, 06 Sep 2016 09:14:39 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Mon, 14 Jan 2013 07:17:05 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/654</guid>
           <description>（ことはじめ、って書いておいたらたぶん叩かれることはないだろうと思って・・・） ScalaでFizzBuzz書いてみる まだまだScalaは書き</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Vimのset relativenumberで、あの子のハートを狙い撃ち！</title>
-          <link>http://girigiribauer.com/archives/631</link>
-          <pubDate>Wed, 09 Jan 2013 13:01:19 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/631</guid>
-          <description>今日、Vimでとてもいい設定項目を知って、とても嬉しかったのでブログに残しておきます。 set relativenumberやばい！ set relativ</description>
         </item>
       
     
