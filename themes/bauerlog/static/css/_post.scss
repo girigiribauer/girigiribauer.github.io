@@ -88,12 +88,16 @@
   }
 }
 .archivetitle {
-  padding: 30px 10px;
+  padding: 30px 0;
   font-size: $font-size-24px;
   font-weight: bold;
   line-height: 1.1;
   @media #{$small} {
     font-size: $font-size-18px;
+  }
+  span {
+    padding: 2px 17px 2px 10px;
+    background-color: #ee9;
   }
 }
 .articlelist {

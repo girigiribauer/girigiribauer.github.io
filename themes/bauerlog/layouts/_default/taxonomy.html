@@ -1,6 +1,7 @@
 {{ partial "header.html" . }}
 
 <div class="maincontents" role="main">
+  <h1 class="archivetitle"><span>{{ .Data.Plural }} / {{ .Title }}</span></h1>
   <ul class="articlelist">
 {{ range .Paginator.Pages }}
 {{ partial "item.html" . }}
@@ -10,3 +11,4 @@
 </div>
 
 {{ partial "footer.html" . }}
+

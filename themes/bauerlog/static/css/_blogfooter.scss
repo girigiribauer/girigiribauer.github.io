@@ -29,17 +29,35 @@
     }
   }
   .links {
+    margin: 10px 0 0 0;
     li {
       font-size: $font-size-14px;
       line-height: 1.6;
-    }
-    li + li {
-      margin: 0 10px 0 0;
     }
     .icon {
       width: 26px;
       display: inline-block;
     }
+    &--tags {
+      width: 100%;
+      @include display-flex;
+      @include flex-flow(row wrap);
+      @include justify-content(flex-start);
+      @include align-content(flex-start);
+      @include align-items(flex-start);
+      li {
+        @include flex(0 0 auto);
+        margin: 0 20px 4px 0;
+      }
+    }
+    &--others {
+      li + li {
+        margin: 0 10px 0 0;
+      }
+    }
+  }
+  .links + .linkstitle {
+    margin-top: 20px;
   }
   .attention {
     margin-top: 16px;

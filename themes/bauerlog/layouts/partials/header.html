@@ -16,15 +16,15 @@
 {{ end }}
     <meta property="og:url" content="{{ .Permalink }}">
     {{ with .Description }}<meta name="description" content="{{ . }}">{{ end }}
-    {{ with .Params.image }}<meta property="og:image" content="{{ $.Site.BaseURL }}images/{{ . }}">{{ end }}
+    <meta property="og:image" content="{{ $.Site.BaseURL }}img/ogimage.png">
     {{ .Hugo.Generator }}
-</head>
-<body>
-  <div class="wrapper">
-    <header class="blogheader">
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="blogheader">
 {{ if eq .URL "/" }}
-      <h1 class="blogtitle"><img src="/images/sitetitle.png" alt="{{ .Site.Title }}"></h1>
+        <h1 class="blogtitle"><img src="/img/sitetitle.png" alt="{{ .Site.Title }}"></h1>
 {{ else }}
-      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="{{ .Site.Title }}"></a>
+        <a href="/" class="blogtitle"><img src="/img/sitetitle.png" alt="{{ .Site.Title }}"></a>
 {{ end }}
-    </header>
+      </header>

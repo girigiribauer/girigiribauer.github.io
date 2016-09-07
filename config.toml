@@ -1,9 +1,11 @@
-baseurl        = "http://girigiribauer.com/"
-languageCode   = "ja-jp"
-title          = "ばうあーろぐ"
-theme          = "bauerlog"
-hasCJKLanguage = true
-Paginate       = 25
+baseurl               = "http://girigiribauer.com/"
+languageCode          = "ja-jp"
+title                 = "ばうあーろぐ"
+theme                 = "bauerlog"
+hasCJKLanguage        = true
+Paginate              = 25
+preserveTaxonomyNames = true
+ignoreFiles           = ["\\.scss$"]
 
 [params]
 author         = "girigiribauer"

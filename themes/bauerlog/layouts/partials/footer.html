@@ -1,8 +1,16 @@
       <footer class="blogfooter">
         <div class="inner">
-          <ul class="links">
-            <li><a href="/categories/tech/" target="_blank"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
-            <li><a href="/categories/twentyfour/" target="_blank"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
+          <h2 class="linkstitle">タグ一覧</h2>
+          <ul class="links links--tags">
+            {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+            <li><a href="{{ "/tags/" | relURL }}{{ $name | urlize }}"><i class="icon icon-tag"></i>{{ $name }} ({{ $taxonomy.Count }})</a></li>
+            {{ end }}
+          </ul>
+
+          <h2 class="linkstitle">その他リンク</h2>
+          <ul class="links links--others">
+            <li><a href="/categories/tech/"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
+            <li><a href="/categories/twentyfour/"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
             <li><a href="/categories/tech/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで技術系の記事のみ取得（おすすめ）</a></li>
             <li><a href="/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで全ての記事を取得</a></li>
           </ul>
