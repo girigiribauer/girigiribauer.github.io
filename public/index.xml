@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>Ansible の playbook 内で条件分岐を行う方法</title>
+          <link>http://girigiribauer.com/archives/20160912/</link>
+          <pubDate>Mon, 12 Sep 2016 11:42:17 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160912/</guid>
+          <description>これも公式に詳しく書いてなくて出来るのを分かってなかったので 僕と同じようなところで困っている人のためにメモっておきます。 jinja2 Ansible では jinja2 というテン</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Ansible で Docker のインストール</title>
           <link>http://girigiribauer.com/archives/20160907/</link>
           <pubDate>Wed, 07 Sep 2016 08:31:34 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Mon, 14 Jan 2013 08:12:04 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/619</guid>
           <description>HTML5カルタ大会にて思ったこと。 分からないものを分からないままにするの、良くなーい！！ ってことで、少しあやふやなところもあったHTML5</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>ScalaでFizzBuzz（Scalaことはじめ）</title>
-          <link>http://girigiribauer.com/archives/654</link>
-          <pubDate>Mon, 14 Jan 2013 07:17:05 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/654</guid>
-          <description>（ことはじめ、って書いておいたらたぶん叩かれることはないだろうと思って・・・） ScalaでFizzBuzz書いてみる まだまだScalaは書き</description>
         </item>
       
     

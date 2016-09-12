@@ -1,0 +1,93 @@
+// dimensions
+$width-maincontents: 900px;
+
+// fonts
+$fontsize-largest: 300%;
+$font-size-48px: 300%;
+$font-size-40px: 250%;
+$font-size-32px: 200%;
+$font-size-24px: 150%;
+$font-size-21px: 131.25%;
+$font-size-18px: 112.5%;
+$font-size-16px: 100%;
+$font-size-14px: 87.5%;
+$font-size-12px: 75%;
+@mixin font-family-mincho() {
+  font-family:
+    'ヒラギノ明朝 ProN W3',
+    'HiraMinProN-W3',
+    'HG明朝E',
+    'ＭＳ Ｐ明朝',
+    'MS PMincho',
+    'MS 明朝',
+    serif;
+}
+@mixin font-family-gothic() {
+  font-family:
+    'ヒラギノ角ゴ Pro W3',
+    'Hiragino Kaku Gothic Pro',
+    'モトヤLマルベリ3等幅',
+    'MotoyaLMaru',
+    'Droid Sans',
+    sans-serif;
+}
+@mixin font-family-fixed-width() {
+  font-family:
+    Consolas,
+    'Courier New',
+    Courier,
+    Monaco,
+    monospace;
+}
+
+// mediaqueries
+$middle: "only screen and (min-width:480px) and (max-width:899px)";
+$small: "only screen and (max-width:479px)";
+
+/**
+ * override styles
+ */
+a {
+  color: #3636cc;
+  text-decoration: underline;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+/**
+ * basic layouts
+ */
+body {
+  min-width: 320px;
+  background-color: #f9f9f9;
+  color: #000;
+  font-size: 100%;
+  @include font-family-gothic;
+}
+.wrapper {
+  width: 100%;
+  min-width: $width-maincontents;
+  margin: 0 auto;
+  padding: 0;
+  @media #{$middle}, #{$small} {
+    width: auto;
+    min-width: 0;
+  }
+}
+.maincontents {
+  width: $width-maincontents;
+  margin: 0 auto;
+  margin-bottom: 120px;
+  @media #{$middle} {
+    width: auto;
+    margin-bottom: 100px;
+    padding: 0 30px;
+  }
+  @media #{$small} {
+    width: auto;
+    margin-bottom: 80px;
+    padding: 0 10px;
+  }
+}
+
