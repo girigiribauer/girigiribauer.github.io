@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>MacOS の VMWare Fusion 内で Docker for Windows をインストールする</title>
+          <link>http://girigiribauer.com/archives/20160929/</link>
+          <pubDate>Thu, 29 Sep 2016 20:02:24 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160929/</guid>
+          <description>最初失敗したので、同じところではまるであろう人のためにメモっておきます。 （念のため言っておきますが僕ははまったわけではないです・・・） そもそ</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Git のユーザーを複数使い分ける時の苦肉の策</title>
           <link>http://girigiribauer.com/archives/20160913/</link>
           <pubDate>Tue, 13 Sep 2016 14:05:35 +0900</pubDate>
