@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>Golang で DB が簡単に扱える自作コマンドを作ってみた</title>
+          <link>http://girigiribauer.com/archives/20161003/</link>
+          <pubDate>Mon, 03 Oct 2016 09:08:04 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161003/</guid>
+          <description>※どうでもいいけど、9月のブログ記事数が急に増えだしてます。 Hugo 化がここにきてすごく効いてきてますね。 この前 &amp;ldquo;db-cli&amp;rdquo; という自作コマンドをリリースして</description>
+        </item>
+      
+    
+      
+        <item>
           <title>MacOS の VMWare Fusion 内で Docker for Windows をインストールする</title>
           <link>http://girigiribauer.com/archives/20160929/</link>
           <pubDate>Thu, 29 Sep 2016 20:02:24 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Wed, 30 Jan 2013 14:15:23 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/724</guid>
           <description>ちょっと書いてみました！ # 移動したらすぐls -lah # ただしファイルなどが20より多かった場合は # lsで簡易表示 function chpwd() { if [ 20 -gt `ls -1 | wc -l` ]; then ls -lah else</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>HTML5のタグで書いてはいけないレアケース</title>
-          <link>http://girigiribauer.com/archives/690</link>
-          <pubDate>Tue, 29 Jan 2013 17:22:07 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/690</guid>
-          <description>個人的には、 IE8以前のブラウザが対応ブラウザに入っていて、 かなり公共性の高いと思われる（≒JavaScriptの動作によらず閲覧できる必要</description>
         </item>
       
     

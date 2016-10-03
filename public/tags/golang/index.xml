@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ばうあーろぐ</title>
+    <link>http://girigiribauer.com/tags/golang/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/golang/index.xml" type="application/rss+xml" />
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
+    <language>ja-jp</language>
+    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
+
+    
+      
+        <item>
+          <title>Golang で DB が簡単に扱える自作コマンドを作ってみた</title>
+          <link>http://girigiribauer.com/archives/20161003/</link>
+          <pubDate>Mon, 03 Oct 2016 09:08:04 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161003/</guid>
+          <description>※どうでもいいけど、9月のブログ記事数が急に増えだしてます。 Hugo 化がここにきてすごく効いてきてますね。 この前 &amp;ldquo;db-cli&amp;rdquo; という自作コマンドをリリースして</description>
+        </item>
+      
+    
+  </channel>
+</rss>

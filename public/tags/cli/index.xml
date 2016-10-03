@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>Golang で DB が簡単に扱える自作コマンドを作ってみた</title>
+          <link>http://girigiribauer.com/archives/20161003/</link>
+          <pubDate>Mon, 03 Oct 2016 09:08:04 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161003/</guid>
+          <description>※どうでもいいけど、9月のブログ記事数が急に増えだしてます。 Hugo 化がここにきてすごく効いてきてますね。 この前 &amp;ldquo;db-cli&amp;rdquo; という自作コマンドをリリースして</description>
+        </item>
+      
+    
+      
+        <item>
           <title>FTP でも rsync みたいにコマンドからファイル転送したい</title>
           <link>http://girigiribauer.com/archives/20160903/</link>
           <pubDate>Sat, 03 Sep 2016 17:29:24 +0900</pubDate>
