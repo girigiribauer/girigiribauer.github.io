@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>Homebrew で Golang のバイナリを公開してみた</title>
+          <link>http://girigiribauer.com/archives/20161004/</link>
+          <pubDate>Tue, 04 Oct 2016 13:11:17 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161004/</guid>
+          <description>超楽だったのでメモっておきます。 こちらにドキュメントあります。（Golang のバイナリの場合ではないので少し異なりますが） https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md Homebrew 対応 自作コマン</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Golang で DB が簡単に扱える自作コマンドを作ってみた</title>
           <link>http://girigiribauer.com/archives/20161003/</link>
           <pubDate>Mon, 03 Oct 2016 09:08:04 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Sat, 02 Feb 2013 04:43:25 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/733</guid>
           <description>表示スピードを速くするために、ベクターデータであるSVGを用いるのは、最近よく見られる手法だと思います。 ただ、特に古いIEなどでは、SVGは</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>コマンドラインでcdとかしたら勝手にlsするシェルスクリプト</title>
-          <link>http://girigiribauer.com/archives/724</link>
-          <pubDate>Wed, 30 Jan 2013 14:15:23 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/724</guid>
-          <description>ちょっと書いてみました！ # 移動したらすぐls -lah # ただしファイルなどが20より多かった場合は # lsで簡易表示 function chpwd() { if [ 20 -gt `ls -1 | wc -l` ]; then ls -lah else</description>
         </item>
       
     
