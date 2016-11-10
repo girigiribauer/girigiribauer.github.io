@@ -6,14 +6,14 @@
     <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
 
-    <title>Git のユーザーを複数使い分ける時の苦肉の策 - ばうあーろぐ</title>
-    <meta property='og:title' content="Git のユーザーを複数使い分ける時の苦肉の策 - ばうあーろぐ">
+    <title>Git のユーザー名を複数使い分ける時は global の設定を消す - ばうあーろぐ</title>
+    <meta property='og:title' content="Git のユーザー名を複数使い分ける時は global の設定を消す - ばうあーろぐ">
     <meta property="og:type" content="article">
 
     <meta property="og:url" content="http://girigiribauer.com/archives/20160913/">
     
     <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
-    <meta name="generator" content="Hugo 0.15" />
+    <meta name="generator" content="Hugo 0.17" />
   </head>
   <body>
     <div class="wrapper">
@@ -26,7 +26,7 @@
 
 <div class="maincontents" role="main">
   <header class="postheader">
-    <h1 class="posttitle">Git のユーザーを複数使い分ける時の苦肉の策</h1>
+    <h1 class="posttitle">Git のユーザー名を複数使い分ける時は global の設定を消す</h1>
         <div class="poststatus">
           <span class="poststatus__date">2016年9月13日</span>
           <ul class="poststatus__tags">
@@ -48,6 +48,14 @@
 
 <p>正攻法じゃないけど、間違えずに済むので一応メモ。</p>
 
+<p>（以下いろいろ編集追記）</p>
+
+<p><strong>これでしばらくやってみてほぼ困らなくなりましたのでオススメです。</strong></p>
+
+<p>ライブラリはオープンに個人用アカウントで作っておき、
+それを会社用アカウントから利用するみたいなことも想定できるので、
+user.name, user.email を複数使い分けられるようにしておいて損はないと思います。</p>
+
 <h2 id="global-の-gitconfig-の-user-name-をあえて空にする">global の .gitconfig の user.name をあえて空にする</h2>
 
 <p>ホームディレクトリに置いてある .gitconfig 内の</p>
@@ -57,27 +65,10 @@
     email = foobar@example.com
 </code></pre>
 
-<p>みたいな記述を思い切って削除してしまい、
-代わりに .zshrc あたりに</p>
+<p>みたいな記述を <strong>思い切って削除してしまいます。</strong></p>
 
-<pre><code>function gituser-personal() {
-  git config user.name &quot;girigiribauer&quot;
-  git config user.email &quot;girigiribauer@gmail.com&quot;
-  git config --list
-}
-</code></pre>
-
-<p>などを複数書いておき、
-プロジェクトの初期（clone 直後とか init 直後とか）に
-gituser-personal などをコマンドライン上で呼び出してやれば、
-<strong>プロジェクトごとにすぐに user.name を設定することが出来ます。</strong></p>
-
-<p>最初は global の .gitconfig に user.name の設定を書いたまま
-上記の関数を呼び出す方法を使っていたのですが、
-ついつい忘れてしまいがちで push した後に気づくんですよね。</p>
-
-<p>なので、あえて global の .gitconfig から削除しておけば、
-万が一 gituser-*** を呼び忘れていたとしても、</p>
+<p>そうすると、通常であればコミットする時に
+<strong>user.name と user.email がない、お前は誰だ！</strong> と怒られます。</p>
 
 <pre><code>*** Please tell me who you are.
 
@@ -90,12 +81,43 @@ to set your account's default identity.
 Omit --global to set the identity only in this repository.
 </code></pre>
 
-<p>このようなメッセージが出て、名前を教えろという警告でストップします。
-この警告をセーフティのように利用できるかと思います。</p>
+<p>そのままではコミットできないのですが、
+user.name などをグローバルで一括指定する代わりに、
+<strong>プロジェクトごとの user.name などの設定を素早くできるようにすれば良いのです。</strong></p>
 
-<p>ちなみに見れば分かると思いますが、
-上記の関数ではプロジェクトごとに user.name を設定することになるので、
-関数を呼び出した後は .git/config 内に user.name の設定が入ることになります。</p>
+<p>.bashrc や .zshrc あたりに</p>
+
+<pre><code>function gituser-personal() {
+  git config user.name &quot;girigiribauer&quot;
+  git config user.email &quot;girigiribauer@gmail.com&quot;
+  git config --list
+}
+
+function gituser-company() {
+  git config user.name &quot;foobar&quot;
+  git config user.email &quot;foobar@example.com&quot;
+  git config --list
+}
+</code></pre>
+
+<p>などといった、自分にとってわかりやすい名前で user.name を指定できる関数を用意しておきます。
+今回は <strong>gituser-personal</strong> と <strong>gituser-company</strong> の2種類用意してみました。</p>
+
+<p>あとはプロジェクトの初期（clone 直後とか init 直後とか）に実行してやれば
+プロジェクトごとの user.name, user.email が使えるようになりますし、
+うっかり忘れていたとしてもコミット手前で名前を教えろという警告でストップし、
+（なぜなら global の設定が空だから）
+<strong>警告をセーフティのように利用できる</strong> と思います。</p>
+
+<p>僕は当初、 global の .gitconfig にメインで使う user.name の設定を書いたまま
+サブで使う場合のみ、
+上記の関数を呼び出す方法を使っていたのですが、
+ついつい忘れてしまいがちで push した後に気づくんですよね。
+あえてグローバルに設定しないようにしたことで、
+逆に設定間違えに気づくことが出来るようになりました。</p>
+
+<p>複数アカウントをなんとかして同時に扱おうと頑張ってる方がいるのですが、
+global の .gitconfig の設定を空にする方法、地味ですがオススメです。</p>
 
   </article>
 
