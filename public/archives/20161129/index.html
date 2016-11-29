@@ -63,10 +63,9 @@ Ansible 経由で Docker をインストールして使っていたのですが�
 
 <p>nginx-proxy のログは</p>
 
-<blockquote>
-<p>lrwxrwxrwx 1 root root   11 Aug 24 03:51 access.log -&gt; /dev/stdout
-lrwxrwxrwx 1 root root   11 Aug 24 03:51 error.log -&gt; /dev/stderr</p>
-</blockquote>
+<pre><code>lrwxrwxrwx 1 root root   11 Aug 24 03:51 access.log -&gt; /dev/stdout
+lrwxrwxrwx 1 root root   11 Aug 24 03:51 error.log -&gt; /dev/stderr
+</code></pre>
 
 <p>のような感じで、特に何も指定してなければ外にログとして出るようになってます。</p>
 
@@ -82,9 +81,8 @@ lrwxrwxrwx 1 root root   11 Aug 24 03:51 error.log -&gt; /dev/stderr</p>
 
 <p>するとコンソールに見慣れないメッセージが。</p>
 
-<blockquote>
-<p>WARNING: IPv4 forwarding is disabled. Networking will not work.</p>
-</blockquote>
+<pre><code>WARNING: IPv4 forwarding is disabled. Networking will not work.
+</code></pre>
 
 <p>なんだこれ。</p>
 
@@ -110,12 +108,11 @@ IPv4 を有効にしてやる必要があるようなのですが、
 <p>ローカルの VM にのみ起きる問題であるため、こちらについては Ansible で行おうとせず、
 その手前の Vagrantfile で VM を作る段階で差分を吸収することにします。</p>
 
-<blockquote>
-<p>config.vm.define &ldquo;vmname&rdquo; do |node|
+<pre><code>config.vm.define &quot;vmname&quot; do |node|
   # for docker networking
-  node.vm.provision &ldquo;shell&rdquo;, :inline =&gt; &ldquo;sudo sysctl -w net.ipv4.ip_forward=1&rdquo;, run: &ldquo;always&rdquo;
-end</p>
-</blockquote>
+  node.vm.provision &quot;shell&quot;, :inline =&gt; &quot;sudo sysctl -w net.ipv4.ip_forward=1&quot;, run: &quot;always&quot;
+end
+</code></pre>
 
 <h3 id="おまけ">おまけ</h3>
 
