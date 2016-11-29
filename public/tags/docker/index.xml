@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</title>
+          <link>http://girigiribauer.com/archives/20161129/</link>
+          <pubDate>Tue, 29 Nov 2016 18:26:15 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161129/</guid>
+          <description>メモとして残しておきます。 ansible-playbook で急に表示できなくなった 本番環境の CentOS7 と、その検証環境（Vagrant on Mac）で Ansible 経由で Docker をインストールして使っ</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Golang で DB が簡単に扱える自作コマンドを作ってみた</title>
           <link>http://girigiribauer.com/archives/20161003/</link>
           <pubDate>Mon, 03 Oct 2016 09:08:04 +0900</pubDate>

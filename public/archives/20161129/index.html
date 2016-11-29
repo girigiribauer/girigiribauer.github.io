@@ -6,11 +6,11 @@
     <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
 
-    <title>Ansible で再起動後にも playbook を継続する方法 - ばうあーろぐ</title>
-    <meta property='og:title' content="Ansible で再起動後にも playbook を継続する方法 - ばうあーろぐ">
+    <title>nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった - ばうあーろぐ</title>
+    <meta property='og:title' content="nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった - ばうあーろぐ">
     <meta property="og:type" content="article">
 
-    <meta property="og:url" content="http://girigiribauer.com/archives/20160906/">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20161129/">
     
     <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
     <meta name="generator" content="Hugo 0.17" />
@@ -26,14 +26,16 @@
 
 <div class="maincontents" role="main">
   <header class="postheader">
-    <h1 class="posttitle">Ansible で再起動後にも playbook を継続する方法</h1>
+    <h1 class="posttitle">nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</h1>
         <div class="poststatus">
-          <span class="poststatus__date">2016年9月6日</span>
+          <span class="poststatus__date">2016年11月29日</span>
           <ul class="poststatus__tags">
 
             <li><i class="icon-tag"></i>Ansible</li>
 
-            <li><i class="icon-tag"></i>automation</li>
+            <li><i class="icon-tag"></i>Docker</li>
+
+            <li><i class="icon-tag"></i>Vagrant</li>
 
           </ul>
           
@@ -44,188 +46,92 @@
   <article class="postcontents freetext">
 
 
-<p>タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。</p>
+<p>メモとして残しておきます。</p>
 
-<p>Chef では少なくともそういった機能は無かったように思えますが（僕が知らないだけかもしれない）、
-<strong>Ansible はプッシュベース</strong> だからでしょうか。
-実行する主体がいつもローカル側にあるからこそ、
-一旦接続を切ってまた繋げるといったことがやりやすいのかもしれません。</p>
+<h2 id="ansible-playbook-で急に表示できなくなった">ansible-playbook で急に表示できなくなった</h2>
 
-<h2 id="そもそもなぜ再接続したいのか">そもそもなぜ再接続したいのか？</h2>
+<p>本番環境の CentOS7 と、その検証環境（Vagrant on Mac）で
+Ansible 経由で Docker をインストールして使っていたのですが、
+ある日 <code>ansible-playbook</code> を実行すると急に表示できなくなりました。</p>
 
-<p>ほとんどの playbook では問題ないのですが、
-SELinux の設定の反映（一時的な設定だけなら問題なし）などの一部のセットアップにて、
-<strong>再起動が必要になるものが存在しています。</strong></p>
+<p>（Chef を使ってたころはこういうの頻発してたなあ・・・）</p>
 
-<p>他にもあるかもしれませんが、
-例えば SELinux の設定をいじる場合は以下のような手順を踏みます。</p>
+<p>その間は Vagrant のアップデートくらいしかしてなかったので、
+順に確認していくことに。</p>
 
-<pre><code>$ getenforce #=&gt; 今の設定確認
-Enforcing
-$ sudo vi /etc/sysconfig/selinux #=&gt; SELINUX=disabled を設定
-$ sudo reboot #=&gt; 再起動
-</code></pre>
+<h3 id="各種ログ">各種ログ</h3>
 
-<p>Ansible では playbook 上で reboot すると、
-<strong>playbook のステータスが unreachable になってそのまま終了</strong> してしまいます。</p>
+<p>nginx-proxy のログは</p>
 
-<pre><code>fatal: [machine_name]: UNREACHABLE! =&gt; {&quot;changed&quot;: false, &quot;msg&quot;: &quot;Failed to connect to the host via ssh.&quot;, &quot;unreachable&quot;: true}
-</code></pre>
+<blockquote>
+<p>lrwxrwxrwx 1 root root   11 Aug 24 03:51 access.log -&gt; /dev/stdout
+lrwxrwxrwx 1 root root   11 Aug 24 03:51 error.log -&gt; /dev/stderr</p>
+</blockquote>
 
-<p>繋がらなくなるのでまあ当然ですよね。</p>
+<p>のような感じで、特に何も指定してなければ外にログとして出るようになってます。</p>
 
-<p>これを一連の playbook で再起動をはさんで実行できると、
-playbook を書くときにトリッキーなことをせずに済むこともあるかもしれません。
-（SELinux だけみると、最後にまとめて再起動すれば事足りるっちゃあそうですが・・・。）</p>
+<p><code>docker logs -f nginx-proxy</code> などとしてログを表示させたりしても特に問題は見受けられず。</p>
 
-<p>ちょっと話が逸れますが、 reboot するのが通常の task ではなく handler だった場合、
-（handler は変化があった場合のみ、最後にまとめて実行するタスクのこと）
-単に再起動だけ実行させて、あとはほったらかしで問題ないケースも出てきます。
-その場合は playbook の実行完了を待たない poll の値を設定することで、handler で再起動をさせて終了させることは可能です。</p>
+<p>また、 /etc/nginx/conf.d/default.conf のファイルも特に問題なく、
+コンテナが作られると適切に設定が書き換わっているようでした。</p>
 
-<p><a href="http://docs.ansible.com/ansible/playbooks_async.html" target="_blank">http://docs.ansible.com/ansible/playbooks_async.html</a></p>
+<h3 id="自動と手動">自動と手動</h3>
 
-<h2 id="再接続を可能にする-ansible-のモジュール">再接続を可能にする Ansible のモジュール</h2>
+<p>次に ansible のレイヤーで問題が起きている可能性を考えて、
+自動で作った Docker コンテナをそのまま手動で作ってみました。</p>
 
-<p>Ansible で再接続を行うために必要な関連モジュールをメモっておきます。
-最初のやつは正確にはモジュールではないかもしれません。キーワード？</p>
+<p>するとコンソールに見慣れないメッセージが。</p>
 
-<h3 id="local-action">local_action</h3>
+<blockquote>
+<p>WARNING: IPv4 forwarding is disabled. Networking will not work.</p>
+</blockquote>
 
-<p><a href="http://docs.ansible.com/ansible/playbooks_delegation.html" target="_blank">http://docs.ansible.com/ansible/playbooks_delegation.html</a></p>
+<p>なんだこれ。</p>
 
-<p>この local_action は他のモジュールと同じように使うことが出来るのですが、
-モジュールのさらに頭につけることで
-<strong>ローカルに処理を委譲することができます。</strong></p>
+<h3 id="本番環境と検証環境">本番環境と検証環境</h3>
 
-<p>ちなみに <code>delegate_to</code> というキーワードも存在していて、以下は同じ意味を指すようです。
-（先ほどのリンク内から抜粋）</p>
+<p>さらに、本番環境と検証環境とで同様にコンテナを作って比較してみると、
+上記メッセージは表示されずに、問題なくコンテナが作成されました。</p>
 
-<pre><code>- name: add back to load balancer pool
-command: /usr/bin/add_back_to_pool {{ inventory_hostname }}
-delegate_to: 127.0.0.1
+<h3 id="最後にググる">最後にググる</h3>
 
-- name: take out of load balancer pool
-local_action: command /usr/bin/take_out_of_pool {{ inventory_hostname }}
-</code></pre>
+<p>ここまでくるとローカルの環境に何かしら問題が起きた可能性があるので、
+先ほどのメッセージも加味して調べると、以下のような情報が引っかかりました。</p>
 
-<h3 id="wait-for-モジュール">wait_for モジュール</h3>
+<p><a href="http://chrisgilmerproj.github.io/ubuntu/network/docker/2013/09/05/ipv4-forwarding-and-docker.html" target="_blank">http://chrisgilmerproj.github.io/ubuntu/network/docker/2013/09/05/ipv4-forwarding-and-docker.html</a></p>
 
-<p><a href="http://docs.ansible.com/ansible/wait_for_module.html" target="_blank">http://docs.ansible.com/ansible/wait_for_module.html</a></p>
+<p>どうやら <code>sysctl</code> コマンドでカーネルパラメータを変更して、
+IPv4 を有効にしてやる必要があるようなのですが、
+正直どうしてこうなった感が満載です。</p>
 
-<p>wait_for モジュールは、 <strong>指定したホスト名・ポートを監視し、有効になるまで待機します。</strong></p>
+<p>うーん・・・今まで問題なく動作していたんですが。
+（とはいえ、ここから先の原因追求は不毛なのでやめておきます。）</p>
 
-<p>先に非同期で再起動するような playbook を用意しておき、
-その後 local_action をはさんだ wait_for モジュールを利用して、
-再起動で処理が戻るまで待機するような playbook を書くことが可能です。</p>
+<p>ローカルの VM にのみ起きる問題であるため、こちらについては Ansible で行おうとせず、
+その手前の Vagrantfile で VM を作る段階で差分を吸収することにします。</p>
 
-<h3 id="set-fact-モジュール">set_fact モジュール</h3>
+<blockquote>
+<p>config.vm.define &ldquo;vmname&rdquo; do |node|
+  # for docker networking
+  node.vm.provision &ldquo;shell&rdquo;, :inline =&gt; &ldquo;sudo sysctl -w net.ipv4.ip_forward=1&rdquo;, run: &ldquo;always&rdquo;
+end</p>
+</blockquote>
 
-<p><a href="http://docs.ansible.com/ansible/set_fact_module.html" target="_blank">http://docs.ansible.com/ansible/set_fact_module.html</a></p>
+<h3 id="おまけ">おまけ</h3>
 
-<p>set_fact モジュールは、ansible-playbook の <strong>実行時の変数を途中で上書きできるモジュール</strong> です。</p>
+<p>調べる途中で nginx-proxy のログのタイムゾーンが UTC だったので、
+これなんとかならんかなーと思って少し寄り道して調べてたのですが、
+スマートな方法があったのでついでに。</p>
 
-<p>今回は結局使わなかったのですが、
-例えばポート番号を変えたり、パスワード認証から公開鍵認証に変えたりした場合に、
-接続するための情報を途中で変更する際に用いました。</p>
+<p><a href="http://qiita.com/ganta/items/a0f34866c994ebaeef69" target="_blank">http://qiita.com/ganta/items/a0f34866c994ebaeef69</a></p>
 
-<p>あくまで僕のケースですが、個人的には接続方法が大きく変わった時には無理をせず、
-強制的に fail などのメッセージを出して（鍵認証に変えたから接続し直してね的なやつ）、
-変更後の接続方法で改めて playbook を実行するようにしています。
-（この辺の話はまた長くなるので、余裕があれば改めて取りまとめたいですね・・・）</p>
+<p>docker run するときにホストの /etc/localtime をコンテナの /etc/localtime にバインドしてやれば良かったのでした。</p>
 
-<h2 id="selinux-の-playbook">SELinux の playbook</h2>
+<blockquote>
+<p>-v /etc/localtime:/etc/localtime:ro</p>
+</blockquote>
 
-<p>他 playbook も参考にしながら、冪等性も踏まえて書いてみたのがこれです。
-（抜粋＆本筋じゃないところは省略）</p>
-
-<pre><code>- name: SELinux のステータス取得
-  shell: getenforce
-  register: selinux_status
-  changed_when: False
-  tags: selinux
-  become: True
-
-- name: SELinux をコントロールするためのパッケージ導入
-  yum: name=libselinux-python state=installed
-  when: selinux_status.stdout == 'Enforcing'
-  tags: selinux
-  become: True
-
-- name: SELinux の無効化
-  selinux: state=disabled
-  when: selinux_status.stdout == 'Enforcing'
-  tags: selinux
-  become: True
-
-- name: SELinux 設定後の再起動
-  shell: &quot;sleep 2 &amp;&amp; reboot&quot;
-  async: 1
-  poll: 0
-  when: selinux_status.stdout == 'Enforcing'
-  tags: selinux
-  become: True
-
-- name: SELinux 設定後の再起動完了まで待機
-  local_action: wait_for host={{ inventory_hostname }} port={{ ssh_port }} delay=30
-  when: selinux_status.stdout == 'Enforcing'
-  tags: selinux
-  become: False
-</code></pre>
-
-<p>inventory_hostname は <a href="http://docs.ansible.com/ansible/playbooks_variables.html" target="_blank">http://docs.ansible.com/ansible/playbooks_variables.html</a> にあるように
-Ansible のインベントリファイルがあるローカルを指しています。予め用意されている変数です。</p>
-
-<p>register については
-<a href="http://docs.ansible.com/ansible/playbooks_conditionals.html#register-variables" target="_blank">http://docs.ansible.com/ansible/playbooks_conditionals.html#register-variables</a> にありますが、
-実行結果などを後で参照するために一時保存してくれる機能です。</p>
-
-<p>SELinux の設定を取得して、有効になっていた場合のみ無効となるような playbook を実行しています（冪等性）。
-逆に <strong>2回目以降の playbook の実行ですでに無効になっていた場合は、
-when と書いてあるところが False になるので playbook の実行がスキップされます。</strong>
-毎回再起動をはさんでいては時間がかかってしまいますので、
-時間短縮のため register や when などを用いて変更する必要があるときだけ処理をするようにしています。</p>
-
-<p>ちなみに、再起動自体の playbook ですが、
-sleep 2 や async: 1 がないと一番最初の例と同じく unreachable でストップしてしまいます。
-shell モジュール内で sleep 2 などを頭につけて実行直後に再起動が実行されないようにしつつ、
-async でこの playbook の終了タイミング自体も直後ではなく後ろにずらす必要がありました。</p>
-
-<p>様々な環境で試したところ、両方ずらす必要があるようです。
-最初は単にタイミングをずらすだけで良いかと思って sleep 1 になってたんですが、
-Vagrant 上は問題がなくとも VPS 上では sleep 2 にしないと unreachable になってしまったりと、
-再起動周りは多少経験則が必要なようです・・・。</p>
-
-<p>ここに関しては内部の処理を見たわけではないのですが、
-タイミングをずらすことで、再起動の処理の前に
-次の local_action &amp; wait_for モジュールに処理を渡してから再起動を行う必要があるようです。</p>
-
-<h2 id="まとめ">まとめ</h2>
-
-<p>Ansible のプッシュベースであるメリットが出てて便利だなーと思います。</p>
-
-<p>再起動の playbook については、今まで問題があったわけではないのですが、
-selinux の部分だけで設定完了することになるので、
-playbook の依存関係が少しすっきりした気がします。
-ただ、再起動タスクが多ければ多いほど、
-最後にまとめて handler として実行した方が playbook 全体の処理時間は短くなると思います。</p>
-
-<p>あと playbook の書き順によっては接続ポートの変更とかぶった場合、
-<strong>再起動後に SSH のポートが変わっちゃって接続できなくなっちゃった、</strong> みたいなケースもありうるので
-そこは注意が必要かと思います。（今回使っていないset_fact モジュールである程度いけるかと思います）</p>
-
-<p>ちなみに再起動に関してはこの記事の通りなのですが、
-再ログインに関してはまだまとめきれてないので、
-改めて記事にメモっておこうと思います。</p>
-
-<h2 id="ref">参考URL</h2>
-
-<ul>
-<li><a href="http://qiita.com/volanja/items/d38fe0678848bae6902f" target="_blank">http://qiita.com/volanja/items/d38fe0678848bae6902f</a></li>
-<li><a href="https://gyagya1111.blogspot.jp/2015/02/ansibleselinux.html" target="_blank">https://gyagya1111.blogspot.jp/2015/02/ansibleselinux.html</a></li>
-<li><a href="http://jinja.pocoo.org/docs/dev/templates/" target="_blank">http://jinja.pocoo.org/docs/dev/templates/</a></li>
-<li><a href="http://stackoverflow.com/questions/23877781/how-to-wait-for-server-restart-using-ansible" target="_blank">http://stackoverflow.com/questions/23877781/how-to-wait-for-server-restart-using-ansible</a></li>
-</ul>
+<p>なんで思いつかなかったんだろう。すごくシンプルで良いです。</p>
 
   </article>
 
@@ -244,12 +150,14 @@ playbook の依存関係が少しすっきりした気がします。
 </ul>
 
         <div class="poststatus">
-          <span class="poststatus__date">2016年9月6日</span>
+          <span class="poststatus__date">2016年11月29日</span>
           <ul class="poststatus__tags">
 
             <li><i class="icon-tag"></i>Ansible</li>
 
-            <li><i class="icon-tag"></i>automation</li>
+            <li><i class="icon-tag"></i>Docker</li>
+
+            <li><i class="icon-tag"></i>Vagrant</li>
 
           </ul>
           

@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</title>
+          <link>http://girigiribauer.com/archives/20161129/</link>
+          <pubDate>Tue, 29 Nov 2016 18:26:15 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161129/</guid>
+          <description>メモとして残しておきます。 ansible-playbook で急に表示できなくなった 本番環境の CentOS7 と、その検証環境（Vagrant on Mac）で Ansible 経由で Docker をインストールして使っ</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Vim の tabpage のカスタマイズ</title>
           <link>http://girigiribauer.com/archives/20161012/</link>
           <pubDate>Wed, 12 Oct 2016 12:00:58 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Mon, 04 Feb 2013 14:00:12 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/719</guid>
           <description>HTML5のタグで書いてはいけないレアケース にて、『html5shiv.jsを読み込んで・・・』みたいな記事を書いたのですが、そもそも html5shiv.js とは</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>CSS Nite in Nagoyaに行ってきた話</title>
-          <link>http://girigiribauer.com/archives/762</link>
-          <pubDate>Sat, 02 Feb 2013 13:40:47 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/762</guid>
-          <description>内容は、どちらかというと後追いで追加されたワード、『&amp;#8220;伝える&amp;#8221;のがうまくなる！』っていうところが全面に出た内容だった</description>
         </item>
       
     
