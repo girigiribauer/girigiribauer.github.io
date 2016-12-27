@@ -3,7 +3,9 @@
 <div class="maincontents" role="main">
   <ul class="articlelist">
 {{ range .Paginator.Pages }}
+{{ if eq .Type "post" }}
 {{ partial "item.html" . }}
+{{ end }}
 {{ end }}
   </ul>
 {{ partial "pagination.html" . }}

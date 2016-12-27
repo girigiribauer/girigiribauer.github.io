@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>git-diff と git-difftool を混同していた話</title>
+          <link>http://girigiribauer.com/archives/20161227/</link>
+          <pubDate>Tue, 27 Dec 2016 19:59:53 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161227/</guid>
+          <description>git diff のカスタマイズがしたくて .gitconfig に以下のような記述をしたことがある人もいるかと思います。 [diff] tool = vimdiff でもこれ、違ったんです。 git diff 用の設定じゃなくて</description>
+        </item>
+      
+    
+      
+        <item>
           <title>nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</title>
           <link>http://girigiribauer.com/archives/20161129/</link>
           <pubDate>Tue, 29 Nov 2016 18:26:15 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Sat, 09 Feb 2013 05:52:26 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/785</guid>
           <description>特にしゃべってもないので、参加者目線でログを残したいなと思います。 HTML5勉強会 名古屋 #1 今まで名古屋でこういう会が無かったので、こういう月</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>html5shiv.jsの使いどころ</title>
-          <link>http://girigiribauer.com/archives/719</link>
-          <pubDate>Mon, 04 Feb 2013 14:00:12 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/719</guid>
-          <description>HTML5のタグで書いてはいけないレアケース にて、『html5shiv.jsを読み込んで・・・』みたいな記事を書いたのですが、そもそも html5shiv.js とは</description>
         </item>
       
     

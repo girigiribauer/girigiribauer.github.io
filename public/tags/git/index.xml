@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>git-diff と git-difftool を混同していた話</title>
+          <link>http://girigiribauer.com/archives/20161227/</link>
+          <pubDate>Tue, 27 Dec 2016 19:59:53 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161227/</guid>
+          <description>git diff のカスタマイズがしたくて .gitconfig に以下のような記述をしたことがある人もいるかと思います。 [diff] tool = vimdiff でもこれ、違ったんです。 git diff 用の設定じゃなくて</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Git のユーザー名を複数使い分ける時は global の設定を消す</title>
           <link>http://girigiribauer.com/archives/20160913/</link>
           <pubDate>Tue, 13 Sep 2016 14:05:35 +0900</pubDate>

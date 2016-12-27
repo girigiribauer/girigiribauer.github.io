@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>git-diff と git-difftool を混同していた話</title>
+          <link>http://girigiribauer.com/archives/20161227/</link>
+          <pubDate>Tue, 27 Dec 2016 19:59:53 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161227/</guid>
+          <description>git diff のカスタマイズがしたくて .gitconfig に以下のような記述をしたことがある人もいるかと思います。 [diff] tool = vimdiff でもこれ、違ったんです。 git diff 用の設定じゃなくて</description>
+        </item>
+      
+    
+      
+        <item>
           <title>nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</title>
           <link>http://girigiribauer.com/archives/20161129/</link>
           <pubDate>Tue, 29 Nov 2016 18:26:15 +0900</pubDate>
