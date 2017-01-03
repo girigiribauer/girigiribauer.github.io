@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>パスワード文字列を生成できるコマンドラインツールを Golang で書き初めした</title>
+          <link>http://girigiribauer.com/archives/20170103/</link>
+          <pubDate>Tue, 03 Jan 2017 14:35:35 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170103/</guid>
+          <description>あけましておめでとうございます。 書き初めとして書きました。 もともと1日かからない程度のものを書き初めとして書きたかったので、大きくずれはなか</description>
+        </item>
+      
+    
+      
+        <item>
           <title>git-diff と git-difftool を混同していた話</title>
           <link>http://girigiribauer.com/archives/20161227/</link>
           <pubDate>Tue, 27 Dec 2016 19:59:53 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Mon, 11 Feb 2013 11:16:14 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/798</guid>
           <description>知り合いの方が本を出されたと聞いたので、早速読んでみました。 簡単に内容をさらっと紹介しつつ、どんな人向けの本なのかも考えてみようと思います。</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>HTML5勉強会 名古屋 #1 に参加してきた話</title>
-          <link>http://girigiribauer.com/archives/785</link>
-          <pubDate>Sat, 09 Feb 2013 05:52:26 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/785</guid>
-          <description>特にしゃべってもないので、参加者目線でログを残したいなと思います。 HTML5勉強会 名古屋 #1 今まで名古屋でこういう会が無かったので、こういう月</description>
         </item>
       
     

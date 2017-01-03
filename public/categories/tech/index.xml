@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>パスワード文字列を生成できるコマンドラインツールを Golang で書き初めした</title>
+          <link>http://girigiribauer.com/archives/20170103/</link>
+          <pubDate>Tue, 03 Jan 2017 14:35:35 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170103/</guid>
+          <description>あけましておめでとうございます。 書き初めとして書きました。 もともと1日かからない程度のものを書き初めとして書きたかったので、大きくずれはなか</description>
+        </item>
+      
+    
+      
+        <item>
           <title>git-diff と git-difftool を混同していた話</title>
           <link>http://girigiribauer.com/archives/20161227/</link>
           <pubDate>Tue, 27 Dec 2016 19:59:53 +0900</pubDate>
