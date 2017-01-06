@@ -10,503 +10,103 @@
 
     
       
-        <item>
-          <title>パスワード文字列を生成できるコマンドラインツールを Golang で書き初めした</title>
-          <link>http://girigiribauer.com/archives/20170103/</link>
-          <pubDate>Tue, 03 Jan 2017 14:35:35 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20170103/</guid>
-          <description>あけましておめでとうございます。 書き初めとして書きました。 もともと1日かからない程度のものを書き初めとして書きたかったので、大きくずれはなか</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>git-diff と git-difftool を混同していた話</title>
-          <link>http://girigiribauer.com/archives/20161227/</link>
-          <pubDate>Tue, 27 Dec 2016 19:59:53 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20161227/</guid>
-          <description>git diff のカスタマイズがしたくて .gitconfig に以下のような記述をしたことがある人もいるかと思います。 [diff] tool = vimdiff でもこれ、違ったんです。 git diff 用の設定じゃなくて</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</title>
-          <link>http://girigiribauer.com/archives/20161129/</link>
-          <pubDate>Tue, 29 Nov 2016 18:26:15 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20161129/</guid>
-          <description>メモとして残しておきます。 ansible-playbook で急に表示できなくなった 本番環境の CentOS7 と、その検証環境（Vagrant on Mac）で Ansible 経由で Docker をインストールして使っ</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Vim の tabpage のカスタマイズ</title>
-          <link>http://girigiribauer.com/archives/20161012/</link>
-          <pubDate>Wed, 12 Oct 2016 12:00:58 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20161012/</guid>
-          <description>だいぶ前から tabpage の前後移動において、 自分と同じ設定をしている人をみかけないので、 アウトプットしておこうと思います。 ちなみに僕はもう この設定がな</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Homebrew で Golang のバイナリを公開してみた</title>
-          <link>http://girigiribauer.com/archives/20161004/</link>
-          <pubDate>Tue, 04 Oct 2016 13:11:17 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20161004/</guid>
-          <description>超楽だったのでメモっておきます。 こちらにドキュメントあります。（Golang のバイナリの場合ではないので少し異なりますが） https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md Homebrew 対応 自作コマン</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Golang で DB が簡単に扱える自作コマンドを作ってみた</title>
-          <link>http://girigiribauer.com/archives/20161003/</link>
-          <pubDate>Mon, 03 Oct 2016 09:08:04 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20161003/</guid>
-          <description>※どうでもいいけど、9月のブログ記事数が急に増えだしてます。 Hugo 化がここにきてすごく効いてきてますね。 この前 &amp;ldquo;db-cli&amp;rdquo; という自作コマンドをリリースして</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>MacOS の VMWare Fusion 内で Docker for Windows をインストールする</title>
-          <link>http://girigiribauer.com/archives/20160929/</link>
-          <pubDate>Thu, 29 Sep 2016 20:02:24 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160929/</guid>
-          <description>最初失敗したので、同じところではまるであろう人のためにメモっておきます。 （念のため言っておきますが僕ははまったわけではないです・・・） そもそ</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Git のユーザー名を複数使い分ける時は global の設定を消す</title>
-          <link>http://girigiribauer.com/archives/20160913/</link>
-          <pubDate>Tue, 13 Sep 2016 14:05:35 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160913/</guid>
-          <description>会社用のアカウントと個人用とで分けたいときなどに。 正攻法じゃないけど、間違えずに済むので一応メモ。 （以下いろいろ編集追記） これでしばらくやっ</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Ansible の playbook 内で条件分岐を行う方法</title>
-          <link>http://girigiribauer.com/archives/20160912/</link>
-          <pubDate>Mon, 12 Sep 2016 11:42:17 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160912/</guid>
-          <description>これも公式に詳しく書いてなくて出来るのを分かってなかったので 僕と同じようなところで困っている人のためにメモっておきます。 jinja2 Ansible では jinja2 というテン</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Ansible で Docker のインストール</title>
-          <link>http://girigiribauer.com/archives/20160907/</link>
-          <pubDate>Wed, 07 Sep 2016 08:31:34 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160907/</guid>
-          <description>Ansible で再起動後にも playbook を継続する方法 で 再ログインに関しても一緒にまとめておこうと思ったのですが、 Docker の方が話の割合として多くなりそうだったので別記</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Ansible で再起動後にも playbook を継続する方法</title>
-          <link>http://girigiribauer.com/archives/20160906/</link>
-          <pubDate>Tue, 06 Sep 2016 09:14:39 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160906/</guid>
-          <description>タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。 Chef では少なくともそういった機能は無かったように思えますが（僕</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>FTP でも rsync みたいにコマンドからファイル転送したい</title>
-          <link>http://girigiribauer.com/archives/20160903/</link>
-          <pubDate>Sat, 03 Sep 2016 17:29:24 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160903/</guid>
-          <description>ターミナルで何でも行う人にとって、FTP の GUI クライアントはもう辛すぎるのです。 コマンド1つで rsync のようにアップロードしたいのです。 同じように考</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>iTerm2 で円マークとバックスラッシュで困ったときの設定</title>
-          <link>http://girigiribauer.com/archives/20160901/</link>
-          <pubDate>Thu, 01 Sep 2016 17:48:32 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160901/</guid>
-          <description>なんか iTerm2 3.0.1 あたりから円マークとバックスラッシュが入れ替わったらしいです。 どっちがどっちであっても、Option キーを押しながら入力すると、 も</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Hugo で URL のカスタマイズ</title>
-          <link>http://girigiribauer.com/archives/20160824/</link>
-          <pubDate>Wed, 24 Aug 2016 20:37:36 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160824/</guid>
-          <description>ちょっとしたメモも気軽に残せるので、WordPress から Hugo （というか Static Site Generator）に移行して本当に良かったですね。 Hugo の URL のカスタ</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>vagrant global-status の代替方法、あるいは jq コマンドの使い方</title>
-          <link>http://girigiribauer.com/archives/20160819/</link>
-          <pubDate>Fri, 19 Aug 2016 11:00:00 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160819/</guid>
-          <description>VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。 tmux の set-option -g status-right で指定できるスクリプトは 一定間隔</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Chef を捨てて Ansible に移行した</title>
-          <link>http://girigiribauer.com/archives/20160816/</link>
-          <pubDate>Tue, 16 Aug 2016 10:00:00 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160816/</guid>
-          <description>前の記事の WordPress を捨てて Hugo に移行した よりも前に、 ずいぶん前に &amp;ldquo;Chef を捨てて Ansible に移行&amp;rdquo; していたのですが、 書いておかないと忘れるので自分用に</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>WordPress を捨てて Hugo に移行した</title>
-          <link>http://girigiribauer.com/archives/20160705/</link>
-          <pubDate>Tue, 05 Jul 2016 11:10:37 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160705/</guid>
-          <description>RSS の URL が変わってしまったので、一時的に元の URL に静的な RSS の XML ファイルをおいてますが、 =&amp;gt; 置いたけどダメでした・・・ この記事以降の更新は反映されな</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Docker と Vagrant の明確な違い</title>
-          <link>http://girigiribauer.com/archives/1878</link>
-          <pubDate>Thu, 06 Aug 2015 04:22:20 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1878</guid>
-          <description>そもそも比較するようなものではないものの、分かりづらい解説しかなかったので、 超個人的な主観でまとめておこうと思いました。 Docker の特徴 Linux 上でのみ動</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>コマンド履歴の Ctrl-R 使ってますか？</title>
-          <link>http://girigiribauer.com/archives/1873</link>
-          <pubDate>Tue, 23 Jun 2015 11:01:36 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1873</guid>
-          <description>大学で初めて Linux を触りつつも、 その後働き始めてほぼ GUI オンリーの生活を送り、 iTerm, tmux, Vim 達とのと出会いを経て、 コマンドライン中心の生活を送っている girigiribauer で</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Chef を本番投入してみた</title>
-          <link>http://girigiribauer.com/archives/1867</link>
-          <pubDate>Tue, 09 Jun 2015 23:39:55 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1867</guid>
-          <description>メモレベルでごめんなさい。 サーバを移設してみました。 せっかくなので、移設ついでにブログのリニューアル（簡素化）と Chef cookbook を利用したプロビジョニン</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた</title>
-          <link>http://girigiribauer.com/archives/1749</link>
-          <pubDate>Wed, 01 Apr 2015 10:28:44 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1749</guid>
-          <description>2013年に書いていた、『Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話』（http://girigiribaue</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Vagrant を開発用 Web サーバとして利用するときの注意点</title>
-          <link>http://girigiribauer.com/archives/1742</link>
-          <pubDate>Wed, 25 Mar 2015 08:43:58 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1742</guid>
-          <description>罠があるのでまとめておきます。（体験談） なお、box ファイルは CentOS6 ベースのもの、Web サーバは apache です。（本番環境を想定した開発環境なので、ng</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Vagrant で個人的に必須なプラグイン</title>
-          <link>http://girigiribauer.com/archives/1736</link>
-          <pubDate>Wed, 04 Mar 2015 17:30:31 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1736</guid>
-          <description>先に Vagrant の使いどころ・考えどころ を見ると良いかもです。 先に列挙します。 Vagrant 1.6.5 時点で入れたやつなので、すぐに変わる可能性ありです。 vagrant-omnibus (1.4.1) vagrant-vbguest (0.10.0) sahara (0.0.17) vagrant-dnsmasq (0.1.1)</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>Vagrant の使いどころ・考えどころ</title>
-          <link>http://girigiribauer.com/archives/1729</link>
-          <pubDate>Tue, 03 Mar 2015 10:17:52 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1729</guid>
-          <description>Vagrant, Chef 周りの知見が溜まってきたのでそろそろまとめていきたいと思っているのですが、 まだまだ自分の中で分からない部分も多く、 かつ自分はインフラエン</description>
-        </item>
+    
       
     
       
-        <item>
-          <title>tmux でプロジェクト用のウィンドウをたくさん扱いたい</title>
-          <link>http://girigiribauer.com/archives/1716</link>
-          <pubDate>Mon, 19 Jan 2015 08:28:33 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1716</guid>
-          <description>2015年最初の投稿です。本年もよろしくお願いいたします。 全然書いてなかったので書きます。 ブログは定期的に書いてないと書き方を忘れてしまいが</description>
-        </item>
-      
     
-      
-        <item>
-          <title>ようやくdotfilesをアップしました</title>
-          <link>http://girigiribauer.com/archives/1698</link>
-          <pubDate>Mon, 27 Oct 2014 11:57:58 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1698</guid>
-          <description>https://github.com/girigiribauer/dotfiles ようやく dotfiles 一式をアップできました・・・。一応メモ。 相当いろいろと削りまくったため、これから必要なものは順次追加していく必要がありますが、ま</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>CSS3 PIE の動作の仕組みと副作用について</title>
-          <link>http://girigiribauer.com/archives/1636</link>
-          <pubDate>Thu, 23 Oct 2014 09:56:36 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1636</guid>
-          <description>2014年9月現在、IE のシェアは過去と比べて劇的に変化しています。 http://gs.statcounter.com/#desktop-browser_version_partially_combined-JP-monthly-201309-201409 を見ると分かるように、 IE11 が全ブラウザの 30% を上回り、IE8,9,10 がそ</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>iOS8 on iPhone6 で設定によって viewport の値が変わる件</title>
-          <link>http://girigiribauer.com/archives/1665</link>
-          <pubDate>Thu, 25 Sep 2014 01:45:36 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1665</guid>
-          <description>これはさすがに書いておいた方がよいかと思ったので書いておきます。 結論だけ先に言うと、設定によって viewport の値が変わるので注意です。 設定によって viewport の</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>SSH パスフレーズの手動入力を強いられているんだ！</title>
-          <link>http://girigiribauer.com/archives/1638</link>
-          <pubDate>Tue, 12 Aug 2014 10:05:26 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1638</guid>
-          <description>どうしても環境を変えられず SSH のパスフレーズを手動入力せざるをえないときってありますよね？ それが1回、2回であればまだ良いのですが、ある程度定</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>比較的大きめのtechイベントやるとき用メモ</title>
-          <link>http://girigiribauer.com/archives/1630</link>
-          <pubDate>Fri, 11 Jul 2014 10:32:50 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1630</guid>
-          <description>メモだけ残しておきます。 予約系 100名規模の会場は3か月前だとぎりぎり、もうちょっと手前で押さえるべき オプション品（マイクやらプロジェクタ、</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その3</title>
-          <link>http://girigiribauer.com/archives/1269</link>
-          <pubDate>Wed, 12 Feb 2014 15:00:46 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1269</guid>
-          <description>意図せずシリーズ化してしまった、前回からの続き3回目です。 jQuery から卒業するための第1歩を polyfills から学ぼう jQuery から卒業するための第1歩を polyfills から学ぼう –</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>iPad（iOS7.0.4）のランドスケープモードで height: 100% だとバグる</title>
-          <link>http://girigiribauer.com/archives/1287</link>
-          <pubDate>Wed, 05 Feb 2014 15:00:52 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1287</guid>
-          <description>タイトル通りなのですが、色々調べたりするのに時間かかったので一応メモしておきます。 ひょっとすると、iOS7.1 以降にアップデートすると解消さ</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その2</title>
-          <link>http://girigiribauer.com/archives/1254</link>
-          <pubDate>Sun, 02 Feb 2014 15:00:10 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1254</guid>
-          <description>前回からの続きです。 jQuery から卒業するための第1歩を polyfills から学ぼう https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込ま</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>jQuery から卒業するための第1歩を polyfills から学ぼう</title>
-          <link>http://girigiribauer.com/archives/1233</link>
-          <pubDate>Thu, 30 Jan 2014 15:00:53 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1233</guid>
-          <description>jQuery というライブラリは非常に便利な JavaScript ライブラリであります。 jQuery 便利！ いやー、便利ですよね。便利すぎて、JavaScript を書いてHTML要素を</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>mediaQuery における max-width, max-device-width の違い</title>
-          <link>http://girigiribauer.com/archives/1179</link>
-          <pubDate>Wed, 13 Nov 2013 09:29:57 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1179</guid>
-          <description>最近改めて使い分けないとなーと実感したので、その実感を忘れないうちにメモしておこうと思います。 デバイスの幅(width)と device-width の違いについて そ</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話</title>
-          <link>http://girigiribauer.com/archives/1127</link>
-          <pubDate>Fri, 26 Jul 2013 11:35:52 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1127</guid>
-          <description>2015/04/01追記：続き書きました。Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた 最近は、隙を見つけて（あ</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>大なごやJSで Yeoman 意外に使えるかも？的な話をしてきました</title>
-          <link>http://girigiribauer.com/archives/1119</link>
-          <pubDate>Sun, 07 Jul 2013 07:21:37 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1119</guid>
-          <description>すみません、ブログしばらく書いておりませんでしたので、先週土曜の大なごやJSで発表した内容でも貼付けておきます。 http://www.slideshare.net/girigiribauer/20130629-yeoman Yeoman って？ 一言で言うと、「よ</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Chef の サードパーティ Cookbook を利用して、yum のリポジトリを追加してみる</title>
-          <link>http://girigiribauer.com/archives/1095</link>
-          <pubDate>Fri, 17 May 2013 08:05:27 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1095</guid>
-          <description>よーし、いろいろアプリケーションのインストールの自動化しちゃうぞー！ と思っていましたが、 先に試しておいた方が良さそうなものがあったので、そち</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Chef の Data Bag を使ってユーザー作成の自動化をしてみる</title>
-          <link>http://girigiribauer.com/archives/1066</link>
-          <pubDate>Tue, 14 May 2013 11:00:29 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1066</guid>
-          <description>Chef のユーザー管理を突き詰めてみるだけでも、色々と勉強になっていますね。 前回までで、Chef の Cookbook にユーザー作成やグループ作成のレシピを記述する</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Vagrant と Chef でユーザー作成の自動化をしてみる</title>
-          <link>http://girigiribauer.com/archives/1048</link>
-          <pubDate>Mon, 13 May 2013 00:24:37 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1048</guid>
-          <description>だんだんと Chef いじりが楽しくなってきた girigiribauer です、こんにちは。 この前『入門 Chef Solo』というKindle本（電子書籍）を購入して、休憩時などに少し</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Vagrant と Chef で仮想マシンの環境をいろいろいじれるようにしたい！</title>
-          <link>http://girigiribauer.com/archives/1013</link>
-          <pubDate>Fri, 10 May 2013 03:11:38 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1013</guid>
-          <description>前々回、前回までで、ようやく気軽に作って壊せる仮想環境が用意できたので、 ここからは実際に仮想環境に作っていくところをやりたいと思います。 ※ま</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Vagrant に仮想マシンのスナップショットがとれる sahara というプラグインを入れた</title>
-          <link>http://girigiribauer.com/archives/1003</link>
-          <pubDate>Tue, 07 May 2013 01:06:17 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1003</guid>
-          <description>個々の仮想マシンのアプリケーションを入れていく前に、仮想マシンの操作でよくある『スナップショット機能』的なものが使えるように、 Vagrant のプラグイン</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>仮想環境を CUI（コマンドライン）でいじれる Vagrant を試してみた</title>
-          <link>http://girigiribauer.com/archives/966</link>
-          <pubDate>Sun, 05 May 2013 12:53:44 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/966</guid>
-          <description>もう最近では、OSの上にOSを動かす仮想環境が当たり前になってきていますが、そのソフトウェアの1つに VirtualBox というものがあります。 Vagrant は、元々この VirtualBox</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>wgetが超絶便利なwebクローラー、クローリングツールだとは知らなかった・・・！</title>
-          <link>http://girigiribauer.com/archives/925</link>
-          <pubDate>Mon, 08 Apr 2013 00:20:54 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/925</guid>
-          <description>ええ、知りませんでした。無知もいいところです・・・。 webコンテンツをざっくりローカルで見られるようにしたいなー。と思って、いろいろぐぐって</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>関西のHTML5など勉強会に参加してきた話</title>
-          <link>http://girigiribauer.com/archives/905</link>
-          <pubDate>Sun, 24 Mar 2013 00:26:26 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/905</guid>
-          <description>最近、こんな勉強会に参加して、 こんなこと話しました、こんなこと聞きましたという記事を けっこう頻繁にアウトプット出来るようになってきて、個人的</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>HTMLの名前空間(namespace)について掘り下げてみる</title>
-          <link>http://girigiribauer.com/archives/860</link>
-          <pubDate>Mon, 11 Mar 2013 00:08:58 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/860</guid>
-          <description>例えば、 &amp;lt;html xmlns=&amp;quot;http://www.w3.org/1999/xhtml&amp;quot; xmlns:og=&amp;quot;http://ogp.me/ns#&amp;quot; xmlns:fb=&amp;quot;https://www.facebook.com/2008/fbml&amp;quot;&amp;gt; 『こういうのを HTML に埋め込んでください』とか、 &amp;lt;meta property=&amp;quot;og:title&amp;quot; content=&amp;quot;ソーシャル用のタイトルがここに入る&amp;quot;&amp;</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>大なごやJS vol.5 に行ってきたまとめ</title>
-          <link>http://girigiribauer.com/archives/846</link>
-          <pubDate>Fri, 01 Mar 2013 14:14:23 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/846</guid>
-          <description>大なごやJS(#daiNagoyaJS) 数か月に1回、みんながやりたくなったタイミングで行い、主催がころころ入れ替わっていくという謎の勉強会</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>大なごやJS vol.5 で『WebRTC &#43; Web Audio API = スーパーサイヤ人』のネタを話してきた</title>
-          <link>http://girigiribauer.com/archives/834</link>
-          <pubDate>Sun, 24 Feb 2013 09:16:03 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/834</guid>
-          <description>とりあえず各セッションの感想などは一旦置いといて、 自分の発表したやつだけ、軽くまとめておきます。 当日発表した資料は slideshare にアップしてあります。 WebRTC</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>位置を変えずに、斜めにエフェクトをかける方法</title>
-          <link>http://girigiribauer.com/archives/818</link>
-          <pubDate>Wed, 13 Feb 2013 15:13:02 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/818</guid>
-          <description>昔使った、tips的な内容のメモです。 斜めにさらっと流れるエフェクトをかけたい 何かの写真を、ちょっと上品な感じで魅せたいときに、斜めにさらっ</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>スマートフォンサイト構築に役立ちそうな本を読んでみた</title>
-          <link>http://girigiribauer.com/archives/798</link>
-          <pubDate>Mon, 11 Feb 2013 11:16:14 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/798</guid>
-          <description>知り合いの方が本を出されたと聞いたので、早速読んでみました。 簡単に内容をさらっと紹介しつつ、どんな人向けの本なのかも考えてみようと思います。</description>
-        </item>
       
     
   </channel>

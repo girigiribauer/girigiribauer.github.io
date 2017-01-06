@@ -1,10 +1,8 @@
 {{ if or (.Paginator.HasPrev) (.Paginator.HasNext) }}
-      <div class="pagenavi">
 {{ if .Paginator.HasPrev }}
-        <span class="pagenavi__newpost"><a href="{{ .URL }}page/{{ .Paginator.Prev.PageNumber }}" >もっと新しい記事</a></span>
+<span><a href="{{ .URL }}page/{{ .Paginator.Prev.PageNumber }}" >もっと新しい記事へ</a></span>
 {{ end }}
 {{ if .Paginator.HasNext }}
-        <span class="pagenavi__oldpost"><a href="{{ .URL }}page/{{ .Paginator.Next.PageNumber }}" >もっと古い記事</a></span>
+<span><a href="{{ .URL }}page/{{ .Paginator.Next.PageNumber }}" >もっと古い記事へ</a></span>
 {{ end }}
-      </div>
 {{ end }}

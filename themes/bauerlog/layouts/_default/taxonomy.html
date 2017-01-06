@@ -1,13 +1,13 @@
 {{ partial "header.html" . }}
 
-<div class="maincontents" role="main">
-  <h1 class="archivetitle"><span>{{ .Data.Plural }} / {{ .Title }}</span></h1>
-  <ul class="articlelist">
-{{ range .Paginator.Pages }}
-{{ partial "item.html" . }}
-{{ end }}
-  </ul>
+<div class="maincontents">
+
+<h1>{{ .Data.Plural | title }} / {{ .Title }}{{ if not (eq .Paginator.PageNumber 1) }} / {{ .Paginator.PageNumber }} of {{ .Paginator.TotalPages }}{{ end }}</h1>
+
+{{ partial "list.html" . }}
+
 {{ partial "pagination.html" . }}
+
 </div>
 
 {{ partial "footer.html" . }}

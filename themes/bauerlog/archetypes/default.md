@@ -1,6 +1,6 @@
 +++
 author     = "girigiribauer"
-layout     = "post"
+layout     = "archives"
 categories = ["tech"]
 tags       = []
 draft      = true

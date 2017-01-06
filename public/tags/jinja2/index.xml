@@ -10,14 +10,6 @@
 
     
       
-        <item>
-          <title>Ansible の playbook 内で条件分岐を行う方法</title>
-          <link>http://girigiribauer.com/archives/20160912/</link>
-          <pubDate>Mon, 12 Sep 2016 11:42:17 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20160912/</guid>
-          <description>これも公式に詳しく書いてなくて出来るのを分かってなかったので 僕と同じようなところで困っている人のためにメモっておきます。 jinja2 Ansible では jinja2 というテン</description>
-        </item>
-      
     
   </channel>
 </rss>

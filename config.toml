@@ -6,13 +6,14 @@ hasCJKLanguage        = true
 Paginate              = 25
 preserveTaxonomyNames = true
 ignoreFiles           = ["\\.scss$"]
+EnableGitInfo         = true
 
 [params]
 author         = "girigiribauer"
 description    = "Webテクノロジーに関するメモ、あるいはTwentyFour"
 
 [permalinks]
-post = "/archives/:year:month:day/"
+archives = "/archives/:year:month:day/"
 
 [blackfriday]
 fractions       = false

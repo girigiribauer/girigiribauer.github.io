@@ -10,14 +10,6 @@
 
     
       
-        <item>
-          <title>Homebrew で Golang のバイナリを公開してみた</title>
-          <link>http://girigiribauer.com/archives/20161004/</link>
-          <pubDate>Tue, 04 Oct 2016 13:11:17 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20161004/</guid>
-          <description>超楽だったのでメモっておきます。 こちらにドキュメントあります。（Golang のバイナリの場合ではないので少し異なりますが） https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md Homebrew 対応 自作コマン</description>
-        </item>
-      
     
   </channel>
 </rss>
