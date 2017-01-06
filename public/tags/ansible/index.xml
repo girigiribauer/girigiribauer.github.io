@@ -10,13 +10,53 @@
 
     
       
-    
+        <item>
+          <title>nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</title>
+          <link>http://girigiribauer.com/archives/20161129/</link>
+          <pubDate>Tue, 29 Nov 2016 18:26:15 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161129/</guid>
+          <description>メモとして残しておきます。 ansible-playbook で急に表示できなくなった 本番環境の CentOS7 と、その検証環境（Vagrant on Mac）で Ansible 経由で Docker をインストールして使っ</description>
+        </item>
       
     
       
-    
+        <item>
+          <title>Ansible の playbook 内で条件分岐を行う方法</title>
+          <link>http://girigiribauer.com/archives/20160912/</link>
+          <pubDate>Mon, 12 Sep 2016 11:42:17 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160912/</guid>
+          <description>これも公式に詳しく書いてなくて出来るのを分かってなかったので 僕と同じようなところで困っている人のためにメモっておきます。 jinja2 Ansible では jinja2 というテン</description>
+        </item>
       
     
+      
+        <item>
+          <title>Ansible で Docker のインストール</title>
+          <link>http://girigiribauer.com/archives/20160907/</link>
+          <pubDate>Wed, 07 Sep 2016 08:31:34 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160907/</guid>
+          <description>Ansible で再起動後にも playbook を継続する方法 で 再ログインに関しても一緒にまとめておこうと思ったのですが、 Docker の方が話の割合として多くなりそうだったので別記</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Ansible で再起動後にも playbook を継続する方法</title>
+          <link>http://girigiribauer.com/archives/20160906/</link>
+          <pubDate>Tue, 06 Sep 2016 09:14:39 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160906/</guid>
+          <description>タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。 Chef では少なくともそういった機能は無かったように思えますが（僕</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Chef を捨てて Ansible に移行した</title>
+          <link>http://girigiribauer.com/archives/20160816/</link>
+          <pubDate>Tue, 16 Aug 2016 10:00:00 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160816/</guid>
+          <description>前の記事の WordPress を捨てて Hugo に移行した よりも前に、 ずいぶん前に &amp;ldquo;Chef を捨てて Ansible に移行&amp;rdquo; していたのですが、 書いておかないと忘れるので自分用に</description>
+        </item>
       
     
   </channel>

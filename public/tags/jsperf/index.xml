@@ -10,6 +10,14 @@
 
     
       
+        <item>
+          <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その2</title>
+          <link>http://girigiribauer.com/archives/1254</link>
+          <pubDate>Sun, 02 Feb 2014 15:00:10 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1254</guid>
+          <description>前回からの続きです。 jQuery から卒業するための第1歩を polyfills から学ぼう https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込ま</description>
+        </item>
+      
     
   </channel>
 </rss>

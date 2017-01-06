@@ -10,9 +10,33 @@
 
     
       
-    
+        <item>
+          <title>git-diff と git-difftool を混同していた話</title>
+          <link>http://girigiribauer.com/archives/20161227/</link>
+          <pubDate>Tue, 27 Dec 2016 19:59:53 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20161227/</guid>
+          <description>git diff のカスタマイズがしたくて .gitconfig に以下のような記述をしたことがある人もいるかと思います。 [diff] tool = vimdiff でもこれ、違ったんです。 git diff 用の設定じゃなくて</description>
+        </item>
       
     
+      
+        <item>
+          <title>Git のユーザー名を複数使い分ける時は global の設定を消す</title>
+          <link>http://girigiribauer.com/archives/20160913/</link>
+          <pubDate>Tue, 13 Sep 2016 14:05:35 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160913/</guid>
+          <description>会社用のアカウントと個人用とで分けたいときなどに。 正攻法じゃないけど、間違えずに済むので一応メモ。 （以下いろいろ編集追記） これでしばらくやっ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>ようやくdotfilesをアップしました</title>
+          <link>http://girigiribauer.com/archives/1698</link>
+          <pubDate>Mon, 27 Oct 2014 11:57:58 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1698</guid>
+          <description>https://github.com/girigiribauer/dotfiles ようやく dotfiles 一式をアップできました・・・。一応メモ。 相当いろいろと削りまくったため、これから必要なものは順次追加していく必要がありますが、ま</description>
+        </item>
       
     
   </channel>

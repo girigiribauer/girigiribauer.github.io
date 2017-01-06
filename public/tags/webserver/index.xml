@@ -10,6 +10,14 @@
 
     
       
+        <item>
+          <title>Vagrant を開発用 Web サーバとして利用するときの注意点</title>
+          <link>http://girigiribauer.com/archives/1742</link>
+          <pubDate>Wed, 25 Mar 2015 08:43:58 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1742</guid>
+          <description>罠があるのでまとめておきます。（体験談） なお、box ファイルは CentOS6 ベースのもの、Web サーバは apache です。（本番環境を想定した開発環境なので、ng</description>
+        </item>
+      
     
   </channel>
 </rss>
