@@ -1,4 +1,4 @@
   <time datetime="{{ .Date.Format "2006年1月2日" | safeHTML }}">{{ .Date.Format "2006年1月2日" | safeHTML }}</time>
-{{ if not (eq .Lastmod .Date) }}
+{{- if not (eq .Lastmod .Date) }}
   / 最終更新日: <time datetime="{{ .Lastmod.Format "2006年1月2日" | safeHTML }}">{{ .Lastmod.Format "2006年1月2日" | safeHTML }}</time>
-{{ end }}
+{{- end }}

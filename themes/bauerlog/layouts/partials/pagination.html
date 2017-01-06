@@ -1,8 +1,8 @@
-{{ if or (.Paginator.HasPrev) (.Paginator.HasNext) }}
-{{ if .Paginator.HasPrev }}
+{{- if or (.Paginator.HasPrev) (.Paginator.HasNext) }}
+{{- if .Paginator.HasPrev }}
 <span><a href="{{ .URL }}page/{{ .Paginator.Prev.PageNumber }}" >もっと新しい記事へ</a></span>
-{{ end }}
-{{ if .Paginator.HasNext }}
+{{- end }}
+{{- if .Paginator.HasNext }}
 <span><a href="{{ .URL }}page/{{ .Paginator.Next.PageNumber }}" >もっと古い記事へ</a></span>
-{{ end }}
-{{ end }}
+{{- end }}
+{{- end }}

@@ -6,26 +6,28 @@
     <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ .Site.BaseURL }}index.xml">
-{{ if eq .URL "/" }}
+{{- if eq .URL "/" }}
     <title>{{ .Title }}</title>
     <meta property='og:title' content="{{ .Title }}">
     <meta property="og:type" content="website">
-{{ else }}
+{{- else }}
     <title>{{ .Title }} - {{ .Site.Title }}</title>
-    <meta property='og:title' content="{{ .Title }} - {{ .Site.Title }}">
+    <meta property="og:title" content="{{ .Title }} - {{ .Site.Title }}">
     <meta property="og:type" content="article">
-{{ end }}
+{{- end }}
     <meta property="og:url" content="{{ .Permalink }}">
     <meta name="description" content="{{ .Description }}">
-    <meta property="og:image" content="{{ $.Site.BaseURL }}img/ogimage.png">
+    <meta property="og:description" content="{{ .Description }}">
+    <meta property="fb:app_id" content="396423247105258">
+    <meta property="og:image" content="{{ .Site.BaseURL }}img/ogimage.png">
 {{ .Hugo.Generator }}
   </head>
   <body>
 
 <div class="markdown-body">
 
+{{- if not (eq .URL "/") }}
 <header>
-{{ if not (eq .URL "/") }}
 <a href="/">{{ .Site.Title }} TOP へ戻る</a>
-{{ end }}
 </header>
+{{- end }}

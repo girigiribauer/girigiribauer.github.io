@@ -2,8 +2,8 @@
   <p>{{ partial "datetime.html" . }}</p>
 
   <ul class="tags">
-{{ range .Params.tags }}
+{{- range .Params.tags }}
     <li class="flow"><a href="/tags/{{ . | urlize }}/">{{ . }}</a></li>
-{{ end }}
+{{- end }}
   </ul>
 </div>

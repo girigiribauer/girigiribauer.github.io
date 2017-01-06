@@ -3,11 +3,11 @@
 <h2>Tags</h2>
 
 <ul class="tags">
-{{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+{{- range $name, $taxonomy := .Site.Taxonomies.tags }}
   <li class="flow">
     <a href="{{ "/tags/" | relURL }}{{ $name | urlize }}">{{ $name }} ({{ $taxonomy.Count }})</a>
   </li>
-{{ end }}
+{{- end }}
 </ul>
 
 <h2>Categories</h2>

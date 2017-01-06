@@ -1,5 +1,5 @@
-{{ range .Paginator.Pages }}
-{{ if eq .Type "archives" }}
-{{ partial "item.html" . }}
-{{ end }}
-{{ end }}
+{{- range .Paginator.Pages }}
+{{- if eq .Type "archives" }}
+{{- partial "item.html" . }}
+{{- end }}
+{{- end }}
