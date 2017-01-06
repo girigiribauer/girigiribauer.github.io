@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
 
-    <title>Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた - ばうあーろぐ</title>
-    <meta property='og:title' content="Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた - ばうあーろぐ">
+    <title>github-markdown-css を導入してみた - ばうあーろぐ</title>
+    <meta property='og:title' content="github-markdown-css を導入してみた - ばうあーろぐ">
     <meta property="og:type" content="article">
 
-    <meta property="og:url" content="http://girigiribauer.com/archives/1749">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20170106/">
     <meta name="description" content="">
     <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
 <meta name="generator" content="Hugo 0.17" />
@@ -29,162 +29,56 @@
 
 <div class="maincontents">
 
-<h1>Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた</h1>
+<h1>github-markdown-css を導入してみた</h1>
 
 <div class="poststatus">
-  <p>  <time datetime="2015年4月1日">2015年4月1日</time>
+  <p>  <time datetime="2017年1月6日">2017年1月6日</time>
 
 </p>
 
   <ul class="tags">
 
-    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/css/">CSS</a></li>
 
-    <li class="flow"><a href="/tags/ssh/">SSH</a></li>
+    <li class="flow"><a href="/tags/hugo/">Hugo</a></li>
 
-    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/static-site-generator/">Static Site Generator</a></li>
 
   </ul>
 </div>
 
 
+<p>Github から生成されるページって、バランスとかが良くてなんだかんだですごく読みやすいんですよ。</p>
 
+<p>一方で自分のブログは、中身を WordPress から Hugo に変えて
+データベースの管理をしなくなって済んだところはすっきりしたものの、
+当時そこ以外に時間をかけたくなく、見た目は古いままで移行したので、
+自分で読んでてちょっと読みづらかったんですよね。</p>
 
-<p>2013年に書いていた、『Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話』（<a href="http://girigiribauer.com/archives/1127/" target="_blank">http://girigiribauer.com/archives/1127/</a>）という記事の続きです。</p>
+<p>そこで、見た目をばっさり切り捨てつつ、以下を導入しました。</p>
 
-<p>2013年の段階では、まだまだ考え方みたいなものがまとまりきっておらず、Vagrant が用いる接続ポート番号を変えるという方向で色々考えていたのですが、今振り返ってみるとそもそも根本の考え方を見直すべきでした。</p>
+<p><a href="https://github.com/sindresorhus/github-markdown-css" target="_blank">https://github.com/sindresorhus/github-markdown-css</a></p>
 
-<hr />
+<p>これをベースにして、メインコンテンツ幅やリンクの横並びの調整など、
+本当に最小限の調整を行っただけなのですが、
+時間かけずにいい感じになったので、しばらくこのままで行こうと思います。</p>
 
-<h2 id="vagrant-の使いどころ-考えどころ">Vagrant の使いどころ・考えどころ</h2>
+<p><strong>本当に大事じゃないところに時間かけないの、大事だと思います。</strong></p>
 
-<p>ざっと『Vagrant の使いどころ・考えどころ』（<a href="http://girigiribauer.com/archives/1729/" target="_blank">http://girigiribauer.com/archives/1729/</a>）に書いたのですが、Vagrant を用いる用途としては大きく2種類あると考えています。</p>
+<p>ついでにトップページと一覧ページを分けました。</p>
 
-<ol>
-<li><strong>ローカルの開発用</strong>としてローカルでのみ使い続ける</li>
-<li><strong>本番環境の検証用</strong>として、同じレシピを仮想マシン・リモート環境にそれぞれ適用</li>
-</ol>
-
-<p>SSH の接続ポート番号を変えるという大きな理由は<strong>セキュリティ</strong>にあると思います。 デフォルトの22番ポートで使っていると外部からのアタックに弱いため、ポート番号を変えたい、そのためのレシピを書きたい、という点が根本にあると思います。</p>
-
-<p>つまり、2.の<strong>『本番環境の検証用として、同じレシピを仮想マシン・リモート環境にそれぞれ適用』</strong>ってのがやりたいわけです。</p>
-
-<p>もし1.が目的だったのなら、わざわざポート番号を変える必要はありません。<a href="http://girigiribauer.com/archives/1127/" target="_blank">Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話</a> にもあるように、ホスト OS が 2424 番、ゲスト OS が 22 番で接続している最中に、<strong>ゲスト OS を 22 番をレシピで別ポートに変更してしまうと接続が切れてしまいます。ローカルで動作しているのならわざわざ変える必要はありません。</strong>何が面倒なのかは、詳しくはそちらの記事をご覧ください。</p>
-
-<h2 id="同じレシピをローカル-リモートに適用する">同じレシピをローカル、リモートに適用する</h2>
-
-<p>本番環境の検証用として利用したいという用途で、 同じレシピをローカル、リモートの両方に適用したいということであれば、<strong>json ファイルに設定をくくり出してやれば OK</strong> です。</p>
-
-<p>ローカルは Vagrant で動いていますが、リモートはそうではないので、両方で同じレシピ適用方法が可能な <strong>knife コマンド</strong>を使いましょうー。</p>
-
-<h3 id="ローカル">ローカル</h3>
-
-<p>以下は実際にそのまま使っているわけではないですが、<code>nodes/localhost.json</code> として Vagrant で動作しているローカル VM にレシピを適用するための設定ファイル（の一例）です</p>
-
-<pre><code>{
-  &quot;name&quot;: &quot;localhost&quot;,
-  &quot;automatic&quot;: {
-    &quot;ipaddress&quot;: &quot;192.168.24.24&quot;
-  },
-
-  &quot;fqdn&quot;: &quot;localhost&quot;,
-  &quot;platform_family&quot;: &quot;rhel&quot;,
-  &quot;platform&quot;: &quot;centos&quot;,
-  &quot;platform_version&quot;: &quot;6.6&quot;,
-
-  &quot;run_list&quot;: [
-    &quot;recipe[openssh]&quot;
-  ],
-
-  &quot;openssh&quot;: {
-    &quot;server&quot;: {
-      &quot;port&quot;: 22,
-      &quot;password_authentication&quot;: &quot;no&quot;
-    }
-  }
-}
-</code></pre>
-
-<p>あとは knife コマンドにて、</p>
-
-<pre><code>knife solo bootstrap localhost
-</code></pre>
-
-<p>あるいは</p>
-
-<pre><code>knife solo prepare localhost
-knife solo cook localhost
-</code></pre>
-
-<p>でレシピを適用してやるだけです。</p>
-
-<p>Vagrant 上で openssh のレシピを適用するのですが、<strong>ポート番号は 22 から 22 に変える、みたいなレシピにしておく</strong>と良いです。変更後のポート番号を設定値としてくくり出しておきます。</p>
-
-<p>あっ、Berkshelf の説明とか platform, platform_family とかの項目の説明は端折ってますが、また別記事にでも書いておきます。。。</p>
-
-<h3 id="リモート">リモート</h3>
-
-<p>同様に、リモートマシン（nodes/production.json）に対しては、</p>
-
-<pre><code>{
-  &quot;name&quot;: &quot;production&quot;,
-  &quot;automatic&quot;: {
-    &quot;ipaddress&quot;: &quot;123.456.789.012&quot;
-  },
-
-  &quot;fqdn&quot;: &quot;example.com&quot;,
-  &quot;platform_family&quot;: &quot;rhel&quot;,
-  &quot;platform&quot;: &quot;centos&quot;,
-  &quot;platform_version&quot;: &quot;6.6&quot;,
-
-  &quot;run_list&quot;: [
-    &quot;recipe[openssh]&quot;
-  ],
-
-  &quot;openssh&quot;: {
-    &quot;server&quot;: {
-      &quot;port&quot;: 12345,
-      &quot;password_authentication&quot;: &quot;no&quot;
-    }
-  }
-}
-</code></pre>
-
-<p>同様にポート番号をくくり出しておき、それを利用してレシピを適用することで、 リモートのサーバの SSH のポート番号を変更することが可能です。</p>
-
-<p>で、ちょっと気をつけないといけないのが、 <strong>初回のレシピ適用時と、2回目以降のレシピ適用時のポート番号が異なる点</strong>です。</p>
-
-<p>僕は以下のように、初回のみオプションで上書きしています。</p>
-
-<pre><code>knife solo bootstrap production -p 22 -x root
-</code></pre>
-
-<p><code>knife solo prepare --help</code> には以下のようなオプションがあり、</p>
-
-<pre><code>-p, --ssh-port PORT              The ssh port
--x, --ssh-user USERNAME          The ssh username
-</code></pre>
-
-<p>これを利用して、初回のみポート番号を 22 で、かつ root ユーザーにてレシピ適用します。 （この段階ではもちろんパスワード認証なので、何回かパスワードの入力を求められます。）</p>
-
-<h3 id="リモートにレシピを適用するときの注意点">リモートにレシピを適用するときの注意点</h3>
-
-<p>それ以外にも、自分がはまったなーというものをメモっておきます。</p>
-
-<p>初回アクセス時に <code>~/.ssh/known_hosts</code> に接続情報が保持されます。</p>
-
-<p>「あー、ぐちゃぐちゃしてきたから、一旦リセットして最初からレシピを適用し直したいなー」というときに、 上記ファイルに残っている情報をクリアしておかないと接続ができないケースがあるようです。</p>
-
-<p>また、さくらVPS のサービスを利用しているのですが、OS のインストールをし直した際は、少し時間を置いてからでないとうまく適用できません。焦らずコーヒーでも飲みましょう。</p>
-
-<h2 id="まとめ">まとめ</h2>
+<p>現状 Hugo を利用してブログ書いてるときに困る点、やってない点といえば、</p>
 
 <ul>
-<li>Vagrant を用いる際の目的をはっきりさせる</li>
-<li>サーバの設定値をくくり出す</li>
+<li>画像の加工がめんどくさい</li>
+<li>投稿してから追記した場合の日付管理（Hugo で .Lastmod を使う？）</li>
+<li>古すぎますよ、という警告文表示（Static Site なので Hugo だけでは難しい？）</li>
 </ul>
 
-<p>なお、本当にどうでもいい話ですが、ドラマ TwentyFour では、テロリストや CTU 職員が IP アドレスを指定するときに、262.xxx.xxx.xxx のような、実際には存在しない 255 を超えた数値をドラマ内で言ったりします。</p>
+<p>ぐらいになったかと思います。</p>
+
+<p>とはいえそんなに困っているわけでもないので、
+気が向いたときにでも改善していこうと思います。</p>
 
 
 <ul class="socialbuttons">
@@ -201,17 +95,17 @@ knife solo cook localhost
 </ul>
 
 <div class="poststatus">
-  <p>  <time datetime="2015年4月1日">2015年4月1日</time>
+  <p>  <time datetime="2017年1月6日">2017年1月6日</time>
 
 </p>
 
   <ul class="tags">
 
-    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/css/">CSS</a></li>
 
-    <li class="flow"><a href="/tags/ssh/">SSH</a></li>
+    <li class="flow"><a href="/tags/hugo/">Hugo</a></li>
 
-    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/static-site-generator/">Static Site Generator</a></li>
 
   </ul>
 </div>
