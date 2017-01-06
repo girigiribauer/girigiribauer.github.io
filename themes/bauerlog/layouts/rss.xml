@@ -8,7 +8,7 @@
     <description>{{ .Site.Params.description }}</description>
 
     {{ range .Data.Pages }}
-      {{ if eq .Type "post" }}
+      {{ if eq .Type "archives" }}
         <item>
           <title>{{ .Title }}</title>
           <link>{{ .Permalink }}</link>
