@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>今思えば知らずに損してたコマンドラインのあれこれ</title>
+          <link>http://girigiribauer.com/archives/20170114/</link>
+          <pubDate>Sat, 14 Jan 2017 17:57:40 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170114/</guid>
+          <description>今でこそ iTerm2 を全面に表示して、 tmux でセッション、ウィンドウ、ペインごとに分けて、 ターミナル内の Vim であれこれやってるわけですが、 始めたての頃はコマ</description>
+        </item>
+      
+    
+      
+        <item>
           <title>コマンド履歴の Ctrl-R 使ってますか？</title>
           <link>http://girigiribauer.com/archives/1873</link>
           <pubDate>Tue, 23 Jun 2015 11:01:36 +0900</pubDate>

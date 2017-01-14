@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+    <title>今思えば知らずに損してたコマンドラインのあれこれ - ばうあーろぐ</title>
+    <meta property="og:title" content="今思えば知らずに損してたコマンドラインのあれこれ - ばうあーろぐ">
+    <meta property="og:type" content="article">
+    <meta name="description" content="今でこそ iTerm2 を全面に表示して、 tmux でセッション、ウィンドウ、ペインごとに分けて、 ターミナル内の Vim であれこれやってるわけですが、 始めたての頃はコマ">
+    <meta property="og:description" content="今でこそ iTerm2 を全面に表示して、 tmux でセッション、ウィンドウ、ペインごとに分けて、 ターミナル内の Vim であれこれやってるわけですが、 始めたての頃はコマ">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20170114/">
+    <meta property="fb:app_id" content="396423247105258">
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="generator" content="Hugo 0.17" />
+  </head>
+  <body>
+
+<div class="markdown-body">
+<header>
+<a href="/">ばうあーろぐ TOP へ戻る</a>
+</header>
+
+
+<div class="maincontents">
+
+<h1>今思えば知らずに損してたコマンドラインのあれこれ</h1>
+
+<div class="poststatus">
+  <p>  <time datetime="2017年1月14日">2017年1月14日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+    <li class="flow"><a href="/tags/linux/">Linux</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>今でこそ iTerm2 を全面に表示して、
+tmux でセッション、ウィンドウ、ペインごとに分けて、
+ターミナル内の Vim であれこれやってるわけですが、
+始めたての頃はコマンドラインに慣れるまで大変でした。</p>
+
+<p>今振り返って、これを知ってから or 使うようになってから、
+劇的に変わったなあと思うようなものがあるので、
+それらをメモ代わりに残しておきます。</p>
+
+<p><strong>今年からターミナルを使いこなしたい！</strong> と思っている方におすすめします。</p>
+
+<h2 id="emacs-vi-両方のキーバインドを最低限知っておく">Emacs, Vi 両方のキーバインドを最低限知っておく</h2>
+
+<p>これはエディタの話ではなく、コマンドラインであれこれやるにあたって
+<strong>両方のキーバインドを最低限知っておく必要があった</strong> という意味です。</p>
+
+<p>僕の環境設定の考え方の話になるのですが、
+なんでもかんでも自分の使いやすいように変えていくのではなく、
+<strong>よくある標準の設定をベースにしつつ、より良い設定を邪魔せず上乗せしていく形</strong>
+を取りたいといつも思っています。</p>
+
+<p>コマンドラインを使っていくに従って、
+<strong>標準の設定というのがとても良く考えられていることに段々気づいていく</strong> と思います。</p>
+
+<p>当然なのですが、その標準の設定を考えた人というのがいるわけで、
+すべてのことには理由があるので、
+仮にその理由を知らなかったとしても
+その標準の設定に合わせることで
+<strong>自然とそのメリットを享受できる</strong> ことも出てきます。</p>
+
+<h3 id="シェルスクリプトはもともと-emacs-風">シェルスクリプトはもともと Emacs 風</h3>
+
+<p>bash や zsh などのシェルでは、キーバインドのモードを切り替える設定が用意されています。</p>
+
+<pre><code># bash
+set -o vi
+
+# zsh
+bindkey -v
+</code></pre>
+
+<p>上記はともに Vi モードに切り替える設定なのですが、
+設定を変更しない場合、 <strong>標準で Emacs 風</strong> になっています。</p>
+
+<p>ここで仮に Ctrl-a で行頭に移動、 Ctrl-e で行末に移動、 Ctrl-w で1単語分の削除、
+などの Emacs 上での操作を知っていると、
+<strong>何も設定していないターミナル上で Emacs 風キーバインドで操作できる</strong> ことになります。</p>
+
+<p>コマンドライン使いたての頃、比較的長めのコマンドを打って実行したらミスが見つかったけど、
+その直したい箇所が入力の頭の方で、
+左キーを連打しまくってるけど時間がかかってしょうがない、みたいなケース、
+よくある話ではないでしょうか？</p>
+
+<p>特に何も設定されていないサーバなどに始めてアクセスする際には、
+こういったキーバインドを知っていることが効率に直結することもあると思います。</p>
+
+<h3 id="未知の端末をなんとなく扱えるメリットも">未知の端末をなんとなく扱えるメリットも</h3>
+
+<p>Windows の方はメリットを享受できないのですが、
+Mac の方は command キーと control キーに分かれているため、
+上記の Ctrl-a, Ctrl-e などのキーバインドが他アプリケーションで使えたりします。</p>
+
+<p>例えば <strong>各種 Web ブラウザの URL バー</strong> などはすでにそういった想定がされています。
+長い URL を入力しているとき、http じゃなくて https だったとなったときに
+マウスに手を伸ばす必要はありません。 Ctrl-a を押しましょう。</p>
+
+<p>Windows だと全選択が Ctrl-a などで重複してしまっており、Emacs 風のものは割り当てられていないようですね。</p>
+
+<h3 id="マニュアルを読むときは-vi-風">マニュアルを読むときは Vi 風</h3>
+
+<p>一方でマニュアルを読む際は <strong>最低限の Vi のキーバインド</strong> を知っておく必要があります。
+こちらもエディタとして使えるようになる必要はなく、
+<strong>上下の移動、検索あたりができれば必要十分</strong> だと思います。</p>
+
+<p>そもそも、</p>
+
+<pre><code>man foobar
+
+foobar --help
+</code></pre>
+
+<p>といったマニュアルを読む際は、
+Ctrl-f(forward), Ctrl-d(down) で下スクロール、
+Ctrl-b(back), Ctrl-u(up) で上スクロールでき、
+/ キーのあとにキーワードを入力して Enter キーを押せば検索できます。</p>
+
+<p>これらのキーバインドは Vi から来ています。</p>
+
+<h3 id="インターフェースとしての-emacs-vi">インターフェースとしての Emacs, Vi</h3>
+
+<p><strong>インターフェース</strong> という言葉が一番しっくりきます。</p>
+
+<p>エディタの操作方法としてではなく、
+インターフェースとして最低限知っておくだけで
+ターミナル上のコマンドライン操作はだいぶ変わってくると思います。</p>
+
+<p>自分が UI 実装する側になったときに、キーボード入力が想定されるのであれば、
+こういったところにも配慮すると、より使いやすくなるかもしれません。</p>
+
+<h2 id="コマンド履歴を使う">コマンド履歴を使う</h2>
+
+<p>そもそも最初はコマンド履歴を知らなかったので、
+上キーを押すことで過去に押したコマンドが表示されることも知りませんでした。</p>
+
+<p>それを知ってるかどうかだけでも少し変わってくるのですが、
+<strong>インクリメンタルサーチをきちんと使いこなす</strong> だけで大きく効率が変わってきます。</p>
+
+<p>これ知ったのつい2年前ほどだったのですが、 <a href="http://girigiribauer.com/archives/1873/" target="_blank">http://girigiribauer.com/archives/1873/</a>
+それまで知らなかった自分に愕然としましたね。</p>
+
+<p>特にサブコマンドやオプションの多い長いコマンドを、ある程度断続的に入力するケースの場合、
+<strong>インクリメンタルサーチはおすすめです。</strong></p>
+
+<p>こちらも設定なしで、 <strong>Ctrl-r</strong> が割り当てられています。</p>
+
+<p>一度入力する前に任意のコマンドを入力しておきます。（なんでもいいです）</p>
+
+<pre><code>% sudo service httpd restart
+</code></pre>
+
+<p>何も入力していない状態で、Ctrl-r を押すと、</p>
+
+<pre><code>%
+bck-i-search: _
+</code></pre>
+
+<p>入力箇所の下に bck-i-search という表示が出ます。
+<strong>後ろ方向のインクリメンタルサーチ</strong> のことです。</p>
+
+<p>ここで http と順に打つと、 <strong>他に候補がない時点で先ほど入力したコマンドが表示されます。</strong></p>
+
+<pre><code>% sudo service httpd restart
+bck-i-search: httpd\_
+</code></pre>
+
+<p>もし候補が出たけどもっと過去の履歴が欲しい！となったときは、
+後ろ方向のインクリメンタルサーチなので、何回か Ctrl-r を押しましょう。
+その都度、履歴を過去方向に検索してくれます。</p>
+
+<p>ちなみに遡りすぎた場合は、 <strong>前方向のインクリメンタルサーチである Ctrl-s</strong> も用意されています。
+そちらで今度は過去方向から未来方向へインクリメンタルサーチしましょう。</p>
+
+<pre><code>%
+fwd-i-search: _
+</code></pre>
+
+<h3 id="オプション付きの長いコマンドを何回かおきに入力するケースなどに有効">オプション付きの長いコマンドを何回かおきに入力するケースなどに有効</h3>
+
+<p>最近だと Docker を使ったりする方も増えてきていると思います。</p>
+
+<pre><code>docker run -d -p 80 -v &quot;$(pwd)/public:/usr/share/nginx/html&quot; --name test nginx
+</code></pre>
+
+<p>まだこれくらいならかわいいもので、追加でボリュームを紐付けたり、環境変数を設定したりすると、
+2行3行と長くなってきます。</p>
+
+<p>毎回同じコマンドを入力するだけなら、上キーだけで十分なのですが、
+間に別のコマンドを何度か入力したりして、間がどんどん開いてくると、
+上キーだけで遡るのは厳しくなってきます。</p>
+
+<p>上記の例であれば、例えば <strong>Ctrl-r を押した後に docker と入力した方が直感的だし速い</strong> です。
+場合によっては docker 全部入力せずに d だけで事足りるかもしれません。（インクリメンタルサーチなので）</p>
+
+<p>僕の場合ですが、 tmux を利用して画面を分割してコマンド入力を色々行っており、
+こっちの画面で過去に入力したコマンドを、今度はあっちの画面で入力したい、
+みたいなケースがけっこう出て来ます。
+そういったケースに対応するために、 .zshrc に履歴の共有を行う設定を入れています。</p>
+
+<h2 id="tab-キーによるコマンド補完を使う">Tab キーによるコマンド補完を使う</h2>
+
+<p>あとは当然知ってる話だと思うのでおまけ程度ですが、
+<strong>コマンド打つときは Tab キーで補完できる</strong> ことは知っておきましょう。</p>
+
+<p>さすがに自分はなかったですが、
+たまに律儀に毎回全部入力している人を見ると「うーん・・・」という気分になります。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>標準の設定をインターフェースとして捉えることで、
+様々なメリットが享受できると思います。
+<strong>あまりあれこれ設定をいじりすぎずに、標準の設定に慣れるということも一定大事</strong> だと思います。</p>
+
+<p>慣れるまでは大変だと思いますが、
+GUI ではカバーしきれないところをコマンドラインで出来ることも多いので、
+頑張って慣れていくと良いと思います。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017年1月14日">2017年1月14日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+    <li class="flow"><a href="/tags/linux/">Linux</a></li>
+  </ul>
+</div>
+
+
+</div>
+
+<footer>
+
+<h2>Tags</h2>
+
+<ul class="tags">
+  <li class="flow">
+    <a href="/tags/ansible">Ansible (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apache">Apache (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cli">CLI (8)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css">CSS (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css3">CSS3 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cssfilter">CSSfilter (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/canvas">Canvas (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/chef">Chef (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/crawler">Crawler (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/dom">DOM (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/docker">Docker (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ftp">FTP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/font">Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/functionallanguage">FunctionalLanguage (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/glsl">GLSL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/git">Git (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/golang">Golang (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html">HTML (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5">HTML5 (7)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5-outline">HTML5-outline (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/homebrew">Homebrew (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/hugo">Hugo (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/icon-font">Icon-Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/javascript">JavaScript (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/linux">Linux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mvc">MVC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/opengraph">OpenGraph (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/php">PHP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rdfa">RDFa (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ssh">SSH (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/svg">SVG (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/scala">Scala (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/shellscript">ShellScript (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/smartphone">Smartphone (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/static-site-generator">Static Site Generator (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vagrant">Vagrant (15)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vim">Vim (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualbox">VirtualBox (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">Virtualization (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webapp">WebApp (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webaudioapi">WebAudioAPI (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webfont">WebFont (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webgl">WebGL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webrtc">WebRTC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webserver">WebServer (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/yeoman">Yeoman (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/zsh">Zsh (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ajax">ajax (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/automation">automation (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bugs">bugs (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/event-conference">event-conference (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/getusermedia">getUserMedia (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/gitconfig">gitconfig (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ios">iOS (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/iterm">iTerm (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jquery">jQuery (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jinja2">jinja2 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jq">jq (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jsperf">jsperf (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mediaquery">mediaQuery (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/namespace">namespace (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/oldie">oldIE (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/output">output (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/polyfills">polyfills (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/preloader">preloader (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rsync">rsync (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/tmux">tmux (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/viewport">viewport (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vimrc">vimrc (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">virtualization (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/wget">wget (1)</a>
+  </li>
+</ul>
+
+<h2>Categories</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/">Category / Tech</a>
+  </li>
+  <li>
+    <a href="/categories/twentyfour/">Category / TwentyFour</a>
+  </li>
+</ul>
+
+<h2>RSS</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/index.xml" target="_blank">RSS: Category / Tech</a>
+  </li>
+  <li>
+    <a href="/index.xml" target="_blank">RSS: All articles</a>
+  </li>
+</ul>
+
+<p>このブログは個人の見解であり、所属する組織の公式見解ではありません</p>
+<p>&copy; ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a> and <a href="https://github.com/sindresorhus/github-markdown-css" target="_blank">github-markdown-css</a></p>
+
+</footer>
+
+</div>
+
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36767095-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+  </body>
+</html>
+

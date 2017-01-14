@@ -9,8 +9,8 @@ ignoreFiles           = ["\\.scss$"]
 EnableGitInfo         = true
 
 [params]
-author         = "girigiribauer"
-description    = "Webテクノロジーに関するメモ、あるいはTwentyFour"
+author      = "girigiribauer"
+description = "Webテクノロジーに関するメモ、あるいはTwentyFour"
 
 [permalinks]
 archives = "/archives/:year:month:day/"

@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>今思えば知らずに損してたコマンドラインのあれこれ</title>
+          <link>http://girigiribauer.com/archives/20170114/</link>
+          <pubDate>Sat, 14 Jan 2017 17:57:40 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170114/</guid>
+          <description>今でこそ iTerm2 を全面に表示して、 tmux でセッション、ウィンドウ、ペインごとに分けて、 ターミナル内の Vim であれこれやってるわけですが、 始めたての頃はコマ</description>
+        </item>
+      
+    
+      
+        <item>
           <title>github-markdown-css を導入してみた</title>
           <link>http://girigiribauer.com/archives/20170106/</link>
           <pubDate>Fri, 06 Jan 2017 15:21:29 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Sun, 24 Feb 2013 09:16:03 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/834</guid>
           <description>とりあえず各セッションの感想などは一旦置いといて、 自分の発表したやつだけ、軽くまとめておきます。 当日発表した資料は slideshare にアップしてあります。 WebRTC</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>位置を変えずに、斜めにエフェクトをかける方法</title>
-          <link>http://girigiribauer.com/archives/818</link>
-          <pubDate>Wed, 13 Feb 2013 15:13:02 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/818</guid>
-          <description>昔使った、tips的な内容のメモです。 斜めにさらっと流れるエフェクトをかけたい 何かの写真を、ちょっと上品な感じで魅せたいときに、斜めにさらっ</description>
         </item>
       
     

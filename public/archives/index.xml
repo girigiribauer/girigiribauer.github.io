@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>今思えば知らずに損してたコマンドラインのあれこれ</title>
+          <link>http://girigiribauer.com/archives/20170114/</link>
+          <pubDate>Sat, 14 Jan 2017 17:57:40 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170114/</guid>
+          <description>今でこそ iTerm2 を全面に表示して、 tmux でセッション、ウィンドウ、ペインごとに分けて、 ターミナル内の Vim であれこれやってるわけですが、 始めたての頃はコマ</description>
+        </item>
+      
+    
+      
+        <item>
           <title>github-markdown-css を導入してみた</title>
           <link>http://girigiribauer.com/archives/20170106/</link>
           <pubDate>Fri, 06 Jan 2017 15:21:29 +0900</pubDate>

@@ -15,9 +15,14 @@
     <meta property="og:title" content="{{ .Title }} - {{ .Site.Title }}">
     <meta property="og:type" content="article">
 {{- end }}
+{{- if .IsPage }}
+    <meta name="description" content="{{ .Summary | safeHTMLAttr }}">
+    <meta property="og:description" content="{{ .Summary | safeHTMLAttr }}">
+{{- else }}
+    <meta name="description" content="{{ .Site.Params.description }}">
+    <meta property="og:description" content="{{ .Site.Params.description }}">
+{{- end }}
     <meta property="og:url" content="{{ .Permalink }}">
-    <meta name="description" content="{{ .Description }}">
-    <meta property="og:description" content="{{ .Description }}">
     <meta property="fb:app_id" content="396423247105258">
     <meta property="og:image" content="{{ .Site.BaseURL }}img/ogimage.png">
 {{ .Hugo.Generator }}
