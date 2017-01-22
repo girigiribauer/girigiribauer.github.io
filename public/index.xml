@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>tmux で自動起動するついでにセッション管理もする</title>
+          <link>http://girigiribauer.com/archives/20170122/</link>
+          <pubDate>Sun, 22 Jan 2017 18:11:19 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170122/</guid>
+          <description>tmux の自動起動周りに少し不満があって、 zshrc に以下の記述を追加しました。 # 初期に用意されているセッション # &amp;quot;prefix -&amp;gt; (&amp;quot; or &amp;quot;prefix -&amp;gt; )&amp;quot; でセッション切り替え TMUX_INITIAL_SESSIONS=( &amp;quot;config&amp;quot; &amp;quot;works&amp;quot;</description>
+        </item>
+      
+    
+      
+        <item>
           <title>今思えば知らずに損してたコマンドラインのあれこれ</title>
           <link>http://girigiribauer.com/archives/20170114/</link>
           <pubDate>Sat, 14 Jan 2017 17:57:40 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Fri, 01 Mar 2013 14:14:23 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/846</guid>
           <description>大なごやJS(#daiNagoyaJS) 数か月に1回、みんながやりたくなったタイミングで行い、主催がころころ入れ替わっていくという謎の勉強会</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>大なごやJS vol.5 で『WebRTC &#43; Web Audio API = スーパーサイヤ人』のネタを話してきた</title>
-          <link>http://girigiribauer.com/archives/834</link>
-          <pubDate>Sun, 24 Feb 2013 09:16:03 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/834</guid>
-          <description>とりあえず各セッションの感想などは一旦置いといて、 自分の発表したやつだけ、軽くまとめておきます。 当日発表した資料は slideshare にアップしてあります。 WebRTC</description>
         </item>
       
     

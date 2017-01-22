@@ -6,12 +6,12 @@
     <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
-    <title>CSS Nite in Nagoyaに行ってきた話 - ばうあーろぐ</title>
-    <meta property="og:title" content="CSS Nite in Nagoyaに行ってきた話 - ばうあーろぐ">
+    <title>tmux で自動起動するついでにセッション管理もする - ばうあーろぐ</title>
+    <meta property="og:title" content="tmux で自動起動するついでにセッション管理もする - ばうあーろぐ">
     <meta property="og:type" content="article">
-    <meta name="description" content="内容は、どちらかというと後追いで追加されたワード、『&amp;#8220;伝える&amp;#8221;のがうまくなる！』っていうところが全面に出た内容だった">
-    <meta property="og:description" content="内容は、どちらかというと後追いで追加されたワード、『&amp;#8220;伝える&amp;#8221;のがうまくなる！』っていうところが全面に出た内容だった">
-    <meta property="og:url" content="http://girigiribauer.com/archives/762">
+    <meta name="description" content="tmux の自動起動周りに少し不満があって、 zshrc に以下の記述を追加しました。 # 初期に用意されているセッション # &amp;quot;prefix -&amp;gt; (&amp;quot; or &amp;quot;prefix -&amp;gt; )&amp;quot; でセッション切り替え TMUX_INITIAL_SESSIONS=( &amp;quot;config&amp;quot; &amp;quot;works&amp;quot;">
+    <meta property="og:description" content="tmux の自動起動周りに少し不満があって、 zshrc に以下の記述を追加しました。 # 初期に用意されているセッション # &amp;quot;prefix -&amp;gt; (&amp;quot; or &amp;quot;prefix -&amp;gt; )&amp;quot; でセッション切り替え TMUX_INITIAL_SESSIONS=( &amp;quot;config&amp;quot; &amp;quot;works&amp;quot;">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20170122/">
     <meta property="fb:app_id" content="396423247105258">
     <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
 <meta name="generator" content="Hugo 0.17" />
@@ -26,66 +26,68 @@
 
 <div class="maincontents">
 
-<h1>CSS Nite in Nagoyaに行ってきた話</h1>
+<h1>tmux で自動起動するついでにセッション管理もする</h1>
 
 <div class="poststatus">
-  <p>  <time datetime="2013年2月2日">2013年2月2日</time>
+  <p>  <time datetime="2017年1月22日">2017年1月22日</time>
 </p>
 
   <ul class="tags">
-    <li class="flow"><a href="/tags/output/">output</a></li>
-    <li class="flow"><a href="/tags/event-conference/">event-conference</a></li>
+    <li class="flow"><a href="/tags/tmux/">tmux</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
   </ul>
 </div>
 
 
+<p>tmux の自動起動周りに少し不満があって、
+zshrc に以下の記述を追加しました。</p>
 
+<pre><code># 初期に用意されているセッション
+# &quot;prefix -&gt; (&quot; or &quot;prefix -&gt; )&quot; でセッション切り替え
+TMUX_INITIAL_SESSIONS=(
+&quot;config&quot;
+&quot;works&quot;
+&quot;personal&quot;
+)
 
-<p>内容は、どちらかというと後追いで追加されたワード、『<strong>&#8220;伝える&#8221;のがうまくなる！</strong>』っていうところが全面に出た内容だったと思います。</p>
+# 初期セッションが存在していなかったらバックグラウンドで作る
+for tmux_session in ${TMUX_INITIAL_SESSIONS[@]}
+do
+  if ! $(tmux has-session -t ${tmux_session} 2&gt; /dev/null)
+  then
+    tmux new-session -d -s ${tmux_session}
+  fi
+done
 
-<p><img src="/img/2013/02/cssnitenagoya01.png" alt="" /></p>
+# tmux が起動中でなければ attach する
+if [ -z &quot;$TMUX&quot; ]
+then
+  tmux attach-session -t &quot;${TMUX_INITIAL_SESSIONS[0]}&quot;
+else
+fi
+</code></pre>
 
-<p>techネタではないですが、かなり濃い内容ばかりだったので自分用にメモ書きしておきます。 詳しい紹介記事が見たい方は、きっと公式に載るのでそちらをご覧いただければと思います。（概要と自分がポイントだと思ったところのみです）</p>
+<p>基本的に書いてある通りなのですが、
+自分であらかじめ用意したいセッションを変数（TMUX_INITIAL_SESSIONS）に入れておきます。
+別に他の名前でも良いです。</p>
 
-<h2 id="逆張りと差別化-セルフブランディングではない-キャラ学">逆張りと差別化 セルフブランディングではない『キャラ学』</h2>
+<pre><code>TMUX_INITIAL_SESSIONS=(
+&quot;mysession1&quot;
+&quot;mysession2&quot;
+&quot;mysession3&quot;
+)
+</code></pre>
 
-<p>全部でセッションは3つあり、 最初は、ウープスデザイン・石嶋未来さんの<strong>逆張りと差別化 セルフブランディングではない『キャラ学』</strong>という内容でした。</p>
+<p>シェルが立ち上がるたびに、そのセッションがなければバックグラウンドで作ります。</p>
 
-<p>自分というのを<strong>いかに相手に伝える、分かってもらうか</strong>に終始徹底していた内容で、自分に合わせて環境を変えることで、仕事などを無理なく継続させるような話が印象的でした。その分野で一番じゃなくてもいいから、とにかくブログなどを書きましょう、という話は、ホントにその通りだなと思います。</p>
+<pre><code>if ! $(tmux has-session -t ${tmux_session} 2&gt; /dev/null)
+then
+  tmux new-session -d -s ${tmux_session}
+fi
+</code></pre>
 
-<p>あと、その分野の中で自分が確立できたとしても、それに甘んじているとやがてそれも無くなっていくので、『<strong>今が安泰でも常にキョロキョロしてワクワクする自分を毎日楽しもう</strong>』という話は、かなり共感できる部分でした。いわゆるブルー・オーシャン戦略に似てるのかもしれません。</p>
-
-<p>非常に気さくな方で、自分を楽しんでいるなーという感じを受け、とても印象的でした。</p>
-
-<h2 id="得意なこと-を発信しよう-webデザイナーの魅力をさらに高める-情報発信のすすめ">『得意なこと』を発信しよう！Webデザイナーの魅力をさらに高める、情報発信のすすめ</h2>
-
-<p>次は、フロッグマンオフィス・山口有由希さんの<strong>『得意なこと』を発信しよう！Webデザイナーの魅力をさらに高める、情報発信のすすめ</strong>という内容でした。</p>
-
-<p>いつも <a href="http://blog.v-colors.com/" target="_blank">ブログ</a> を拝見させていただいているのですが、Webサービスのアウトプットスピードが半端無く、発表内容もそれに関連した形でした。</p>
-
-<p>自分がやったことないこと、新しい技術などを試しておくことで、それを実際に使う場面で<strong>どれくらい時間かかるか、対応ブラウザなどの判断もしやすく、とりかかる時の不安も減るし、作業スピードも上がる</strong>よー、という話は、まさにその通りだなーと思いました。</p>
-
-<p>確かに、どんどん新しいことが出て来る分野で、事前に検証する時間をきっちり取るというのはとても大事で、それにより仕事の時間を極力減らすことで、また検証の時間を多く取ることができ、結果的に良いサイクルが回る、という話も印象的でした。</p>
-
-<p><strong>『知っていることを』を伝えなければその知識は知らないのと一緒</strong>、という言葉からも分かるように、まずはきちんと情報発信すること、アウトプットすることが大事だというとても参考になる良い話でした。</p>
-
-<h2 id="情報設計を用いてアプローチするユーザーの-時間-と-状況">情報設計を用いてアプローチするユーザーの『時間』と『状況』</h2>
-
-<p>最後は、KDDIウェブコミュニケーションズ・藤田淳子さんの<strong>情報設計を用いてアプローチするユーザーの『時間』と『状況』</strong>という内容でした。</p>
-
-<p>インターフェースの設計をするには、サービス自体の設計をする必要があり、インターフェースに接することでどういう価値を得るのか、<strong>お客さんはインターフェースにではなく、体験価値を買う</strong>んですよーといった、モノからコト作り（サービス）の話とIAを絡めた感じの話で、最近よくありがちな誰得サービスに対して、これから（当然今もですが）考えるべきところを指し示すような、とても興味深い発表でした。</p>
-
-<p>個人的に思ったのは、きちんとゴール設定をしたうえで、検証やゴールに至るプロセスに関しても、それに即した手法であったり、とにかくお客さんに対してしっかり向き合った姿勢が多くみられ、その辺りが一貫していた内容で、ブレが無くて素敵だなーと思いました。</p>
-
-<p>ちなみに、発表内でところどころ出ていた途中成果物が、誰にでも意図まで含めて伝わるように、きちんと見える化されていたのはとても印象的でした。</p>
-
-<h2 id="全体を通して思ったこと">全体を通して思ったこと</h2>
-
-<p>やはり、<strong>アウトプットは重要</strong>、という一言に尽きるかもしれません。</p>
-
-<p>こういった発表をすること自体も、とにかく情報発信しないとたぶん伝わらないですし、アウトプットしないと、質の良いインプットもきっと得られないだろうなーと思いますし、良いサイクルもきっと回らないですね。僕もブログ頑張って書こうと思います。</p>
-
-<p>登壇者の方々、CSS Nite in Nagoyaの関係者の方々、お疲れさまでしたー。良いイベントでした！</p>
+<p>これで常に TMUX_INITIAL_SESSIONS にある名前のセッションは存在していることになるので、
+TMUX 変数に何らかセットされていない場合に限って attach すれば良いことになります。</p>
 
 
 <ul class="socialbuttons">
@@ -102,12 +104,12 @@
 </ul>
 
 <div class="poststatus">
-  <p>  <time datetime="2013年2月2日">2013年2月2日</time>
+  <p>  <time datetime="2017年1月22日">2017年1月22日</time>
 </p>
 
   <ul class="tags">
-    <li class="flow"><a href="/tags/output/">output</a></li>
-    <li class="flow"><a href="/tags/event-conference/">event-conference</a></li>
+    <li class="flow"><a href="/tags/tmux/">tmux</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
   </ul>
 </div>
 

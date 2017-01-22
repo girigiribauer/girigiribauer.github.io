@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>tmux で自動起動するついでにセッション管理もする</title>
+          <link>http://girigiribauer.com/archives/20170122/</link>
+          <pubDate>Sun, 22 Jan 2017 18:11:19 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170122/</guid>
+          <description>tmux の自動起動周りに少し不満があって、 zshrc に以下の記述を追加しました。 # 初期に用意されているセッション # &amp;quot;prefix -&amp;gt; (&amp;quot; or &amp;quot;prefix -&amp;gt; )&amp;quot; でセッション切り替え TMUX_INITIAL_SESSIONS=( &amp;quot;config&amp;quot; &amp;quot;works&amp;quot;</description>
+        </item>
+      
+    
+      
+        <item>
           <title>今思えば知らずに損してたコマンドラインのあれこれ</title>
           <link>http://girigiribauer.com/archives/20170114/</link>
           <pubDate>Sat, 14 Jan 2017 17:57:40 +0900</pubDate>
