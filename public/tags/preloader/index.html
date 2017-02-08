@@ -28,8 +28,186 @@
 
 <h1>Tags / preloader</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/127">画像のプリローダーを使ってみよう！</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2012年4月15日">2012年4月15日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/webapp/">WebApp</a></li>
+    <li class="flow"><a href="/tags/preloader/">preloader</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>Webアプリっぽいものを作るときは、画像などのリソースを読み込むタイミングが、ページを表示したタイミングと同じではなく、ユーザーがボタンを押したり、何かのイベントが始まったり終わったりなど、<strong>任意のタイミング</strong>である場合が多いです。</p>
+
+<p>Flashなどのコンテンツでは、最初にページを開いたタイミングで、0%〜100%までのローディング表示が行われますね。<strong>FlashコンテンツがHTMLベースのコンテンツにどんどん置き換わっている</strong>昨今では、こういったローディングの機能も、HTMLベースのコンテンツに求められてきています。</p>
+
+<p>そうしたときに、画像などのリソースを一旦裏で読み込んでおいて、読み込み終わったものから順に表示したり、あるいはすべて読み込み終わったタイミングで一斉に表示したりといった、いわゆる<strong>「プリローダー」の役割を持ったものが必要</strong>になってきます。</p>
+
+<p>ってことで、プリローダーをいろいろ試してみようと思います。</p>
+
+<h2 id="プリローダーとは">プリローダーとは</h2>
+
+<p>画像に限らず、「あらかじめ」「ローディング」しておく役割のものを「プリローダー」と呼んでいますが、特に画像に限る必要もないのでは？と思います。</p>
+
+<p>プリローダーの仕組みは、大抵以下のような感じです。</p>
+
+<ol>
+<li>必要なリソースのURLを一通りプリローダーに登録する</li>
+<li>1ファイル、全ファイル読み込み終わったときの処理をそれぞれ書く</li>
+<li>プリローダーをスタートさせる</li>
+</ol>
+
+<p>シンプルですね。</p>
+
+<p>まず 1.で、例えば新たに表示したいパーツに使う画像などのリソース一式のURLを、配列などに保存しておきます。もちろんそのプリローダーごとに方法は様々だと思いますが。</p>
+
+<p>続けて 2.で、1ファイル読み込み終わったときの処理を記述します。ここでどんな処理を書けばいいかというと、例えば・・・画像を次々に読み込んで、1ファイル読み込み終わったタイミングで都度HTMLに埋め込んで表示するような、動的な見せ方をするコンテンツなどの処理を書くことができます。</p>
+
+<p>また、全ファイル読み込み終わったときの処理も記述します。画像を一通り読み込み終わってから、まとめて表示したり、すべて読み込み終わった後で何か別の処理をさせたいときなどに使えそうです。</p>
+
+<p>そして最後に 3.で、用意したプリローダーをスタートさせ、実際の読み込みを開始します。</p>
+
+<hr />
+
+<p>今回は、以下の3つのJavaScriptライブラリ、jQueryプラグインを試してみました。</p>
+
+<ul>
+<li>PxLoader</li>
+<li>Query.ImgLoader</li>
+<li>jquery.imgpreload</li>
+</ul>
+
+<p><del>全部まとめて検証用ページ作って試してみました。</del>画像数が少ない場合と多い場合とで両方試してみたかったので、とりあえず画像数を10から1000まで切り替えられるようになっています。 ※同じような画像を使っていますが、すべて別ファイルとしてリネームされたものを読み込んでいます。</p>
+
+<p>順に実装の仕方や、試してみた感想などをメモしておきます。</p>
+
+<h2 id="pxloader">PxLoader</h2>
+
+<p><a href="http://thinkpixellab.com/pxloader/" target="_blank">http://thinkpixellab.com/pxloader/</a></p>
+
+<pre><code>var loader = new PxLoader();
+for (var i = 0; i &amp;lt; imageTotal; i++) {
+  // ここでプリローダーに登録する
+  var imageFile = new PxLoaderImage(imageURLList[i]);
+  loader.add(imageFile);
+}
+loader.addProgressListener(function(event) {
+  // ここに1ファイル読み込み終わったときの処理を書く
+  // event.resource.getName() で画像URL参照できる
+});
+loader.addCompletionListener(function(event) {
+  // ここに全ファイル読み込み終わったときの処理を書く
+});
+loader.start();
+</code></pre>
+
+<h3 id="概要">概要</h3>
+
+<p>PxLoader という、jQueryなどの基本ライブラリには依存しないJavaScriptライブラリです。</p>
+
+<p>併せて PxLoaderImage という画像ダウンロード用のプラグインや、PxLoaderSound や PxLoaderVideo などのサウンド、ビデオ用のプラグインもあるようですね。</p>
+
+<p>まずプリローダーのオブジェクトを作り、それに対してプラグインでラッピングした画像URLを登録しています。loader.add でプリローダーに読み込む予定の画像URLを登録しておきます。</p>
+
+<p>loader.addProgressListener で1ファイル読み込み終わった後の処理を、コールバック関数として function 内に書いておきます。このサンプルでは、コールバック関数の引数（ここではevent）に対して、completedCount と totalCount のプロパティで、今の読み込みが完了した画像数と、あらかじめ登録された画像数が参照できるので、これを利用して進捗を表示しています。</p>
+
+<pre><code>var progress = event.completedCount + ' / ' + event.totalCount;
+var target = $('&lt;li&gt;&lt;img src=&quot;' + event.resource.getName() + '&quot;&gt;&lt;/li&gt;');
+target.hide().fadeIn(1000).appendTo(list);
+status.text(textLoadStart + ' (' + progress + ')');
+</code></pre>
+
+<p>また、どのライブラリ、プラグインでも同様の処理をしていますが、読み込み終わったタイミングで li タグで包んでフェードインさせつつ画像を表示させています。</p>
+
+<h3 id="感想など">感想など</h3>
+
+<p>どちらかというと、全体をいっぺんに読み込んで、進捗を表示させるようなものに特化しているような印象を受けます。Flashなどのスペコンで、<strong>途中で切れ目がないような一度に見せるタイプのコンテンツ</strong>に向いているかもしれません。</p>
+
+<h2 id="jquery-imgloader">jQuery.ImgLoader</h2>
+
+<p><a href="https://github.com/Takazudo/jQuery.ImgLoader" target="_blank">https://github.com/Takazudo/jQuery.ImgLoader</a></p>
+
+<pre><code>var loader = $.ImgLoader({
+  // ここでプリローダーに登録する
+  srcs: imageURLList
+});
+loader.bind('itemload', function($img) {
+  // ここに1ファイル読み込み終わったときの処理を書く
+  // $img が画像のオブジェクトに相当
+});
+loader.bind('allload', function($img) {
+  // ここに全ファイル読み込み終わったときの処理を書く
+});
+loader.load();
+</code></pre>
+
+<h3 id="概要-1">概要</h3>
+
+<p>jQuery.ImgLoader という、jQuery のプラグイン形式で提供されているプリローダーです。</p>
+
+<p>プリローダーを生成するときに、srcs プロパティに画像URLが入った配列を登録しておき、プリローダーに対して bind で itemload と allload イベントを補足します。loader.load() でプリローダーをスタートさせると、画像が読み込み終わったタイミングでそれぞれ itemload, allload のイベントが発火します。</p>
+
+<p>基本的にjQueryのプラグインとして動作しているため、コールバック関数も 読み込みが完了した画像のjQueryオブジェクトが引数として渡されるため、それをそのまま埋め込みつつ表示にも使ったりできます。また、allload の方も画像のjQueryオブジェクトの配列が返ってくるため、ここで一度に設置することも可能です。</p>
+
+<p>また、srcs に加えて、pipesize や delay プロパティも併せて用意することで、同時に読み込む画像数を制限することが出来ます。（サンプルでは5つに設定してます）</p>
+
+<h3 id="感想など-1">感想など</h3>
+
+<p>試してみたところの感想ですが、読み込む画像数を増やすと違いがはっきり見えてきますね。pipesize を設定しているせいで同時に読み込む画像数が少なくなり、結果的にすべて読み込むまでの時間は長くなっていますが、その間も特に重たくもなく、スムーズに動かせます。</p>
+
+<p>これは、上記のライブラリとは異なり、その都度<strong>読み込みつつ、表示させつつ、使わせつつ</strong>という、かなりリアルタイムな印象ですね。</p>
+
+<h2 id="jquery-imgpreload">jquery.imgpreload</h2>
+
+<p><a href="https://github.com/farinspace/jquery.imgpreload" target="_blank">https://github.com/farinspace/jquery.imgpreload</a></p>
+
+<pre><code>// ここでプリローダーに登録する（第1引数）
+$.imgpreload(imageURLList, {
+  each: function() {
+    // ここに1ファイル読み込み終わったときの処理を書く
+    // this が画像のオブジェクトに相当
+  },
+  all: function() {
+    // ここに全ファイル読み込み終わったときの処理を書く
+  }
+});
+</code></pre>
+
+<h3 id="概要-2">概要</h3>
+
+<p>jquery.imgpreload という、こちらも jQuery のプラグインで提供されるプリローダーです。</p>
+
+<p>基本的な機能は他と同じですが、プリローダーに必要な情報を一通り登録したら、それがそのままプリローダー開始となるようです。第1引数に画像URLの配列を登録して、第2引数に1ファイル読み込み終わったときの処理、全ファイル読み込み終わったときの処理をそれぞれ登録します。</p>
+
+<p>他と少し変わっているのが、コールバック関数の引数として画像の情報が返ってきているわけではなく、コールバック関数の this そのものが画像のオブジェクトになっている点ですね。all の方もthis そのものが画像の配列になっていて、一度に画像を設置することも可能です。</p>
+
+<h3 id="感想など-2">感想など</h3>
+
+<p>こちらも1つ目に紹介したライブラリに近いですが、現在の読み込み数などの情報は、用意されたデモHTMLを見る限り、自前で用意する必要がありそうです。逆にいえば、純粋にプリローダーだけの機能をもったシンプルなプラグインとも言えますね。</p>
+
+<h2 id="画像数を踏まえた比較">画像数を踏まえた比較</h2>
+
+<p>元々100ファイルで試していたのですが、あまり大きな違いは見られず、しいて言えば一気に読み込むタイプ、リアルタイムで読み込んでみせるタイプに分類されるのかなーと思っていました。ただ、1000ファイルやそれ以上ファイル数を増やしてみたところ、<strong>読み込み数の制限をかけていないライブラリ、プラグインは、読み込みをしている最中になかなかスクロールしづらい</strong>面があり、かなり違いが表に出てきています。</p>
+
+<p>ファイル数が多く読み込みに時間がかかる場合は、読み込み途中の使い勝手も併せて考慮に入れる必要があると思います。そういった意味で、多少全ての読み込みが完了するまでの時間が遅くなったとしても、<strong>同時読み込み数を制御して、フリーズして使えなくなることを避ける方法</strong>を検討するのも、1つの選択肢ではないでしょうか？</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2012年4月15日">2012年4月15日</time>
@@ -41,7 +219,8 @@
   </ul>
 </div>
 
-</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -62,7 +241,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -152,7 +331,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

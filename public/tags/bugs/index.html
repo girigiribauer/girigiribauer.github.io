@@ -28,8 +28,74 @@
 
 <h1>Tags / bugs</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1287">iPad（iOS7.0.4）のランドスケープモードで height: 100% だとバグる</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2014年2月5日">2014年2月5日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ios/">iOS</a></li>
+    <li class="flow"><a href="/tags/bugs/">bugs</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>タイトル通りなのですが、色々調べたりするのに時間かかったので一応メモしておきます。</p>
+
+<p>ひょっとすると、iOS7.1 以降にアップデートすると解消される内容かもしれません。 ただし現時点（2014/02/06）では iOS7.0.4 が最新であり、こちらのバージョンでは問題が確認できた内容です。</p>
+
+<h2 id="ipad-のランドスケープモードの表示でずれる">iPad のランドスケープモードの表示でずれる</h2>
+
+<p>たまたま手元に iOS6 のままアップデートしていない iPad があり、 まずそちらで検証して上手く行っていたのですが、 一通り検証し終わって「iOS7 にアップデートするかー」というタイミングで確認できた事象です。</p>
+
+<p>iOS7.0.4 の最新にアップデートした後で、iPad を横向きにした状態、 つまりランドスケープモードにして再度確認してみたら、 なんだかスクロールバーのようなものが出て、タッチして上下にスクロールが出来てしまいます。</p>
+
+<p>キャプチャにとって調べてみると、どうやら 20px ほど中身の要素が大きくはみ出てしまっている模様です。</p>
+
+<h2 id="スクロールバーの問題と思いきや-ただのバグだった">スクロールバーの問題と思いきや、ただのバグだった</h2>
+
+<p>iOS でそのサイズに相当するものが余分に表示、もしくは消えているなどで、 20px 相当ずれてしまっているのかな？と思ったのですが、 <strong>html 要素に対して height: 100% のスタイルを充てた状態だと、window.innerHeight は 672px ですが、window.outerHeight は 692px になるというバグ</strong>があるようです。</p>
+
+<p>検証用ページを用意されている方がいるようですので利用させてもらい、確認してみました。</p>
+
+<p><a href="http://krpano.com/ios/bugs/ios7-ipad-landscape/" target="_blank">http://krpano.com/ios/bugs/ios7-ipad-landscape/</a></p>
+
+<p><img src="/img/2014/02/ipad-ios7-landscape01.png" alt="" /></p>
+
+<p>これが Firefox 27（現時点で最新）のキャプチャです。 Chromeでも同じですがサイズ通りの表示です。</p>
+
+<p><img src="/img/2014/02/ipad-ios7-landscape02.png" alt="" /></p>
+
+<p>次が iPad（iOS シミュレータ、ただし実機でも確認して同様）のポートレートモードのキャプチャです。 こちらも問題ないですね。</p>
+
+<p><img src="/img/2014/02/ipad-ios7-landscape03.png" alt="" /></p>
+
+<p>こちらが問題の iPad, iOS7, ランドスケープモードのキャプチャです。 offsetHeight, clientHeight あたりの数値が 20px ほど（21px のときも？）増えちゃってます。</p>
+
+<p>うーん。こういうの困りますねー。まあまだ Android のカオスっぷりと比べたら、こんなの優しいのかもしれませんが。。。</p>
+
+<h2 id="対策">対策</h2>
+
+<p>やはり皆さん困っていらっしゃったようで、困ったときの Stack Overflow 様々ですね。</p>
+
+<p><a href="http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue" target="_blank">http://stackoverflow.com/questions/19012135/ios-7-ipad-safari-landscape-innerheight-outerheight-layout-issue</a></p>
+
+<p>ただ、この対策をとったとしても、iOS7.1 以降ではまだどうなるか分からないため、 後は対応度合いやバージョンのシェアの推移などを見て総合的に判断していくしかなさそうです。 （という玉虫色の結論で締めておきます。）</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2014年2月5日">2014年2月5日</time>
@@ -41,7 +107,8 @@
   </ul>
 </div>
 
-</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -62,7 +129,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -152,7 +219,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

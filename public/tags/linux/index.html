@@ -28,8 +28,218 @@
 
 <h1>Tags / Linux</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20170114/">今思えば知らずに損してたコマンドラインのあれこれ</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2017年1月14日">2017年1月14日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+    <li class="flow"><a href="/tags/linux/">Linux</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>今でこそ iTerm2 を全面に表示して、
+tmux でセッション、ウィンドウ、ペインごとに分けて、
+ターミナル内の Vim であれこれやってるわけですが、
+始めたての頃はコマンドラインに慣れるまで大変でした。</p>
+
+<p>今振り返って、これを知ってから or 使うようになってから、
+劇的に変わったなあと思うようなものがあるので、
+それらをメモ代わりに残しておきます。</p>
+
+<p><strong>今年からターミナルを使いこなしたい！</strong> と思っている方におすすめします。</p>
+
+<h2 id="emacs-vi-両方のキーバインドを最低限知っておく">Emacs, Vi 両方のキーバインドを最低限知っておく</h2>
+
+<p>これはエディタの話ではなく、コマンドラインであれこれやるにあたって
+<strong>両方のキーバインドを最低限知っておく必要があった</strong> という意味です。</p>
+
+<p>僕の環境設定の考え方の話になるのですが、
+なんでもかんでも自分の使いやすいように変えていくのではなく、
+<strong>よくある標準の設定をベースにしつつ、より良い設定を邪魔せず上乗せしていく形</strong>
+を取りたいといつも思っています。</p>
+
+<p>コマンドラインを使っていくに従って、
+<strong>標準の設定というのがとても良く考えられていることに段々気づいていく</strong> と思います。</p>
+
+<p>当然なのですが、その標準の設定を考えた人というのがいるわけで、
+すべてのことには理由があるので、
+仮にその理由を知らなかったとしても
+その標準の設定に合わせることで
+<strong>自然とそのメリットを享受できる</strong> ことも出てきます。</p>
+
+<h3 id="シェルスクリプトはもともと-emacs-風">シェルスクリプトはもともと Emacs 風</h3>
+
+<p>bash や zsh などのシェルでは、キーバインドのモードを切り替える設定が用意されています。</p>
+
+<pre><code># bash
+set -o vi
+
+# zsh
+bindkey -v
+</code></pre>
+
+<p>上記はともに Vi モードに切り替える設定なのですが、
+設定を変更しない場合、 <strong>標準で Emacs 風</strong> になっています。</p>
+
+<p>ここで仮に Ctrl-a で行頭に移動、 Ctrl-e で行末に移動、 Ctrl-w で1単語分の削除、
+などの Emacs 上での操作を知っていると、
+<strong>何も設定していないターミナル上で Emacs 風キーバインドで操作できる</strong> ことになります。</p>
+
+<p>コマンドライン使いたての頃、比較的長めのコマンドを打って実行したらミスが見つかったけど、
+その直したい箇所が入力の頭の方で、
+左キーを連打しまくってるけど時間がかかってしょうがない、みたいなケース、
+よくある話ではないでしょうか？</p>
+
+<p>特に何も設定されていないサーバなどに始めてアクセスする際には、
+こういったキーバインドを知っていることが効率に直結することもあると思います。</p>
+
+<h3 id="未知の端末をなんとなく扱えるメリットも">未知の端末をなんとなく扱えるメリットも</h3>
+
+<p>Windows の方はメリットを享受できないのですが、
+Mac の方は command キーと control キーに分かれているため、
+上記の Ctrl-a, Ctrl-e などのキーバインドが他アプリケーションで使えたりします。</p>
+
+<p>例えば <strong>各種 Web ブラウザの URL バー</strong> などはすでにそういった想定がされています。
+長い URL を入力しているとき、http じゃなくて https だったとなったときに
+マウスに手を伸ばす必要はありません。 Ctrl-a を押しましょう。</p>
+
+<p>Windows だと全選択が Ctrl-a などで重複してしまっており、Emacs 風のものは割り当てられていないようですね。</p>
+
+<h3 id="マニュアルを読むときは-vi-風">マニュアルを読むときは Vi 風</h3>
+
+<p>一方でマニュアルを読む際は <strong>最低限の Vi のキーバインド</strong> を知っておく必要があります。
+こちらもエディタとして使えるようになる必要はなく、
+<strong>上下の移動、検索あたりができれば必要十分</strong> だと思います。</p>
+
+<p>そもそも、</p>
+
+<pre><code>man foobar
+
+foobar --help
+</code></pre>
+
+<p>といったマニュアルを読む際は、
+Ctrl-f(forward), Ctrl-d(down) で下スクロール、
+Ctrl-b(back), Ctrl-u(up) で上スクロールでき、
+/ キーのあとにキーワードを入力して Enter キーを押せば検索できます。</p>
+
+<p>これらのキーバインドは Vi から来ています。</p>
+
+<h3 id="インターフェースとしての-emacs-vi">インターフェースとしての Emacs, Vi</h3>
+
+<p><strong>インターフェース</strong> という言葉が一番しっくりきます。</p>
+
+<p>エディタの操作方法としてではなく、
+インターフェースとして最低限知っておくだけで
+ターミナル上のコマンドライン操作はだいぶ変わってくると思います。</p>
+
+<p>自分が UI 実装する側になったときに、キーボード入力が想定されるのであれば、
+こういったところにも配慮すると、より使いやすくなるかもしれません。</p>
+
+<h2 id="コマンド履歴を使う">コマンド履歴を使う</h2>
+
+<p>そもそも最初はコマンド履歴を知らなかったので、
+上キーを押すことで過去に押したコマンドが表示されることも知りませんでした。</p>
+
+<p>それを知ってるかどうかだけでも少し変わってくるのですが、
+<strong>インクリメンタルサーチをきちんと使いこなす</strong> だけで大きく効率が変わってきます。</p>
+
+<p>これ知ったのつい2年前ほどだったのですが、 <a href="http://girigiribauer.com/archives/1873/" target="_blank">http://girigiribauer.com/archives/1873/</a>
+それまで知らなかった自分に愕然としましたね。</p>
+
+<p>特にサブコマンドやオプションの多い長いコマンドを、ある程度断続的に入力するケースの場合、
+<strong>インクリメンタルサーチはおすすめです。</strong></p>
+
+<p>こちらも設定なしで、 <strong>Ctrl-r</strong> が割り当てられています。</p>
+
+<p>一度入力する前に任意のコマンドを入力しておきます。（なんでもいいです）</p>
+
+<pre><code>% sudo service httpd restart
+</code></pre>
+
+<p>何も入力していない状態で、Ctrl-r を押すと、</p>
+
+<pre><code>%
+bck-i-search: _
+</code></pre>
+
+<p>入力箇所の下に bck-i-search という表示が出ます。
+<strong>後ろ方向のインクリメンタルサーチ</strong> のことです。</p>
+
+<p>ここで http と順に打つと、 <strong>他に候補がない時点で先ほど入力したコマンドが表示されます。</strong></p>
+
+<pre><code>% sudo service httpd restart
+bck-i-search: httpd\_
+</code></pre>
+
+<p>もし候補が出たけどもっと過去の履歴が欲しい！となったときは、
+後ろ方向のインクリメンタルサーチなので、何回か Ctrl-r を押しましょう。
+その都度、履歴を過去方向に検索してくれます。</p>
+
+<p>ちなみに遡りすぎた場合は、 <strong>前方向のインクリメンタルサーチである Ctrl-s</strong> も用意されています。
+そちらで今度は過去方向から未来方向へインクリメンタルサーチしましょう。</p>
+
+<pre><code>%
+fwd-i-search: _
+</code></pre>
+
+<h3 id="オプション付きの長いコマンドを何回かおきに入力するケースなどに有効">オプション付きの長いコマンドを何回かおきに入力するケースなどに有効</h3>
+
+<p>最近だと Docker を使ったりする方も増えてきていると思います。</p>
+
+<pre><code>docker run -d -p 80 -v &quot;$(pwd)/public:/usr/share/nginx/html&quot; --name test nginx
+</code></pre>
+
+<p>まだこれくらいならかわいいもので、追加でボリュームを紐付けたり、環境変数を設定したりすると、
+2行3行と長くなってきます。</p>
+
+<p>毎回同じコマンドを入力するだけなら、上キーだけで十分なのですが、
+間に別のコマンドを何度か入力したりして、間がどんどん開いてくると、
+上キーだけで遡るのは厳しくなってきます。</p>
+
+<p>上記の例であれば、例えば <strong>Ctrl-r を押した後に docker と入力した方が直感的だし速い</strong> です。
+場合によっては docker 全部入力せずに d だけで事足りるかもしれません。（インクリメンタルサーチなので）</p>
+
+<p>僕の場合ですが、 tmux を利用して画面を分割してコマンド入力を色々行っており、
+こっちの画面で過去に入力したコマンドを、今度はあっちの画面で入力したい、
+みたいなケースがけっこう出て来ます。
+そういったケースに対応するために、 .zshrc に履歴の共有を行う設定を入れています。</p>
+
+<h2 id="tab-キーによるコマンド補完を使う">Tab キーによるコマンド補完を使う</h2>
+
+<p>あとは当然知ってる話だと思うのでおまけ程度ですが、
+<strong>コマンド打つときは Tab キーで補完できる</strong> ことは知っておきましょう。</p>
+
+<p>さすがに自分はなかったですが、
+たまに律儀に毎回全部入力している人を見ると「うーん・・・」という気分になります。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>標準の設定をインターフェースとして捉えることで、
+様々なメリットが享受できると思います。
+<strong>あまりあれこれ設定をいじりすぎずに、標準の設定に慣れるということも一定大事</strong> だと思います。</p>
+
+<p>慣れるまでは大変だと思いますが、
+GUI ではカバーしきれないところをコマンドラインで出来ることも多いので、
+頑張って慣れていくと良いと思います。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2017年1月14日">2017年1月14日</time>
@@ -41,9 +251,7 @@
   </ul>
 </div>
 
-</div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1873">コマンド履歴の Ctrl-R 使ってますか？</a></h2>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年6月23日">2015年6月23日</time>
@@ -55,9 +263,61 @@
   </ul>
 </div>
 
+
+
+
+<p>大学で初めて Linux を触りつつも、 その後働き始めてほぼ GUI オンリーの生活を送り、 iTerm, tmux, Vim 達とのと出会いを経て、 コマンドライン中心の生活を送っている girigiribauer ですこんにちは。</p>
+
+<p>大学で初めて触り始めた頃は、コマンドの補完をタブキーで出来るだとか、上下キーで自分の打ったコマンド履歴を移動できたりと、単にコマンド名だけでなく、ショートカットキーも大事だなあと思いながら色々覚えていきました。 近年では VM 立ち上げたりタスクランナー走らせたりと、コマンドラインなしでは生きていけないくらいには使わせてもらってます。</p>
+
+<p>ですが、過去のコマンドラインの履歴を入力するのに、後方からの<strong>履歴のインクリメンタルサーチ</strong>のショートカットが用意されていることを、僕は恥ずかしながらつい先日まで知りませんでした。（！）</p>
+
+<p>同じ記事は溢れているかもしれませんが、まだ見ぬ『知らんかったー』って人のために、恥を忍んでメモっておこうと思います。</p>
+
+<h2 id="コマンド履歴の後方からのインクリメンタルサーチ">コマンド履歴の後方からのインクリメンタルサーチ</h2>
+
+<p>bash にも最初から入ってるんですねー。なんで知らなかったんでしょうねー。</p>
+
+<p><strong>Ctrl-R</strong> を押すと、</p>
+
+<pre><code>(reverse-i-search)`':
+</code></pre>
+
+<p>のような感じで表示され、そのまま過去に入力したコマンドを数文字打つと、インクリメンタルサーチの要領で候補が絞られていきます。</p>
+
+<p>後方検索なので、複数の候補があれば新しいものが優先して表示されます。 ちなみに、前方検索もあって <strong>Ctrl-S</strong> らしいのですが、他のショートカットキーに割り当てられてあるケースも多いようなので、.bashrc なり .zshrc なりに書いてやる必要があります。</p>
+
+<p>1時間前くらいに入力したけどもう一度同じコマンド打ちたいとか、そういったケースなどに重宝するかと思います。これは知ってて当たり前のショートカットですねサーセン・・・</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>マニュアルをちゃんと読もう。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年6月23日">2015年6月23日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/linux/">Linux</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/673">LinuxサーバとPHPの初心者向け勉強会に参加してみた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年1月22日">2013年1月22日</time>
@@ -70,7 +330,107 @@
   </ul>
 </div>
 
+
+
+
+<p><img src="/img/2013/01/neostudy011.png" alt="" /></p>
+
+<p>先週末の 1/19（土）に、株式会社 音生（ねお）さんにお邪魔してきました。 その時の勉強会のレポートなどを軽くまとめてみようと思います。</p>
+
+<h2 id="概要">概要</h2>
+
+<p>勉強会の内容としては、前半が『Web作成者のためのLinuxサーバー入門』で、 後半が『PHPで作る簡易電卓』でした。 音生さんにてお勉強会が開催されるとのことだったので、これはぜひともお邪魔してみなければ！という思いで 参加させていただきました。</p>
+
+<p>また、最近話題の<strong>黒い画面の勉強会</strong>に相当するということもあり、 どんな感じの勉強会になるのかなーという興味もかなりありました。</p>
+
+<h2 id="web作成者のためのlinuxサーバー入門-前半">Web作成者のためのLinuxサーバー入門（前半）</h2>
+
+<p>講師は音生の深谷さんで、だいたい以下のことをやりました。</p>
+
+<ul>
+<li>VirtualBoxのインストール</li>
+<li>CentOSのインストール</li>
+<li>ネットワークの設定（viを使って）</li>
+</ul>
+
+<p>CentOSは、WebサービスやWebサイトのサーバOSとしてよく使われるLinuxディストリビューションですね。それぞれ持って来たPCにVirtualBoxをインストールして、その仮想環境上にCentOSをインストールしました。</p>
+
+<p>さらに、黒い画面上で簡単なコマンドの解説をしてもらいつつ、実際にネットワークの設定を vi を使って行いました。</p>
+
+<h2 id="phpで作る簡易電卓-後半">PHPで作る簡易電卓（後半）</h2>
+
+<p>講師は同じく音生の吉川さんで、後半は杉本さんのわかりやすーい説明のターンでした。 だいたい以下のような内容です。</p>
+
+<ul>
+<li>電卓アプリのサンプルコードを写経</li>
+<li>簡単な文法の解説、と同時に概念の説明</li>
+</ul>
+
+<p>あまり時間もなかったので、まず一通りの解説どころの詰まったサンプルコードを写経して、自分で書いたサンプルコードに対して、これはこういう意味ですよ、といった形で理解を深めるような形式でした。</p>
+
+<h2 id="良かったところ-気になったところ">良かったところ、気になったところ</h2>
+
+<ul>
+<li><strong>セキュリティ周りはやはり削らないところにこの勉強会の意義を感じた</strong></li>
+<li>教え方が分かりやすかった
+
+<ul>
+<li>ゆるい比較と厳密な比較を定義だけ教えるのではなく、ゆるい比較であれば「trueっぽいよねー」「falseっぽいよねー」という概念含めて教えてくれてるのはすごくいいなと思った</li>
+</ul></li>
+<li>止まっちゃった人に対してマンツーマンでちゃんと付く体制が完璧で、ところどころ遅れた人が出ても問題なく進行して、<strong>みんなの理解度も一定を保ちつつ進行</strong>しててすごかった</li>
+<li>これだけの内容を1日で（ゼロから説明して）やろうとすると、やっぱりところどころ駆け足になっちゃうのは仕方なさそう</li>
+</ul>
+
+<p>最後の、やりたい内容と最低限触れなきゃいけないところとのバランスですが、これは他のどの勉強会であっても、課題になりそうなところだと思います。</p>
+
+<p>逆に削れるところあるのかなーとか考えてみたのですが、ひょっとしたら今は環境を丸々借りることができるので、その辺（インストール周り）を大胆に端折ってアプリケーション寄りの話を厚めにするのもありなのかなーとも思いました。</p>
+
+<p>そういう意味で良い時代ですね。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<ul>
+<li>杉本さんの、押さえるところは押さえつつも崩して分かりやすく説明する、あのバランス感覚がすごかった</li>
+<li>無料にも関わらず、参加者の意識が総じて高くて、そういった意味でも質の高い勉強会だった</li>
+<li>懇親会が本番だ！</li>
+</ul>
+
+<p>今年の自分の目標でもある、自分が知っているものを、まだ知らない人に対して、分かりやすく伝える、というのを、まさに体現していた勉強会で、とても参考になりました。また参加したいですね！</p>
+
+<h2 id="reference">参考URL</h2>
+
+<ul>
+<li><a href="http://atnd.org/event/E0011899?vos=cpatnsoccap0111026001" target="_blank">Web作成者のためのLinuxサーバー入門とPHPで作る簡易電卓 | 集客ならイベントアテンド</a></li>
+<li><a href="http://blog.wnotes.net/blog/article/study-sessions-held" target="_blank">弊社主催の勉強会を開催しました | ブログ :: Web notes.log</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年1月22日">2013年1月22日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/linux/">Linux</a></li>
+    <li class="flow"><a href="/tags/php/">PHP</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
 </div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -91,7 +451,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -181,7 +541,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

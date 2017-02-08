@@ -1,5 +1,7 @@
-<div class="articleitem">
-  <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
-
 {{ partial "poststatus.html" . }}
-</div>
+
+{{ .Content }}
+
+{{ partial "socialbuttons.html" . }}
+{{ partial "poststatus.html" . }}
+{{ partial "notice.html" . }}

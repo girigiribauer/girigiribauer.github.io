@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+&lt;?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ばうあーろぐ</title>
@@ -8,6 +9,16 @@
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
 
+    
+      
+        <item>
+          <title>zsh で日付などを補完・入力補助する方法</title>
+          <link>http://girigiribauer.com/archives/20170208/</link>
+          <pubDate>Wed, 08 Feb 2017 18:10:11 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170208/</guid>
+          <description>その場で展開したいのです。 結論から先に書いておきます。 function print_date() { zle -U `date &amp;quot;+%y%m%d&amp;quot;` } zle -N print_date bindkey &amp;quot;^Xd&amp;quot; print_date zsh における入力バッファの概念だとか、 zle (zsh line editor) だとか、 その辺</description>
+        </item>
+      
     
       
         <item>

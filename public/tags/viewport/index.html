@@ -28,8 +28,109 @@
 
 <h1>Tags / viewport</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1665">iOS8 on iPhone6 で設定によって viewport の値が変わる件</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2014年9月25日">2014年9月25日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/viewport/">viewport</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>これはさすがに書いておいた方がよいかと思ったので書いておきます。</p>
+
+<p>結論だけ先に言うと、設定によって viewport の値が変わるので注意です。</p>
+
+<h2 id="設定によって-viewport-の値が変わる件">設定によって viewport の値が変わる件</h2>
+
+<p>2014年の9月に iPhone6, iPhone6 Plus がそれぞれ発売されたわけですが、 購入して初期設定してるときに気になる画面が。</p>
+
+<p><img src="/img/2014/09/iphone6-viewport01.png" alt="" /></p>
+
+<p>へぇーー。初期設定の際に画面全体を標準サイズにするか、拡大サイズにするかを選択できるようになってました。</p>
+
+<p>また、初期設定後であっても、<strong>設定 &gt; 画面表示と明るさ &gt; 画面表示の拡大</strong> という項目で自由に変更できるようになっています。</p>
+
+<p>プレビュー画面も用意されているので分かりやすいです。こちらが標準設定。</p>
+
+<p><img src="/img/2014/09/iphone6-viewport02.png" alt="" /></p>
+
+<p>以下が拡大設定です。</p>
+
+<p><img src="/img/2014/09/iphone6-viewport03.png" alt="" /></p>
+
+<h2 id="比率は一定で横幅柔軟にしましょう">比率は一定で横幅柔軟にしましょう</h2>
+
+<p>端末はデカくなったのですが、今までの考え方に沿うのであれば、マルチデバイスであっても<strong>比率は一定で横幅（or 高さ）を柔軟に考えていきましょう</strong>という意味での device-width（or device-height） なので、画面がデカくなれば横幅が増えるはずです。</p>
+
+<p>実際今回もその通りになっていて、iPhone6 の viewport は、<strong>device-width = 375(px), device-height = 559(px)</strong> です。</p>
+
+<p>上のキャプチャを見てもらえれば分かるように、ボタンのサイズ感はそのままなので、以前のものと同じような押しやすさになっており、ボタン間の余白が調整されています。</p>
+
+<p>正直ここまでは予想通りだったかと思います。いまどき 320px の幅固定で作っちゃってる人は、まあ当然異なるスクリーンサイズが出て来ちゃったらはまるよねー、という感じで、device-width が異なるものが出てくるのは、もう既定路線というか、想定の範囲内だったと思います。</p>
+
+<h2 id="そこで颯爽と登場した-画面表示の拡大-設定">そこで颯爽と登場した『画面表示の拡大』設定</h2>
+
+<p>この拡大設定にしたときに、Safari で見たらどうなるんだろうとふと思ったのですが、比率が異なっているのであれば、逆に viewport の設定も変化しているのでは？と思い、それぞれ見比べてみました。</p>
+
+<p>以下が通常設定時。</p>
+
+<p><img src="/img/2014/09/iphone6-viewport04.jpg" alt="" /></p>
+
+<p>対して、こちらが拡大設定時。</p>
+
+<p><img src="/img/2014/09/iphone6-viewport05.jpg" alt="" /></p>
+
+<p>ご覧の通り、この設定によって拡大率が変わってくるので、viewport の値も変わってきます。（余談ですが、device-width が小さくなっているのと同様に、キャプチャサイズも小さくなってました）</p>
+
+<p>で、少し問題になってくるのが、初期設定のこの画面です。</p>
+
+<p><img src="/img/2014/09/iphone6-viewport01.png" alt="" /></p>
+
+<p><strong>必ずどちらかユーザーが選択する</strong>ようになっています。</p>
+
+<h3 id="ie-のズーム機能との違い">IE のズーム機能との違い</h3>
+
+<p>IE では、何もしなくてもズーム機能の値が標準になっているので、特に設定をいじらなければ標準のままですが、iPhone6 からは初期設定時に必ずユーザーが選択する必要があります。（というのをキャプチャ見せながら書くために再度出荷時にまで戻してキャプチャ取りました・・・）</p>
+
+<p>IE のズーム機能の対応は、おそらくやる場合とやらない場合が出て来たかと思います。通例などは知りませんが、一例として、『何も触らなければ標準なんだし、標準の設定の場合だけサポートしますね』というのはよくある謳い文句かと思います。</p>
+
+<p>ただ、今回のケースはそれとは異なり、必ずユーザーがどちらか選ばないといけません。 年配の方であれば、他の年代よりも拡大表示を選ぶ可能性が高くなるのではないでしょうか？</p>
+
+<h3 id="同じ端末なのに異なる-viewport-で閲覧するケースが出てくる">同じ端末なのに異なる viewport で閲覧するケースが出てくる</h3>
+
+<p>横幅（高さ）固定のレイアウトで作っていなくても、例えば CSS の Media Queries を用いてスタイルの切り替えを行っていたり、window.matchMedia を用いて特定のスクリーンサイズのみ動作する処理を用意していたりする場合、こちらの設定によって動作する／しない、表示される／されない、といったケースが考えられます。</p>
+
+<p>例えば、作ったものをクライアントに確認出ししているときに、今3カラムになってるんだけど4カラムに直してよ、と言われても、こちらの端末にはもうすでに4カラムになっていて直しようがない、とか。</p>
+
+<p>まだ目に見える範囲であれば、キャプチャとってもらって確認すれば、『ひょっとして・・・』と気づくかもしれませんが、見た目に見えないところだと気づかない可能性もありますね。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p><strong>『比率は一定で横幅を柔軟に作る』というのは大前提</strong>なのですが、 それとは別に iPhone6 以降では、<strong>拡大設定によって viewport が異なり、 同じ実機、同じブラウザでも、人によって見ているものが異なる可能性がある</strong>ということを頭の片隅に入れておく必要があると思います。</p>
+
+<p>今回の例は iPhone6 だけですが、まあ間違いなく iPhone6 Plus の方にも同様の問題があると思われます。（まだ実機手に入れてないので、もしお持ちの方は以下のページで報告いただけたら嬉しいです。）</p>
+
+<ul>
+<li><a href="http://viewportsizes.com/mine/" target="_blank">http://viewportsizes.com/mine/</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2014年9月25日">2014年9月25日</time>
@@ -40,9 +141,7 @@
   </ul>
 </div>
 
-</div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1179">mediaQuery における max-width, max-device-width の違い</a></h2>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年11月13日">2013年11月13日</time>
@@ -56,7 +155,110 @@
   </ul>
 </div>
 
+
+
+
+<p>最近改めて使い分けないとなーと実感したので、その実感を忘れないうちにメモしておこうと思います。</p>
+
+<h2 id="デバイスの幅-width-と-device-width-の違いについて">デバイスの幅(width)と device-width の違いについて</h2>
+
+<p>そもそもの話ですが、そのデバイスで何ピクセル x 何ピクセルで表示できますよーという値と、 device-width の値は異なります。（結果的に同じ場合もあり得ますが）</p>
+
+<p><a href="http://screensiz.es/" target="_blank">http://screensiz.es/</a></p>
+
+<p><img src="/img/2014/01/device-width01.png" alt="" /></p>
+
+<p>こちらに、デバイスごとの width, device-width がまとめてあります。たまに見ます。</p>
+
+<p>iPhone 3GS の時代であれば、width = 320px, device-width = 320px であったので問題なかったのですが、 retina ディスプレイが出てきてから、 width = 640px, device-width = 320px になってきています。</p>
+
+<p>それならまだ 1:2 になるので分かりやすくて良かったのですが、 そうではない多種多様なデバイスが世に出回っています。</p>
+
+<p>例えば Surface Pro は、1920 x 1200px で device-width = 1280px であったり、 Nexus7 は、800 x 1280px で device-width = 601px であったり、 さらに Nexus7 の例のように、<strong>アップデートで device-width は変化したりもします。</strong></p>
+
+<p>一緒に作ってる人と話すときにそのあたりの認識が異なる場合がそこそこあるのですが、 device-width は、あくまでそのデバイスを提供している側が、<strong>見せたい側の都合の良いサイズ</strong>を決めているだけにすぎないもので、 width と device-width に依存関係はないと考えています。</p>
+
+<p>タブレット周りは特にそれが顕著で、サイズ的にも『PCレイアウトで見せたい！』というデバイスの開発側の意図により、 PCレイアウトに近くなるような device-width が決められています。 （768px であったり、1024px であったり・・・）</p>
+
+<p>そもそも device-width がどっちの辺を指すのか？も、デバイスの開発側の意図によるもので、 デバイスによって様々です。大変ですね。</p>
+
+<p>なので、「必ずこの端末は意図した通りのデザインで見せたい！」とか、 「アプリとしてリリースするけど、この部分はWebViewでー」とか、そういったケースで viewport のメタタグに device-width が設定してある場合などは、 （当たり前とは思いつつも）きちんとチーム内で作る対象のサイズを共有しなければと思っているところです。</p>
+
+<h2 id="max-width-と-max-device-width-の違い">max-width と max-device-width の違い</h2>
+
+<p>こちらが本題です。</p>
+
+<p>CSS の mediaQuery で幅に応じてスタイルの出し分けを行ったりするケースで使うのですが、</p>
+
+<blockquote>
+<p>@media only screen and (max-width: 480px) {</p>
+</blockquote>
+
+<p>とか、</p>
+
+<blockquote>
+<p>@media only screen and (max-device-width: 480px) {</p>
+</blockquote>
+
+<p>などのように使います。</p>
+
+<p>max-width と max-device-width はどのような違いがあるかというと、 <strong>表示領域の幅</strong>なのか、<strong>そのデバイスそのものの幅</strong>なのかの違いがあります。</p>
+
+<p>例えば以下のケースで、違いが顕著になってくると思います。</p>
+
+<ol>
+<li>スマートフォンレイアウトの検証を、簡易的にWebブラウザのウィンドウ幅を変えることで検証を行っている場合</li>
+<li>スマートフォンなどのモバイルデバイスを縦横に傾けた場合</li>
+</ol>
+
+<p>max-width などの表示領域の幅で指定がしてあった場合、 1.のケースでは例えば開発者ツールを開きながらの検証が非常にスムーズであると思います。 これは表示領域の幅で切り替えており、ウィンドウサイズを変えることでこちらの数値が変わるためにスタイルのあたり方が変化することによるものです。</p>
+
+<p>また、2.のケースでは、仮にしきい値が 480px にしてあった場合、iPhone5 などを縦から横に傾けた場合、 表示領域の幅が 320px から 568px に変化することにより、スタイルのあたり方は同様に変化します。</p>
+
+<p>max-device-width などのデバイスそのものの幅で指定がしてあった場合、 1.のケースでウィンドウサイズを変化させただけでは表示の変化はしません。 この場合は開発者ツールなどでデバイスのサイズ（device metrics）を上書きしてやる必要が出てくると思います。</p>
+
+<p>また、2.のケースでは、一部のデバイスを除き（どれまでかは細かく知らないです）、 デバイスごとに、device-widthを「Webコンテンツをこの幅で見せたいんだ！」と開発側が決めているため、 縦横に傾けてもこの数値は変わらず、上記の mediaQuery 指定でスタイルが変化することはありません。</p>
+
+<p>こういった違いがあるため、作っているものによって使い分ける必要があるのではないかと思います。</p>
+
+<h2 id="例えばレスポンシブレイアウトなど">例えばレスポンシブレイアウトなど</h2>
+
+<p>例えばレスポンシブレイアウトなどで、大きく 480px あたりでPC用リソース、スマートフォン用リソースを出し分けていると仮定します。</p>
+
+<p>max-width で指定してあった場合に、480px の幅を下回るデバイスで閲覧し、横に傾けて 480px を上回るケースでは、 傾けた時点で表示領域・幅が変化することになるため、 適用されるスタイルが大きく変わります。</p>
+
+<p>PC用、スマートフォン用とでリソースを多く出し分けていたとしたら、<strong>傾けた時点で多くのリソースの読み込みが発生してしまう</strong>ことになります。大変なことですね。</p>
+
+<p>どちらが良いとか決めうちで決められるものではないので、作っているものによってこのあたりの違いを踏まえて毎回適切な実装方法を考えていかないといけないなーと、改めて実感したところです。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年11月13日">2013年11月13日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/css/">CSS</a></li>
+    <li class="flow"><a href="/tags/mediaquery/">mediaQuery</a></li>
+    <li class="flow"><a href="/tags/viewport/">viewport</a></li>
+    <li class="flow"><a href="/tags/smartphone/">Smartphone</a></li>
+  </ul>
 </div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -77,7 +279,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -167,7 +369,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

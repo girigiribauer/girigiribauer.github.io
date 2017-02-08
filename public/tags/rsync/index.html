@@ -28,8 +28,193 @@
 
 <h1>Tags / rsync</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160903/">FTP でも rsync みたいにコマンドからファイル転送したい</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2016年9月3日">2016年9月3日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ftp/">FTP</a></li>
+    <li class="flow"><a href="/tags/rsync/">rsync</a></li>
+    <li class="flow"><a href="/tags/automation/">automation</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>ターミナルで何でも行う人にとって、FTP の GUI クライアントはもう辛すぎるのです。
+コマンド1つで rsync のようにアップロードしたいのです。</p>
+
+<p>同じように考える人は多いらしく、
+&ldquo;rsync&rdquo;, &ldquo;FTP&rdquo; でググると &ldquo;rsync over FTP&rdquo; がどうのこうのと書かれた記事は散見するものの、
+そんなものないけど、代わりに <strong>lftp</strong> 使うといいよ。みたいな記事が多くあります。</p>
+
+<p>なので、（過去に1度使った記憶あるものの、改めて）試しに使ってみました。</p>
+
+<p>なお、MacBook Pro の El Capitan です。Homebrew でインストールします。</p>
+
+<pre><code>brew install lftp
+man lftp
+</code></pre>
+
+<p>lftp コマンドは、基本的に ftp コマンドと同じく対話形式のコマンドなのですが、
+オプションで -e や -c とともに対話形式の内容のコマンド（サブコマンド？）をつけてやると
+そのまま実行できます。</p>
+
+<p>また、対話形式をテキストファイルにまとめておき、 -f オプションで利用することも可能です。
+以下は lftp コマンド自体のシンタックスとオプションです。（man lftp より抜粋）</p>
+
+<pre><code>SYNTAX
+       lftp [-d] [-e cmd] [-p port] [-u user[,pass]] [site]
+       lftp -f script_file
+       lftp -c commands
+       lftp --version
+       lftp --help
+
+OPTIONS
+       -d     Switch on debugging mode.
+
+       -e commands
+              Execute given commands and don't exit.
+
+       -p port
+              Use the given port to connect.
+
+       -u user[,pass]
+              Use the given username and  password  to  connect.  Remember  to
+              quote  the  password properly in the shell. Also note that it is
+              not secure to specify the password on command line, use ~/.netrc
+              file   or   LFTP_PASSWORD  environment  variable  together  with
+              --env-password option. Alternatively you can use ssh-based  pro-
+              tocols  with authorized keys, so you don't have to enter a pass-
+              word.
+
+
+       --norc Don't execute rc files from the home directory.
+
+       -f script_file
+              Execute commands in the file and exit.  This option must be used
+              alone without other arguments (except --norc).
+
+       -c commands
+              Execute  the  given commands and exit. Commands can be separated
+              with a semicolon, `&amp;&amp;' or `||'. Remember to quote  the  commands
+              argument  properly in the shell.  This option must be used alone
+              without other arguments (except --norc).
+</code></pre>
+
+<p>上記から、接続情報は lftp のオプションとして渡しつつ、
+それとは別に対話形式内のコマンドにて実際のファイルアップロードを行います。</p>
+
+<p>今回はその中の mirror コマンドを利用し、 rsync に近いことを行ったのを
+シェルスクリプトにまとめてみました。（接続情報はダミー）</p>
+
+<pre><code>#!/bin/sh
+
+HOSTNAME=192.0.2.24
+USERNAME=girigiribauer
+PASSWORD=passwordhere
+SOURCE=&quot;path/to/source_dir&quot;
+DIST=&quot;/path/to/target_dir&quot;
+
+lftp -d -u $USERNAME,$PASSWORD $HOSTNAME -e &quot;\
+  mirror \
+  --reverse \
+  --delete \
+  --only-newer \
+  --verbose \
+  -X .DS_Store \
+  $SOURCE \
+  $DIST; \
+  exit&quot;
+</code></pre>
+
+<p>後半が mirror コマンドのオプションですが、
+reverse はアップロードを意味します。</p>
+
+<p>色々オプションあるので詳しくはヘルプを見た方が良いのですが、
+lftp の方のヘルプにはあまり詳しく載ってませんので
+lftp コマンドをそのまま実行して対話形式にしてから
+<code>help mirror</code> とすることで mirror コマンドの help を開くことができます。</p>
+
+<pre><code>% lftp
+lftp :~&gt; help mirror
+Usage: mirror [OPTS] [remote [local]]
+
+Mirror specified remote directory to local directory
+
+ -c, --continue         continue a mirror job if possible
+ -e, --delete           delete files not present at remote site
+     --delete-first     delete old files before transferring new ones
+ -s, --allow-suid       set suid/sgid bits according to remote site
+     --allow-chown      try to set owner and group on files
+     --ignore-time      ignore time when deciding whether to download
+ -n, --only-newer       download only newer files (-c won't work)
+ -r, --no-recursion     don't go to subdirectories
+ -p, --no-perms         don't set file permissions
+     --no-umask         don't apply umask to file modes
+ -R, --reverse          reverse mirror (put files)
+ -L, --dereference      download symbolic links as files
+ -N, --newer-than=SPEC  download only files newer than specified time
+ -P, --parallel[=N]     download N files in parallel
+ -i RX, --include RX    include matching files
+ -x RX, --exclude RX    exclude matching files
+                        RX is extended regular expression
+ -v, --verbose[=N]      verbose operation
+     --log=FILE         write lftp commands being executed to FILE
+     --script=FILE      write lftp commands to FILE, but don't execute them
+     --just-print, --dry-run    same as --script=-
+
+When using -R, the first directory is local and the second is remote.
+If the second directory is omitted, basename of first directory is used.
+If both directories are omitted, current local and remote directories are used.
+</code></pre>
+
+<p>今回は、手元のファイルのが新しい場合に動作し、
+なおかつ手元で削除したファイルも同期を取りたいので、
+ &ndash;delete と &ndash;only-newer オプションをつけました。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>FTP だけでも rsync にある程度近いことは出来ました。</p>
+
+<p>ただ、 dry-run 相当のオプションが探した限りなかったので、
+実際に試しながら正しく動作しているか確認することになるので、
+そこはちょっと怖いところではありますね・・・。</p>
+
+<p><strong>2016/09/30追記</strong></p>
+
+<p>さーせん、dry-run オプションありました・・・</p>
+
+<p>&ndash;just-print, &ndash;dry-run    same as &ndash;script=- って上にあるじゃん、自分の目はフシ穴か・・・</p>
+
+<p><strong>2016/09/30追記ここまで</strong></p>
+
+<p>FTP のみという縛りがあったとしても、コマンド1つで転送できるようにしておけば、
+バージョン管理などと連携してフックさせることも可能となり、
+精神衛生的にも良いかと思います。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://lftp.yar.ru/" target="_blank">https://lftp.yar.ru/</a></li>
+<li><a href="http://www.itmedia.co.jp/enterprise/articles/0804/25/news014.html" target="_blank">http://www.itmedia.co.jp/enterprise/articles/0804/25/news014.html</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2016年9月3日">2016年9月3日</time>
@@ -43,7 +228,8 @@
   </ul>
 </div>
 
-</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -64,7 +250,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -154,7 +340,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

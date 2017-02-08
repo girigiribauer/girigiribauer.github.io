@@ -28,8 +28,63 @@
 
 <h1>Tags / Static Site Generator</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20170106/">github-markdown-css を導入してみた</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2017年1月6日">2017年1月6日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/css/">CSS</a></li>
+    <li class="flow"><a href="/tags/hugo/">Hugo</a></li>
+    <li class="flow"><a href="/tags/static-site-generator/">Static Site Generator</a></li>
+  </ul>
+</div>
+
+
+<p>Github から生成されるページって、バランスとかが良くてなんだかんだですごく読みやすいんですよ。</p>
+
+<p>一方で自分のブログは、中身を WordPress から Hugo に変えて
+データベースの管理をしなくなって済んだところはすっきりしたものの、
+当時そこ以外に時間をかけたくなく、見た目は古いままで移行したので、
+自分で読んでてちょっと読みづらかったんですよね。</p>
+
+<p>そこで、見た目をばっさり切り捨てつつ、以下を導入しました。</p>
+
+<p><a href="https://github.com/sindresorhus/github-markdown-css" target="_blank">https://github.com/sindresorhus/github-markdown-css</a></p>
+
+<p>これをベースにして、メインコンテンツ幅やリンクの横並びの調整など、
+本当に最小限の調整を行っただけなのですが、
+時間かけずにいい感じになったので、しばらくこのままで行こうと思います。</p>
+
+<p><strong>本当に大事じゃないところに時間かけないの、大事だと思います。</strong></p>
+
+<p>ついでにトップページと一覧ページを分けました。</p>
+
+<p>現状 Hugo を利用してブログ書いてるときに困る点、やってない点といえば、</p>
+
+<ul>
+<li>画像の加工がめんどくさい</li>
+<li>投稿してから追記した場合の日付管理（Hugo で .Lastmod を使う？）</li>
+<li>古すぎますよ、という警告文表示（Static Site なので Hugo だけでは難しい？）</li>
+</ul>
+
+<p>ぐらいになったかと思います。</p>
+
+<p>とはいえそんなに困っているわけでもないので、
+気が向いたときにでも改善していこうと思います。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2017年1月6日">2017年1月6日</time>
@@ -42,9 +97,7 @@
   </ul>
 </div>
 
-</div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160705/">WordPress を捨てて Hugo に移行した</a></h2>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年7月5日">2016年7月5日</time>
@@ -56,7 +109,262 @@
   </ul>
 </div>
 
+
+
+
+<p><strong>RSS の URL が変わってしまったので、<del>一時的に元の URL に静的な RSS の XML ファイルをおいてますが、</del> =&gt; 置いたけどダメでした・・・ この記事以降の更新は反映されないので、以下より再取得していただければと思います。</strong></p>
+
+<p><a href="http://girigiribauer.com/index.xml" target="_blank">http://girigiribauer.com/index.xml</a></p>
+
+<hr />
+
+<p>例によって書いてない期間がどんどん開いていきますが、今は管理画面からではなく、Vim から記事を書いているのでだいぶ気分的にラクです。</p>
+
+<p>さて、決して WordPress をディスるわけではないのですが、以下の点を何とかしたいなーと思ってました。</p>
+
+<ol>
+<li>（たいして書かないのに）管理画面を晒し続けるセキュリティ面でのリスク</li>
+<li>投稿するまでの心理的障壁</li>
+<li>設置元サーバの整理</li>
+</ol>
+
+<p>1.は巷でよく言われているのですが、個人ブログで表から見えるところに管理画面を置く必要性がどこまであるのか、最近かなり疑問に思えてきました。
+しかも、たいして書かないのにずっとメンテナンスコストはかかるわけですよ。</p>
+
+<p>2.もそれに付随するといえばそうなんですが、当然管理画面が表にあれば、ログインしてから記事を書くことになるわけです。もうなんだかブラウザ開いてログインして記事書いて・・・それすらも面倒になってきたんです。</p>
+
+<p>3.が最後の決定打でした。
+設置元のサーバを掃除して CentOS7 に変えつつ、プロビジョニングツールも併せて導入したかったのですが、
+この個人ブログの整理をしてどこか別のサーバに退避する必要があり、
+一応空きサーバはあったのでそちらにそのまま持って行っても良かったものの、
+どうせ整理するなら Github Pages を利用してそっちで公開してもらおう、と思い立ったのでした。</p>
+
+<p>もちろん Github Pages を利用すれば、そちらが落ちれば閲覧できなくなるリスクはあるものの、
+めったにないし、あっても別に構わないので Github Pages を利用することに決めました。</p>
+
+<p>上記の1～2から、もう<strong>静的サイトジェネレータ（Static Site Generator）</strong>の何らかを使うことはほぼ決まっていたのですが、
+どうせ使うなら Hugo がいいなー Golang がいいなーと思い、WordPress から Hugo への移設を検討し始めました。</p>
+
+<h3 id="移設の条件">移設の条件</h3>
+
+<p>あれこれついでにやり始めると、例のごとく終わらずにほったらかしになってしまうので、移設の条件を定めました。</p>
+
+<ul>
+<li>URL は可能な限りそのまま</li>
+<li><strong>HTML/CSS/JavaSCript は極力いじらない（沼）</strong></li>
+<li>Github ですべて管理</li>
+</ul>
+
+<p>見た目いじらない、重要ですね。
+気になるところは色々あれど、見た目やら構造やらをいじり始めるとキリが無いので今回は触りません。</p>
+
+<p>あと必要最低限として URL は変えたくはないので、極力そのままで。</p>
+
+<h2 id="データのエクスポートからローカルでの-hugo-まで">データのエクスポートからローカルでの Hugo まで</h2>
+
+<p>こちらの記事がだいぶ参考になりました。</p>
+
+<p><a href="https://mano.xyz/post/2015-09-25-migration-to-hugo-from-wordpress/" target="_blank">https://mano.xyz/post/2015-09-25-migration-to-hugo-from-wordpress/</a></p>
+
+<p><a href="https://github.com/SchumacherFM/wordpress-to-hugo-exporter" target="_blank">エクスポートツール</a>を使うとかなり楽ですね。画像までひっくるめて zip ファイルにまとめてくれます。
+URL も基本今までのものを <a href="https://gohugo.io/content/front-matter/" target="_blank">Front Matter</a> に出力してくれるので楽です。</p>
+
+<p>元々 WordPress 時代でも Markdown で大部分の記事を書いていたので、
+記事の中身に関してはそれほど困りませんでした。</p>
+
+<p>それとは別に、 Hugo をインストールしてローカル（Mac）で閲覧できるようにします。</p>
+
+<pre><code>brew install hugo
+
+hugo new site bauerlog
+cd bauerlog
+</code></pre>
+
+<p>初期でできるファイル群から必要なものを差し引きして、
+大まかに以下のようなファイル構成になっています。</p>
+
+<pre><code>config.toml
+content/
+static/
+themes/
+    bauerlog/
+        archetypes/
+        layouts/
+        static/
+        theme.toml
+</code></pre>
+
+<p>まず全体設定を config.toml に記載しつつ、
+記事内容を content/post/ 以下に Markdown で書きつつ、
+記事のリソースを static/ 以下に入れ、
+それ以外のいわゆる WordPress のテーマに書かれていたような内容は themes/ 以下に
+同じくテーマを作って配置しています。</p>
+
+<p>詳しくはこちら <a href="https://github.com/girigiribauer/girigiribauer.github.io" target="_blank">https://github.com/girigiribauer/girigiribauer.github.io</a></p>
+
+<h3 id="自分がよく使うコマンド">自分がよく使うコマンド</h3>
+
+<p>新規記事の作成（僕の場合は1日に2件も書かないので日付で）</p>
+
+<pre><code>hugo new post/yyyymmdd.md
+</code></pre>
+
+<p>全体設定</p>
+
+<pre><code>vi config.toml
+</code></pre>
+
+<p>記事の編集</p>
+
+<pre><code>vi content/post/yyyymmdd.md
+</code></pre>
+
+<p>一時的にレンダリング結果を確認（config.toml 内に theme = &ldquo;bauerlog&rdquo; などと書いておく）</p>
+
+<pre><code>hugo server
+</code></pre>
+
+<p>とりあえずここまででローカルで表示確認できるようになりました。
+<code>hugo server</code> でローカルで Web サーバが立ち上がるので、
+localhost:1313/archives/20160705/ などにアクセスすれば表示確認が可能です。</p>
+
+<p>その他細かい使い方などは、公式を参照するなどしてみてください（<a href="https://gohugo.io/" target="_blank">https://gohugo.io/</a>）。</p>
+
+<h2 id="github-pages-を用いて公開する">Github Pages を用いて公開する</h2>
+
+<p>Github Pages を用いて公開する方法は大きく2つあって（これよく間違える）、
+1つはユーザー、あるいは組織に紐付いた公開用リポジトリに push する方法で、
+もう1つはプロジェクトごとに公開用ブランチを作れる方法です。</p>
+
+<p>前者は、例えばユーザー名が girigiribauer だったとして、
+<strong>girigiribauer.github.io</strong> という Git リポジトリを作り、
+<strong>master ブランチ</strong> に push することでそれがそのまま公開される仕組みになっています。</p>
+
+<p>後者は、Git リポジトリ名は任意なのですが、その中に
+<strong>gh-pages ブランチ</strong> を作り、そこにドキュメント類を push することで
+girigiribauer.github.io/projectname に公開される仕組みになっています。</p>
+
+<p><a href="https://help.github.com/articles/custom-domain-redirects-for-github-pages-sites/" target="_blank">https://help.github.com/articles/custom-domain-redirects-for-github-pages-sites/</a></p>
+
+<p>今回は個人用ブログであり、前者の仕組みで問題無いため、
+Hugo 関連の設定ファイルやテーマファイルなどを <strong>develop ブランチ</strong> で管理し、
+public ディレクトリにパブリッシュされたものをそのまま <strong>master ブランチ</strong> に送ることにします。
+（最初、勘違いして gh-pages ブランチを作ってしまった・・・）</p>
+
+<h3 id="git-subtree-を利用したパブリッシュの仕組み">git subtree を利用したパブリッシュの仕組み</h3>
+
+<p>引用多めですがこちらが綺麗にまとまってますので、参考にさせてもらいました。</p>
+
+<p><a href="http://www.kotazi.com/blog/post/2015111301/" target="_blank">http://www.kotazi.com/blog/post/2015111301/</a></p>
+
+<p>まず girigiribauer.github.io の develop ブランチに
+Hugo 関連のファイル一式を git add します。</p>
+
+<p>一方で master ブランチに何も入ってないと <code>git subtree add</code> できないので、.gitkeep あたりでも突っ込んでおきます。</p>
+
+<pre><code>git checkout master
+touch .gitkeep
+git add .gitkeep
+git commit
+git push origin master
+</code></pre>
+
+<p>develop ブランチ上に public ディレクトリがもしあれば削除したうえで、 <code>git subtree add</code> します。</p>
+
+<pre><code>git checkout develop
+rm -rf public
+git subtree add --prefix=public git@github.com:girigiribauer/girigiribauer.github.io.git master --squash
+git subtree pull --prefix=public git@github.com:girigiribauer/girigiribauer.github.io.git master
+</code></pre>
+
+<p><code>hugo</code> コマンドで実際に配置するファイルを生成して commit します。</p>
+
+<pre><code>hugo
+git add public/
+git commit
+</code></pre>
+
+<p>あとは <code>git subtree push</code> で master ブランチへ反映します。</p>
+
+<pre><code>git subtree push --prefix=public git@github.com:girigiribauer/girigiribauer.github.io.git master
+</code></pre>
+
+<p>一応ここまでやれば、 girigiribauer.github.io には反映がされてるはずです。</p>
+
+<h3 id="独自ドメインの設定">独自ドメインの設定</h3>
+
+<p>URL を変えたくなかったので、
+static/CNAME にドメイン（girigiribauer.com）だけ書かれたファイルを追加し、
+外から DNS の設定をしています。</p>
+
+<p>Github Pages の IP アドレスはどうやら 192.30.252.153 と 192.30.252.154 のようですね。
+（<a href="https://help.github.com/articles/troubleshooting-custom-domains/#dns-record-doesnt-point-to-githubs-server" target="_blank">https://help.github.com/articles/troubleshooting-custom-domains/#dns-record-doesnt-point-to-githubs-server</a>）
+なので、元々のさくらVPSの IP アドレスから 192.30.252.153 に変更して、Github Pages の方に向いたことを確認できました。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>元の条件としては、だいたいクリアできました。</p>
+
+<ul>
+<li>URL は可能な限りそのまま</li>
+<li>HTML/CSS/JavaSCript は極力いじらない</li>
+<li>Github ですべて管理</li>
+</ul>
+
+<p>ただ、いくつか課題も残っています。</p>
+
+<ul>
+<li>RSS の URL</li>
+<li>画像のリサイズ</li>
+<li>（タグ一覧ページが想定されてない、移設前の問題）</li>
+</ul>
+
+<p>大抵のものは、割り切ってしまえばなんとかなるんですが（というか気にしないことにしてしまえばOK）、
+画像のリサイズとかは管理画面がない分、なんとかしないといけなさそうです。</p>
+
+<p>RSS の URL は、Hugo 側で一覧ページごとに生成されるらしく、
+ファイル名は変更できるものの、細かいカスタマイズは難しいようです。（詳しく調べてない）
+とはいえ定期購読してる人なんて皆無だろうし、
+ここも割り切ってしまえばいいかという感じで済ませてしまおうかと考えてます。
+（Github Pages だけでリダイレクトの仕組みは提供されてないっぽいですかね・・・？）</p>
+
+<p>RSS 登録してる稀有な方、URL 変わっちゃってすみません・・・。メタタグの URL 変えとけばいいんでしたっけ？</p>
+
+<h2 id="ref">参考 URL</h2>
+
+<ul>
+<li><a href="https://mano.xyz/post/2015-09-25-migration-to-hugo-from-wordpress/" target="_blank">https://mano.xyz/post/2015-09-25-migration-to-hugo-from-wordpress/</a></li>
+<li><a href="http://www.kotazi.com/blog/post/2015111301/" target="_blank">http://www.kotazi.com/blog/post/2015111301/</a></li>
+<li><a href="https://help.github.com/articles/using-a-custom-domain-with-github-pages/" target="_blank">https://help.github.com/articles/using-a-custom-domain-with-github-pages/</a></li>
+<li><a href="http://hamasyou.com/blog/2014/03/05/github-pages-custom-domain/" target="_blank">http://hamasyou.com/blog/2014/03/05/github-pages-custom-domain/</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年7月5日">2016年7月5日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/static-site-generator/">Static Site Generator</a></li>
+    <li class="flow"><a href="/tags/hugo/">Hugo</a></li>
+  </ul>
 </div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -77,7 +385,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -167,7 +475,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

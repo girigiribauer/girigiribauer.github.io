@@ -28,8 +28,103 @@
 
 <h1>Tags / Scala</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/654">ScalaでFizzBuzz（Scalaことはじめ）</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2013年1月14日">2013年1月14日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/scala/">Scala</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>（ことはじめ、って書いておいたらたぶん叩かれることはないだろうと思って・・・）</p>
+
+<h2 id="scalaでfizzbuzz書いてみる">ScalaでFizzBuzz書いてみる</h2>
+
+<p>まだまだScalaは書き慣れないのですが、この前の1/11に<a href="http://partake.in/events/ff2ed11e-e438-4dde-809e-5e3bf8ab6c07" target="_blank">なごやかScala #8</a>にて</p>
+
+<p><strong>『ScalaでFizzBuzzの例題を、パターンマッチで書いてみるといいよ！』</strong></p>
+
+<p>と聞いたので、がんばって色々書いてみようと思いました。</p>
+
+<h2 id="まず最初に書いたもの">まず最初に書いたもの</h2>
+
+<pre><code>object FizzBuzz {
+  def fizzbuzz(n: Int):String = n match {
+    case x if x % 15 == 0 =&amp;gt; &amp;quot;fizzbuzz&amp;quot;
+    case x if x % 3 == 0 =&amp;gt; &amp;quot;fizz&amp;quot;
+    case x if x % 5 == 0 =&amp;gt; &amp;quot;buzz&amp;quot;
+    case x =&amp;gt; x.toString
+  }
+
+  def main(args: Array[String]) = {
+    (1 to 100).toList.foreach{ n =&amp;gt;
+      println(fizzbuzz(n))
+    }
+  }
+}
+</code></pre>
+
+<ul>
+<li>とりあえず思いつくままに書いてみたもの</li>
+<li>副作用うんぬんってところは前に聞いていて気をつけなきゃと思っていたので、数字を受け取って文字列を返す形に統一した（中でprintlnとか書かない）</li>
+<li>変数 x のところは最初 n って書いてたけど、『パターンマッチで別の変数を割り当てられるよー』ってところを分かりやすくするために x にしてみた</li>
+</ul>
+
+<p>うーん、素人目でも分かるように、無駄が多そうですね。</p>
+
+<p>特に<strong>mainの中がなんかごちゃごちゃしてる気がする</strong>ので、ここからもうちょっとすっきりするように書き直してみます。</p>
+
+<h2 id="次に書いてみたもの">次に書いてみたもの</h2>
+
+<pre><code>object FizzBuzz {
+  def fizzbuzz(n: Int):String = n match {
+    case x if x % 15 == 0 =&amp;gt; &amp;quot;fizzbuzz&amp;quot;
+    case x if x % 3 == 0 =&amp;gt; &amp;quot;fizz&amp;quot;
+    case x if x % 5 == 0 =&amp;gt; &amp;quot;buzz&amp;quot;
+    case x =&amp;gt; x.toString
+  }
+
+  def main(args: Array[String]) = {
+    (1 to 100).map(fizzbuzz).foreach(println)
+  }
+}
+</code></pre>
+
+<ul>
+<li>そもそも Range に対して toList してから、みたいなのは不要っぽい</li>
+<li>foreachの戻り値はUnit型（戻り値がないことを意味する戻り値）らしいので、何かそのまま返してくれるやつを使うべき？ -&gt; map ぽかったので変更</li>
+<li>最後 println するとこは何も返さなくてよいので foreach のまま</li>
+</ul>
+
+<p>これでよいのかな？まだまだ慣れないけど、</p>
+
+<ol>
+<li>1から100のリストを作り、</li>
+<li>fizzbuzzに変換して、</li>
+<li>それぞれ出力する</li>
+</ol>
+
+<p>っていう流れは main 見るだけでざっと分かるようになっているんじゃないかと思いました。 これって、main見るだけでざっと処理全体が分かる ≒ 概要、アウトラインを意味するように書けば良いのでは？って少し思いました。</p>
+
+<p>まだまだ道のりは長そうです・・・。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2013年1月14日">2013年1月14日</time>
@@ -40,9 +135,7 @@
   </ul>
 </div>
 
-</div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/279">関数脳の考え方の重要性（なごやかScala勉強会に参加してみた）</a></h2>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2012年9月16日">2012年9月16日</time>
@@ -54,7 +147,153 @@
   </ul>
 </div>
 
+
+
+
+<h2 id="そもそもscalaとは何か">そもそもScalaとは何か？</h2>
+
+<p>まだまだ素人レベルなので、あんまり下手なことを言うとここちがうよーと言われてしまうのでちゃんとしたことは言えないのですが、 Javaというプログラミング言語が動くメリット（JVM上で動く）と、シンプルに書けるシンタックスとを併せ持った言語です。</p>
+
+<ul>
+<li>Javaが動く環境で動く　→　Java動くとこならScala動くよ！</li>
+<li>RubyとかPythonとかのように、処理をシンプルにさくっと書けるよ</li>
+<li>関数型言語だよ</li>
+</ul>
+
+<h3 id="あなたweb制作会社で勤めてるのに-ぶっちゃけ使うの">あなたWeb制作会社で勤めてるのに、ぶっちゃけ使うの？</h3>
+
+<p>いいえ、使ってません。　が、今後どうなるか分かりませんよね。</p>
+
+<h2 id="なごやかにscalaを勉強する会">なごやかにScalaを勉強する会</h2>
+
+<p>最近、名古屋でこんな初心者向けのイベントが開かれてます。現時点で4回行われてます。</p>
+
+<p><a href="http://partake.in/events/884fae5f-0fef-4979-bf96-94a5b31ebcc9" target="_blank">なごやかScala #4</a></p>
+
+<p>見てもらえれば分かりますが、毎月数章（1〜3章）を順に読んできつつ、なごやScalaな人たちが分かりやすく解説してくれます。</p>
+
+<p>最初の数回は、プログラミング言語のいわゆる制御構文とか、よくあるようなくだりを順に解説してたりしたのですが、 そろそろ制御構文とかありきたりなところも読み終えて、関数型言語の面白そうなあたりの章に突入してきたので、 だんだんと面白くなってきてます。</p>
+
+<p>元々関数型プログラミング言語に興味があったのですが、書籍を読むだけだと概念的なところの理解が追いつかず、 ただ書籍を読んで知った気になってドヤ顔するより、初心に返って胸を借りて勉強した方が100倍ためになるなーと思って 参加してみました。</p>
+
+<p>タイトルの通り、ホントに<strong>なごやか</strong>です。ぜんぜん<strong>こわくない</strong>です。</p>
+
+<hr />
+
+<h2 id="なごやかscala-4-の個人的なメモ">なごやかScala #4 の個人的なメモ</h2>
+
+<p>軽くメモ残してたのでついでに貼付けておきます。</p>
+
+<p>出てないとなんのこっちゃだし、本題は下なので読み飛ばしてもらって結構です。</p>
+
+<p>ちなみにここに資料あります。 <del>コップ本8章解説</del></p>
+
+<h3 id="関数-メソッド-について">関数（メソッド？）について</h3>
+
+<ul>
+<li>ヘルパー関数など、処理を別の関数に分けるときに、全部グローバルに書くの良くない</li>
+<li>そういうときに、ローカルのみのスコープとなるようなローカル関数を使う</li>
+<li>そうすると、外側の関数の引数として受け取っていた変数は、スコープ内に存在しているので、ローカル関数に引数を渡す必要がなくなる、便利！</li>
+</ul>
+
+<h3 id="first-class-function">first class function</h3>
+
+<ul>
+<li>第一級関数</li>
+<li>リテラルがある、値として扱える、後から呼び出せる</li>
+</ul>
+
+<h3 id="関数リテラルの短縮形-プレースホルダー構文">関数リテラルの短縮形、プレースホルダー構文</h3>
+
+<ul>
+<li>明らかなときはプレースホルダー(_)を使って簡単に書ける</li>
+<li>明らかなとき == （たぶん）型推論できるとき</li>
+</ul>
+
+<h3 id="部分適用された関数">部分適用された関数</h3>
+
+<ul>
+<li>例えば引数a, b, cがあったとき、「bが○○だと分かっているとき」、みたいなことができる</li>
+<li>文字通り関数に対する部分的に適用で、返ってくるのも関数</li>
+<li>こっちの関数のこの部分の処理と、あっちの関数のこの部分の処理が共通なんだけど、、、みたいなものをまとめやすいのかも？（処理の抽象化？）</li>
+</ul>
+
+<h3 id="クロージャ">クロージャ</h3>
+
+<ul>
+<li>関数を値として使うには、自由変数を含んだ状態ではそのまま使えない</li>
+<li>自由変数（＆束縛変数）とは、対象のスコープ内で値が決まってくるかどうか（だと思う）、自由変数はスコープ外の環境に依存する</li>
+<li>関数を値として使うとき、その環境を取り込んで関数値となるものをクロージャという</li>
+</ul>
+
+<h3 id="末尾再帰">末尾再帰</h3>
+
+<ul>
+<li>ループじゃなく再帰の書き方でも、再帰処理の末尾に呼び出ししてるときは処理が最適化される</li>
+<li>相互末尾最適化はない（再帰処理を相互に呼び合うようなタイプ）</li>
+</ul>
+
+<h3 id="おまけ">おまけ</h3>
+
+<ul>
+<li>函数の函は箱って意味</li>
+<li>Scalaやるなら、まずsbt入れよう、エディタは何でもいいよ</li>
+</ul>
+
+<hr />
+
+<h2 id="webの過渡期なので-考え方を学ぶ重要性">Webの過渡期なので、考え方を学ぶ重要性</h2>
+
+<p>最近（といってもけっこう前ですが）、こんなことを思うようになりました。</p>
+
+<ul>
+<li>どんどん自動化される、楽な手段増える</li>
+<li>特に今は移り変わりが激しい、やらなきゃいけないことがころころ変わる</li>
+<li>ツールの使い方を覚えるよりも、いつどんなツールが出てきてもすぐに使いこなせるような、<strong>考え方</strong>を養うべき？</li>
+<li>素のJavaScriptはおろか、生成してくれるタイプの別言語であっても、さらに良くて速いものが出るのは時間の問題？</li>
+<li>今のうちに関数型言語の考え方に多く触れることはとても重要では？</li>
+</ul>
+
+<p>たぶんこれから便利なツールとかがどんどん出てきて、自動化されるところはとことんされていくと思うのです。 そんなときにどこに一番コストがかかるかというと、やっぱり<strong>考えるところ</strong>ではないかと思います。</p>
+
+<p>特にWeb業界がどんどん他の業界につながっていくことを考えると、 逆にもっと他の業界の<strong>メソッドや考え方を取り入れていく必要性</strong>があるなーと思っています。</p>
+
+<p>Rubyを初めてやったときに触れた「モノ＋操作」感は、 オブジェクト指向を理解するのに非常にとっかかりになったのですが、 それを軽く超えるようなものすごい抽象化ができそうだなーと感じ始めてます。</p>
+
+<p>名古屋って関数型言語を学ぶには素敵な環境ですねー。 せっかく初心者向けにやってくれているので、 みんな試しに出てみたらいいんじゃないでしょうか？</p>
+
+<hr />
+
+<p>追記：#5が募集してるので載せておきます。</p>
+
+<p><a href="http://partake.in/events/30b6efce-3c1a-43b9-88bf-1636d464e6f4" target="_blank">なごやかScala #5</a></p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2012年9月16日">2012年9月16日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/scala/">Scala</a></li>
+    <li class="flow"><a href="/tags/functionallanguage/">FunctionalLanguage</a></li>
+  </ul>
 </div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -75,7 +314,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -165,7 +404,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

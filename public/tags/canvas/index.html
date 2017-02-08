@@ -28,8 +28,77 @@
 
 <h1>Tags / Canvas</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/834">大なごやJS vol.5 で『WebRTC &#43; Web Audio API = スーパーサイヤ人』のネタを話してきた</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2013年2月24日">2013年2月24日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/canvas/">Canvas</a></li>
+    <li class="flow"><a href="/tags/getusermedia/">getUserMedia</a></li>
+    <li class="flow"><a href="/tags/webaudioapi/">WebAudioAPI</a></li>
+    <li class="flow"><a href="/tags/webrtc/">WebRTC</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>とりあえず各セッションの感想などは一旦置いといて、 自分の発表したやつだけ、軽くまとめておきます。</p>
+
+<p>当日発表した資料は slideshare にアップしてあります。</p>
+
+<p><a href="http://www.slideshare.net/girigiribauer/webrtc-web-audio-api" target="_blank">WebRTC + Web Audio API = スーパーサイヤ人(slideshare)</a></p>
+
+<p>また、発表用に作った実験コンテンツは以下にアップしてあります。</p>
+
+<p><del>なれる！スーパーサイヤ人！</del></p>
+
+<p>Twitterのまとめは以下です。</p>
+
+<p><a href="http://togetter.com/li/461596" target="_blank">大なごやJS vol.5 (#daiNagoyaJS) (togetter)</a></p>
+
+<h2 id="webrtc-web-audio-api-スーパーサイヤ人">WebRTC + Web Audio API = スーパーサイヤ人</h2>
+
+<p>資料を見ていただければ分かるように、前々回の（約7か月前）大なごやJSで発表した内容にずっと心残りがあって、 ライブ音声入力を検知してコンテンツの変化をさせる、というのをずっとやりたかったのでした。</p>
+
+<p>今回、getUserMedia と Web Audio API との連携が出来るようになり、 ようやくライブ音声入力の検知を使ったコンテンツが実装できるようになったので、 満を持しての実験コンテンツとなります。</p>
+
+<p>会場では、<strong>「はあああああ！！！！」と叫んで、スーパーサイヤ人に変身できて、とても満足</strong>でした。</p>
+
+<h2 id="ライブ音声入力とは">ライブ音声入力とは</h2>
+
+<p>また細かい話はおいおいまとめていくとして、ポイントだけさらっと触れておこうと思います。</p>
+
+<p>もちろん、今現在の chrome では、getUserMedia や Web Audio API のそれぞれ単体では、すでに実装されています。</p>
+
+<p>ただ、それをつなぐ方法が前回の発表時には無かったため、「はああああ！！！」と叫ぶところを、 <strong>まさかのクリックで代用</strong>という暴挙に出てしまったわけですが、 今回はそれをきちんと実装できて、「はああああ！！！」と叫んで変身することができました。</p>
+
+<p>chrome://flags の中に、『getUserMedia と Web Audio API を使ったライブ音声入力』の項目があるので、 こちらのフラグを有効にしてもらえると、リアルタイムに音声入力をいじることができます。</p>
+
+<p><img src="/img/2013/02/dainagoyajsvol5-01.png" alt="" /></p>
+
+<p>取得したあとは、Web Audio API で扱える範疇になるため、いろいろ応用範囲が広がってくるのではないでしょうか？</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://www.slideshare.net/girigiribauer/webrtc-web-audio-api" target="_blank">WebRTC + Web Audio API = スーパーサイヤ人(slideshare)</a></li>
+<li><a href="http://togetter.com/li/461596" target="_blank">大なごやJS vol.5 (#daiNagoyaJS) (togetter)</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2013年2月24日">2013年2月24日</time>
@@ -43,7 +112,8 @@
   </ul>
 </div>
 
-</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -64,7 +134,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -154,7 +224,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

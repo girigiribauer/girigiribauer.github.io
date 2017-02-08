@@ -28,8 +28,215 @@
 
 <h1>Categories / tech</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20170122/">tmux で自動起動するついでにセッション管理もする</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2017年2月8日">2017年2月8日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+    <li class="flow"><a href="/tags/shellscript/">ShellScript</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>その場で展開したいのです。</p>
+
+<p>結論から先に書いておきます。</p>
+
+<pre><code>function print_date() {
+  zle -U `date &quot;+%y%m%d&quot;`
+}
+zle -N print_date
+bindkey &quot;^Xd&quot; print_date
+</code></pre>
+
+<p>zsh における入力バッファの概念だとか、 zle (zsh line editor) だとか、
+その辺が少し分かっていなかったので、ちょっとだけ試行錯誤してました。</p>
+
+<p>せっかくなのでメモしておきます。</p>
+
+<h2 id="当初の入力補助する案">当初の入力補助する案</h2>
+
+<p>当初考えたのがこちら。頭空っぽで書きました。</p>
+
+<pre><code>function print_date() {
+  echo -n `date &quot;+%y%m%d&quot;`
+}
+bindkey &quot;^Xd&quot; print_date
+</code></pre>
+
+<p><code>bindkey</code> コマンドで現在割り当ててあるキーマップの一覧が確認できるので、
+空いてそうな <strong>Ctrl-X -&gt; D</strong> キーを割り当てることにしました。date の D です。</p>
+
+<p>そして .zshrc に反映して実行してみます。</p>
+
+<pre><code>% 170208
+</code></pre>
+
+<p>表示されましたが、ここで違和感が。
+<strong>Ctrl-W で消えません。</strong></p>
+
+<p>あれ？おかしい・・・？と思い、<code>mkdir</code> のあとに実行して 日付のディレクトリを作ってみることに。</p>
+
+<pre><code>% mkdir 170208
+mkdir: missing operand
+Try 'mkdir --help' for more information.
+</code></pre>
+
+<p><strong>missing operand</strong> と表示されここで初めて気づきます。</p>
+
+<p><strong>あー、これ単に出力されてるだけか、と。</strong></p>
+
+<p>ここでようやく <strong>マニュアル読まないと、</strong> となりました。</p>
+
+<h2 id="man-zshzle-を読む">man zshzle を読む</h2>
+
+<p>zsh に関するマニュアルはいくつかに分割されています。</p>
+
+<p>man zsh を引用します。</p>
+
+<pre><code>OVERVIEW
+       Because zsh contains many features, the zsh manual has been split into a number of sections:
+
+       zsh          Zsh overview (this section)
+       zshroadmap   Informal introduction to the manual
+       zshmisc      Anything not fitting into the other sections
+       zshexpn      Zsh command and parameter expansion
+       zshparam     Zsh parameters
+       zshoptions   Zsh options
+       zshbuiltins  Zsh built-in functions
+       zshzle       Zsh command line editing
+       zshcompwid   Zsh completion widgets
+       zshcompsys   Zsh completion system
+       zshcompctl   Zsh completion control
+       zshmodules   Zsh loadable modules
+       zshcalsys    Zsh built-in calendar functions
+       zshtcpsys    Zsh built-in TCP functions
+       zshzftpsys   Zsh built-in FTP client
+       zshcontrib   Additional zsh functions and utilities
+       zshall       Meta-man page containing all of the above
+</code></pre>
+
+<p>マニュアルが分割されているとありますね。</p>
+
+<p>この中で、今回の入力バッファなどの編集については、
+<strong>zsh command line editor (zle)</strong> が相当します。
+なので zshzle を読みましょう。</p>
+
+<pre><code>man zshzle
+</code></pre>
+
+<p>ずらっと読んでいくと、 ZLE BUILTINS の中の zle コマンドのところにこんなオプションがあります。</p>
+
+<pre><code>-U string
+       This  pushes the characters in the string onto the input stack of ZLE.  After the
+       widget currently executed finishes ZLE will behave as if the  characters  in  the
+       string were typed by the user.
+</code></pre>
+
+<p>大まか -U の後の文字列を追加することは分かったのですが、
+<strong>ん？ widget ってなんです？</strong></p>
+
+<p>何やら知らない概念があるらしいので、もうちょっと掘り下げてみます。</p>
+
+<p>最初の方に戻ってさらっと読むと、 <strong>Widgets セクションがあるから読んでみて</strong>
+とあるのでそちらを探してみます。</p>
+
+<p>・・・。</p>
+
+<p>細かく説明してると手間なので、詳しくは気になる人がそれぞれ実際に読めば良いと思うのですが、
+ざっと紹介するとこんな感じです。</p>
+
+<p>zle には widget という概念が存在しており、
+builtin で用意された widget とユーザーが独自に定義した widget とを
+同じように扱うことができるようです。</p>
+
+<p><strong>関数をキーバインドで呼び出すのではなく、
+widget を呼び出す</strong> のが zsh の流儀のようです。</p>
+
+<p>さらに <code>zle -N</code> の説明が書いてあるところを読むと、</p>
+
+<pre><code>-N widget [ function ]
+       Create  a  user-defined  widget.  If there is already a widget with the specified
+       name, it is overwritten.  When the new widget is invoked from within the  editor,
+       the  specified  shell  function  is called.  If no function name is specified, it
+       defaults to the same name as the widget.  For further information, see  the  sec-
+       tion `Widgets' below.
+</code></pre>
+
+<p>これでユーザー定義の widget が登録できるので、
+キーバインドを設定する前に、まずは widget を登録します。</p>
+
+<p>ちなみに、用意した引数が widget 分しかなかった場合は、
+<strong>同じ名前で function 名がある前提で登録をしてくれるようです。</strong>
+合わせておくと管理上分かりやすいので名前を同じにしておきます。</p>
+
+<p>ちょっと分かりづらくなってきたので、まとめるとこんな感じです。</p>
+
+<ol>
+<li>ユーザー定義の関数を用意する</li>
+<li>その関数を <strong>widget として登録する (zle -N)</strong></li>
+<li>widget を <strong>キーバインドで呼び出す (bindkey)</strong></li>
+</ol>
+
+<p>この流れですね。</p>
+
+<p>以上を踏まえて書き直したのがこちら。</p>
+
+<pre><code>function print_date() {
+  zle -U `date &quot;+%y%m%d&quot;`
+}
+zle -N print_date
+bindkey &quot;^Xd&quot; print_date
+</code></pre>
+
+<p>これで正しく動作しました。</p>
+
+<p>キーバインドで日付が入力できるようにしておくと、
+汎用的に利用ができるので良いと思います。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>いつも同じ結論ですが、<strong>マニュアルはきちんと読みましょう。</strong></p>
+
+<p>そのコマンドなりアプリなりを作ってくれた人は、
+<strong>その開発に割いた時間に加えて、ヘルプなりドキュメントなりを書いてくれているのです。
+もう本当に感謝しかありません。</strong></p>
+
+<p>逆にマニュアル読まずにググってばかりの人は、
+これを機に <strong>マニュアルを読む癖</strong> をつけた方が良いと思います。
+書いてくれた人のためにもね。</p>
+
+<p>僕は感謝しながらマニュアルを読みつつ、
+感謝をこめてブログにメモしようと思いました。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017年2月8日">2017年2月8日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+    <li class="flow"><a href="/tags/shellscript/">ShellScript</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2017年1月22日">2017年1月22日</time>
@@ -41,9 +248,82 @@
   </ul>
 </div>
 
+
+<p>tmux の自動起動周りに少し不満があって、
+zshrc に以下の記述を追加しました。</p>
+
+<pre><code># 初期に用意されているセッション
+# &quot;prefix -&gt; (&quot; or &quot;prefix -&gt; )&quot; でセッション切り替え
+TMUX_INITIAL_SESSIONS=(
+&quot;config&quot;
+&quot;works&quot;
+&quot;personal&quot;
+)
+
+# 初期セッションが存在していなかったらバックグラウンドで作る
+for tmux_session in ${TMUX_INITIAL_SESSIONS[@]}
+do
+  if ! $(tmux has-session -t ${tmux_session} 2&gt; /dev/null)
+  then
+    tmux new-session -d -s ${tmux_session}
+  fi
+done
+
+# tmux が起動中でなければ attach する
+if [ -z &quot;$TMUX&quot; ]
+then
+  tmux attach-session -t &quot;${TMUX_INITIAL_SESSIONS[0]}&quot;
+else
+fi
+</code></pre>
+
+<p>基本的に書いてある通りなのですが、
+自分であらかじめ用意したいセッションを変数（TMUX_INITIAL_SESSIONS）に入れておきます。
+別に他の名前でも良いです。</p>
+
+<pre><code>TMUX_INITIAL_SESSIONS=(
+&quot;mysession1&quot;
+&quot;mysession2&quot;
+&quot;mysession3&quot;
+)
+</code></pre>
+
+<p>シェルが立ち上がるたびに、そのセッションがなければバックグラウンドで作ります。</p>
+
+<pre><code>if ! $(tmux has-session -t ${tmux_session} 2&gt; /dev/null)
+then
+  tmux new-session -d -s ${tmux_session}
+fi
+</code></pre>
+
+<p>これで常に TMUX_INITIAL_SESSIONS にある名前のセッションは存在していることになるので、
+TMUX 変数に何らかセットされていない場合に限って attach すれば良いことになります。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017年1月22日">2017年1月22日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/tmux/">tmux</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20170114/">今思えば知らずに損してたコマンドラインのあれこれ</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2017年1月14日">2017年1月14日</time>
@@ -55,9 +335,220 @@
   </ul>
 </div>
 
+
+
+
+<p>今でこそ iTerm2 を全面に表示して、
+tmux でセッション、ウィンドウ、ペインごとに分けて、
+ターミナル内の Vim であれこれやってるわけですが、
+始めたての頃はコマンドラインに慣れるまで大変でした。</p>
+
+<p>今振り返って、これを知ってから or 使うようになってから、
+劇的に変わったなあと思うようなものがあるので、
+それらをメモ代わりに残しておきます。</p>
+
+<p><strong>今年からターミナルを使いこなしたい！</strong> と思っている方におすすめします。</p>
+
+<h2 id="emacs-vi-両方のキーバインドを最低限知っておく">Emacs, Vi 両方のキーバインドを最低限知っておく</h2>
+
+<p>これはエディタの話ではなく、コマンドラインであれこれやるにあたって
+<strong>両方のキーバインドを最低限知っておく必要があった</strong> という意味です。</p>
+
+<p>僕の環境設定の考え方の話になるのですが、
+なんでもかんでも自分の使いやすいように変えていくのではなく、
+<strong>よくある標準の設定をベースにしつつ、より良い設定を邪魔せず上乗せしていく形</strong>
+を取りたいといつも思っています。</p>
+
+<p>コマンドラインを使っていくに従って、
+<strong>標準の設定というのがとても良く考えられていることに段々気づいていく</strong> と思います。</p>
+
+<p>当然なのですが、その標準の設定を考えた人というのがいるわけで、
+すべてのことには理由があるので、
+仮にその理由を知らなかったとしても
+その標準の設定に合わせることで
+<strong>自然とそのメリットを享受できる</strong> ことも出てきます。</p>
+
+<h3 id="シェルスクリプトはもともと-emacs-風">シェルスクリプトはもともと Emacs 風</h3>
+
+<p>bash や zsh などのシェルでは、キーバインドのモードを切り替える設定が用意されています。</p>
+
+<pre><code># bash
+set -o vi
+
+# zsh
+bindkey -v
+</code></pre>
+
+<p>上記はともに Vi モードに切り替える設定なのですが、
+設定を変更しない場合、 <strong>標準で Emacs 風</strong> になっています。</p>
+
+<p>ここで仮に Ctrl-a で行頭に移動、 Ctrl-e で行末に移動、 Ctrl-w で1単語分の削除、
+などの Emacs 上での操作を知っていると、
+<strong>何も設定していないターミナル上で Emacs 風キーバインドで操作できる</strong> ことになります。</p>
+
+<p>コマンドライン使いたての頃、比較的長めのコマンドを打って実行したらミスが見つかったけど、
+その直したい箇所が入力の頭の方で、
+左キーを連打しまくってるけど時間がかかってしょうがない、みたいなケース、
+よくある話ではないでしょうか？</p>
+
+<p>特に何も設定されていないサーバなどに始めてアクセスする際には、
+こういったキーバインドを知っていることが効率に直結することもあると思います。</p>
+
+<h3 id="未知の端末をなんとなく扱えるメリットも">未知の端末をなんとなく扱えるメリットも</h3>
+
+<p>Windows の方はメリットを享受できないのですが、
+Mac の方は command キーと control キーに分かれているため、
+上記の Ctrl-a, Ctrl-e などのキーバインドが他アプリケーションで使えたりします。</p>
+
+<p>例えば <strong>各種 Web ブラウザの URL バー</strong> などはすでにそういった想定がされています。
+長い URL を入力しているとき、http じゃなくて https だったとなったときに
+マウスに手を伸ばす必要はありません。 Ctrl-a を押しましょう。</p>
+
+<p>Windows だと全選択が Ctrl-a などで重複してしまっており、Emacs 風のものは割り当てられていないようですね。</p>
+
+<h3 id="マニュアルを読むときは-vi-風">マニュアルを読むときは Vi 風</h3>
+
+<p>一方でマニュアルを読む際は <strong>最低限の Vi のキーバインド</strong> を知っておく必要があります。
+こちらもエディタとして使えるようになる必要はなく、
+<strong>上下の移動、検索あたりができれば必要十分</strong> だと思います。</p>
+
+<p>そもそも、</p>
+
+<pre><code>man foobar
+
+foobar --help
+</code></pre>
+
+<p>といったマニュアルを読む際は、
+Ctrl-f(forward), Ctrl-d(down) で下スクロール、
+Ctrl-b(back), Ctrl-u(up) で上スクロールでき、
+/ キーのあとにキーワードを入力して Enter キーを押せば検索できます。</p>
+
+<p>これらのキーバインドは Vi から来ています。</p>
+
+<h3 id="インターフェースとしての-emacs-vi">インターフェースとしての Emacs, Vi</h3>
+
+<p><strong>インターフェース</strong> という言葉が一番しっくりきます。</p>
+
+<p>エディタの操作方法としてではなく、
+インターフェースとして最低限知っておくだけで
+ターミナル上のコマンドライン操作はだいぶ変わってくると思います。</p>
+
+<p>自分が UI 実装する側になったときに、キーボード入力が想定されるのであれば、
+こういったところにも配慮すると、より使いやすくなるかもしれません。</p>
+
+<h2 id="コマンド履歴を使う">コマンド履歴を使う</h2>
+
+<p>そもそも最初はコマンド履歴を知らなかったので、
+上キーを押すことで過去に押したコマンドが表示されることも知りませんでした。</p>
+
+<p>それを知ってるかどうかだけでも少し変わってくるのですが、
+<strong>インクリメンタルサーチをきちんと使いこなす</strong> だけで大きく効率が変わってきます。</p>
+
+<p>これ知ったのつい2年前ほどだったのですが、 <a href="http://girigiribauer.com/archives/1873/" target="_blank">http://girigiribauer.com/archives/1873/</a>
+それまで知らなかった自分に愕然としましたね。</p>
+
+<p>特にサブコマンドやオプションの多い長いコマンドを、ある程度断続的に入力するケースの場合、
+<strong>インクリメンタルサーチはおすすめです。</strong></p>
+
+<p>こちらも設定なしで、 <strong>Ctrl-r</strong> が割り当てられています。</p>
+
+<p>一度入力する前に任意のコマンドを入力しておきます。（なんでもいいです）</p>
+
+<pre><code>% sudo service httpd restart
+</code></pre>
+
+<p>何も入力していない状態で、Ctrl-r を押すと、</p>
+
+<pre><code>%
+bck-i-search: _
+</code></pre>
+
+<p>入力箇所の下に bck-i-search という表示が出ます。
+<strong>後ろ方向のインクリメンタルサーチ</strong> のことです。</p>
+
+<p>ここで http と順に打つと、 <strong>他に候補がない時点で先ほど入力したコマンドが表示されます。</strong></p>
+
+<pre><code>% sudo service httpd restart
+bck-i-search: httpd\_
+</code></pre>
+
+<p>もし候補が出たけどもっと過去の履歴が欲しい！となったときは、
+後ろ方向のインクリメンタルサーチなので、何回か Ctrl-r を押しましょう。
+その都度、履歴を過去方向に検索してくれます。</p>
+
+<p>ちなみに遡りすぎた場合は、 <strong>前方向のインクリメンタルサーチである Ctrl-s</strong> も用意されています。
+そちらで今度は過去方向から未来方向へインクリメンタルサーチしましょう。</p>
+
+<pre><code>%
+fwd-i-search: _
+</code></pre>
+
+<h3 id="オプション付きの長いコマンドを何回かおきに入力するケースなどに有効">オプション付きの長いコマンドを何回かおきに入力するケースなどに有効</h3>
+
+<p>最近だと Docker を使ったりする方も増えてきていると思います。</p>
+
+<pre><code>docker run -d -p 80 -v &quot;$(pwd)/public:/usr/share/nginx/html&quot; --name test nginx
+</code></pre>
+
+<p>まだこれくらいならかわいいもので、追加でボリュームを紐付けたり、環境変数を設定したりすると、
+2行3行と長くなってきます。</p>
+
+<p>毎回同じコマンドを入力するだけなら、上キーだけで十分なのですが、
+間に別のコマンドを何度か入力したりして、間がどんどん開いてくると、
+上キーだけで遡るのは厳しくなってきます。</p>
+
+<p>上記の例であれば、例えば <strong>Ctrl-r を押した後に docker と入力した方が直感的だし速い</strong> です。
+場合によっては docker 全部入力せずに d だけで事足りるかもしれません。（インクリメンタルサーチなので）</p>
+
+<p>僕の場合ですが、 tmux を利用して画面を分割してコマンド入力を色々行っており、
+こっちの画面で過去に入力したコマンドを、今度はあっちの画面で入力したい、
+みたいなケースがけっこう出て来ます。
+そういったケースに対応するために、 .zshrc に履歴の共有を行う設定を入れています。</p>
+
+<h2 id="tab-キーによるコマンド補完を使う">Tab キーによるコマンド補完を使う</h2>
+
+<p>あとは当然知ってる話だと思うのでおまけ程度ですが、
+<strong>コマンド打つときは Tab キーで補完できる</strong> ことは知っておきましょう。</p>
+
+<p>さすがに自分はなかったですが、
+たまに律儀に毎回全部入力している人を見ると「うーん・・・」という気分になります。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>標準の設定をインターフェースとして捉えることで、
+様々なメリットが享受できると思います。
+<strong>あまりあれこれ設定をいじりすぎずに、標準の設定に慣れるということも一定大事</strong> だと思います。</p>
+
+<p>慣れるまでは大変だと思いますが、
+GUI ではカバーしきれないところをコマンドラインで出来ることも多いので、
+頑張って慣れていくと良いと思います。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017年1月14日">2017年1月14日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+    <li class="flow"><a href="/tags/linux/">Linux</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20170106/">github-markdown-css を導入してみた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2017年1月6日">2017年1月6日</time>
@@ -70,9 +561,65 @@
   </ul>
 </div>
 
+
+<p>Github から生成されるページって、バランスとかが良くてなんだかんだですごく読みやすいんですよ。</p>
+
+<p>一方で自分のブログは、中身を WordPress から Hugo に変えて
+データベースの管理をしなくなって済んだところはすっきりしたものの、
+当時そこ以外に時間をかけたくなく、見た目は古いままで移行したので、
+自分で読んでてちょっと読みづらかったんですよね。</p>
+
+<p>そこで、見た目をばっさり切り捨てつつ、以下を導入しました。</p>
+
+<p><a href="https://github.com/sindresorhus/github-markdown-css" target="_blank">https://github.com/sindresorhus/github-markdown-css</a></p>
+
+<p>これをベースにして、メインコンテンツ幅やリンクの横並びの調整など、
+本当に最小限の調整を行っただけなのですが、
+時間かけずにいい感じになったので、しばらくこのままで行こうと思います。</p>
+
+<p><strong>本当に大事じゃないところに時間かけないの、大事だと思います。</strong></p>
+
+<p>ついでにトップページと一覧ページを分けました。</p>
+
+<p>現状 Hugo を利用してブログ書いてるときに困る点、やってない点といえば、</p>
+
+<ul>
+<li>画像の加工がめんどくさい</li>
+<li>投稿してから追記した場合の日付管理（Hugo で .Lastmod を使う？）</li>
+<li>古すぎますよ、という警告文表示（Static Site なので Hugo だけでは難しい？）</li>
+</ul>
+
+<p>ぐらいになったかと思います。</p>
+
+<p>とはいえそんなに困っているわけでもないので、
+気が向いたときにでも改善していこうと思います。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017年1月6日">2017年1月6日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/css/">CSS</a></li>
+    <li class="flow"><a href="/tags/hugo/">Hugo</a></li>
+    <li class="flow"><a href="/tags/static-site-generator/">Static Site Generator</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20170103/">パスワード文字列を生成できるコマンドラインツールを Golang で書き初めした</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2017年1月3日">2017年1月3日</time>
@@ -84,9 +631,177 @@
   </ul>
 </div>
 
+
+
+
+<p>あけましておめでとうございます。</p>
+
+<p>書き初めとして書きました。</p>
+
+<p>もともと1日かからない程度のものを書き初めとして書きたかったので、大きくずれはなかったです。</p>
+
+<ul>
+<li><a href="https://github.com/girigiribauer/go-pwgen" target="_blank">https://github.com/girigiribauer/go-pwgen</a></li>
+</ul>
+
+<h2 id="パスワード文字列を生成できるコマンドラインツール">パスワード文字列を生成できるコマンドラインツール</h2>
+
+<p>まず先にやってないこととして、</p>
+
+<ul>
+<li><strong>パスワードの強度チェック</strong></li>
+</ul>
+
+<p>これを挙げておきます。</p>
+
+<p>パスワード文字列を生成するにあたって、
+当然セキュリティは一定担保する必要があったのですが、
+かといってこの辺のパスワードの強度チェックをゼロから独自に研究するのは
+無理がある＆仮に出来たとしても圧倒的に時間が足らないので、
+外部のライブラリを利用しています。</p>
+
+<p>パスワードの強度としては、例えば以下のようなケースが考えられます。</p>
+
+<ul>
+<li><strong>連続した同じ文字列</strong> （777 など）</li>
+<li><strong>連続した順序を持った文字列</strong> （abc など）</li>
+<li><strong>よくある英単語と一致する文字列</strong> や <strong>その逆順</strong></li>
+<li><strong>キーボード上の順序を持った文字列</strong> （qwerty など）</li>
+</ul>
+
+<p>こういったチェックは学問、アルゴリズムの話になってきてしまい、個人では追いきれないため、
+<strong>zxcvbn</strong> というライブラリを利用させてもらってます。</p>
+
+<p><a href="https://github.com/dropbox/zxcvbn" target="_blank">https://github.com/dropbox/zxcvbn</a></p>
+
+<p>提供しているのは Dropbox 社のようですが、 MIT ライセンスで誰でも利用できるようになっています。</p>
+
+<p>実際のところ、上記の JavaScript 実装では新規アカウントを作るフォーム画面中において、
+クライアントサイドでのパスワード強度チェックに用いられているようですね。</p>
+
+<p>今回はそちらの Golang 実装を利用します。</p>
+
+<p><a href="https://github.com/nbutton23/zxcvbn-go" target="_blank">https://github.com/nbutton23/zxcvbn-go</a></p>
+
+<p>なお、ライブラリのページを見てもらえれば分かる話なのですが、
+<strong>クラックされるまでのおおよその時間（crack_times_display）</strong>や
+<strong>パスワード強度の5段階評価（score: 0 - 4）</strong> などの情報を利用することが出来ます。</p>
+
+<p>アルゴリズムなどを追ってみるのも面白いかもしれませんね。</p>
+
+<h3 id="今回の目的-目標">今回の目的、目標</h3>
+
+<p>目的としてはこんな感じです。</p>
+
+<ul>
+<li>新年、ブログに目標書くくらいなら <strong>先に作るべき</strong></li>
+<li><strong>Web 経由である必要がないもの</strong></li>
+<li><strong>GUI である必要がないもの</strong></li>
+</ul>
+
+<p>1password を利用しているので、フォーム入力時には強度のあるパスワードが生成できるのですが、
+そういった画面も何もないところでパスワードだけ生成したい場合に、
+<strong>コマンドをちょっと入力するだけですぐ生成できると便利そう</strong> です。</p>
+
+<p>その割には、毎回欲しいと思ったときに外部の Web サービスを利用しており、
+ブックマークの整理をしている際に、
+<strong>『これ Web じゃなくていいよなあ、 GUI じゃなくていいよなあ』</strong>
+と思っていたところでした。</p>
+
+<p>昨年の <a href="http://girigiribauer.com/archives/20161003/" target="_blank">Golang で DB が簡単に扱える自作コマンドを作ってみた</a>
+で、Golang で自作コマンドはすでに作っていたので、
+今回も同様に（素早く）作ってみようと思います。</p>
+
+<h3 id="各種オプションと初期値">各種オプションと初期値</h3>
+
+<p>基本的にマニュアル読めば全部書いてあるのですが、
+パスワードの桁数は最低8文字ないと、パスワード強度のスコア的にセキュリティが確保できません。
+（文字種が少ない、文字数が少ないなどのケースではスコアが 4 にならない）</p>
+
+<p>逆に、桁数が多すぎたとしても今度は各種強度チェックに時間がかかってきてしまいます。</p>
+
+<p>なので、 <strong>最小8文字、最大128文字、初期値を10文字</strong> とすることにしました。</p>
+
+<p>また、文字種を以下のもので定義しました。</p>
+
+<ul>
+<li>数値（digit: 0-9）</li>
+<li>アルファベット大文字（alphabetlarge: A-Z）</li>
+<li>アルファベット小文字（alphabetsmall: a-z）</li>
+<li>アンダースコア（underscore: _）</li>
+<li>特殊記号（special characters: 制御文字など表示できない文字を除いたもの）</li>
+</ul>
+
+<p>よく使うのは数値、アルファベット大文字・小文字の文字種だと思うので、
+これらをオプションなしで true になるように、
+それ以外のものはオプション付きで明示することで true にできるようにしました。</p>
+
+<p>表示個数ですが、個人的にはパッといくつか表示したうえで
+最終的に自分で選んで利用したいので、
+<strong>10個ほど初期で表示しつつ、個数の指定も上書きできるようにしました。</strong></p>
+
+<p>あとこれ一番大事ですが、自分でキーボード打つのが面倒にならないようにするため、
+コマンド名は一番分かりやすく <strong>pw</strong> で、
+なおかつ <strong>オプションを一切何もつけない状態 = 一番自分の利用しやすい設定</strong>
+となるようにオプションもろもろ考えました。</p>
+
+<h2 id="作ってみた感想">作ってみた感想</h2>
+
+<ul>
+<li>package unicode の存在</li>
+<li>ランダム性を含むユニットテストについて</li>
+</ul>
+
+<p>さっき気づいたのですが、
+unicode というパッケージがあって ASCII 周りも定義されてるっぽいので
+独自で定義せずにこの辺に乗っかっておくとひょっとすると楽出来たのでしょうか？
+後で調べてみることにします。</p>
+
+<p>あと、ランダムに生成する系のものって毎回テストのやり方に悩みますね・・・。</p>
+
+<p>今回のケースだと、例えば実際にパスワード生成を行う関数とかがそうですかね。
+文字数の長さと、構成文字以外の文字が入っていないかのチェックくらいですかねえ、うーん。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>やろうと思ってから実際に出来るところまでが早い Golang は好きです。</p>
+
+<p>やらなきゃと思ったことをすぐに行動に移せるようになりたいですね。
+そういう意味でも、実際に書き初めする行動まで移せたことは幸先が良いと思います。
+2017年頑張ります。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://github.com/dropbox/zxcvbn" target="_blank">https://github.com/dropbox/zxcvbn</a></li>
+<li><a href="https://nulab-inc.com/ja/blog/nulab/password-strength/" target="_blank">https://nulab-inc.com/ja/blog/nulab/password-strength/</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017年1月3日">2017年1月3日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/golang/">Golang</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20161227/">git-diff と git-difftool を混同していた話</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年12月27日">2016年12月27日</time>
@@ -97,9 +812,265 @@
   </ul>
 </div>
 
+
+
+
+<p><code>git diff</code> のカスタマイズがしたくて .gitconfig に以下のような記述をしたことがある人もいるかと思います。</p>
+
+<pre><code>[diff]
+  tool = vimdiff
+</code></pre>
+
+<p>でもこれ、違ったんです。
+<strong>git diff</strong> 用の設定じゃなくて、 <strong>git difftool</strong> 用の設定だったのです。</p>
+
+<p><strong>なんだってー！？</strong>（色々略）</p>
+
+<h2 id="git-の-diff-周りの設定の整理">git の diff 周りの設定の整理</h2>
+
+<p>diff 周りの設定を .gitconfig に何も書いてない状態の時は、</p>
+
+<pre><code>% git diff .zsh/basic.zsh
+diff --git a/.zsh/basic.zsh b/.zsh/basic.zsh
+index beff72b..19ac86c 100644
+--- a/.zsh/basic.zsh
++++ b/.zsh/basic.zsh
+@@ -12,19 +12,15 @@ export LANG=&quot;ja_JP.UTF-8&quot;
+ export SHELL=&quot;/bin/zsh&quot;
+
+ # PAGER
+-export PAGER=&quot;less&quot;
++export PAGER=&quot;lv -c&quot;
+
+ # EDITOR
+-export EDITOR=&quot;/usr/bin/mvim -v&quot;
+-export PATH=&quot;/usr/bin/mvim:$PATH&quot;
++export EDITOR=&quot;/usr/local/bin/vim -v -p&quot;
++export PATH=&quot;/usr/local/bin/vim:$PATH&quot;
+</code></pre>
+
+<p>このように <strong>ユニファイド形式</strong> の差分で出力されます。（テキスト自体の内容は本筋とは関係ありません）</p>
+
+<p>Vim とか使ってると、いやそれ以外のエディタであっても、
+diff とったときには左右に分割した状態（diff-mode）で比較したいじゃないですか。</p>
+
+<p>となると、この <code>git diff</code> の挙動をカスタマイズしたいと思うのはけっこう自然なことだと思います。</p>
+
+<p>でも、いくら以下のように設定しても、変化はおきません。</p>
+
+<pre><code>[diff]
+  tool = vimdiff
+</code></pre>
+
+<p>そこで色々調べていくうちに、 <strong>git diff</strong> とは別のコマンドが存在していることを知るのです・・・。</p>
+
+<h2 id="マニュアルをちゃんと読もう">マニュアルをちゃんと読もう</h2>
+
+<p>マニュアルをちゃんと読みましょう（自分）。</p>
+
+<p><code>git help diff</code> を実行してマニュアルをよく読むと、
+どこにも tool なんて解説項目はありません。</p>
+
+<p>次に <code>git help config</code> を実行して diff 周りに tool の設定項目がないか調べてみると、
+今度は見つかりました。ただ・・・</p>
+
+<pre><code>   diff.tool
+       Controls which diff tool is used by git-difftool(1). This variable overrides the value
+       configured in merge.tool. The list below shows the valid built-in values. Any other value
+       is treated as a custom diff tool and requires that a corresponding difftool.&lt;tool&gt;.cmd
+       variable is defined.
+</code></pre>
+
+<p><strong>used by git-difftool(1)</strong> とありますね・・・。</p>
+
+<p>そう、 <strong>git-diff</strong> ではなく、 <strong>git-difftool</strong> だったのです・・・。</p>
+
+<h2 id="git-difftool-について">git-difftool について</h2>
+
+<p>試しに <code>git difftool</code> を実行してみると、</p>
+
+<pre><code>% git difftool
+
+This message is displayed because 'diff.tool' is not configured.
+See 'git difftool --tool-help' or 'git help config' for more details.
+'git difftool' will now attempt to use one of the following tools:
+kompare vimdiff emerge
+
+Viewing (1/1): 'path/to/file'
+Launch 'vimdiff' [Y/n]:
+</code></pre>
+
+<p><code>--tool-help</code> オプション付きでヘルプを見ろとあります。</p>
+
+<p>そのまま付けて実行してみます。</p>
+
+<pre><code>% git difftool --tool-help
+'git difftool --tool=&lt;tool&gt;' may be set to one of the following:
+                araxis
+                emerge
+                opendiff
+                vimdiff
+                vimdiff2
+                vimdiff3
+
+The following tools are valid, but not currently available:
+                bc
+                bc3
+                codecompare
+                deltawalker
+                diffmerge
+                diffuse
+                ecmerge
+                gvimdiff
+                gvimdiff2
+                gvimdiff3
+                kdiff3
+                kompare
+                meld
+                p4merge
+                tkdiff
+                winmerge
+                xxdiff
+
+Some of the tools listed above only work in a windowed
+environment. If run in a terminal-only session, they will fail.
+</code></pre>
+
+<p>つまり、 <code>git difftool</code> というコマンドが存在していて、 <strong>その差分比較に使える difftool が複数存在しているものの、その標準で使う tool を設定できるのが diff.tool だったのです。</strong></p>
+
+<p>では .gitconfig の diff 周りの設定を空にした状態で <code>git difftool</code> コマンドを使ってみましょう。</p>
+
+<pre><code>% git difftool .zsh/basic.zsh
+
+This message is displayed because 'diff.tool' is not configured.
+See 'git difftool --tool-help' or 'git help config' for more details.
+'git difftool' will now attempt to use one of the following tools:
+kompare vimdiff emerge
+
+Viewing (1/1): '.zsh/basic.zsh'
+Launch 'vimdiff' [Y/n]:
+</code></pre>
+
+<p>今は .gitconfig の diff 周りが未設定の状態で実行しているため、いくつか使用可能な difftool が列挙されています。</p>
+
+<p>ここで Y を押してもいいですが、先に <strong>diff.tool</strong> の設定を追加してからもう一度実行してみます。</p>
+
+<pre><code>[diff]
+  tool = vimdiff
+</code></pre>
+
+<p>上記を追加して、もう一度 <code>git difftool</code> コマンドを実行します。</p>
+
+<pre><code>% git difftool .zsh/basic.zsh
+
+Viewing (1/1): '.zsh/basic.zsh'
+Launch 'vimdiff' [Y/n]:
+</code></pre>
+
+<p>余計なメッセージが減りました。 つまり <strong>diff.tool</strong> の設定が正しく適用されています。そのまま Y キーを押します。</p>
+
+<p><img src="/img/2016/12/gitdiff01.png" alt="" /></p>
+
+<p>こんな感じで左右に分割された差分が表示されます。</p>
+
+<p>ちなみに、毎回 Y/n を打つのは面倒なので、 .gitconfig に <strong>difftool.prompt</strong> を設定しておくと、すぐに分割表示されます。</p>
+
+<pre><code>[difftool]
+  prompt = false
+</code></pre>
+
+<p>はい。</p>
+
+<h2 id="git-diff-と-git-difftool-の違いについて">git diff と git difftool の違いについて</h2>
+
+<p>結局のところ何が違うのでしょう。 <code>git difftool</code> にはこんな説明文が書いてあります。</p>
+
+<pre><code>DESCRIPTION
+       git difftool is a Git command that allows you to compare and edit files between revisions using
+       common diff tools. git difftool is a frontend to git diff and accepts the same options and
+       arguments. See git-diff(1).
+</code></pre>
+
+<p>要するに、 <strong>git-difftool は（普段使っているような）共通の差分比較ツールを使って比較をするためのコマンド</strong> です。</p>
+
+<p>つまり <strong>vimdiff のような比較表示をしたい場合は、本来こっちの git-difftool コマンドを使うべき</strong> であって、 git-diff を vimdiff に近づけるのは本来の用途とはちょっと違う、と言えるかもしれません。</p>
+
+<p>ちなみに、今回は触れていませんが、 difftool に対して同様に <strong>git-mergetool</strong> というのもあります。ほぼ同じような感じなのであとはお調べください。</p>
+
+<h2 id="git-diff-に対するカスタマイズ">git diff に対するカスタマイズ</h2>
+
+<p>それが分かった上で、あえて git diff の挙動を変えることをしようとするならば、 <strong>diff.external</strong> というオプションがありますよ、というのが <strong>git-config</strong> に書いてあります。</p>
+
+<pre><code>   diff.external
+       If this config variable is set, diff generation is not performed using the internal diff
+       machinery, but using the given command. Can be overridden with the `GIT_EXTERNAL_DIFF'
+       environment variable. The command is called with parameters as described under &quot;git Diffs&quot;
+       in git(1). Note: if you want to use an external diff program only on a subset of your
+       files, you might want to use gitattributes(5) instead.
+</code></pre>
+
+<p>ここから先は
+<a href="https://technotales.wordpress.com/2009/05/17/git-diff-with-vimdiff/" target="_blank">https://technotales.wordpress.com/2009/05/17/git-diff-with-vimdiff/</a>
+に書いてある方が詳しいのですが、
+<strong>vimdiff</strong> の入出力の関係上、シェルスクリプトを挟みつつ、 diff の際の pager をオフにしてやる必要があるようです。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>一言でまとめると、</p>
+
+<pre><code>[diff]
+  tool = vimdiff
+[difftool]
+  prompt = false
+</code></pre>
+
+<p><strong>これらの設定は git-diff 用ではなく git-difftool 用です。</strong>
+それぞれお間違えなく。</p>
+
+<p>基本的にドキュメント読んだので一応自己解決した話なのですが、
+ググって書いてあったからといって盲信するのはよくありません。
+<strong>ちゃんとドキュメント読んで自分で検証しましょう。</strong></p>
+
+<p>2016年もあとわずかですが、
+来年も引き続きこういった勘違いとか混乱しやすい気づき系の記事を
+不定期で細々と書いていって、
+同じように困った人にとって助けになればと思います。</p>
+
+<p>（もし解釈が間違ってるよ！ or 誤字脱字がー、などのツッコミなどあれば Twitter 経由などでいただけると幸いです）</p>
+
+<p>では良いお年を。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://git-scm.com/docs/git-config" target="_blank">https://git-scm.com/docs/git-config</a></li>
+<li><a href="https://technotales.wordpress.com/2009/05/17/git-diff-with-vimdiff/" target="_blank">https://technotales.wordpress.com/2009/05/17/git-diff-with-vimdiff/</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年12月27日">2016年12月27日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/git/">Git</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20161129/">nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年11月29日">2016年11月29日</time>
@@ -112,9 +1083,119 @@
   </ul>
 </div>
 
+
+
+
+<p>メモとして残しておきます。</p>
+
+<h2 id="ansible-playbook-で急に表示できなくなった">ansible-playbook で急に表示できなくなった</h2>
+
+<p>本番環境の CentOS7 と、その検証環境（Vagrant on Mac）で
+Ansible 経由で Docker をインストールして使っていたのですが、
+ある日 <code>ansible-playbook</code> を実行すると急に表示できなくなりました。</p>
+
+<p>（Chef を使ってたころはこういうの頻発してたなあ・・・）</p>
+
+<p>その間は Vagrant のアップデートくらいしかしてなかったので、
+順に確認していくことに。</p>
+
+<h3 id="各種ログ">各種ログ</h3>
+
+<p>nginx-proxy のログは</p>
+
+<pre><code>lrwxrwxrwx 1 root root   11 Aug 24 03:51 access.log -&gt; /dev/stdout
+lrwxrwxrwx 1 root root   11 Aug 24 03:51 error.log -&gt; /dev/stderr
+</code></pre>
+
+<p>のような感じで、特に何も指定してなければ外にログとして出るようになってます。</p>
+
+<p><code>docker logs -f nginx-proxy</code> などとしてログを表示させたりしても特に問題は見受けられず。</p>
+
+<p>また、 /etc/nginx/conf.d/default.conf のファイルも特に問題なく、
+コンテナが作られると適切に設定が書き換わっているようでした。</p>
+
+<h3 id="自動と手動">自動と手動</h3>
+
+<p>次に ansible のレイヤーで問題が起きている可能性を考えて、
+自動で作った Docker コンテナをそのまま手動で作ってみました。</p>
+
+<p>するとコンソールに見慣れないメッセージが。</p>
+
+<pre><code>WARNING: IPv4 forwarding is disabled. Networking will not work.
+</code></pre>
+
+<p>なんだこれ。</p>
+
+<h3 id="本番環境と検証環境">本番環境と検証環境</h3>
+
+<p>さらに、本番環境と検証環境とで同様にコンテナを作って比較してみると、
+上記メッセージは表示されずに、問題なくコンテナが作成されました。</p>
+
+<h3 id="最後にググる">最後にググる</h3>
+
+<p>ここまでくるとローカルの環境に何かしら問題が起きた可能性があるので、
+先ほどのメッセージも加味して調べると、以下のような情報が引っかかりました。</p>
+
+<p><a href="http://chrisgilmerproj.github.io/ubuntu/network/docker/2013/09/05/ipv4-forwarding-and-docker.html" target="_blank">http://chrisgilmerproj.github.io/ubuntu/network/docker/2013/09/05/ipv4-forwarding-and-docker.html</a></p>
+
+<p>どうやら <code>sysctl</code> コマンドでカーネルパラメータを変更して、
+IPv4 を有効にしてやる必要があるようなのですが、
+正直どうしてこうなった感が満載です。</p>
+
+<p>うーん・・・今まで問題なく動作していたんですが。
+（とはいえ、ここから先の原因追求は不毛なのでやめておきます。）</p>
+
+<p>ローカルの VM にのみ起きる問題であるため、こちらについては Ansible で行おうとせず、
+その手前の Vagrantfile で VM を作る段階で差分を吸収することにします。</p>
+
+<pre><code>config.vm.define &quot;vmname&quot; do |node|
+  # for docker networking
+  node.vm.provision &quot;shell&quot;, :inline =&gt; &quot;sudo sysctl -w net.ipv4.ip_forward=1&quot;, run: &quot;always&quot;
+end
+</code></pre>
+
+<h3 id="おまけ">おまけ</h3>
+
+<p>調べる途中で nginx-proxy のログのタイムゾーンが UTC だったので、
+これなんとかならんかなーと思って少し寄り道して調べてたのですが、
+スマートな方法があったのでついでに。</p>
+
+<p><a href="http://qiita.com/ganta/items/a0f34866c994ebaeef69" target="_blank">http://qiita.com/ganta/items/a0f34866c994ebaeef69</a></p>
+
+<p>docker run するときにホストの /etc/localtime をコンテナの /etc/localtime にバインドしてやれば良かったのでした。</p>
+
+<blockquote>
+<p>-v /etc/localtime:/etc/localtime:ro</p>
+</blockquote>
+
+<p>なんで思いつかなかったんだろう。すごくシンプルで良いです。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年11月29日">2016年11月29日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ansible/">Ansible</a></li>
+    <li class="flow"><a href="/tags/docker/">Docker</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20161012/">Vim の tabpage のカスタマイズ</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年10月12日">2016年10月12日</time>
@@ -125,9 +1206,177 @@
   </ul>
 </div>
 
+
+
+
+<p>だいぶ前から tabpage の前後移動において、
+自分と同じ設定をしている人をみかけないので、
+アウトプットしておこうと思います。</p>
+
+<p>ちなみに僕はもう <strong>この設定がないとイラッとするくらい</strong> 慣れてきています。</p>
+
+<h2 id="tabpage-タブページ">tabpage（タブページ）</h2>
+
+<p>tabpage を使わずにバッファ操作だけでも使えなくはないのですが、
+実際 tabpage の方が分かりやすかったので
+そちらをメインで使っています。
+（とはいえ、バッファ操作も最低限できるようにはしてあります。出来ないと困るので。）</p>
+
+<p>プロジェクト単位というか、
+複数のファイルを同時に開いて切り替えながら編集するケースって、
+けっこうあると思っています。
+そういうときに、<code>:tabnew filename</code> といった形でファイルを開くと
+新しい tabpage が出来ます。</p>
+
+<h3 id="tabnext-tabprevious">tabnext, tabprevious</h3>
+
+<p>tabpage が複数になると、
+それらの間を移動できないと困ります。</p>
+
+<p><code>:tabnext</code>, <code>:tabprevious</code> というコマンドはあるものの、
+大抵は <code>gt</code>, <code>gT</code> の割り当てられたショートカットを利用します。</p>
+
+<h2 id="だがめんどくさい">だがめんどくさい</h2>
+
+<p>tabpage に慣れてくると、徐々に <code>gt</code>, <code>gT</code> だとめんどくさくなってくるんですよね。</p>
+
+<p>例えばそこそこ多くの tabpage が開いてあったときに、
+4つ次のやつを開きたいなーというときは <code>4gt</code> と入力すれば済むのですが、
+頭では分かっていても、なかなか <code>gt</code> の前に数字を持ってくるのは難しいです。
+<strong>開きたい tabpage がいくつ先にあるかなんてどうでもいい</strong> 情報なんですよ。数えたくない。</p>
+
+<p>なんというか、ドット (.) や、セミコロン (;) のようにコマンドや検索を繰り返し
+<strong>ドッドッドッ・・・</strong> と順次探していく感じで使いたいのです。
+（なんか Vim のテクニックバイブルにこんな話があったような・・・？）</p>
+
+<p><code>gt</code> や <code>gT</code> だと、そもそも2ストロークなので、
+そういった <strong>ドッドッドッ・・・</strong> と入力して次へ次へ、といった感じで入力できません。</p>
+
+<p>そういった怠惰欲？のようなものが段々と積もってきて、
+よーしどこかのキーをつぶそう、となったのでした。</p>
+
+<h2 id="ctrl-l-ctrl-h-ctrl-n-の割り当て">CTRL-L, CTRL-H, CTRL-N の割り当て</h2>
+
+<p>Vim なので、 <strong>L が右で H が左というイメージ</strong> はみなさん共通で持ってます。よね？</p>
+
+<p>なので、 <code>:tabnext</code> に <code>&lt;C-l&gt;</code> を、
+<code>:tabprevious</code> に <code>&lt;C-h&gt;</code> をそれぞれ割り振ることにしました。</p>
+
+<p>実際、今現在は何が割り振られているかというのは、
+<code>:h CTRL-L</code> で見てみるとわかります。</p>
+
+<pre><code>                                                        CTRL-L
+CTRL-L                  Clear and redraw the screen.  The redraw may happen
+                        later, after processing typeahead.
+</code></pre>
+
+<p>ターミナル上では <code>CTRL-L</code> は使いますが、
+Vim に挙動が移ったあとで <code>CTRL-L</code> は正直使いません。</p>
+
+<p><code>:h CTRL-H</code> も見てみます。</p>
+
+<pre><code>h               or                                      h
+&lt;Left&gt;          or                                      &lt;Left&gt;
+CTRL-H          or                                      CTRL-H &lt;BS&gt;
+&lt;BS&gt;                    [count] characters to the left.  exclusive motion.
+                        Note: If you prefer &lt;BS&gt; to delete a character, use
+                        the mapping:
+                                :map CTRL-V&lt;BS&gt;         X
+                        (to enter &quot;CTRL-V&lt;BS&gt;&quot; type the CTRL-V key, followed
+                        by the &lt;BS&gt; key)
+                        See :fixdel if the &lt;BS&gt; key does not do what you
+                        want.
+</code></pre>
+
+<p><code>h</code> と同じ役割なので、これもつぶしても良さそうです。</p>
+
+<p>ついでに、<code>:tabnew</code> もめんどくさくなってきたので、
+<code>Ctrl-N</code> の入力だけで <code>:tabnew</code> までの入力を勝手にしてくれて、
+<strong>あとはファイル名を入れるだけという状態</strong> になってくれると良いです。</p>
+
+<p>ちなみに <code>:h CTRL-N</code> はというと、</p>
+
+<pre><code>j               or                                      j
+&lt;Down&gt;          or                                      &lt;Down&gt;
+CTRL-J          or                                      CTRL-J
+&lt;NL&gt;            or                                      &lt;NL&gt; CTRL-N
+CTRL-N                  [count] lines downward linewise.
+</code></pre>
+
+<p><code>j</code> と同じ役割なので、同様にこれも OK ですね。</p>
+
+<p>ちなみに上記3つの vimrc を抜粋するとこんな感じです。</p>
+
+<pre><code>if v:version&gt;=700
+  nnoremap &lt;C-H&gt; :tabprevious&lt;CR&gt;
+  nnoremap &lt;C-L&gt; :tabnext&lt;CR&gt;
+  nnoremap &lt;C-N&gt; :tabnew&lt;Space&gt;
+endif
+</code></pre>
+
+<p>2006 年ごろですかね？
+tabpage が有効になったバージョンだけで有効になるような設定になっていますが、
+もうこの if 文もいらないですね。</p>
+
+<h3 id="ドッドッドッ-と押せる">ドッドッドッ・・・と押せる</h3>
+
+<p>新規ファイルは連続で開いたりしないのでいいとして、
+<code>CTRL-L</code>, <code>CTRL-H</code> については連続で押せます。</p>
+
+<p>2ストロークから、2つのキーの同時押しに変わったことで、
+<strong>CTRLキーを押しながら L キーを連続して押す</strong> という選択肢が生まれ、
+<strong>ドッドッドッ・・・</strong> という使い方ができるようになりました。</p>
+
+<p><code>gt</code> や <code>gT</code> を使っていた頃と比べると、格段に tabpage が使えるようになり、
+自然と Vim にも愛着が湧いてくると思います。</p>
+
+<h2 id="割り当てによるデメリット">割り当てによるデメリット</h2>
+
+<p>新たにキーを割り当てる場合、副作用も考えなくてはなりません。</p>
+
+<p>一番ありうるのは、 <strong>普段の環境で割り当てていて、
+割り当てられていない環境でそのキーを押してしまう</strong> ことです。</p>
+
+<p>ただ、割り当てたキーをそのまま押しても、
+今回のケースでは <strong>キーの位置の移動か、あるいは再描画のいずれかしか起きない</strong> ため、
+割り当てられていない環境で押してしまっても、特に副作用はありません。
+やったね！</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>僕にとっては tabpage 操作はけっこう優先度高いので、
+<strong>けっこう重要そうな H, L, N あたりのキーを優先的に割り当てて使っています。</strong></p>
+
+<p>これを設定してから数年使ってますが、デメリットもほぼなく
+今まで特に困った記憶はありません。
+むしろ自分の知らないこんな機能が割り当てられていて、
+それが潰れてしまっていた、みたいな可能性はあるかもしれないので、
+もし知らないところで不利益を被っていたら教えてくださると嬉しいです。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年10月12日">2016年10月12日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vim/">Vim</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20161004/">Homebrew で Golang のバイナリを公開してみた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年10月4日">2016年10月4日</time>
@@ -140,9 +1389,166 @@
   </ul>
 </div>
 
+
+
+
+<p>超楽だったのでメモっておきます。</p>
+
+<p>こちらにドキュメントあります。（Golang のバイナリの場合ではないので少し異なりますが）</p>
+
+<p><a href="https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md" target="_blank">https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md</a></p>
+
+<h2 id="homebrew-対応">Homebrew 対応</h2>
+
+<p>自作コマンド <a href="https://github.com/girigiribauer/db-cli" target="_blank">https://github.com/girigiribauer/db-cli</a> を公開している時に
+リリースバイナリまで GitHub に登録できて一息つけたーというタイミングで、
+ふと <code>brew install db-cli</code> でインストールできたらいいなあと思ったので
+調べてやってみたらさくっと1時間もかからずいけました。</p>
+
+<p>自作コマンド用のリポジトリとは別に、</p>
+
+<p><a href="https://github.com/girigiribauer/homebrew-db-cli" target="_blank">https://github.com/girigiribauer/homebrew-db-cli</a></p>
+
+<p>という &ldquo;homebrew-&rdquo; プレフィックス付きの名前の Homebrew 用のリポジトリを用意し、Ruby ファイルを追加します。</p>
+
+<p><code>brew create</code> コマンドでいけるようですが、
+シンプルなので自分で用意しています。</p>
+
+<pre><code>require 'formula'
+
+REPOSITORY_URL='https://github.com/girigiribauer/db-cli'
+HOMEBREW_DBCLI_VERSION='0.1.24'
+
+class DbCli &lt; Formula
+  desc '`db` command line tools (Docker based)'
+  homepage REPOSITORY_URL
+  url &quot;#{REPOSITORY_URL}/releases/download/v#{HOMEBREW_DBCLI_VERSION}/db-darwin-amd64.tar.gz&quot;, :tag =&gt; &quot;v#{HOMEBREW_DBCLI_VERSION}&quot;
+  sha256 '6bfc2486db1b17ab93d3b3783f5981b3676299319ff9208efd599a4843599a06'
+  head REPOSITORY_URL, :branch =&gt; 'master'
+  version HOMEBREW_DBCLI_VERSION
+
+  def install
+    bin.install 'db'
+  end
+end
+</code></pre>
+
+<p>Formula クラスの継承をしたうえで、各種ローカル変数を定義します。
+下に書いてあるのですが、db-cli という名前なのでクラス名は DbCli で自動で決まるみたいですね。
+最初は &ldquo;DBCli&rdquo; と書いていました・・・。</p>
+
+<p>install メソッドを定義し、
+場合によっては Ruby の外部コマンド実行ができる system コマンドで
+実際にインストールに必要なコマンド類を入力してやる必要があるみたいなのですが、
+<strong>今回の場合は配布想定のバイナリファイルを配置するだけで Golang 環境は不要なので、
+bin.install で指定するだけで問題無い</strong> ようです。</p>
+
+<p>これも Golang の強みの1つですね。
+ビルド後のバイナリファイルは、Golang 環境がなくとも（go コマンドがインストールされてなくとも）
+普通に動作するので、事前に動作環境をあれこれ入れる必要がないです。</p>
+
+<p>ちなみに bin.install で指定するだけで勝手に圧縮ファイルを展開、配置までしてくれるようですね。</p>
+
+<p>push できたら試しに <code>brew tap</code> してみます。</p>
+
+<pre><code>$ brew tap girigiribauer/db-cli
+</code></pre>
+
+<p>どうやら Homebrew 1.0 あたりで auto update が自動で行われるようになったようです。
+なのでアップデート待ちです。</p>
+
+<pre><code>==&gt; Tapping girigiribauer/db-cli
+Cloning into '/usr/local/Homebrew/Library/Taps/girigiribauer/homebrew-db-cli'...
+remote: Counting objects: 4, done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 4 (delta 0), reused 3 (delta 0), pack-reused 0
+Unpacking objects: 100% (4/4), done.
+Checking connectivity... done.
+Error: Invalid formula: /usr/local/Homebrew/Library/Taps/girigiribauer/homebrew-db-cli/db-cli.rb
+No available formula with the name &quot;db-cli&quot;
+In formula file: /usr/local/Homebrew/Library/Taps/girigiribauer/homebrew-db-cli/db-cli.rb
+Expected to find class DbCli, but only found: DBCli.
+Error: Cannot tap girigiribauer/db-cli: invalid syntax in tap!
+</code></pre>
+
+<p>あっその名前ダメですか・・・。
+Golang だと逆に Db は DB にしろって言われるんですけどね・・・。
+Ruby に素直に従っておきます。</p>
+
+<p>ということで素直に DbCli に変更して再度トライ。</p>
+
+<pre><code>$ brew tap girigiribauer/db-cli
+==&gt; Tapping girigiribauer/db-cli
+Cloning into '/usr/local/Homebrew/Library/Taps/girigiribauer/homebrew-db-cli'...
+remote: Counting objects: 4, done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 4 (delta 0), reused 2 (delta 0), pack-reused 0
+Unpacking objects: 100% (4/4), done.
+Checking connectivity... done.
+Tapped 1 formula (27 files, 20.3K)
+
+$ brew install db-cli
+==&gt; Installing db-cli from girigiribauer/db-cli
+==&gt; Downloading https://github.com/girigiribauer/db-cli/releases/download/v0.1.24/db-darwin-amd64.tar.gz
+==&gt; Downloading from https://github-cloud.s3.amazonaws.com/releases/69738247/d805382a-8822-11e6-89f4-aff058332cdf.g
+######################################################################## 100.0%
+🍺  /usr/local/Cellar/db-cli/0.1.24: 3 files, 8.6M, built in 9 seconds
+</code></pre>
+
+<p>ひゃっほーい🍺
+オレオレ自作コマンドがとうとう Homebrew 経由で自分の元に。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>バイナリ配置するだけなんで、
+Homebrew の install メソッド内部でやってることもすごくシンプルですね。</p>
+
+<p>namespace 的には既存の Homebrew には影響しないので、
+今回のように超短いコマンド名で公開しても全く影響ありません。
+（全くではないですね、インストール時に名前がかぶる可能性はあるので、その場合は別途リポジトリ指定する必要があるかもです）</p>
+
+<p><img src="/img/2016/10/firsttime-homebrew01.jpg" alt="" /></p>
+
+<p>全然関係ないけど、Homebrew の命名センスは結構好きですね。
+ビールの自家醸造に例えて色々コマンド名が決まってて素敵だなあと思います。</p>
+
+<p>僕ももうちょっとセンスのある命名を考えていければなと思います。
+（末尾に24とかつけてる場合じゃない）</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md" target="_blank">https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md</a></li>
+<li><a href="http://dev.classmethod.jp/tool/new-formula-request-to-homebrew/" target="_blank">http://dev.classmethod.jp/tool/new-formula-request-to-homebrew/</a></li>
+<li><a href="http://blog.monochromegane.com/blog/2014/05/19/homebrew-formula-for-golang/" target="_blank">http://blog.monochromegane.com/blog/2014/05/19/homebrew-formula-for-golang/</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年10月4日">2016年10月4日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/golang/">Golang</a></li>
+    <li class="flow"><a href="/tags/homebrew/">Homebrew</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20161003/">Golang で DB が簡単に扱える自作コマンドを作ってみた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年10月3日">2016年10月3日</time>
@@ -155,9 +1561,271 @@
   </ul>
 </div>
 
+
+
+
+<p>※どうでもいいけど、9月のブログ記事数が急に増えだしてます。
+Hugo 化がここにきてすごく効いてきてますね。</p>
+
+<p>この前 <strong>&ldquo;db-cli&rdquo;</strong> という自作コマンドをリリースしてみました。
+コマンド名自体は <code>db</code> です。超短いので何かにかぶってたらゴメンナサイ。</p>
+
+<p><a href="https://github.com/girigiribauer/db-cli" target="_blank">https://github.com/girigiribauer/db-cli</a></p>
+
+<h2 id="経緯">経緯</h2>
+
+<p>何かプログラムなどを書いていて、
+試しに MySQL(MariaDB) でもちょこっと立てて検証したいなあ、
+みたいなことはたまにあると思います。</p>
+
+<p>最近になって、ローカルにそういったデータベースをインストールせずに
+Docker を利用するという選択肢も出てきたのですが、
+まだちょっととっつきにくいというか、
+<strong>長ったらしいコマンドをずらずらと並べて
+コンテナを立てることになる</strong> ので、
+結構面倒臭かったりします。</p>
+
+<p>まだコマンドラインのヒストリーから Ctrl+R とかで探していればまだマシなのですが、
+とても毎回ゼロから入力する気にはなれません。</p>
+
+<p><strong>「僕は DB をちょこっと使いたいだけなんだよ！」</strong> というところから、
+じゃあ試しに <strong>db って打ったら DB コンテナが立ち上がるようなコマンドでも作ってみるかー</strong> と思ったのがきっかけです。</p>
+
+<h2 id="コンセプト">コンセプト</h2>
+
+<ul>
+<li><strong>by Golang</strong></li>
+<li><strong>ストローク数は超短く。 D! B! Enter!</strong> で終わりにしたい。</li>
+<li>僕はほとんど使わないが、必要に応じて <strong>オプションで上書き</strong> 可能。</li>
+<li>Docker で名前つけるのすらだるい、 <strong>勝手につけてほしい。</strong></li>
+<li>dump, restore も可能な限り楽にやりたい。</li>
+</ul>
+
+<p>こんな感じで、後はオプション指定で別のデータベースとか指定できたらいいなあとか、
+配布もさくっとできたらいいなあとか、
+（僕は使わないけど）Windows とかでも使えたらいいなあとか、
+他にも様々ありますが、必要な項目としては上の4つです。</p>
+
+<p>するともう自然とコマンド名は <code>db</code> に決まり、
+コマンドラインを作るのに今適してそうな Golang で書くのに決めました。
+（というか先に Golang で書くことだけは決まっていた気がする）</p>
+
+<h2 id="インストール">インストール</h2>
+
+<p><strong>先にDocker あるいは Docker for Mac/Windows を入れましょう。</strong></p>
+
+<p>その後 MacOS であれば</p>
+
+<pre><code>$ brew tap girigiribauer/db-cli
+
+$ brew install db-cli
+</code></pre>
+
+<p>でインストールできます。
+（Homebrew 対応の話はまた別にメモっておきます）</p>
+
+<p>バイナリファイルが直接欲しい人は
+<a href="https://github.com/girigiribauer/db-cli/releases" target="_blank">https://github.com/girigiribauer/db-cli/releases</a> にあります。</p>
+
+<h2 id="使い方">使い方</h2>
+
+<p>基本的にヘルプに全部書いてありますのでお読みください。</p>
+
+<p>以下は <a href="https://github.com/girigiribauer/db-cli" target="_blank">https://github.com/girigiribauer/db-cli</a> と同じ内容です。</p>
+
+<h3 id="データベース作る">データベース作る</h3>
+
+<pre><code>$ db
+</code></pre>
+
+<p>これだけで DB が立ち上がった状態になります。
+MariaDB をイメージとした &ldquo;db0&rdquo; という名前のコンテナが起動状態になっていて、
+通常利用するであろう 3306 ポートが空いていれば、その番号がそのままポートフォワーディングされます。</p>
+
+<p>試しにもう1回 <code>db</code> と打てばわかりますが、名前が空いていなければ &ldquo;db1&rdquo;, &ldquo;db2&rdquo; と繰り上がり、
+3306 ポートが空いていなければ自動で割り当てられます。</p>
+
+<p>なので、 <strong>1つだけ使って消す、使って消す、みたいな使い方をしていれば、
+名前は必ず &ldquo;db0&rdquo; になり、ポートは 3306 になります。</strong>
+（実際僕の利用用途の9割くらいはこれで満たされてます）</p>
+
+<p>データベース名は何もつけなければ &ldquo;db&rdquo; です。
+ユーザー名もパスワードも初期値 &ldquo;db&rdquo; です。</p>
+
+<h3 id="データベース消す">データベース消す</h3>
+
+<pre><code>$ db -d
+</code></pre>
+
+<p><strong>消すのも合計6ストロークです。</strong> けっこう短くないですか？</p>
+
+<p>これも上と同様で、&rdquo;db0&rdquo; があればそれが消えます。なければ &ldquo;db1&rdquo;, &ldquo;db2&rdquo; を探しにいきます。</p>
+
+<h3 id="その他">その他</h3>
+
+<p>オプション以外の設定項目も、一通り <strong>環境変数で上書きできるようになっています。</strong></p>
+
+<p>例えば .bashrc などに</p>
+
+<pre><code>DBCLI_CONTAINER_PREFIX=go
+</code></pre>
+
+<p>などと書いておけば、勝手に go0, go1 &hellip; という名前のコンテナが立ち上がります。</p>
+
+<p>dump, restore もできるので、 <a href="https://github.com/girigiribauer/db-cli" target="_blank">https://github.com/girigiribauer/db-cli</a> をお読みください。</p>
+
+<h2 id="まだ微妙なところ">まだ微妙なところ</h2>
+
+<p>TODO というわけではないのですが、うーん・・・と思ってるところが若干あります。
+ただ自分用のコマンドを単に見えるようにしただけなので、
+正直対応するかどうかは微妙です。</p>
+
+<ul>
+<li>Docker コンテナのヘルスチェック</li>
+<li>test</li>
+<li>PostgreSQL 対応</li>
+</ul>
+
+<h3 id="docker-コンテナのヘルスチェック">Docker コンテナのヘルスチェック</h3>
+
+<p>正直なところ、Docker 1.12 あたりで導入された、
+コンテナのヘルスチェック周りの知見がちょっと足らないかもです・・・。</p>
+
+<p>この辺いじりだしたのは restore オプションの導入あたりからなのですが、
+<code>db</code>, <code>db -d</code> コマンドだけ使っていれば、
+ヘルスチェックなどはそもそも不要でした。（create -&gt; start するだけで問題ない）</p>
+
+<p>restore オプションを実装するには、
+コンテナを作るときにボリュームをマウントするなどの必要があったのですが、
+あまり複雑なことをやりたくなかったので、
+データベースが完全に用意できてから dump と同じ要領で <strong>外部からのコマンドを流し込む方法</strong> をとりました。</p>
+
+<p>なお、今回は <strong>ボリュームのマウント機能は一切利用せずにコマンド作ってます。</strong>
+ボリュームのマウントまで考慮に入れてしまうと、
+じゃあローカルのどのディレクトリをマウント設定するんだとか、
+そのオプションがなかった場合にどのような挙動になるんだとか、
+色々（オペレーション的に）複雑になりすぎる気がしてたので
+ボリュームを一切使わない方法はないか検討しました。</p>
+
+<p>で、この <strong>データベースが完全に用意できてから</strong> というのが曲者で、
+MariaDB が使えるようになるまで待機するのがどこまでなのかが未だによくわかっておりません・・・。</p>
+
+<p><strong>mysqladmin の ping が通り始めるタイミング</strong> なのか、
+あるいは <strong>&rdquo;/var/run/mysqld/mysqld.sock&rdquo; のファイルができるタイミング</strong> なのか、
+いずれにしてもタイミングによって restore ができるときとできないときが出てきてしまうので、
+5秒程度余分に待つといったダサい策をとってます。ぐぬぬ。</p>
+
+<p>なのでもうちょっと Docker のヘルスチェックというか、
+Docker を利用した MariaDB の起動の仕組みについてもう一段掘り下げてきちんと調べる必要がありそうですが、
+正直そこまでコストかけるかどうか微妙なところです。</p>
+
+<h3 id="test">test</h3>
+
+<p>今回は API を叩くのがほとんどで、大きく DockerClient の状態に依存するので、
+正直なところあまり頑張らずに DockerClient のエラーなどをそのまま垂れ流してもいいかなと思い、
+あまり力を入れてません。</p>
+
+<p>最初はイメージダウンロードしてコンテナ作った状態を再現してから、ってやってたんですが、
+僕のストレスが増加しそうだったのでやめました。</p>
+
+<h3 id="postgresql-対応">PostgreSQL 対応</h3>
+
+<p>めんどかったので入れませんでした。
+気が向いたら入れるかも。</p>
+
+<p>一応ある程度楽には入れられるような作りにはなってます。</p>
+
+<p>ただこれもヘルスチェックどうするんだ的な話が絡んでくるので、
+気が向いたとしてもすぐ飽きるかもしれません。</p>
+
+<h2 id="逆に思ったよりもよくできたところ-割り切ったところ">逆に思ったよりもよくできたところ、割り切ったところ</h2>
+
+<ul>
+<li>マルチプラットフォーム対応</li>
+<li>そもそもの利用用途</li>
+</ul>
+
+<h3 id="マルチプラットフォーム対応">マルチプラットフォーム対応</h3>
+
+<p>Golang のマルチプラットフォーム対応、なめてました。</p>
+
+<pre><code>GOOS=windows GOARCH=amd64 go build -o build/windows-amd64/db.exe cmd/db/*.go
+</code></pre>
+
+<p><code>go build</code> コマンドの前に <code>GOOS</code> と <code>GOARCH</code> 環境変数をセットしてやるだけで
+<strong>本当に Windows 用のバイナリが出来てしまいました。</strong></p>
+
+<p>僕が使うわけではないので、あわよくば Windows 対応もできればいいなあくらいに思っていたのですが、
+<strong>正直そんな手間もかからず（ゼロではないですが）対応できた</strong> のはありがたかったです。Golang マジすげえな。</p>
+
+<p>ちょっと違うところといえば、
+裏側で Docker Remote API を用いているのですが、
+DockerClient のエンドポイントが Linux, MacOS は UNIX ドメインソケットなのに対して、
+Windows では名前付きパイプ（npipe?）なんですよね。</p>
+
+<p>ただこれも、大元のライブラリが普通に対応していて
+パスの違いを吸収する程度の手間だったので
+「まあこれくらいなら・・・」と思わせてくれるのは良いですね。</p>
+
+<p>ちなみにこの DockerClient ライブラリに大きくお世話になりました。</p>
+
+<p><a href="https://github.com/fsouza/go-dockerclient" target="_blank">https://github.com/fsouza/go-dockerclient</a></p>
+
+<p><code>docker</code> コマンドで一通りできることは問題無くできると思います。</p>
+
+<h3 id="そもそもの利用用途">そもそもの利用用途</h3>
+
+<p>あまり大事にしたくなかったというか、試しに構築してみたいくらいの温度感だったので、
+<strong>僕が使うプラスアルファの対応に留めたい</strong> と最初から思っていました。</p>
+
+<p>なので、そもそも開発用としてローカルで使うもの前提だし、
+レプリケーションやら dump 時のテーブルロックの話などはばっさり切り捨てています。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>自分でコマンドを作ることは無くは無かったのですが、
+表に出すところまではやったことがなかったので良い経験になりました。
+Homebrew 対応についてはまた改めてメモっておきます。</p>
+
+<p>Golang はクロスプラットフォームな CLI を作るのに適していると思います。</p>
+
+<p>最後の方はみんなのGo言語も読みつつ進めていましたが、
+ちょうど今回に合った話もちらほらあって読んでてとてもためになりました。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://godoc.org/github.com/fsouza/go-dockerclient" target="_blank">https://godoc.org/github.com/fsouza/go-dockerclient</a></li>
+<li><a href="http://dev.classmethod.jp/cloud/aws/docker-healthcheck/" target="_blank">http://dev.classmethod.jp/cloud/aws/docker-healthcheck/</a></li>
+<li><a href="https://suin.io/538" target="_blank">https://suin.io/538</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年10月3日">2016年10月3日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/golang/">Golang</a></li>
+    <li class="flow"><a href="/tags/docker/">Docker</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160929/">MacOS の VMWare Fusion 内で Docker for Windows をインストールする</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年9月29日">2016年9月29日</time>
@@ -169,9 +1837,114 @@
   </ul>
 </div>
 
+
+
+
+<p>最初失敗したので、同じところではまるであろう人のためにメモっておきます。
+（念のため言っておきますが僕ははまったわけではないです・・・）</p>
+
+<p>そもそも Windows 10 検証用のために VMWare Fusion をインストールしているのですが、
+Mac で Docker を使いたいだけなら、
+<a href="https://docs.docker.com/engine/installation/mac/" target="_blank">Docker for Mac</a>を
+インストールするだけで問題ありません。
+（仮想レイヤーが増えるだけで全くおすすめできない）</p>
+
+<p>僕の場合は、Docker for Windows で検証したいことがあったため、
+Windows Update 中に（よくないけど）マシンが空いてたので入れてみようと思い、
+インストールしたはいいものの、以下のような画面になりました。</p>
+
+<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion01.png" alt="" /></p>
+
+<p>困り顔・・・。（このキャラクターの名前ってあるんですかね？）</p>
+
+<h2 id="docker-for-mac-windows-の動作の仕組み">Docker for Mac/Windows の動作の仕組み</h2>
+
+<p>仕組みといっても、そこまで詳しいことは書けないのですが、
+Docker は前提として <strong>Linux のコンテナ技術を用いているので、
+Linux なしに動作させることはできません。</strong></p>
+
+<p>Docker for Mac/Windows の1つ前のバージョンである Docker Toolbox では、
+VirtualBox を利用することで仮想 OS のうすーい Linux を手元に作り、
+そこの上に Docker コンテナを作ることで利用できてました。</p>
+
+<p>Docker for Mac/Windows になってもそれは同様で、
+ホスト型の VirtualBox を利用する代わりに、
+Mac であれば <strong>xhyve</strong> というハイパーバイザー型の仮想化技術を、
+Windows であれば <strong>Hyper-V</strong> というハイパーバイザー型の仮想化技術を
+それぞれ利用して超うすい Linux を作り、その上で Docker を動作させてます。</p>
+
+<p>そもそも、Docker for Windows の動作要件として、
+<a href="https://docs.docker.com/docker-for-windows/" target="_blank">https://docs.docker.com/docker-for-windows/</a> のページに
+こんなことが書いてあります。（2016/09/29 時点）</p>
+
+<pre><code>The Hyper-V package must be enabled for Docker for Windows to work. The Docker for Windows installer will enable it for you, if needed. (This requires a reboot).
+</code></pre>
+
+<p>ということで、VMWare Fusion で Docker for Windows を利用したい人は、
+結局のところ <strong>VMWare Fusion で Hyper-V を有効にしましょう</strong>、
+というところに帰着します。</p>
+
+<h2 id="docker-for-windows-のインストール">Docker for Windows のインストール</h2>
+
+<p><a href="http://itnews.jp/?p=9332" target="_blank">VMware Fusion上のWindows10にHyper-Vを構成する。</a> を
+少し参考にしています。</p>
+
+<p>&ldquo;プロセッサとメモリ&rdquo; のメニューを選択します。</p>
+
+<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion02.png" alt="" /></p>
+
+<p>その中に &ldquo;この仮想マシンでハイパーバイザー アプリケーションを有効にする&rdquo; というチェックボックスがあるのでチェックを入れます。</p>
+
+<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion03.png" alt="" /></p>
+
+<p>基本的にはこれで完了です。</p>
+
+<p>ただ、仮想 OS の上でさらに仮想環境をいじることになるので、
+メモリが足らなくなるケースが出てくるかと思います。</p>
+
+<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion04.png" alt="" /></p>
+
+<p>メモリだけは大量に積んであるので、推奨の倍まで増やしてやりました。
+たぶん Docker for Windows も、初期設定のままであれば 2048MB のメモリ設定になっているかと思います。</p>
+
+<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion05.png" alt="" /></p>
+
+<p>その後再度起動してみて、しばらくすると Docker is running の通知が。</p>
+
+<p>Settings から確認してみると &ldquo;Docker is running&rdquo; の文字を確認することができました。</p>
+
+<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion06.png" alt="" /></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>使うからには、最低限どういう原理で動作しているか、くらいは
+押さえておいた方がいいかもしれません。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年9月29日">2016年9月29日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/docker/">Docker</a></li>
+    <li class="flow"><a href="/tags/virtualization/">Virtualization</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160913/">Git のユーザー名を複数使い分ける時は global の設定を消す</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年9月13日">2016年9月13日</time>
@@ -183,9 +1956,109 @@
   </ul>
 </div>
 
+
+
+
+<p>会社用のアカウントと個人用とで分けたいときなどに。</p>
+
+<p>正攻法じゃないけど、間違えずに済むので一応メモ。</p>
+
+<p>（以下いろいろ編集追記）</p>
+
+<p><strong>これでしばらくやってみてほぼ困らなくなりましたのでオススメです。</strong></p>
+
+<p>ライブラリはオープンに個人用アカウントで作っておき、
+それを会社用アカウントから利用するみたいなことも想定できるので、
+user.name, user.email を複数使い分けられるようにしておいて損はないと思います。</p>
+
+<h2 id="global-の-gitconfig-の-user-name-をあえて空にする">global の .gitconfig の user.name をあえて空にする</h2>
+
+<p>ホームディレクトリに置いてある .gitconfig 内の</p>
+
+<pre><code>[user]
+    name = foobar
+    email = foobar@example.com
+</code></pre>
+
+<p>みたいな記述を <strong>思い切って削除してしまいます。</strong></p>
+
+<p>そうすると、通常であればコミットする時に
+<strong>user.name と user.email がない、お前は誰だ！</strong> と怒られます。</p>
+
+<pre><code>*** Please tell me who you are.
+
+Run
+
+  git config --global user.email &quot;you@example.com&quot;
+  git config --global user.name &quot;Your Name&quot;
+
+to set your account's default identity.
+Omit --global to set the identity only in this repository.
+</code></pre>
+
+<p>そのままではコミットできないのですが、
+user.name などをグローバルで一括指定する代わりに、
+<strong>プロジェクトごとの user.name などの設定を素早くできるようにすれば良いのです。</strong></p>
+
+<p>.bashrc や .zshrc あたりに</p>
+
+<pre><code>function gituser-personal() {
+  git config user.name &quot;girigiribauer&quot;
+  git config user.email &quot;girigiribauer@gmail.com&quot;
+  git config --list
+}
+
+function gituser-company() {
+  git config user.name &quot;foobar&quot;
+  git config user.email &quot;foobar@example.com&quot;
+  git config --list
+}
+</code></pre>
+
+<p>などといった、自分にとってわかりやすい名前で user.name を指定できる関数を用意しておきます。
+今回は <strong>gituser-personal</strong> と <strong>gituser-company</strong> の2種類用意してみました。</p>
+
+<p>あとはプロジェクトの初期（clone 直後とか init 直後とか）に実行してやれば
+プロジェクトごとの user.name, user.email が使えるようになりますし、
+うっかり忘れていたとしてもコミット手前で名前を教えろという警告でストップし、
+（なぜなら global の設定が空だから）
+<strong>警告をセーフティのように利用できる</strong> と思います。</p>
+
+<p>僕は当初、 global の .gitconfig にメインで使う user.name の設定を書いたまま
+サブで使う場合のみ、
+上記の関数を呼び出す方法を使っていたのですが、
+ついつい忘れてしまいがちで push した後に気づくんですよね。
+あえてグローバルに設定しないようにしたことで、
+逆に設定間違えに気づくことが出来るようになりました。</p>
+
+<p>複数アカウントをなんとかして同時に扱おうと頑張ってる方がいるのですが、
+global の .gitconfig の設定を空にする方法、地味ですがオススメです。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年9月13日">2016年9月13日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/git/">Git</a></li>
+    <li class="flow"><a href="/tags/gitconfig/">gitconfig</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160912/">Ansible の playbook 内で条件分岐を行う方法</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年9月12日">2016年9月12日</time>
@@ -197,9 +2070,148 @@
   </ul>
 </div>
 
+
+
+
+<p>これも公式に詳しく書いてなくて出来るのを分かってなかったので
+僕と同じようなところで困っている人のためにメモっておきます。</p>
+
+<h2 id="jinja2">jinja2</h2>
+
+<p>Ansible では jinja2 というテンプレートエンジンが利用されています。</p>
+
+<p>playbook 内で <code>{{ ssh_port }}</code> などの記述を埋め込むことで
+外部の設定ファイルから ssh_port の値を環境に応じて出し分けることが可能です。</p>
+
+<p>僕の場合は、ローカル（VirtualBox + Vagrant）環境と本番環境とで
+設定値が異なるところを括り出して、Ansible の group_vars ディレクトリ以下に
+環境ごとのファイル名をつけて保存しています。</p>
+
+<p>Ansible 関係なく、jinja2 のテンプレートエンジンの解説ページが
+以下にあります。</p>
+
+<p><a href="http://jinja.pocoo.org/docs/dev/templates/" target="_blank">http://jinja.pocoo.org/docs/dev/templates/</a></p>
+
+<p>こちらを見ると分かるように、Ansible の playbook 以外にも
+HTML や XML などにも幅広く利用されているようです。</p>
+
+<p>デリミタ（delimiter、区切り文字のこと）の種類として、以下の4つが使えるものとして挙げられています。</p>
+
+<ul>
+<li>{% &hellip; %} for Statements</li>
+<li>{{ &hellip; }} for Expressions to print to the template output</li>
+<li>{# &hellip; #} for Comments not included in the template output</li>
+<li>#  &hellip; ## for Line Statements</li>
+</ul>
+
+<p>このうち、Ansible の playbook でよく使われるのが <code>{{ ... }}</code> の式の実行結果が出力できるやつで、
+それ以外のものは公式のドキュメントにはほぼ見かけません。</p>
+
+<h2 id="ansible-における条件分岐">Ansible における条件分岐</h2>
+
+<p>Ansible で条件分岐できる方法はもちろんあるのですが、
+when の中に記述する形のようです。
+<a href="http://docs.ansible.com/ansible/playbooks_conditionals.html" target="_blank">http://docs.ansible.com/ansible/playbooks_conditionals.html</a> から抜粋します。</p>
+
+<pre><code>tasks:
+    - shell: echo &quot;I've got '{{ foo }}' and am not afraid to use it!&quot;
+      when: foo is defined
+
+    - fail: msg=&quot;Bailing out. this play requires 'bar'&quot;
+      when: bar is undefined
+</code></pre>
+
+<p>僕がやりたいのはこういうのではなくて（これでもコピペ増やせばできなくはなさそうだけど）、
+環境変数を条件によって出し分けたいのです。例えばこんな感じ。</p>
+
+<p>（group_vars 以下のファイルが tls: False のとき）</p>
+
+<pre><code>env:
+  port: 80
+</code></pre>
+
+<p>（group_vars 以下のファイルが tls: True のとき）</p>
+
+<pre><code>env:
+  port: 443
+</code></pre>
+
+<p>これを例えば以下のようにやってしまうと、エラーになってしまいます。</p>
+
+<pre><code>env:
+{% if tls %}
+  port: 443
+{% else %}
+  port: 80
+{% endif %}
+</code></pre>
+
+<p>先ほどの jinja2 のドキュメントの方を参考にすれば、
+こういった書き方もいけそうな気がするのですが、
+どうやら jinja2 のテンプレートとして評価をする前に、
+Ansible 側で <strong>YAML の（設定）ファイルとして Valid かどうかをチェック</strong> しているらしいです。</p>
+
+<p>なので、上記のような書き方は出来ず、
+あくまでこういったデリミタなしで YAML として成立してなくてはいけません。</p>
+
+<p>一方で、<code>{{ ... }}</code> を埋め込むときは、文字列として <code>&quot;{{ ... }}&quot;</code> と囲むことが多いのですが、
+文字列であれば YAML のチェックは通ります。</p>
+
+<pre><code>env:
+  port: &quot;{% if tls %}443{% else %}80{% endif %}&quot;
+</code></pre>
+
+<p>上記のようにあくまで YAML のファイルで文字列が入ってますよーという風にすれば問題ないっぽいですね。</p>
+
+<p>ちょっと不恰好ではありますが、
+group_vars 以下の設定項目が冗長になるよりはだいぶマシかと思います。
+（tls を false に変更したら、 port の項目も 443 から 80 に併せて変更、みたいなやつ）</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>Ansible の playbook を書くときは、</p>
+
+<ol>
+<li><strong>まず YAML として成立させる</strong></li>
+<li><strong>{% &hellip; %} の埋め込みは文字列の中にまとめて入れる</strong></li>
+</ol>
+
+<p>とやれば問題なさそうです。</p>
+
+<p>不安であれば <code>ansible-playbook</code> の出力時に <code>-vvvv</code> などとつけてパラメータを確認すると良いかもしれません。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://jinja.pocoo.org/docs/dev/templates/" target="_blank">http://jinja.pocoo.org/docs/dev/templates/</a></li>
+<li><a href="http://docs.ansible.com/ansible/playbooks_conditionals.html" target="_blank">http://docs.ansible.com/ansible/playbooks_conditionals.html</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年9月12日">2016年9月12日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ansible/">Ansible</a></li>
+    <li class="flow"><a href="/tags/jinja2/">jinja2</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160907/">Ansible で Docker のインストール</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年9月7日">2016年9月7日</time>
@@ -211,9 +2223,232 @@
   </ul>
 </div>
 
+
+
+
+<p><a href="http://girigiribauer.com/archives/20160906/" target="_blank">Ansible で再起動後にも playbook を継続する方法</a> で
+再ログインに関しても一緒にまとめておこうと思ったのですが、
+Docker の方が話の割合として多くなりそうだったので別記事でまとめておきます。
+特に Ansible で Docker をインストールするときはこれに該当するんじゃないかと思います。</p>
+
+<h2 id="ansible-で-docker">Ansible で Docker</h2>
+
+<p>まず話がややこしくならないように事前に触れておきますが、
+Ansible &amp; Docker の話は複数あって、</p>
+
+<ol>
+<li>Ansible の playbook の実行（の検証？）に Docker コンテナを用いる話</li>
+<li>Ansible の playbook で Docker をインストールする話</li>
+</ol>
+
+<p>が挙げられますが、今回は 1 ではなく 2 の話です。</p>
+
+<p>ちなみに 1 についてですが、
+例えばローカルに用意した VirtualBox や外部に借りている VPS の環境だったり、
+SSH がつながる環境であれば Ansible の実行は可能ですが、
+それが Docker コンテナまで利用できるように広がってきたよという話です。
+（僕も詳しくないのでここまでしか把握してません。）</p>
+
+<p>詳しくは &ldquo;ansible docker connection plugin&rdquo; でおググりください。</p>
+
+<h2 id="docker-インストール時のグループ追加について">Docker インストール時のグループ追加について</h2>
+
+<p>手動でやっててけっこうはまった箇所なのですが、
+<strong>各種 docker コマンドを実行する際は、sudo をつけて実行するか、
+docker グループにユーザーを追加してから docker コマンドを実行する必要があります。</strong></p>
+
+<p>Ansible 実行ユーザーを docker グループに追加し Docker 関連の操作をさせる際に、
+Ansible の playbook を Ansible 実行ユーザー自身が実行中なため、
+<strong>一度ログインし直してグループに追加したことを設定反映する必要があります。</strong></p>
+
+<p>つまり、Docker インストール用の playbook を実行して、
+ansible ユーザーを docker グループに入れたからといって、
+docker_image, docker_container モジュールを用いた playbook は動作しません。</p>
+
+<p>予め手動で ansible ユーザーを docker グループに入れた直後にログアウトせず、
+そのまま <code>docker ps</code> などを実行してみると、</p>
+
+<pre><code>$ sudo usermod -aG docker ansible
+$ docker ps
+Cannot connect to the Docker daemon. Is the docker daemon running on this host?
+</code></pre>
+
+<p>というメッセージが出て Docker 周りの操作は何もできません。
+（id -a などでグループに追加されているか確認しても、自分自身はログアウトしない限り追加されてません）</p>
+
+<h2 id="docker-インストール用-playbook">Docker インストール用 playbook</h2>
+
+<p>Ansible 実行ユーザー（ここでは ansible）を
+docker グループに入れたまま docker コマンドが操作できる playbook を書いてみました。</p>
+
+<p>仕組みとしては前回の <a href="http://girigiribauer.com/archives/20160906/" target="_blank">Ansible で再起動後にも playbook を継続する方法</a> と同じで
+local_action を用いてログアウト後に待機します。</p>
+
+<p>またまた抜粋ですみません・・・。改めてまとめなおします。</p>
+
+<pre><code>- name: Docker 用 yum リポジトリの追加
+  yum_repository:
+    name: dockerrepo
+    description: Docker Repository
+    baseurl: https://yum.dockerproject.org/repo/main/centos/$releasever/
+    enabled: yes
+    gpgkey: https://yum.dockerproject.org/gpg
+    gpgcheck: yes
+  tags: dockerhost
+  become: True
+
+- name: docker-engine のインストール
+  yum: name=docker-engine enablerepo=dockerrepo state=latest
+  tags: dockerhost
+  become: True
+
+- name: docker-python のインストール
+  yum: name=docker-python enablerepo=dockerrepo state=latest
+  tags: dockerhost
+  become: True
+
+- name: Docker 起動時の DNS 設定
+  copy: src=&quot;docker&quot; dest=&quot;/etc/sysconfig/docker&quot; owner=ansible group=ansible mode=0400
+  tags: dockerhost
+  become: True
+
+- name: Docker サービス自動起動設定
+  service: name=docker state=running enabled=True
+  tags: dockerhost
+  become: True
+
+- name: Docker グループにユーザー追加
+  user: name=ansible groups=docker append=yes
+  tags: dockerhost
+  become: True
+
+- name: Ansible 実行ユーザー自身のグループ状況の取得
+  shell: id -a
+  register: group_status
+  changed_when: False
+  tags: dockerhost
+
+- name: Docker グループ追加後の再ログイン
+  shell: &quot;sleep 2 &amp;&amp; pkill -u ansible sshd&quot;
+  async: 1
+  poll: 0
+  when: group_status.stdout.find('docker') == -1
+  tags: dockerhost
+  become: True
+
+- name: Docker グループ追加後の再ログイン完了まで待機
+  local_action: wait_for host={{ inventory_hostname }} port={{ ssh_port }} delay=10
+  when: group_status.stdout.find('docker') == -1
+  tags: dockerhost
+  become: False
+
+- name: Docker コマンドが Ansible 実行ユーザーで使えるかテスト
+  shell: docker version
+  changed_when: False
+  tags: dockerhost
+  become: False
+</code></pre>
+
+<p>docker-python と python-docker-py は多分同じパッケージなんじゃないかと思われます。
+yum info を見てみると、どちらも docker が提供してるので、
+単に <code>yum install docker</code> でインストールして入るであろう docker-python の方を指定しています。
+（Ansible のドキュメントには docker-py が必要とありましたが、docker-python で問題なかったです）</p>
+
+<pre><code>$ yum info docker-python
+読み込んだプラグイン:fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirror.nus.edu.sg
+ * extras: mirror.vodien.com
+ * updates: mirror.vastspace.net
+利用可能なパッケージ
+名前                : docker-python
+アーキテクチャー    : x86_64
+バージョン          : 1.4.0
+リリース            : 115.el7
+容量                : 94 k
+リポジトリー        : extras/7/x86_64
+要約                : An API client for docker written in Python
+URL                 : http://www.docker.com
+ライセンス          : ASL 2.0
+説明                : An API client for docker written in Python
+
+$ yum info python-docker-py
+読み込んだプラグイン:fastestmirror
+Loading mirror speeds from cached hostfile
+ * base: mirror.nus.edu.sg
+ * extras: mirror.vodien.com
+ * updates: mirror.vastspace.net
+インストール済みパッケージ
+名前                : python-docker-py
+アーキテクチャー    : noarch
+バージョン          : 1.7.2
+リリース            : 1.el7
+容量                : 235 k
+リポジトリー        : installed
+提供元リポジトリー  : extras
+要約                : An API client for docker written in Python
+URL                 : https://github.com/docker/docker-py/
+ライセンス          : ASL 2.0
+説明                : An API client for docker written in Python
+</code></pre>
+
+<p>前回と同様に、実行するかどうかのステータスを取得して、
+必要なければスキップするようになっています。</p>
+
+<p>また、local_action と wait_for モジュールの組み合わせで再度 ssh でつなぎにいくのを待機しつつ検知しています。
+最後の <code>docker version</code> では、実際にコマンドが有効かどうかを実行して確かめています。
+仕組みとしては大きく前回と違いはありません。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>まだ Docker ホストとして動作するまでしか用意してないので、
+アプリケーションなどは特に動いてませんが、
+開発用途であれ、サービス用途であれ、
+これからはコンテナを中心とした環境にかなり移行していくと思うので、
+<strong>Docker ホストとして最低限動作するところまでは playbook として共通化できる</strong> と思います。</p>
+
+<p>ここまでやっておくと残りは Docker イメージや Docker コンテナの操作が中心になってきますね。</p>
+
+<p>まだ、playbook は現時点でごちゃごちゃせずにすっきりしている（と個人的には思っている）ので、
+docker-compose を導入せずにこのまま Ansible で Docker の構成管理してもいいんじゃないかとも思っています。</p>
+
+<p>ちなみに、言うまでも無いことですが、
+手動でセットアップできないのに Docker や Ansible を使えば知識なしに出来るわけはないので、
+まずは空っぽの環境を用意して手動でやってみることをお勧めします。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://docs.docker.com/engine/installation/linux/centos/" target="_blank">https://docs.docker.com/engine/installation/linux/centos/</a></li>
+<li><a href="https://docs.ansible.com/ansible/docker_container_module.html" target="_blank">https://docs.ansible.com/ansible/docker_container_module.html</a></li>
+<li><a href="https://github.com/ansible/ansible-modules-core/issues/921" target="_blank">https://github.com/ansible/ansible-modules-core/issues/921</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年9月7日">2016年9月7日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ansible/">Ansible</a></li>
+    <li class="flow"><a href="/tags/docker/">Docker</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160906/">Ansible で再起動後にも playbook を継続する方法</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年9月6日">2016年9月6日</time>
@@ -225,9 +2460,217 @@
   </ul>
 </div>
 
+
+
+
+<p>タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。</p>
+
+<p>Chef では少なくともそういった機能は無かったように思えますが（僕が知らないだけかもしれない）、
+<strong>Ansible はプッシュベース</strong> だからでしょうか。
+実行する主体がいつもローカル側にあるからこそ、
+一旦接続を切ってまた繋げるといったことがやりやすいのかもしれません。</p>
+
+<h2 id="そもそもなぜ再接続したいのか">そもそもなぜ再接続したいのか？</h2>
+
+<p>ほとんどの playbook では問題ないのですが、
+SELinux の設定の反映（一時的な設定だけなら問題なし）などの一部のセットアップにて、
+<strong>再起動が必要になるものが存在しています。</strong></p>
+
+<p>他にもあるかもしれませんが、
+例えば SELinux の設定をいじる場合は以下のような手順を踏みます。</p>
+
+<pre><code>$ getenforce #=&gt; 今の設定確認
+Enforcing
+$ sudo vi /etc/sysconfig/selinux #=&gt; SELINUX=disabled を設定
+$ sudo reboot #=&gt; 再起動
+</code></pre>
+
+<p>Ansible では playbook 上で reboot すると、
+<strong>playbook のステータスが unreachable になってそのまま終了</strong> してしまいます。</p>
+
+<pre><code>fatal: [machine_name]: UNREACHABLE! =&gt; {&quot;changed&quot;: false, &quot;msg&quot;: &quot;Failed to connect to the host via ssh.&quot;, &quot;unreachable&quot;: true}
+</code></pre>
+
+<p>繋がらなくなるのでまあ当然ですよね。</p>
+
+<p>これを一連の playbook で再起動をはさんで実行できると、
+playbook を書くときにトリッキーなことをせずに済むこともあるかもしれません。
+（SELinux だけみると、最後にまとめて再起動すれば事足りるっちゃあそうですが・・・。）</p>
+
+<p>ちょっと話が逸れますが、 reboot するのが通常の task ではなく handler だった場合、
+（handler は変化があった場合のみ、最後にまとめて実行するタスクのこと）
+単に再起動だけ実行させて、あとはほったらかしで問題ないケースも出てきます。
+その場合は playbook の実行完了を待たない poll の値を設定することで、handler で再起動をさせて終了させることは可能です。</p>
+
+<p><a href="http://docs.ansible.com/ansible/playbooks_async.html" target="_blank">http://docs.ansible.com/ansible/playbooks_async.html</a></p>
+
+<h2 id="再接続を可能にする-ansible-のモジュール">再接続を可能にする Ansible のモジュール</h2>
+
+<p>Ansible で再接続を行うために必要な関連モジュールをメモっておきます。
+最初のやつは正確にはモジュールではないかもしれません。キーワード？</p>
+
+<h3 id="local-action">local_action</h3>
+
+<p><a href="http://docs.ansible.com/ansible/playbooks_delegation.html" target="_blank">http://docs.ansible.com/ansible/playbooks_delegation.html</a></p>
+
+<p>この local_action は他のモジュールと同じように使うことが出来るのですが、
+モジュールのさらに頭につけることで
+<strong>ローカルに処理を委譲することができます。</strong></p>
+
+<p>ちなみに <code>delegate_to</code> というキーワードも存在していて、以下は同じ意味を指すようです。
+（先ほどのリンク内から抜粋）</p>
+
+<pre><code>- name: add back to load balancer pool
+command: /usr/bin/add_back_to_pool {{ inventory_hostname }}
+delegate_to: 127.0.0.1
+
+- name: take out of load balancer pool
+local_action: command /usr/bin/take_out_of_pool {{ inventory_hostname }}
+</code></pre>
+
+<h3 id="wait-for-モジュール">wait_for モジュール</h3>
+
+<p><a href="http://docs.ansible.com/ansible/wait_for_module.html" target="_blank">http://docs.ansible.com/ansible/wait_for_module.html</a></p>
+
+<p>wait_for モジュールは、 <strong>指定したホスト名・ポートを監視し、有効になるまで待機します。</strong></p>
+
+<p>先に非同期で再起動するような playbook を用意しておき、
+その後 local_action をはさんだ wait_for モジュールを利用して、
+再起動で処理が戻るまで待機するような playbook を書くことが可能です。</p>
+
+<h3 id="set-fact-モジュール">set_fact モジュール</h3>
+
+<p><a href="http://docs.ansible.com/ansible/set_fact_module.html" target="_blank">http://docs.ansible.com/ansible/set_fact_module.html</a></p>
+
+<p>set_fact モジュールは、ansible-playbook の <strong>実行時の変数を途中で上書きできるモジュール</strong> です。</p>
+
+<p>今回は結局使わなかったのですが、
+例えばポート番号を変えたり、パスワード認証から公開鍵認証に変えたりした場合に、
+接続するための情報を途中で変更する際に用いました。</p>
+
+<p>あくまで僕のケースですが、個人的には接続方法が大きく変わった時には無理をせず、
+強制的に fail などのメッセージを出して（鍵認証に変えたから接続し直してね的なやつ）、
+変更後の接続方法で改めて playbook を実行するようにしています。
+（この辺の話はまた長くなるので、余裕があれば改めて取りまとめたいですね・・・）</p>
+
+<h2 id="selinux-の-playbook">SELinux の playbook</h2>
+
+<p>他 playbook も参考にしながら、冪等性も踏まえて書いてみたのがこれです。
+（抜粋＆本筋じゃないところは省略）</p>
+
+<pre><code>- name: SELinux のステータス取得
+  shell: getenforce
+  register: selinux_status
+  changed_when: False
+  tags: selinux
+  become: True
+
+- name: SELinux をコントロールするためのパッケージ導入
+  yum: name=libselinux-python state=installed
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: True
+
+- name: SELinux の無効化
+  selinux: state=disabled
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: True
+
+- name: SELinux 設定後の再起動
+  shell: &quot;sleep 2 &amp;&amp; reboot&quot;
+  async: 1
+  poll: 0
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: True
+
+- name: SELinux 設定後の再起動完了まで待機
+  local_action: wait_for host={{ inventory_hostname }} port={{ ssh_port }} delay=30
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: False
+</code></pre>
+
+<p>inventory_hostname は <a href="http://docs.ansible.com/ansible/playbooks_variables.html" target="_blank">http://docs.ansible.com/ansible/playbooks_variables.html</a> にあるように
+Ansible のインベントリファイルがあるローカルを指しています。予め用意されている変数です。</p>
+
+<p>register については
+<a href="http://docs.ansible.com/ansible/playbooks_conditionals.html#register-variables" target="_blank">http://docs.ansible.com/ansible/playbooks_conditionals.html#register-variables</a> にありますが、
+実行結果などを後で参照するために一時保存してくれる機能です。</p>
+
+<p>SELinux の設定を取得して、有効になっていた場合のみ無効となるような playbook を実行しています（冪等性）。
+逆に <strong>2回目以降の playbook の実行ですでに無効になっていた場合は、
+when と書いてあるところが False になるので playbook の実行がスキップされます。</strong>
+毎回再起動をはさんでいては時間がかかってしまいますので、
+時間短縮のため register や when などを用いて変更する必要があるときだけ処理をするようにしています。</p>
+
+<p>ちなみに、再起動自体の playbook ですが、
+sleep 2 や async: 1 がないと一番最初の例と同じく unreachable でストップしてしまいます。
+shell モジュール内で sleep 2 などを頭につけて実行直後に再起動が実行されないようにしつつ、
+async でこの playbook の終了タイミング自体も直後ではなく後ろにずらす必要がありました。</p>
+
+<p>様々な環境で試したところ、両方ずらす必要があるようです。
+最初は単にタイミングをずらすだけで良いかと思って sleep 1 になってたんですが、
+Vagrant 上は問題がなくとも VPS 上では sleep 2 にしないと unreachable になってしまったりと、
+再起動周りは多少経験則が必要なようです・・・。</p>
+
+<p>ここに関しては内部の処理を見たわけではないのですが、
+タイミングをずらすことで、再起動の処理の前に
+次の local_action &amp; wait_for モジュールに処理を渡してから再起動を行う必要があるようです。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>Ansible のプッシュベースであるメリットが出てて便利だなーと思います。</p>
+
+<p>再起動の playbook については、今まで問題があったわけではないのですが、
+selinux の部分だけで設定完了することになるので、
+playbook の依存関係が少しすっきりした気がします。
+ただ、再起動タスクが多ければ多いほど、
+最後にまとめて handler として実行した方が playbook 全体の処理時間は短くなると思います。</p>
+
+<p>あと playbook の書き順によっては接続ポートの変更とかぶった場合、
+<strong>再起動後に SSH のポートが変わっちゃって接続できなくなっちゃった、</strong> みたいなケースもありうるので
+そこは注意が必要かと思います。（今回使っていないset_fact モジュールである程度いけるかと思います）</p>
+
+<p>ちなみに再起動に関してはこの記事の通りなのですが、
+再ログインに関してはまだまとめきれてないので、
+改めて記事にメモっておこうと思います。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://qiita.com/volanja/items/d38fe0678848bae6902f" target="_blank">http://qiita.com/volanja/items/d38fe0678848bae6902f</a></li>
+<li><a href="https://gyagya1111.blogspot.jp/2015/02/ansibleselinux.html" target="_blank">https://gyagya1111.blogspot.jp/2015/02/ansibleselinux.html</a></li>
+<li><a href="http://jinja.pocoo.org/docs/dev/templates/" target="_blank">http://jinja.pocoo.org/docs/dev/templates/</a></li>
+<li><a href="http://stackoverflow.com/questions/23877781/how-to-wait-for-server-restart-using-ansible" target="_blank">http://stackoverflow.com/questions/23877781/how-to-wait-for-server-restart-using-ansible</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年9月6日">2016年9月6日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ansible/">Ansible</a></li>
+    <li class="flow"><a href="/tags/automation/">automation</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160903/">FTP でも rsync みたいにコマンドからファイル転送したい</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年9月3日">2016年9月3日</time>
@@ -241,9 +2684,195 @@
   </ul>
 </div>
 
+
+
+
+<p>ターミナルで何でも行う人にとって、FTP の GUI クライアントはもう辛すぎるのです。
+コマンド1つで rsync のようにアップロードしたいのです。</p>
+
+<p>同じように考える人は多いらしく、
+&ldquo;rsync&rdquo;, &ldquo;FTP&rdquo; でググると &ldquo;rsync over FTP&rdquo; がどうのこうのと書かれた記事は散見するものの、
+そんなものないけど、代わりに <strong>lftp</strong> 使うといいよ。みたいな記事が多くあります。</p>
+
+<p>なので、（過去に1度使った記憶あるものの、改めて）試しに使ってみました。</p>
+
+<p>なお、MacBook Pro の El Capitan です。Homebrew でインストールします。</p>
+
+<pre><code>brew install lftp
+man lftp
+</code></pre>
+
+<p>lftp コマンドは、基本的に ftp コマンドと同じく対話形式のコマンドなのですが、
+オプションで -e や -c とともに対話形式の内容のコマンド（サブコマンド？）をつけてやると
+そのまま実行できます。</p>
+
+<p>また、対話形式をテキストファイルにまとめておき、 -f オプションで利用することも可能です。
+以下は lftp コマンド自体のシンタックスとオプションです。（man lftp より抜粋）</p>
+
+<pre><code>SYNTAX
+       lftp [-d] [-e cmd] [-p port] [-u user[,pass]] [site]
+       lftp -f script_file
+       lftp -c commands
+       lftp --version
+       lftp --help
+
+OPTIONS
+       -d     Switch on debugging mode.
+
+       -e commands
+              Execute given commands and don't exit.
+
+       -p port
+              Use the given port to connect.
+
+       -u user[,pass]
+              Use the given username and  password  to  connect.  Remember  to
+              quote  the  password properly in the shell. Also note that it is
+              not secure to specify the password on command line, use ~/.netrc
+              file   or   LFTP_PASSWORD  environment  variable  together  with
+              --env-password option. Alternatively you can use ssh-based  pro-
+              tocols  with authorized keys, so you don't have to enter a pass-
+              word.
+
+
+       --norc Don't execute rc files from the home directory.
+
+       -f script_file
+              Execute commands in the file and exit.  This option must be used
+              alone without other arguments (except --norc).
+
+       -c commands
+              Execute  the  given commands and exit. Commands can be separated
+              with a semicolon, `&amp;&amp;' or `||'. Remember to quote  the  commands
+              argument  properly in the shell.  This option must be used alone
+              without other arguments (except --norc).
+</code></pre>
+
+<p>上記から、接続情報は lftp のオプションとして渡しつつ、
+それとは別に対話形式内のコマンドにて実際のファイルアップロードを行います。</p>
+
+<p>今回はその中の mirror コマンドを利用し、 rsync に近いことを行ったのを
+シェルスクリプトにまとめてみました。（接続情報はダミー）</p>
+
+<pre><code>#!/bin/sh
+
+HOSTNAME=192.0.2.24
+USERNAME=girigiribauer
+PASSWORD=passwordhere
+SOURCE=&quot;path/to/source_dir&quot;
+DIST=&quot;/path/to/target_dir&quot;
+
+lftp -d -u $USERNAME,$PASSWORD $HOSTNAME -e &quot;\
+  mirror \
+  --reverse \
+  --delete \
+  --only-newer \
+  --verbose \
+  -X .DS_Store \
+  $SOURCE \
+  $DIST; \
+  exit&quot;
+</code></pre>
+
+<p>後半が mirror コマンドのオプションですが、
+reverse はアップロードを意味します。</p>
+
+<p>色々オプションあるので詳しくはヘルプを見た方が良いのですが、
+lftp の方のヘルプにはあまり詳しく載ってませんので
+lftp コマンドをそのまま実行して対話形式にしてから
+<code>help mirror</code> とすることで mirror コマンドの help を開くことができます。</p>
+
+<pre><code>% lftp
+lftp :~&gt; help mirror
+Usage: mirror [OPTS] [remote [local]]
+
+Mirror specified remote directory to local directory
+
+ -c, --continue         continue a mirror job if possible
+ -e, --delete           delete files not present at remote site
+     --delete-first     delete old files before transferring new ones
+ -s, --allow-suid       set suid/sgid bits according to remote site
+     --allow-chown      try to set owner and group on files
+     --ignore-time      ignore time when deciding whether to download
+ -n, --only-newer       download only newer files (-c won't work)
+ -r, --no-recursion     don't go to subdirectories
+ -p, --no-perms         don't set file permissions
+     --no-umask         don't apply umask to file modes
+ -R, --reverse          reverse mirror (put files)
+ -L, --dereference      download symbolic links as files
+ -N, --newer-than=SPEC  download only files newer than specified time
+ -P, --parallel[=N]     download N files in parallel
+ -i RX, --include RX    include matching files
+ -x RX, --exclude RX    exclude matching files
+                        RX is extended regular expression
+ -v, --verbose[=N]      verbose operation
+     --log=FILE         write lftp commands being executed to FILE
+     --script=FILE      write lftp commands to FILE, but don't execute them
+     --just-print, --dry-run    same as --script=-
+
+When using -R, the first directory is local and the second is remote.
+If the second directory is omitted, basename of first directory is used.
+If both directories are omitted, current local and remote directories are used.
+</code></pre>
+
+<p>今回は、手元のファイルのが新しい場合に動作し、
+なおかつ手元で削除したファイルも同期を取りたいので、
+ &ndash;delete と &ndash;only-newer オプションをつけました。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>FTP だけでも rsync にある程度近いことは出来ました。</p>
+
+<p>ただ、 dry-run 相当のオプションが探した限りなかったので、
+実際に試しながら正しく動作しているか確認することになるので、
+そこはちょっと怖いところではありますね・・・。</p>
+
+<p><strong>2016/09/30追記</strong></p>
+
+<p>さーせん、dry-run オプションありました・・・</p>
+
+<p>&ndash;just-print, &ndash;dry-run    same as &ndash;script=- って上にあるじゃん、自分の目はフシ穴か・・・</p>
+
+<p><strong>2016/09/30追記ここまで</strong></p>
+
+<p>FTP のみという縛りがあったとしても、コマンド1つで転送できるようにしておけば、
+バージョン管理などと連携してフックさせることも可能となり、
+精神衛生的にも良いかと思います。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://lftp.yar.ru/" target="_blank">https://lftp.yar.ru/</a></li>
+<li><a href="http://www.itmedia.co.jp/enterprise/articles/0804/25/news014.html" target="_blank">http://www.itmedia.co.jp/enterprise/articles/0804/25/news014.html</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年9月3日">2016年9月3日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ftp/">FTP</a></li>
+    <li class="flow"><a href="/tags/rsync/">rsync</a></li>
+    <li class="flow"><a href="/tags/automation/">automation</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160901/">iTerm2 で円マークとバックスラッシュで困ったときの設定</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年9月1日">2016年9月1日</time>
@@ -254,9 +2883,52 @@
   </ul>
 </div>
 
+
+<p>なんか iTerm2 3.0.1 あたりから円マークとバックスラッシュが入れ替わったらしいです。</p>
+
+<p>どっちがどっちであっても、Option キーを押しながら入力すると、
+もう片方のキーが出るので大きくは問題ないのですが、
+今まで使っていたのと逆になると毎回間違えて気持ちが悪いので、
+iTerm の Preferences メニューから設定し直すことにしました。</p>
+
+<p>僕の環境ではバックスラッシュキーをそのまま押すと円マークが出ていたので、
+それをバックスラッシュキーが出るように設定しています。</p>
+
+<p><img src="/img/2016/09/iterm2-backslash1.png" alt="" /></p>
+
+<p>同様に円マークが入力できないのはつらいので、
+Option キーを押しながらバックスラッシュキーを押すことで円マークが出るように併せて設定しています。</p>
+
+<p><img src="/img/2016/09/iterm2-backslash2.png" alt="" /></p>
+
+<p>Keyboard Shortcut のところにフォーカスを当てたあと、実際のキーを入力すれば設定が可能です。</p>
+
+<p>はー、これで Vim が快適な状態に戻せたー。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年9月1日">2016年9月1日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/iterm/">iTerm</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160824/">Hugo で URL のカスタマイズ</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年8月24日">2016年8月24日</time>
@@ -267,9 +2939,93 @@
   </ul>
 </div>
 
+
+
+
+<p>ちょっとしたメモも気軽に残せるので、WordPress から Hugo （というか Static Site Generator）に移行して本当に良かったですね。</p>
+
+<p>Hugo の URL のカスタマイズに関して、ちょっと勘違いしてたのでメモっておきます。</p>
+
+<h2 id="hugo-で-url-の設定が有効になる順番">Hugo で URL の設定が有効になる順番</h2>
+
+<ol>
+<li>各記事の content/post/foobar.md, frontmatter 内にある url = &ldquo;/archives/foobar/&rdquo; などの記述</li>
+<li>config.toml 内にある permalinks の設定</li>
+</ol>
+
+<p>まず WordPress から Hugo に移設した時点で、移設された記事には url = &ldquo;/archives/1003&rdquo; などのように
+元々の URL がこちらの url の値に入ってくれるので、
+こちらを元に移設前と同じ URL で問題なく表示してくれます。</p>
+
+<p>ちなみに frontmatter というのは、記事の上にあるメタ情報一式がある部分のことです。（プラス3つの行で挟まれた部分のこと）</p>
+
+<p>うちのブログの場合は、元が WordPress の post テーブルに紐付いた形の連番になっていたので、
+この /archives/1003 の数字の部分がけっこうな歯抜けになってました。
+これをそのまま踏襲するのはちょっと考えにくかったため、
+（それと1日に何記事も書くことはないというのもあって、）
+新たに書いた記事からは /archives/yyyymmdd/ といった日付8桁になるように URL のルールを設けました。</p>
+
+<p>こういった場合、大元の設定ファイルにきちんとパーマリンクの設定項目があるので、
+そちらに沿ってルールを記載することで適切にパブリッシュされます。</p>
+
+<p><a href="https://gohugo.io/extras/permalinks/" target="_blank">https://gohugo.io/extras/permalinks/</a></p>
+
+<p>なので、今回以下のような修正を加えてその辺りを改善しています。
+差分を貼り付けるとこんな感じです。</p>
+
+<pre><code>diff --combined themes/bauerlog/archetypes/default.md
+index f610471,f17a62b..0000000
+--- a/themes/bauerlog/archetypes/default.md
++++ b/themes/bauerlog/archetypes/default.md
+@@@ -3,5 -3,6 +3,5 @@@ author     = &quot;girigiribauer
+  layout     = &quot;post&quot;
+  categories = [&quot;tech&quot;]
+  tags       = []
+ -url = &quot;/archives/yyyymmdd/&quot;
+  +++
+</code></pre>
+
+<p>url = &ldquo;/archives/yyyymmdd/&rdquo; という仮の記述を入れておき、あとで記事内容が決まったら日付を入れようと思ってたのですが、そもそも入れなくて良かったので削除しています。</p>
+
+<p>代わりに config.toml にこんな設定を追加しました。（抜粋）</p>
+
+<pre><code>[permalinks]
+post = &quot;/archives/:year:month:day/&quot;
+</code></pre>
+
+<p><code>hugo</code> コマンドを入力してパブリッシュされた時点の日付がここに入るので、こちらの意図した URL になってくれます。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://gohugo.io/overview/configuration/" target="_blank">https://gohugo.io/overview/configuration/</a></li>
+<li><a href="https://yet.unresolved.xyz/blog/2015/01/07/how-to-use-multibyte-title-in-hugo/" target="_blank">https://yet.unresolved.xyz/blog/2015/01/07/how-to-use-multibyte-title-in-hugo/</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年8月24日">2016年8月24日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/hugo/">Hugo</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160819/">vagrant global-status の代替方法、あるいは jq コマンドの使い方</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年8月19日">2016年8月19日</time>
@@ -281,9 +3037,159 @@
   </ul>
 </div>
 
+
+
+
+<p>VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。</p>
+
+<p>tmux の <code>set-option -g status-right</code> で指定できるスクリプトは
+一定間隔で常に呼ばれるような仕組みなのですが、
+（更新間隔は set-option -g status-interval で設定可能）
+あまり間隔を空けすぎると確認しづらくなってしまうので 5 秒くらいに指定しています。</p>
+
+<p>このスクリプト内で Vagrant 経由で起動している VM 名と Docker サービスが立ち上がっているかどうかを
+集約して表示しているのですが、
+この中で <strong><code>vagrant global-status</code> を呼ぶコストが意外にも高い</strong> ことに今更ながらに気づきました。
+（たぶんディレクトリツリーを全走査とかしてるんですかね・・・？）</p>
+
+<p>top とか ps とかで詳しく調べてみるとすげー CPU を使ってたっぽかったので、
+（5 秒間隔で常に動作してるわけじゃなかったので気づかずにスルーしてました）
+これはなんとかしなくてはと思い、代替方法を検討しました。</p>
+
+<h2 id="vagrant-d-内の設定ファイル">~/vagrant.d 内の設定ファイル</h2>
+
+<p>後の Vagrant のバージョンアップで変わるかもしれませんが、
+以下の場所に仮想マシンの一覧情報がまとめられていて、
+Vagrant の仮想マシンのステータスが変更されるたびにこのファイルが更新されます。</p>
+
+<pre><code>~/.vagrant.d/data/machine-index/index
+</code></pre>
+
+<p>こちらはただのテキストファイルなので、
+5 秒間隔で tmux から重いコマンドを実行するよりは、
+こちらの設定ファイルを読みにいった方がはるかに軽いです。</p>
+
+<p>ただ、こちらのファイルは JSON ファイルを圧縮したようなファイルになっているので、
+こちらを（あまりコストかけずに）さくっとフィルタリングして
+必要な情報だけ抜き出したいですね。</p>
+
+<h2 id="jq-は-json-ファイルをフィルタリングするコマンド">jq は JSON ファイルをフィルタリングするコマンド</h2>
+
+<p><a href="https://stedolan.github.io/jq/" target="_blank">https://stedolan.github.io/jq/</a></p>
+
+<p>ずいぶん前から簡易的に利用してはいたのですが、
+JSON ファイルから必要な情報をフィルタリングなどするコマンドとして
+<strong>jq コマンド</strong> というのがあります。</p>
+
+<p>これは jq コマンドを使うところだ！と思い、
+この Vagrant の設定ファイルから必要な情報を jq コマンドを使って抜き出してみました。</p>
+
+<pre><code>{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}
+</code></pre>
+
+<p>ちょっと固有パス、ID などは修正してますが、だいたいこんな感じで入っています。</p>
+
+<p>ここから、machines オブジェクト内に入っているものを抜き出したいので、
+<code>jq &quot;.machines&quot;</code> でパイプをつなげてやることで、フィルタリングされた出力結果が出ます。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines&quot;
+{
+  &quot;aaabbbccc&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;alpha&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;poweroff&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;bento/centos-7.2&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;2.2.7&quot;
+      }
+    }
+  },
+  &quot;dddeeefff&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;bravo&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;running&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;0&quot;
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>さらに、1つずつのオブジェクトごとに分けつつ、name と state だけ配列形式にして引っこ抜きます。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines | .[] | [.name, .state]&quot;
+[
+  &quot;alpha&quot;,
+  &quot;poweroff&quot;
+]
+[
+  &quot;bravo&quot;,
+  &quot;running&quot;
+]
+</code></pre>
+
+<p>これを半角スペースでつないで1行ごとに出力したかったので、[] で囲んで join で繋ぎ直しました。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;[ .machines | .[] | [.name, .state] | join(\&quot; \&quot;) ] | join(\&quot;\n\&quot;)&quot;
+&quot;alpha poweroff\nbravo running&quot;
+</code></pre>
+
+<p>これで目的の文字列になったので、running がある行だけ簡易的に引っこ抜いて tmux に表示すれば OK です。</p>
+
+<p>jq のマニュアルページには色々な機能が載っていますが、
+実際に使うのはそこまで多くないんじゃないかなーという印象です。
+正直見ながらじゃないと使えないです・・・。</p>
+
+<p><a href="https://stedolan.github.io/jq/manual/" target="_blank">https://stedolan.github.io/jq/manual/</a></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>そのまま <code>vagrant global-status</code> を使っていたころよりも圧倒的に軽くなり、
+排熱もほとんどなくなりました。
+（もしかして最近の排熱の主因はほぼこれだったんじゃあ・・・）</p>
+
+<p>jq コマンドは、こういった使い方以外にも外部の API を直接叩いてそのまま jq コマンドに通して使う、
+といった使い方も多いので、もう少しさらっと使いこなせるようになりたいですね。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年8月19日">2016年8月19日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/jq/">jq</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160816/">Chef を捨てて Ansible に移行した</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年8月16日">2016年8月16日</time>
@@ -295,9 +3201,296 @@
   </ul>
 </div>
 
+
+
+
+<p>前の記事の <a href="/archives/20160705/">WordPress を捨てて Hugo に移行した</a> よりも前に、
+ずいぶん前に &ldquo;Chef を捨てて Ansible に移行&rdquo; していたのですが、
+書いておかないと忘れるので自分用にメモしておきます。</p>
+
+<h2 id="プロビジョニングツールを使い始める前の自分">プロビジョニングツールを使い始める前の自分</h2>
+
+<p>Chef を利用する前は、
+いわゆる <strong>プロビジョニングツール</strong> というのものを一切使っておらず、
+サーバの構築はそのマシンでうまく行くまで何度も行う、
+トライアンドエラーのようなサーバ構築を行っておりました。</p>
+
+<p>こういうのって、ちゃんとコマンドラインで入力した内容をメモるなりして
+きちんと手順化していかないと、
+すぐに忘れたりして環境の再現ができなかったりするんですよね。</p>
+
+<p>最初は実機に対して直接作業を行うことが多かったので、
+普段慣れない端末への入力だったり、異なる OS でのオペレーションなども相まって
+上手くインストールできないと結構なストレスを感じることも多くありました。</p>
+
+<p>そのうち、実機にそのまま試すのではなく、サンドボックスのような自由に試せる環境を
+予め用意し、まずはそっちで試してみようと思い、 <strong>VirtualBox + Vagrant</strong> を導入して
+自分のマシン上に対象となる Linux マシンと同一の環境を作り、
+先にそちらで試すようになりました。</p>
+
+<p>それと同時に、非常に簡易的ではありますが、
+<strong>シェルスクリプトベース</strong> の手順書のようなものを自分で用意するようになり、
+よくある一般的なサーバのセットアップ作業程度であれば
+素早く再現できるようになりました。</p>
+
+<p>ここまで来てようやく <strong>サーバのセットアップ手順をまとめることへの重要性</strong> に
+段々と気づくようになってきます。</p>
+
+<h2 id="chef-を導入し使い始めたころの自分">Chef を導入し使い始めたころの自分</h2>
+
+<p>手元の環境をローカル、セットアップ対象をリモートとすると、
+<strong>Chef 自体をリモートの方にインストールする必要</strong> があったのですが、
+Vagrant のプラグインである vagrant-omnibus を利用して
+初回起動時に自動的に Chef をインストールできたことでだいぶ楽できました。</p>
+
+<p>Chef の Cookbook と呼ばれる手順書のファイル群を自分で書くか、
+あるいは <a href="https://supermarket.chef.io/" target="_blank">https://supermarket.chef.io/</a> などで公開されている
+サードパーティ製の Cookbook を利用するなどして、
+シェルスクリプトベースで書かれていた秘伝のタレになりつつあった手順書を
+なんとか汎用化していこうと思い、少しずつ置き換えを進めていきました。</p>
+
+<p>みんなが当たり前に行う一般的な手順であればあるほど、
+同じ Cookbook を使うはずなので（ユーザーの作成や Web サーバのインストールなど）、
+こういったよくある Cookbook は可能な限り多く使われているサードパーティ製を使い、
+可能な限りレールから逸れないようにしようと思い、
+サードパーティ製を積極的に利用していきました。
+（もちろん無条件に信用したわけではなく、利用するものはきちんと中身を吟味したうえで利用しています）</p>
+
+<p>用意さえできれば、あとはコマンド1つで全部整うのは正直気持ちが良いですね。
+手元の Vagrant 環境と、VPS 環境とで環境変数を括り出し、
+異なる環境で同じ Cookbook が正しく動作するととても清々しいです。</p>
+
+<h3 id="chef-の-cookbook-は-debian-系がほとんど">Chef の Cookbook は debian 系がほとんど</h3>
+
+<p>運用し始めると、公開されているサードパーティ製の Cookbook は
+<strong>そのほとんどが debian 系</strong> だということに気づきます。</p>
+
+<p>実際 debian 系の方が世界ではシェアが多く、
+逆に日本だけが特殊のようで（要出典、Web サーバに限った話ですかね？）
+Red Hat 系の方が多いようです。
+ちなみに CentOS も Red Hat 系に含まれます。</p>
+
+<p>もちろん利用の多いサードパーティ製の Cookbook は debian 系と Red Hat 系とで
+きちんと処理を分けて書かれているのですが、
+中にはおまけ程度にしか用意されていない or そもそも debian 系しか用意してない
+といったものもあり、かゆいところに手が届かないケースもたびたび出てきました。</p>
+
+<h3 id="アップデート地獄">アップデート地獄</h3>
+
+<p>運用がしばらく続くと、個々の Cookbook でアップデートが起こります。
+それ以前に各種ミドルウェア、アプリケーションにおいてもアップデートは当然起こりえます。
+そうなると Cookbook でバージョンの差異などが吸収しきれなくなってきて、
+プロビジョニングが通らなくなるケースが出てきます。</p>
+
+<p>問題はある程度見えていて、直接リモートのサーバを直せばすぐ解決するのですが、
+手順としてまとめられているので、「直接手を出したらだめだ、手順書の意味がない・・・」と
+ぐっとこらえて Cookbook の方をちまちま修正する日々が続きます。</p>
+
+<h3 id="ruby-からくる記述の多様性">Ruby からくる記述の多様性</h3>
+
+<p>プロビジョニングツール以外でも、変更があったときにフックとして
+あれを行うといった処理がよくあるかと思いますが、
+Chef においても同様の処理が用意されてます。</p>
+
+<p>ただ、色々と利用していくうちに、記述の仕方が数多くあり、
+かなり煩雑になってきてしまい若干混乱をきたしてしまってました。
+まあ僕が整理して書けてないだけなんですが、整理する気が段々起きなくなってくるんですよね・・・。
+変更があったときにフックしたいだけなんですけどね・・・。</p>
+
+<h3 id="chef-zero-ってなんぞ">Chef Zero ってなんぞ・・・</h3>
+
+<p>たぶん僕が使い方を完全にわかってないせいだと思うのですが、
+一時期「これからは Chef Zero だ」みたいな風潮（？）の高まり（？）があって、
+僕も空いたタイミングで重い腰をあげて Chef Zero に移行してみました。</p>
+
+<p>結論からいうとそのまま移行せずに使ってれば良かったなーという印象です。
+Chef Zero があれば Chef Server が不要でうんぬんかんぬんとか、
+僕はただシェルスクリプトの手順書を置き換えたかっただけなんですけどね・・・。</p>
+
+<h2 id="運用していくと-chef-への不満が徐々にたまる">運用していくと Chef への不満が徐々にたまる</h2>
+
+<p>不満をまとめるとこんな感じです。</p>
+
+<ul>
+<li>debian 系しか考慮されてないのつらい</li>
+<li>アップデートで容易に破綻しやすい</li>
+<li>色んな書き方ありすぎじゃないの</li>
+<li>もっとコンパクトに使いたい</li>
+</ul>
+
+<p>Chef 使ってる方から見ると色々とお叱り受けそうな感じですが、
+一言でいうと <strong>僕にはオーバースペックすぎた</strong> んじゃないかと・・・。
+（大企業でサーバたくさんあって、という状況でルール定めてやる分には非常に良いと思います）</p>
+
+<p>不満はたまれども、サーバは動いているので保守しなくてはなりません。</p>
+
+<p>とある日、急ぎでこれを追加でインストールしなくてはいけない、といった状況が生まれ、
+時間もなく止むを得ず <strong>直接ログインしてコマンドを叩く</strong> ことに。</p>
+
+<p><strong>はい、禁断の一手。</strong></p>
+
+<p>その日以降、Chef コマンドは叩かれなくなり、
+いよいよ代用のプロビジョニングツールを探すことになりました。</p>
+
+<h2 id="chef-を捨てて-ansible-に移行した">Chef を捨てて Ansible に移行した</h2>
+
+<p>ようやく Ansible の話に入っていくわけなんですが、
+Ansible の良いところは以下かなーと思っています。</p>
+
+<ul>
+<li>設定がシンプル、YAML ファイルいじるだけ</li>
+<li>debian 系、 Red Hat 系はそれぞれ別の playbook（手順書）を書く</li>
+<li>SSH に毛が生えた程度の仕組みのシンプルさ</li>
+</ul>
+
+<p>Chef の Cookbook に対して、Ansible の手順書のファイル群は playbook と呼ばれるのですが、
+これが <strong>YAML</strong> で出来ており、とてもシンプルにまとまってすっきりします。</p>
+
+<p>これは YAML だから良いというよりも、設定ファイルであるからこそ、
+用意された記述方法しか許されないという点がシンプルさに繋がっているかと思います。
+（YAML が素晴らしいとは言ってません。）
+Ansible でフックしたい場合は、 notify と書くしかありません。</p>
+
+<p>Chef の時は debian 系しか用意されてない場合もあってつらかったのですが、
+Ansible では yum モジュールと apt モジュールのそれぞれを用意しており、
+Red Hat 系では yum モジュールを普通に使えば良いので、
+そもそも playbook は最初から別モノになります。
+<strong>無理に汎用化されてないので、逆に利用しやすい</strong> かなと思います。</p>
+
+<p>あとセットアップ対象のリモートマシンに何もインストールせず、
+SSH だけ動けば OK という <strong>プッシュベース</strong> なのが非常に楽でした。</p>
+
+<h3 id="一方でローカルに若干インストールしづらいデメリットも">一方でローカルに若干インストールしづらいデメリットも</h3>
+
+<p>リモートには Ansible をインストールする必要がない一方で、
+ローカルには当然インストールする必要があります。</p>
+
+<p>これが若干めんどくさかったのですが、
+記事を書いている時点で Ansible 2.0.1.0 だったんですね。
+（インストールした頃は 1.9 だったっけか）
+このバージョンは、現時点での最新バージョンである 2.1 ではなく、
+2.1 で入った新機能を使いたくもあったので、
+Python のパッケージの依存関係に若干はまりつつも個別にインストールしました。</p>
+
+<p>Ansible って、利用するモジュールによって追加でパッケージが必要なものもあるので
+そのあたりは使っていて注意かもしれませんね。
+その辺の詳しいことは各モジュールのページに書いてあります。
+<a href="https://docs.ansible.com/ansible/list_of_all_modules.html" target="_blank">https://docs.ansible.com/ansible/list_of_all_modules.html</a></p>
+
+<h3 id="おまけ-ここから-ansible-2-1-が普通に提供されてたら関係ない話">（おまけ）ここから ansible 2.1 が普通に提供されてたら関係ない話</h3>
+
+<p>現時点で Homebrew に 2.1 が提供されていなかったので
+以下を元に（当時の）最新版を入れました。</p>
+
+<p><a href="http://docs.ansible.com/ansible/intro_installation.html#latest-releases-via-pip" target="_blank">http://docs.ansible.com/ansible/intro_installation.html#latest-releases-via-pip</a></p>
+
+<p><strong>2016/11/21追記</strong></p>
+
+<p>ansible 2.2 が Homebrew に来てました。
+これでクソみたいなインストール作業に時間を割かなくてすみますね！</p>
+
+<blockquote>
+<p>% brew info ansible
+ansible: stable 2.2.0.0 (bottled), HEAD
+Automate deployment, configuration, and upgrading
+<a href="https://www.ansible.com/" target="_blank">https://www.ansible.com/</a>
+Not installed
+From: <a href="https://github.com/Homebrew/homebrew-core/blob/master/Formula/ansible.rb" target="_blank">https://github.com/Homebrew/homebrew-core/blob/master/Formula/ansible.rb</a>
+==&gt; Dependencies
+Build: pkg-config ✘
+Required: libyaml ✘, openssl@1.1 ✘
+==&gt; Requirements
+Required: python ✔</p>
+</blockquote>
+
+<p><strong>2016/11/21追記ここまで</strong></p>
+
+<p>ちなみに Docker 周りは Ansible 2.1 でサポートがかなり強化されたので、
+今後は 2.1 以降を入れた方が良いかもです。</p>
+
+<p>docker_container モジュール、いいよ。</p>
+
+<p><a href="https://www.ansible.com/blog/ansible-2.1" target="_blank">https://www.ansible.com/blog/ansible-2.1</a></p>
+
+<p>確かこんな感じで入れたと思います。（メモが残ってたので多分これかと）</p>
+
+<pre><code>$ curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+$ sudo easy_install pip
+$ sudo pip install ansible
+PyYAML-3.11 ansible-2.1.0.0 cryptography-1.4 jinja2-2.8 paramiko-2.0.1 pycrypto-2.6.1
+</code></pre>
+
+<p>ただ、これだと CentOS7 など一部で問題が起きるため、
+ここからさらに paramiko のバージョンを 2.x から 1.x にダウングレードする必要があります。
+（ややこしいのですが、ローカルに入れた ansible の依存パッケージのバージョンで
+一部のリモートの環境にて問題が起きるケースがあるようです）</p>
+
+<pre><code>sudo pip install paramiko==1.17.x
+</code></pre>
+
+<p>みたいな感じですかね。</p>
+
+<p>詳しくは <a href="http://www.paramiko.org/changelog.html#2.0.0" target="_blank">http://www.paramiko.org/changelog.html#2.0.0</a>, <a href="http://www.paramiko.org/installing-1.x.html" target="_blank">http://www.paramiko.org/installing-1.x.html</a> などをご確認ください。</p>
+
+<p>あるいはリモート環境に直接アクセスして、ローカルの ansible の環境に合うように
+リモートの sshd_config の設定などを適宜見直すといった方法でも問題ないかと思います。
+（が、リモートに接続して設定変更するのは本末転倒な気がするので僕はやりません）</p>
+
+<p>Python のパッケージの依存関係、面倒で嫌になりますね・・・。
+（対象マシンのパッケージの依存関係を解決したいがために ansible 経由で Docker を入れようとするも、
+ansible のローカル側のパッケージ依存に悩まされるというこの本末転倒感・・・。）</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>まだ運用し続けているわけではないので、
+これから問題が出てくる可能性も十分あるのですが、
+今のところ快適に利用できています。</p>
+
+<p>一応、Chef でやっていたローカル、リモートで変数を括り出して
+同じ playbook でプロビジョニングする、といった程度は問題なく出来ています。
+（ユーザー作成や SSH ポート番号の変更など）
+そのうち知見たまったらまたアウトプットしたいですね。</p>
+
+<p>ちなみに、これは Chef でも Ansible でも両方に言えることですが、
+<strong>手作業でインストールできない人がプロビジョニングツールを使ったら
+あら不思議、インストールできちゃったわ！なんてことはない</strong> ですし、
+あったとしても後でトラブルで死ぬだけなので、ちゃんと元のコマンドを理解して
+<strong>用法用量を守って正しくお使いください。</strong></p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://mojavy.com/blog/2013/01/11/alc-nokogiri-tmux/" target="_blank">http://mojavy.com/blog/2013/01/11/alc-nokogiri-tmux/</a></li>
+<li><a href="http://knowledge.sakura.ad.jp/tech/3084/" target="_blank">http://knowledge.sakura.ad.jp/tech/3084/</a></li>
+<li><a href="http://www.sssg.org/blogs/naoya/archives/2768" target="_blank">http://www.sssg.org/blogs/naoya/archives/2768</a></li>
+<li><a href="http://stackoverflow.com/questions/37426055/ansible-2-x-install-fails-due-to-paramiko-2-0-dependency-changes" target="_blank">http://stackoverflow.com/questions/37426055/ansible-2-x-install-fails-due-to-paramiko-2-0-dependency-changes</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年8月16日">2016年8月16日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/ansible/">Ansible</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160705/">WordPress を捨てて Hugo に移行した</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年7月5日">2016年7月5日</time>
@@ -309,9 +3502,261 @@
   </ul>
 </div>
 
+
+
+
+<p><strong>RSS の URL が変わってしまったので、<del>一時的に元の URL に静的な RSS の XML ファイルをおいてますが、</del> =&gt; 置いたけどダメでした・・・ この記事以降の更新は反映されないので、以下より再取得していただければと思います。</strong></p>
+
+<p><a href="http://girigiribauer.com/index.xml" target="_blank">http://girigiribauer.com/index.xml</a></p>
+
+<hr />
+
+<p>例によって書いてない期間がどんどん開いていきますが、今は管理画面からではなく、Vim から記事を書いているのでだいぶ気分的にラクです。</p>
+
+<p>さて、決して WordPress をディスるわけではないのですが、以下の点を何とかしたいなーと思ってました。</p>
+
+<ol>
+<li>（たいして書かないのに）管理画面を晒し続けるセキュリティ面でのリスク</li>
+<li>投稿するまでの心理的障壁</li>
+<li>設置元サーバの整理</li>
+</ol>
+
+<p>1.は巷でよく言われているのですが、個人ブログで表から見えるところに管理画面を置く必要性がどこまであるのか、最近かなり疑問に思えてきました。
+しかも、たいして書かないのにずっとメンテナンスコストはかかるわけですよ。</p>
+
+<p>2.もそれに付随するといえばそうなんですが、当然管理画面が表にあれば、ログインしてから記事を書くことになるわけです。もうなんだかブラウザ開いてログインして記事書いて・・・それすらも面倒になってきたんです。</p>
+
+<p>3.が最後の決定打でした。
+設置元のサーバを掃除して CentOS7 に変えつつ、プロビジョニングツールも併せて導入したかったのですが、
+この個人ブログの整理をしてどこか別のサーバに退避する必要があり、
+一応空きサーバはあったのでそちらにそのまま持って行っても良かったものの、
+どうせ整理するなら Github Pages を利用してそっちで公開してもらおう、と思い立ったのでした。</p>
+
+<p>もちろん Github Pages を利用すれば、そちらが落ちれば閲覧できなくなるリスクはあるものの、
+めったにないし、あっても別に構わないので Github Pages を利用することに決めました。</p>
+
+<p>上記の1～2から、もう<strong>静的サイトジェネレータ（Static Site Generator）</strong>の何らかを使うことはほぼ決まっていたのですが、
+どうせ使うなら Hugo がいいなー Golang がいいなーと思い、WordPress から Hugo への移設を検討し始めました。</p>
+
+<h3 id="移設の条件">移設の条件</h3>
+
+<p>あれこれついでにやり始めると、例のごとく終わらずにほったらかしになってしまうので、移設の条件を定めました。</p>
+
+<ul>
+<li>URL は可能な限りそのまま</li>
+<li><strong>HTML/CSS/JavaSCript は極力いじらない（沼）</strong></li>
+<li>Github ですべて管理</li>
+</ul>
+
+<p>見た目いじらない、重要ですね。
+気になるところは色々あれど、見た目やら構造やらをいじり始めるとキリが無いので今回は触りません。</p>
+
+<p>あと必要最低限として URL は変えたくはないので、極力そのままで。</p>
+
+<h2 id="データのエクスポートからローカルでの-hugo-まで">データのエクスポートからローカルでの Hugo まで</h2>
+
+<p>こちらの記事がだいぶ参考になりました。</p>
+
+<p><a href="https://mano.xyz/post/2015-09-25-migration-to-hugo-from-wordpress/" target="_blank">https://mano.xyz/post/2015-09-25-migration-to-hugo-from-wordpress/</a></p>
+
+<p><a href="https://github.com/SchumacherFM/wordpress-to-hugo-exporter" target="_blank">エクスポートツール</a>を使うとかなり楽ですね。画像までひっくるめて zip ファイルにまとめてくれます。
+URL も基本今までのものを <a href="https://gohugo.io/content/front-matter/" target="_blank">Front Matter</a> に出力してくれるので楽です。</p>
+
+<p>元々 WordPress 時代でも Markdown で大部分の記事を書いていたので、
+記事の中身に関してはそれほど困りませんでした。</p>
+
+<p>それとは別に、 Hugo をインストールしてローカル（Mac）で閲覧できるようにします。</p>
+
+<pre><code>brew install hugo
+
+hugo new site bauerlog
+cd bauerlog
+</code></pre>
+
+<p>初期でできるファイル群から必要なものを差し引きして、
+大まかに以下のようなファイル構成になっています。</p>
+
+<pre><code>config.toml
+content/
+static/
+themes/
+    bauerlog/
+        archetypes/
+        layouts/
+        static/
+        theme.toml
+</code></pre>
+
+<p>まず全体設定を config.toml に記載しつつ、
+記事内容を content/post/ 以下に Markdown で書きつつ、
+記事のリソースを static/ 以下に入れ、
+それ以外のいわゆる WordPress のテーマに書かれていたような内容は themes/ 以下に
+同じくテーマを作って配置しています。</p>
+
+<p>詳しくはこちら <a href="https://github.com/girigiribauer/girigiribauer.github.io" target="_blank">https://github.com/girigiribauer/girigiribauer.github.io</a></p>
+
+<h3 id="自分がよく使うコマンド">自分がよく使うコマンド</h3>
+
+<p>新規記事の作成（僕の場合は1日に2件も書かないので日付で）</p>
+
+<pre><code>hugo new post/yyyymmdd.md
+</code></pre>
+
+<p>全体設定</p>
+
+<pre><code>vi config.toml
+</code></pre>
+
+<p>記事の編集</p>
+
+<pre><code>vi content/post/yyyymmdd.md
+</code></pre>
+
+<p>一時的にレンダリング結果を確認（config.toml 内に theme = &ldquo;bauerlog&rdquo; などと書いておく）</p>
+
+<pre><code>hugo server
+</code></pre>
+
+<p>とりあえずここまででローカルで表示確認できるようになりました。
+<code>hugo server</code> でローカルで Web サーバが立ち上がるので、
+localhost:1313/archives/20160705/ などにアクセスすれば表示確認が可能です。</p>
+
+<p>その他細かい使い方などは、公式を参照するなどしてみてください（<a href="https://gohugo.io/" target="_blank">https://gohugo.io/</a>）。</p>
+
+<h2 id="github-pages-を用いて公開する">Github Pages を用いて公開する</h2>
+
+<p>Github Pages を用いて公開する方法は大きく2つあって（これよく間違える）、
+1つはユーザー、あるいは組織に紐付いた公開用リポジトリに push する方法で、
+もう1つはプロジェクトごとに公開用ブランチを作れる方法です。</p>
+
+<p>前者は、例えばユーザー名が girigiribauer だったとして、
+<strong>girigiribauer.github.io</strong> という Git リポジトリを作り、
+<strong>master ブランチ</strong> に push することでそれがそのまま公開される仕組みになっています。</p>
+
+<p>後者は、Git リポジトリ名は任意なのですが、その中に
+<strong>gh-pages ブランチ</strong> を作り、そこにドキュメント類を push することで
+girigiribauer.github.io/projectname に公開される仕組みになっています。</p>
+
+<p><a href="https://help.github.com/articles/custom-domain-redirects-for-github-pages-sites/" target="_blank">https://help.github.com/articles/custom-domain-redirects-for-github-pages-sites/</a></p>
+
+<p>今回は個人用ブログであり、前者の仕組みで問題無いため、
+Hugo 関連の設定ファイルやテーマファイルなどを <strong>develop ブランチ</strong> で管理し、
+public ディレクトリにパブリッシュされたものをそのまま <strong>master ブランチ</strong> に送ることにします。
+（最初、勘違いして gh-pages ブランチを作ってしまった・・・）</p>
+
+<h3 id="git-subtree-を利用したパブリッシュの仕組み">git subtree を利用したパブリッシュの仕組み</h3>
+
+<p>引用多めですがこちらが綺麗にまとまってますので、参考にさせてもらいました。</p>
+
+<p><a href="http://www.kotazi.com/blog/post/2015111301/" target="_blank">http://www.kotazi.com/blog/post/2015111301/</a></p>
+
+<p>まず girigiribauer.github.io の develop ブランチに
+Hugo 関連のファイル一式を git add します。</p>
+
+<p>一方で master ブランチに何も入ってないと <code>git subtree add</code> できないので、.gitkeep あたりでも突っ込んでおきます。</p>
+
+<pre><code>git checkout master
+touch .gitkeep
+git add .gitkeep
+git commit
+git push origin master
+</code></pre>
+
+<p>develop ブランチ上に public ディレクトリがもしあれば削除したうえで、 <code>git subtree add</code> します。</p>
+
+<pre><code>git checkout develop
+rm -rf public
+git subtree add --prefix=public git@github.com:girigiribauer/girigiribauer.github.io.git master --squash
+git subtree pull --prefix=public git@github.com:girigiribauer/girigiribauer.github.io.git master
+</code></pre>
+
+<p><code>hugo</code> コマンドで実際に配置するファイルを生成して commit します。</p>
+
+<pre><code>hugo
+git add public/
+git commit
+</code></pre>
+
+<p>あとは <code>git subtree push</code> で master ブランチへ反映します。</p>
+
+<pre><code>git subtree push --prefix=public git@github.com:girigiribauer/girigiribauer.github.io.git master
+</code></pre>
+
+<p>一応ここまでやれば、 girigiribauer.github.io には反映がされてるはずです。</p>
+
+<h3 id="独自ドメインの設定">独自ドメインの設定</h3>
+
+<p>URL を変えたくなかったので、
+static/CNAME にドメイン（girigiribauer.com）だけ書かれたファイルを追加し、
+外から DNS の設定をしています。</p>
+
+<p>Github Pages の IP アドレスはどうやら 192.30.252.153 と 192.30.252.154 のようですね。
+（<a href="https://help.github.com/articles/troubleshooting-custom-domains/#dns-record-doesnt-point-to-githubs-server" target="_blank">https://help.github.com/articles/troubleshooting-custom-domains/#dns-record-doesnt-point-to-githubs-server</a>）
+なので、元々のさくらVPSの IP アドレスから 192.30.252.153 に変更して、Github Pages の方に向いたことを確認できました。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>元の条件としては、だいたいクリアできました。</p>
+
+<ul>
+<li>URL は可能な限りそのまま</li>
+<li>HTML/CSS/JavaSCript は極力いじらない</li>
+<li>Github ですべて管理</li>
+</ul>
+
+<p>ただ、いくつか課題も残っています。</p>
+
+<ul>
+<li>RSS の URL</li>
+<li>画像のリサイズ</li>
+<li>（タグ一覧ページが想定されてない、移設前の問題）</li>
+</ul>
+
+<p>大抵のものは、割り切ってしまえばなんとかなるんですが（というか気にしないことにしてしまえばOK）、
+画像のリサイズとかは管理画面がない分、なんとかしないといけなさそうです。</p>
+
+<p>RSS の URL は、Hugo 側で一覧ページごとに生成されるらしく、
+ファイル名は変更できるものの、細かいカスタマイズは難しいようです。（詳しく調べてない）
+とはいえ定期購読してる人なんて皆無だろうし、
+ここも割り切ってしまえばいいかという感じで済ませてしまおうかと考えてます。
+（Github Pages だけでリダイレクトの仕組みは提供されてないっぽいですかね・・・？）</p>
+
+<p>RSS 登録してる稀有な方、URL 変わっちゃってすみません・・・。メタタグの URL 変えとけばいいんでしたっけ？</p>
+
+<h2 id="ref">参考 URL</h2>
+
+<ul>
+<li><a href="https://mano.xyz/post/2015-09-25-migration-to-hugo-from-wordpress/" target="_blank">https://mano.xyz/post/2015-09-25-migration-to-hugo-from-wordpress/</a></li>
+<li><a href="http://www.kotazi.com/blog/post/2015111301/" target="_blank">http://www.kotazi.com/blog/post/2015111301/</a></li>
+<li><a href="https://help.github.com/articles/using-a-custom-domain-with-github-pages/" target="_blank">https://help.github.com/articles/using-a-custom-domain-with-github-pages/</a></li>
+<li><a href="http://hamasyou.com/blog/2014/03/05/github-pages-custom-domain/" target="_blank">http://hamasyou.com/blog/2014/03/05/github-pages-custom-domain/</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年7月5日">2016年7月5日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/static-site-generator/">Static Site Generator</a></li>
+    <li class="flow"><a href="/tags/hugo/">Hugo</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1878">Docker と Vagrant の明確な違い</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年8月6日">2015年8月6日</time>
@@ -323,9 +3768,77 @@
   </ul>
 </div>
 
+
+
+
+<p>そもそも比較するようなものではないものの、分かりづらい解説しかなかったので、 超個人的な主観でまとめておこうと思いました。</p>
+
+<h2 id="docker-の特徴">Docker の特徴</h2>
+
+<ul>
+<li>Linux 上でのみ動く (Windows, Mac 上では動かない)</li>
+<li>Linux のリソースを流用しつつも小さく閉じた環境を作ることができる</li>
+<li>小さいので作っては捨て、が容易</li>
+</ul>
+
+<p>例えるなら・・・</p>
+
+<ul>
+<li>病院の中に超小型隔離施設を作るようなもの</li>
+<li>隔離されてるものの、診察も受けられるし隔離施設ごとトイレにも行ける</li>
+<li>Docker コンテナをたくさん作る ≒ 病院内に超小型隔離患者がたくさん、みたいなイメージ</li>
+</ul>
+
+<h2 id="vagrant-の特徴">Vagrant の特徴</h2>
+
+<ul>
+<li>Windows / Mac / Linux それぞれにパッケージが用意されている</li>
+<li>実際は VirtualBox や VMWare のような仮想環境を提供してくれるものとセットで使う</li>
+<li>仮想環境としての Linux は、普通にインストールした Linux とほぼ変わらない構成</li>
+</ul>
+
+<p>例えるなら・・・</p>
+
+<ul>
+<li>病院の敷地の中に病院を建てるようなもの</li>
+<li>内側の病院も、普通に診察できるし手術もできるし遜色なく利用できちゃう</li>
+<li>Vagrant で VM たくさん作る ≒ 外側の病院敷地内に中小病院をたくさん建てる、みたいなイメージ</li>
+<li>複数建てるときは資金力がいる</li>
+</ul>
+
+<hr />
+
+<p>Mac で Docker いじるってことは、超軽量な Linux を boot2docker とかでインストールして、その上で動いているケースが多く（あるいは他 VM を立ち上げてるとか）、結局 Docker は Linux 上でのみ動くってことになります。（今後 Windows 方面がサポートするかもしれないけど）</p>
+
+<p>たぶん本番環境の検証という意味では、Vagrant + Chef で本番環境にできるだけ近しい状態を構築して検証とかすべきなんですけど、開発環境をいくつも立ち上げては消しみたいなことをやりたいんだったら、Docker の方が軽くて良いのでは？と思っているところです。</p>
+
+<p>もし本番環境に Docker を入れて色々利用したいのなら、まずは Vagrant + Chef の環境を手元に作って、Chef のレシピで Docker の環境を整えるレシピを書けばいいんだろうか。（まだその辺りはすっきりしてませんのでこれからですかね・・・）</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年8月6日">2015年8月6日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/docker/">Docker</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1873">コマンド履歴の Ctrl-R 使ってますか？</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年6月23日">2015年6月23日</time>
@@ -337,9 +3850,61 @@
   </ul>
 </div>
 
+
+
+
+<p>大学で初めて Linux を触りつつも、 その後働き始めてほぼ GUI オンリーの生活を送り、 iTerm, tmux, Vim 達とのと出会いを経て、 コマンドライン中心の生活を送っている girigiribauer ですこんにちは。</p>
+
+<p>大学で初めて触り始めた頃は、コマンドの補完をタブキーで出来るだとか、上下キーで自分の打ったコマンド履歴を移動できたりと、単にコマンド名だけでなく、ショートカットキーも大事だなあと思いながら色々覚えていきました。 近年では VM 立ち上げたりタスクランナー走らせたりと、コマンドラインなしでは生きていけないくらいには使わせてもらってます。</p>
+
+<p>ですが、過去のコマンドラインの履歴を入力するのに、後方からの<strong>履歴のインクリメンタルサーチ</strong>のショートカットが用意されていることを、僕は恥ずかしながらつい先日まで知りませんでした。（！）</p>
+
+<p>同じ記事は溢れているかもしれませんが、まだ見ぬ『知らんかったー』って人のために、恥を忍んでメモっておこうと思います。</p>
+
+<h2 id="コマンド履歴の後方からのインクリメンタルサーチ">コマンド履歴の後方からのインクリメンタルサーチ</h2>
+
+<p>bash にも最初から入ってるんですねー。なんで知らなかったんでしょうねー。</p>
+
+<p><strong>Ctrl-R</strong> を押すと、</p>
+
+<pre><code>(reverse-i-search)`':
+</code></pre>
+
+<p>のような感じで表示され、そのまま過去に入力したコマンドを数文字打つと、インクリメンタルサーチの要領で候補が絞られていきます。</p>
+
+<p>後方検索なので、複数の候補があれば新しいものが優先して表示されます。 ちなみに、前方検索もあって <strong>Ctrl-S</strong> らしいのですが、他のショートカットキーに割り当てられてあるケースも多いようなので、.bashrc なり .zshrc なりに書いてやる必要があります。</p>
+
+<p>1時間前くらいに入力したけどもう一度同じコマンド打ちたいとか、そういったケースなどに重宝するかと思います。これは知ってて当たり前のショートカットですねサーセン・・・</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>マニュアルをちゃんと読もう。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年6月23日">2015年6月23日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/linux/">Linux</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1867">Chef を本番投入してみた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年6月9日">2015年6月9日</time>
@@ -351,9 +3916,131 @@
   </ul>
 </div>
 
+
+
+
+<p>メモレベルでごめんなさい。</p>
+
+<p>サーバを移設してみました。 せっかくなので、移設ついでにブログのリニューアル（簡素化）と <strong>Chef cookbook を利用したプロビジョニング</strong>にも挑戦してみたよ、という記録です。</p>
+
+<h2 id="やったこと概要">やったこと概要</h2>
+
+<ol>
+<li>Vagrant を利用してローカルに同じ環境を作る（空のVM）</li>
+<li>レシピを書きつつ、ローカルと本番環境との差異などを attributes に括り出す</li>
+<li>ローカル環境へのプロビジョニングが問題なければ、同じレシピを本番にも適用</li>
+</ol>
+
+<p>本当は Serverspec なども試していきたいですが、そちらは今後やっていければと思います・・・。</p>
+
+<p>多くのサードパーティ製レシピは、<a href="https://supermarket.chef.io/" target="_blank">Chef Supermarket</a> に登録してあるのですが、読み方や使い方が分かっていないと意味をなさないケースも多かったです。</p>
+
+<p>レシピは大きく分けて2種類あり、<strong>attributes として json ファイルに値を書いていくスタイル</strong>のものと、もともと Chef に用意されている file, template のような、<strong>レシピ内に Chef の resources として記述するスタイル</strong>のものがあります。以下の記事にもわかりやすく紹介されてます。</p>
+
+<p><a href="http://tsuchikazu.net/vps_chef_solo/" target="_blank">http://tsuchikazu.net/vps_chef_solo/</a></p>
+
+<p>例えば、今回レシピを適用したいマシンを仮に alpha としておいて、<code>nodes/alphalocal.json</code> と <code>nodes/alphaproduction.json</code> の2ファイル用意し、それぞれ設定を括り出しておきたいところを記述しておきます。 以下は nodes/alphalocal.json のサンプルです。（実際はもうちょい複雑ですが）</p>
+
+<pre><code>{
+  &quot;name&quot;: &quot;alphalocal&quot;,
+  &quot;automatic&quot;: {
+    &quot;ipaddress&quot;: &quot;192.168.0.10&quot;
+  },
+
+  &quot;fqdn&quot;:             &quot;alphalocal&quot;,
+  &quot;platform_family&quot;:  &quot;rhel&quot;,
+  &quot;platform&quot;:         &quot;centos&quot;,
+  &quot;platform_version&quot;: &quot;6.6&quot;,
+
+  &quot;run_list&quot;: [
+    &quot;recipe[selinux::disabled]&quot;,
+
+    &quot;recipe[yum]&quot;,
+    &quot;recipe[yum-epel]&quot;,
+    &quot;recipe[yum-remi]&quot;,
+
+    &quot;recipe[ntp]&quot;,
+    &quot;recipe[locale]&quot;,
+    &quot;recipe[timezone-ii]&quot;
+  ],
+
+  &quot;locale&quot;: {
+    &quot;lang&quot;: &quot;ja_JP.utf8&quot;,
+    &quot;lc_all&quot;: &quot;ja_JP.utf8&quot;
+  },
+  &quot;ntp&quot;: {
+    &quot;servers&quot;: [
+      &quot;ntp.nict.jp&quot;,
+      &quot;ntp1.jst.mfeed.ad.jp&quot;,
+      &quot;ntp2.jst.mfeed.ad.jp&quot;,
+      &quot;ntp3.jst.mfeed.ad.jp&quot;
+    ]
+  },
+  &quot;tz&quot;: &quot;Asia/Tokyo&quot;
+}
+</code></pre>
+
+<p>これは前者の <strong>attributes として json ファイルに値を書いていくスタイル</strong>ですね。後者の場合は、独自にレシピを書いていきつつも、レシピ内で独自の resources を使って書いていく感じです。</p>
+
+<p>以下は apache2 のレシピで用意されている <strong>web_app</strong> resource を用いて、自ら用意したレシピ内でバーチャルホストの設定をするサンプルです。（この通り動いているわけではありません）</p>
+
+<pre><code>  web_app host[&quot;id&quot;] do
+    server_name         host[&quot;server_name&quot;]
+    server_aliases      host[&quot;server_alias&quot;]
+    docroot             host[&quot;docroot&quot;]
+    enable              host[&quot;enable&quot;]
+  end
+</code></pre>
+
+<p>ちょっと話が逸れましたが、attributes として設定を括り出しておくことで、本番環境で動作させるためのレシピを、あらかじめローカル環境で検証することができるようになりました。</p>
+
+<h2 id="やってみて気づいたこと-思ったこと">やってみて気づいたこと、思ったこと</h2>
+
+<p>だいたいこんなところです。</p>
+
+<ul>
+<li>どこまでレシピで書くべきか？</li>
+<li>データベースのバックアップ大事</li>
+<li>レシピのテストしなきゃ</li>
+</ul>
+
+<p>どこまでレシピで書くべきか？についてですが、全部レシピで書いて自動化すればいいってもんでもないんですよねえ。特にデプロイ対象のものについては、レシピで書かずに別のツールやシェルスクリプトなどで、いつでもマシン内から呼び出せるようにしておいた方が良さそうです。</p>
+
+<p>Web コンテンツなら、vhosts の設定をして、そこにファイルを置けば表示はされるけど、入れ物だけは用意してあるよー、というあたりが落とし所かなと思いました。（あとは capistrano とかですかね・・・？）</p>
+
+<h2 id="ついでにリニューアルを">ついでにリニューアルを</h2>
+
+<p>読みづらい部分がまだあったので、読みやすさを重視して見直してみました。</p>
+
+<p>あと一つ気づいたことがあるんですよ。ブログタイトルに丸々ドメイン名とか入れちゃうと、twitter とかその他外部サービスにタイトル付きで貼り付けたときに、<strong>タイトル内に含まれるサイト名にリンクが貼られてしまうんですよねえ・・・。</strong></p>
+
+<p>これは正直運用するまで盲点でした。今後 gTLD が増えていくのは間違いないので、リンクが意図せず貼られてしまうリスクも併せて考えていった方がいいかもしれませんね。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年6月9日">2015年6月9日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1749">Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年4月1日">2015年4月1日</time>
@@ -366,22 +4053,172 @@
   </ul>
 </div>
 
-</div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1742">Vagrant を開発用 Web サーバとして利用するときの注意点</a></h2>
+
+
+
+<p>2013年に書いていた、『Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話』（<a href="http://girigiribauer.com/archives/1127/" target="_blank">http://girigiribauer.com/archives/1127/</a>）という記事の続きです。</p>
+
+<p>2013年の段階では、まだまだ考え方みたいなものがまとまりきっておらず、Vagrant が用いる接続ポート番号を変えるという方向で色々考えていたのですが、今振り返ってみるとそもそも根本の考え方を見直すべきでした。</p>
+
+<hr />
+
+<h2 id="vagrant-の使いどころ-考えどころ">Vagrant の使いどころ・考えどころ</h2>
+
+<p>ざっと『Vagrant の使いどころ・考えどころ』（<a href="http://girigiribauer.com/archives/1729/" target="_blank">http://girigiribauer.com/archives/1729/</a>）に書いたのですが、Vagrant を用いる用途としては大きく2種類あると考えています。</p>
+
+<ol>
+<li><strong>ローカルの開発用</strong>としてローカルでのみ使い続ける</li>
+<li><strong>本番環境の検証用</strong>として、同じレシピを仮想マシン・リモート環境にそれぞれ適用</li>
+</ol>
+
+<p>SSH の接続ポート番号を変えるという大きな理由は<strong>セキュリティ</strong>にあると思います。 デフォルトの22番ポートで使っていると外部からのアタックに弱いため、ポート番号を変えたい、そのためのレシピを書きたい、という点が根本にあると思います。</p>
+
+<p>つまり、2.の<strong>『本番環境の検証用として、同じレシピを仮想マシン・リモート環境にそれぞれ適用』</strong>ってのがやりたいわけです。</p>
+
+<p>もし1.が目的だったのなら、わざわざポート番号を変える必要はありません。<a href="http://girigiribauer.com/archives/1127/" target="_blank">Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話</a> にもあるように、ホスト OS が 2424 番、ゲスト OS が 22 番で接続している最中に、<strong>ゲスト OS を 22 番をレシピで別ポートに変更してしまうと接続が切れてしまいます。ローカルで動作しているのならわざわざ変える必要はありません。</strong>何が面倒なのかは、詳しくはそちらの記事をご覧ください。</p>
+
+<h2 id="同じレシピをローカル-リモートに適用する">同じレシピをローカル、リモートに適用する</h2>
+
+<p>本番環境の検証用として利用したいという用途で、 同じレシピをローカル、リモートの両方に適用したいということであれば、<strong>json ファイルに設定をくくり出してやれば OK</strong> です。</p>
+
+<p>ローカルは Vagrant で動いていますが、リモートはそうではないので、両方で同じレシピ適用方法が可能な <strong>knife コマンド</strong>を使いましょうー。</p>
+
+<h3 id="ローカル">ローカル</h3>
+
+<p>以下は実際にそのまま使っているわけではないですが、<code>nodes/localhost.json</code> として Vagrant で動作しているローカル VM にレシピを適用するための設定ファイル（の一例）です</p>
+
+<pre><code>{
+  &quot;name&quot;: &quot;localhost&quot;,
+  &quot;automatic&quot;: {
+    &quot;ipaddress&quot;: &quot;192.168.24.24&quot;
+  },
+
+  &quot;fqdn&quot;: &quot;localhost&quot;,
+  &quot;platform_family&quot;: &quot;rhel&quot;,
+  &quot;platform&quot;: &quot;centos&quot;,
+  &quot;platform_version&quot;: &quot;6.6&quot;,
+
+  &quot;run_list&quot;: [
+    &quot;recipe[openssh]&quot;
+  ],
+
+  &quot;openssh&quot;: {
+    &quot;server&quot;: {
+      &quot;port&quot;: 22,
+      &quot;password_authentication&quot;: &quot;no&quot;
+    }
+  }
+}
+</code></pre>
+
+<p>あとは knife コマンドにて、</p>
+
+<pre><code>knife solo bootstrap localhost
+</code></pre>
+
+<p>あるいは</p>
+
+<pre><code>knife solo prepare localhost
+knife solo cook localhost
+</code></pre>
+
+<p>でレシピを適用してやるだけです。</p>
+
+<p>Vagrant 上で openssh のレシピを適用するのですが、<strong>ポート番号は 22 から 22 に変える、みたいなレシピにしておく</strong>と良いです。変更後のポート番号を設定値としてくくり出しておきます。</p>
+
+<p>あっ、Berkshelf の説明とか platform, platform_family とかの項目の説明は端折ってますが、また別記事にでも書いておきます。。。</p>
+
+<h3 id="リモート">リモート</h3>
+
+<p>同様に、リモートマシン（nodes/production.json）に対しては、</p>
+
+<pre><code>{
+  &quot;name&quot;: &quot;production&quot;,
+  &quot;automatic&quot;: {
+    &quot;ipaddress&quot;: &quot;123.456.789.012&quot;
+  },
+
+  &quot;fqdn&quot;: &quot;example.com&quot;,
+  &quot;platform_family&quot;: &quot;rhel&quot;,
+  &quot;platform&quot;: &quot;centos&quot;,
+  &quot;platform_version&quot;: &quot;6.6&quot;,
+
+  &quot;run_list&quot;: [
+    &quot;recipe[openssh]&quot;
+  ],
+
+  &quot;openssh&quot;: {
+    &quot;server&quot;: {
+      &quot;port&quot;: 12345,
+      &quot;password_authentication&quot;: &quot;no&quot;
+    }
+  }
+}
+</code></pre>
+
+<p>同様にポート番号をくくり出しておき、それを利用してレシピを適用することで、 リモートのサーバの SSH のポート番号を変更することが可能です。</p>
+
+<p>で、ちょっと気をつけないといけないのが、 <strong>初回のレシピ適用時と、2回目以降のレシピ適用時のポート番号が異なる点</strong>です。</p>
+
+<p>僕は以下のように、初回のみオプションで上書きしています。</p>
+
+<pre><code>knife solo bootstrap production -p 22 -x root
+</code></pre>
+
+<p><code>knife solo prepare --help</code> には以下のようなオプションがあり、</p>
+
+<pre><code>-p, --ssh-port PORT              The ssh port
+-x, --ssh-user USERNAME          The ssh username
+</code></pre>
+
+<p>これを利用して、初回のみポート番号を 22 で、かつ root ユーザーにてレシピ適用します。 （この段階ではもちろんパスワード認証なので、何回かパスワードの入力を求められます。）</p>
+
+<h3 id="リモートにレシピを適用するときの注意点">リモートにレシピを適用するときの注意点</h3>
+
+<p>それ以外にも、自分がはまったなーというものをメモっておきます。</p>
+
+<p>初回アクセス時に <code>~/.ssh/known_hosts</code> に接続情報が保持されます。</p>
+
+<p>「あー、ぐちゃぐちゃしてきたから、一旦リセットして最初からレシピを適用し直したいなー」というときに、 上記ファイルに残っている情報をクリアしておかないと接続ができないケースがあるようです。</p>
+
+<p>また、さくらVPS のサービスを利用しているのですが、OS のインストールをし直した際は、少し時間を置いてからでないとうまく適用できません。焦らずコーヒーでも飲みましょう。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<ul>
+<li>Vagrant を用いる際の目的をはっきりさせる</li>
+<li>サーバの設定値をくくり出す</li>
+</ul>
+
+<p>なお、本当にどうでもいい話ですが、ドラマ TwentyFour では、テロリストや CTU 職員が IP アドレスを指定するときに、262.xxx.xxx.xxx のような、実際には存在しない 255 を超えた数値をドラマ内で言ったりします。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
-  <p>  <time datetime="2015年3月25日">2015年3月25日</time>
+  <p>  <time datetime="2015年4月1日">2015年4月1日</time>
 </p>
 
   <ul class="tags">
-    <li class="flow"><a href="/tags/apache/">Apache</a></li>
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/ssh/">SSH</a></li>
     <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
-    <li class="flow"><a href="/tags/webserver/">WebServer</a></li>
   </ul>
 </div>
 
-</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -403,7 +4240,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -493,7 +4330,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

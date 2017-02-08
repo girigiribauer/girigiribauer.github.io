@@ -28,8 +28,124 @@
 
 <h1>Tags / HTML5</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/905">関西のHTML5など勉強会に参加してきた話</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2013年3月24日">2013年3月24日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/html5/">HTML5</a></li>
+    <li class="flow"><a href="/tags/output/">output</a></li>
+    <li class="flow"><a href="/tags/event-conference/">event-conference</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>最近、こんな勉強会に参加して、 こんなこと話しました、こんなこと聞きましたという記事を けっこう頻繁にアウトプット出来るようになってきて、個人的に嬉しく思っています。</p>
+
+<p>今回は、3/23（土）に大阪で行われた<strong>『第6回 HTML5など勉強会』</strong>に、 名古屋から完全アウェー状態で飛び込みに行って、 興味深いプレゼンをお聞かせいただきつつも、 自分もスーパーサイヤ人に変身して恥をかき捨ててきたよ、というまとめです。</p>
+
+<p><img src="/img/2013/03/html5-west01.png" alt="" /></p>
+
+<h2 id="第6回-html5など勉強会">第6回 HTML5など勉強会</h2>
+
+<p>関西で（おそらく不定期で）行われているHTML5関連の勉強会です。 これはお約束なのですが、HTML5といいつつ、 幅広く最近の特にWebのフロント周りの話を中心に構成された勉強会でした。</p>
+
+<p>僕個人としては、先月の『大なごやJS vol.5』でやった<a href="/archives/834/">『WebRTC + Web Audio API = スーパーサイヤ人』</a>のネタを、もっと会場で実際に見せた方が（＝シャウトしてるのを見せた方が）面白いんじゃないかと思っていたので、良い機会だと思ってこの勉強会に持ち込んでみました。</p>
+
+<p>予想してた以上に興味深い内容ばかりで、得るものも多かった会でした。 発表概要は以下のような感じです。</p>
+
+<ul>
+<li>WebアプリビルドツールYeomanを使ってみる 村岡(@bathtimefish)さん</li>
+<li>D3.js と SVG を使ってTwitterのデータを視覚的に表現してみよう！ かどっぺ(@kadoppe)さん</li>
+<li>Firefox的DOMイベントの基礎から深淵まで なかのん(@d_toybox)さん</li>
+<li>自分の発表</li>
+<li>パソナテックさんタイム</li>
+</ul>
+
+<p>上3つの発表を、それぞれ個人的な視点でまとめておきたいと思います。</p>
+
+<h2 id="webアプリビルドツールyeomanを使ってみる">WebアプリビルドツールYeomanを使ってみる</h2>
+
+<p>資料はこちらにアップされてます。 <a href="http://www.slideshare.net/bathtimefish/yeoman-ria" target="_blank">http://www.slideshare.net/bathtimefish/yeoman-ria</a></p>
+
+<p>初期構築時における<strong>ディレクトリ構成</strong>や、 Webのフロントエンド構築におけるファイルの最小化や結合などの<strong>ビルド工程</strong>などの、 一から全部やってるとかなりめんどい工程を自動化してくれるツールである、Yeomanに関する発表でした。</p>
+
+<p>今現在、1.0のbetaがリリースされているらしく、0.9から1.0ではコマンド名が変わったり、 0.9まででめんどくさかった部分の簡素化が図られているなど、 より実用的になっているよ、とのことでした。</p>
+
+<p>変わっている部分は、公式サイトに migrate guide としてまとめられているので、 そちらを参考にするといいみたいです。</p>
+
+<p><a href="http://yeoman.io/migrate.html" target="_blank">http://yeoman.io/migrate.html</a></p>
+
+<p>また、1.0になり、Yeoman は以下の3つのツールで構成されるようになってきた、とのこと。</p>
+
+<ul>
+<li><strong>yo</strong> （足場を作る役割のツール、事前に用意されたパッケージを引数として指定すると、それベースの初期構成で自動で用意してくれる）</li>
+<li><strong>bower</strong> （Ruby における gem、node における npm みたいな、JavaScriptのパッケージ管理ツール）</li>
+<li><strong>grunt</strong> （もう言わずとしれた JavaScript ベースのビルドツール）</li>
+</ul>
+
+<p>一昔前までは、フロント側でそこまでボリュームのあるものを作ることが無かったこともあり、 こういったツールによるサポートという面はあまり考えられてこなかったところがありますが、 ここ最近は、かなりこういった<strong>開発フローを以下に効率化していくか？</strong>という面での ツールの話をかなり頻繁に聞きますね。（乱立してて情報を追うだけでも大変ですね・・・）</p>
+
+<h2 id="d3-js-と-svg-を使ってtwitterのデータを視覚的に表現してみよう">D3.js と SVG を使ってTwitterのデータを視覚的に表現してみよう！</h2>
+
+<p>資料はこちらにアップされてます。 <a href="http://www.slideshare.net/kadoppe/d3js-svg" target="_blank">http://www.slideshare.net/kadoppe/d3js-svg</a></p>
+
+<p><strong>発表の半分以上がライブコーディング</strong>で、やっぱりその場で書いているのを見せるのは、 聞く側にとっても非常に分かりやすくなっていいなーと思いました。</p>
+
+<p>単に表示するまでにどうすればいいか、はもちろんのこと、 そのデータが追加、削除されていたときに非同期で更新するにはどうすればいいかを、 より見えやすく分かりやすく説明されてるところが印象的でした。</p>
+
+<p>具体的には、d3.js の <strong>enter(), exit() の使い方とそのメリット</strong>について、 実際に書きつつ、動かしながら見せていて、 発表内容はビジュアライゼーションだったのですが、 発表そのものもメリット部分の説明を<strong>ライブコーディングで見える化してた</strong>ところが すごく分かりやすくて良かったなーと思いました。</p>
+
+<p>また、これが一番参考になったのですが、 ライブコーディングを発表時にやるにあたって、 だんだんと作り足していく様をきちんと<strong>Gitなどのバージョン管理で保持</strong>しておき、 本番中になんか上手く動かない（本番だと細かな記述ミスに気づかなかったりしますよね）場合でも、 最悪 3分間クッキング方式で、<strong>「はい、出来上がったものがこちらになります」</strong>と さっと戻してやることで、発表の進行もスムーズになるなーと思いました。</p>
+
+<p>これは今後やることあったら、ぜひとも参考に使おう、と思います。なるほどー。</p>
+
+<h2 id="firefox的domイベントの基礎から深淵まで">Firefox的DOMイベントの基礎から深淵まで</h2>
+
+<p>資料はこちらにアップされてます。 <a href="http://www.slideshare.net/masayukinakano560/dom-17527671" target="_blank">http://www.slideshare.net/masayukinakano560/dom-17527671</a></p>
+
+<p>個人的に、<strong>一番わくわくしてしまった</strong>のがこの発表で、 DOM イベントの新しい仕様できたよー的なゆるふわな内容かと思いきや、<strong>全然そんなことはなく</strong>。</p>
+
+<p>単に DOM のイベントってテーマだけでも、 こんなにもブラウザごとの差異があったりそもそも仕様が無く実装のみで突っ走っちゃってたり、 なかなかにカオスが現状の話が所狭しと並べられていたので、 本当にブラウザの実装に関わっていらっしゃる方々には頭が下がるなーという（特に中盤以降が）濃すぎる内容でした。</p>
+
+<p>また、tips的な話も数多くあり、例えば</p>
+
+<ul>
+<li>addEventListener において、複数のイベントリスナーが登録されたときの実行順序で、ほぼ全てのブラウザで先に登録されたものから実行されるけど、仕様としては曖昧になっている、とか</li>
+<li>initMouseEventの引数がクソみたいに長いけど、DOM 4 Events では new MouseEvent の形で呼べるようになっていて、引数もイベント名とオプションのオブジェクトという形でシンプルになっているよーとか</li>
+<li>マウスホイールイベント周りがカオス</li>
+<li>キーボードイベント周りがカオス（ry</li>
+</ul>
+
+<p>などなど挙げ出したらきりがない感じでした。（詳しくは実際に資料見つつ、1つずつ調べていくのが良さそうです）</p>
+
+<p>実際にWebブラウザ作ってる人の話が聞けたのはすごく嬉しかったですし、新旧の互換性や他ブラウザとの互換性など、考えるところが多すぎて大変そうだなーと感じつつ、<strong>ブラウザベンダーの方々のこういった努力の上に、色々成り立っているんだなーと考えさせられる</strong>、非常に興味深い内容でした。</p>
+
+<h2 id="あと自分の発表とか">あと自分の発表とか</h2>
+
+<p>すごい話ばかりだったので、4番手でこんなネタやっちゃっていいのかと不安もありましたが、 シャウトして変身してすっきりできました。<strong>満足です。</strong></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>今回の勉強会の終わりがけに挨拶させていただいた方や、プチ懇親会でお話させていただいた方は、 実はけっこうTwitterなどで情報を追わせていただいている方々ばかりだった（ということに後から気づいた）ので、 実際に会ってお話できて非常に嬉しかったです。 またどこか別の機会でご一緒できたらいいなーとか思ってます。</p>
+
+<p>そして、やっぱり各地域ごとにすごい方はたくさんいらっしゃるので、そこで大いに刺激を受けつつ、また名古屋に戻って頑張って精進していきたいなーと思います。<strong>ありがとうございました！</strong></p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2013年3月24日">2013年3月24日</time>
@@ -42,9 +158,7 @@
   </ul>
 </div>
 
-</div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/798">スマートフォンサイト構築に役立ちそうな本を読んでみた</a></h2>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年2月11日">2013年2月11日</time>
@@ -57,9 +171,99 @@
   </ul>
 </div>
 
+
+
+
+<p><img src="/img/2013/02/books.jpg" alt="" /></p>
+
+<p>知り合いの方が本を出されたと聞いたので、早速読んでみました。</p>
+
+<p>簡単に内容をさらっと紹介しつつ、どんな人向けの本なのかも考えてみようと思います。（まだしっかりと読んだわけではないので悪しからず。。。）</p>
+
+<h2 id="webサイト制作者のための-html5-javascriptスマートフォンサイト実践講座">Webサイト制作者のための HTML5+JavaScriptスマートフォンサイト実践講座</h2>
+
+<p>『HTML、CSS、JavaScriptはひととおり知っている読者を対象に、スマートフォン制作の実践的なテクニックを解説』とあるので、主にPC向けに今までやってきたような人が、スマートフォンに変わったときにつまずきやすい箇所などを分かりやすく解説している書なのかなーと思いますが、とりあえず実際に読んでみてどんな感じか感想を書いてみようかと思います。</p>
+
+<h2 id="特徴-ポイントだけ">特徴（ポイントだけ）</h2>
+
+<ol>
+<li><strong>スマートフォンの普及率やUIなどの違い</strong>などから、対応する必要性についてしっかり書いてある</li>
+<li><strong>制作環境、特にデバッグ環境</strong>について細かく紹介されている</li>
+<li>ページ数の少ない中、<strong>セキュリティ</strong>に関してもきちんとページ数を割いて説明してある</li>
+</ol>
+
+<p>個人的に、大きくポイントだけ見るとこんなところなのかなーと思いました。</p>
+
+<h2 id="スマートフォンの普及率や-uiなどの違い">スマートフォンの普及率や、UIなどの違い</h2>
+
+<p>単に作り方だけ書いてある本はたくさんあると思いますが、このあたりの<strong>『なぜスマートフォン向けに作る必要があるのか？』</strong>というのは、基本的に押さえておかないといけないと思います。</p>
+
+<p>1章の『スマートフォンサイトの基礎知識』や、4章の『実装設計とトップページの作成』にもあるように、PCで作るときと比べて、具体的にUIや通信速度などに違いがあるため、<strong>タッチに合わせた設計</strong>であったり、<strong>リクエスト数の削減</strong>であったり、気をつけるべきところが変わってきますよー、というのは、普通にPC向けに作っているだけでは、ここまで問題にならない箇所ですね。（もちろん気にする必要はあるのですが、比較してという意味で）</p>
+
+<p>単にPC向けに作ったものを、一発変換でスマートフォン向けに変換するサービスとかが一時期（今も？）流行っていましたが、こういう事柄を知識として知っておくだけで、そういったサービスでは問題を解決できないことを理解するところから始める、というのは大事だなーと思いました。</p>
+
+<h2 id="制作環境-特にデバッグ環境">制作環境、特にデバッグ環境</h2>
+
+<p>新しい分野での制作において、環境構築というのは思っている以上に時間のかかる工程です。</p>
+
+<p>スマートフォン構築では、最終的にはスマートフォンで動作することになり、ここがPC向けの制作とは大きく異なるところになります。なので、スマートフォンで制作、閲覧したときにどういうネットワークの流れで閲覧できるのか、あたりも図で詳しく説明してあります。ありがたいですね。</p>
+
+<p>また、PC向けに作っていたときには問題にならなかった、『制作環境と閲覧環境が別になる』というところを踏まえた、<strong>PC上でのシミュレータによるデバッグ方法から、スマートフォン実機でのデバッグ方法</strong>まで紹介されています。（iOS6から追加された、Safariからのリモートデバッグまで紹介されているので、かなり最新の情報まで網羅されているのでは？と思います。）</p>
+
+<p>スマートフォンでのWebの開発経験がない人にとっては、一通り詳しく紹介されているのでありがたいのではないかなーと思います。</p>
+
+<h2 id="セキュリティ">セキュリティ</h2>
+
+<p>これは、前に参加した <a href="/archives/673/">勉強会</a> でもそうだったのですが、自分で試す以上のことをやる上で、最低限このあたりの話は触れておかなければならないところだなーと思いました。</p>
+
+<p>後半かなり全方位な内容に触れていて、内容盛りだくさんなのですが、やはりこのあたりを削らないところにこの本の意義を感じました。とはいえ、セキュリティの専門書ではないので、さらに踏み込んだ内容に関しては、きちんと自分で調べるなりする必要はあると思います。（これは自分自身に言いきかせる意味でも）</p>
+
+<h2 id="誰に向いてそうか考えてみる">誰に向いてそうか考えてみる</h2>
+
+<p>もともと想定されている読者はもちろんなんですが、それに加えて、通常のWebサイトを作っている制作者よりも、意外と<strong>異業種から転身されたプログラマー寄りな方</strong>に向いているのではないかな？と思いました。</p>
+
+<p>そういった方が、通常のマークアップの基本的な内容が載っている本に加えて、この本を一通り読めば、スマートフォンサイトの構築には問題ないのかなーと思います。また、サイトだけではなく<strong>Webアプリ</strong>であっても本の知識は十分活かせますし、最新の情報やはまりやすいポイントが網羅されているので、そういう方に効果的かもしれません。</p>
+
+<p>逆に、jQueryを読み込んで、jQueryプラグインを入れるだけのWebサイト制作者にとっては、<strong>後半部分はあまり役に立ってくれない</strong>のではないでしょうか。この本の中にもあるように、基本的にjQueryを使わずに書いてあるサンプルコードが大半であるため、汎用性がある反面、jQuery経由でしか扱ったことの無い人にとっては応用が効かなくなるかもしれません。ただそれでも、<strong>前半部分を読んで前提としての知識を補う分には十分</strong>かなという印象です。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>個人的には、苦労する前にこういう本を読んでおきたかったなという感じです。『iOSで更新されないキャッシュファイルの落とし穴』あたりもそうなんですが、実際にやってみてはまった経験とかがけっこうあるので、こういう<strong>ピンポイントではまりどころを紹介</strong>してくれているのは、非常に助かるなーと思いました。あといくつか知らないものもあったので勉強になりました。</p>
+
+<p>tips的なところは、日々新しい内容に変わっていく部分もあると思うので、古くならないうちに読むとよりためになるのではないかなと思います。（改訂するとき大変そう・・・）</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://www.amazon.co.jp/Web%E3%82%B5%E3%82%A4%E3%83%88%E5%88%B6%E4%BD%9C%E8%80%85%E3%81%AE%E3%81%9F%E3%82%81%E3%81%AE-HTML5-JavaScript%E3%82%B9%E3%83%9E%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%B3%E3%82%B5%E3%82%A4%E3%83%88%E5%AE%9F%E8%B7%B5%E8%AC%9B%E5%BA%A7-%E4%BD%90%E8%97%A4-%E6%AD%A9/dp/4774154113/ref=sr_1_13?ie=UTF8&amp;qid=1360567442&amp;sr=8-13" target="_blank">Webサイト制作者のための HTML5+JavaScriptスマートフォンサイト実践講座(Amazon)</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年2月11日">2013年2月11日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/html5/">HTML5</a></li>
+    <li class="flow"><a href="/tags/javascript/">JavaScript</a></li>
+    <li class="flow"><a href="/tags/smartphone/">Smartphone</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/785">HTML5勉強会 名古屋 #1 に参加してきた話</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年2月9日">2013年2月9日</time>
@@ -71,9 +275,99 @@
   </ul>
 </div>
 
+
+
+
+<p><img src="/img/2013/02/html5nagoya01.png" alt="" /></p>
+
+<p>特にしゃべってもないので、参加者目線でログを残したいなと思います。</p>
+
+<h2 id="html5勉強会-名古屋-1">HTML5勉強会 名古屋 #1</h2>
+
+<p>今まで名古屋でこういう会が無かったので、こういう月一で継続して発表の場があるというのは大事なんじゃないかなーと思います。</p>
+
+<p>ちなみに第0回もあったのですが、まだ参加されている皆さんはアウトプットに慣れていないのかなーという印象を受けました。もちろん僕も含めてではあるのですが、<strong>アウトプットを行わないと、適切な（効率の良い？）インプットが出来ない</strong>と思うので、このあたりは徐々にみんなで出来るようになれるといいなぁと思ってます。</p>
+
+<p>今回のセッションはだいたい以下のような感じでした。</p>
+
+<p>※公式なものではないので、概要をさらっと触れる感じにとどめておきます。</p>
+
+<h2 id="html5で色々なものを再現してみる話">HTML5で色々なものを再現してみる話</h2>
+
+<p>杉本さんの『HTML5で色々なものを再現してみる話』という、まず面白いコンテンツを紹介し、それに使われているHTML5関連の技術を紹介していくという内容の発表でした。</p>
+
+<p>大きく2つのコンテンツが紹介されていて、1つ目はWindows8のOSを模したWebアプリケーションでした。 魚の描画には<strong>Canvas</strong>のAPIを使ったり、動きの表現にはCSSの<strong>animations</strong>, <strong>transitions</strong>を使って実現してます、といった感じで、単に面白いもの作ったというだけでなく、セットでこういう技術を使ってます、という内容があることで、聞いている側は『こういうことやりたい』と思ったときの調査のとっかかりになったのではないでしょうか。</p>
+
+<p>2つ目は、ドラゴンクエストの復活の呪文を、HTML5関連の技術を使って再現しちゃおう、という内容でした。 その再現っぷりは半端なく、ちゃんとゲームのコントローラーを接続して、ユーザーインターフェースもそのままに再現されてました。 僕も前々から個人的に気になっていた <strong>Gamepad API</strong> ですが、<strong>実際に作って試せるところまでコンテンツを作りこんでいるのは見習いたい</strong>なと思います。これくらいさくっと作って試さないとダメですね。僕も頑張ります。</p>
+
+<p>ちなみに、Gamepad API を実装するにあたっては、こちらのサイトが参考になったとのことでした。</p>
+
+<p><a href="http://www.html5rocks.com/en/tutorials/doodles/gamepad/" target="_blank">Jumping the Hurdles with the Gamepad API &#8211; HTML5 Rocks</a></p>
+
+<h2 id="ar-html5">AR+HTML5</h2>
+
+<p>伊藤さんの『AR+HTML5』というタイトルでの発表で、ARコンテンツの『CARKCHO』というサービスをベースにして、将来スマートフォンでのARコンテンツに備えたHTML5を用いた検証など、そもそもHTML5使うべきかどうかなどの話も含めた内容でした。</p>
+
+<p><a href="https://app.carkcho.com/" target="_blank">CARKCHO</a></p>
+
+<p>おそらくポイントとしては、ARなどの今までになかったものは、未知のUI、UXを考える必要性が出て来ることが多く、今まで以上に事前の検証が大事となるシーンが多くなるので、後になって導入がスムーズになるように、どんどん事前検証していきましょう、といった感じかなと思います。</p>
+
+<p>プレゼン中にWebGLを使ったスマートフォンの立体表現が紹介されていましたが、こういったものもどんどん取り入れていきつつ、セットで<strong>どの環境でもちゃんと見られるのか、あるいは見られないものをどうするか</strong>を（当然のように）きちんと考えていく必要があるなーと思いました。</p>
+
+<h2 id="html5時代の動画コンテンツ-基礎の基礎-webサービス作ってないし-というあなたに">HTML5時代の動画コンテンツ 基礎の基礎 ～Webサービス作ってないし！というあなたに～</h2>
+
+<p>最後のセッションはKさんの『HTML5時代の動画コンテンツ 基礎の基礎』という、動画の埋め込みに絡んだ話から、それを踏まえた顧客提案までの幅広い発表でした。</p>
+
+<p>確かに動画の種類、埋め込み方法、メリットデメリットなどの基本的なところは、知識として知っておく必要があるのですが、その上に<strong>どうクライアントに提案して価値を見いだせるか、という一番しっかり考えなければいけないところ</strong>の話が分かりやすく紹介されていて、非常に面白かったです。</p>
+
+<p><strong>動画と何か</strong>を組み合わせると、アイデア次第で提案できるものが転がっているよ、という中での一例として、 <strong>Popcorn.js</strong> が紹介されてました。</p>
+
+<p><a href="http://popcornjs.org/" target="_blank">Popcorn.js</a></p>
+
+<p>動画が進むにつれて、連動して何かが変化する類いのものは、他にもたくさんありそうですね。そう考えると、ホントに後はアイデア次第なのではないでしょうか。実装まではまだ出来ないけど、出来る人にお願いすればいいじゃん、というのも頼もしい言葉でした。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>今回の発表者の方々は、もう日頃からアウトプットをされている方ばかりだったので、こういう風に形にして伝えるのがやはり上手いなーという印象でした。 内容自体もさることながら、まずは<strong>やりたいこと、アウトプットしたいこと</strong>が明確に見えていて、<strong>それを実現するためのインプット</strong>を行い、それを<strong>さらにまたこういう発表という形でアウトプット</strong>することで、良いサイクルを回していて理想的だなーと思いました。</p>
+
+<p>僕も負けずにアウトプットしていきたいなーと思います。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://www.html5rocks.com/en/tutorials/doodles/gamepad/" target="_blank">Jumping the Hurdles with the Gamepad API &#8211; HTML5 Rocks</a></li>
+<li><a href="https://app.carkcho.com/" target="_blank">CARKCHO</a></li>
+<li><a href="http://popcornjs.org/" target="_blank">Popcorn.js</a></li>
+<li><a href="https://groups.google.com/forum/?hl=ja&amp;fromgroups#!forum/html5nagoya" target="_blank">HTML5勉強会 名古屋（Googleグループ）</a></li>
+<li><a href="http://www.zusaar.com/event/499053" target="_blank">HTML5勉強会 名古屋 #1（イベント募集ページ）</a></li>
+<li><a href="http://togetter.com/li/452564" target="_blank">HTML5勉強会 名古屋 #1（togetter）</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年2月9日">2013年2月9日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/html5/">HTML5</a></li>
+    <li class="flow"><a href="/tags/event-conference/">event-conference</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/719">html5shiv.jsの使いどころ</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年2月4日">2013年2月4日</time>
@@ -85,9 +379,150 @@
   </ul>
 </div>
 
+
+
+
+<p><a href="/archives/690/">HTML5のタグで書いてはいけないレアケース</a> にて、『html5shiv.jsを読み込んで・・・』みたいな記事を書いたのですが、そもそも html5shiv.js とは何でしょうか。</p>
+
+<p>似たようなものの中に、html5.js, html5shim.js, html5shiv.js などが見られますが、これらの違いについても調べてみたいと思います。</p>
+
+<h2 id="html5shiv-jsってなに">html5shiv.jsってなに？</h2>
+
+<p>html5shiv.js が読み込まれなかったとき、oldIEではどうなってしまうのかを、もう少し詳細に見てみたいと思います。</p>
+
+<p><img src="/img/2013/02/html5shiv01.png" alt="" /></p>
+
+<p>これは <a href="/archives/690/">HTML5のタグで書いてはいけないレアケース</a> で書いたサンプルページを、IE8の開発者ツールで見てみた時のスクリーンショットです。</p>
+
+<pre><code>&lt;!-- doctype html --&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+  &lt;body&gt;
+    &lt;header class=&quot;block1&quot;&gt;
+    文字列 - block1
+    &lt;/header/&gt;
+    &lt;section class=&quot;block2&quot;&gt;
+    文字列 - block2
+    &lt;/section/&gt;
+    &lt;footer class=&quot;block3&quot;&gt;
+    文字列 - block3
+    &lt;/footer/&gt;
+</code></pre>
+
+<p>DOMツリーを見てみると分かるように、oldIEから見ると未知の要素である header などが上手く解釈されず、<strong>header と /header の別要素だと解釈されてしまっています。</strong>閉じタグも1つの要素として解釈されてしまっていますね。</p>
+
+<p>html5shiv.js では、<strong>基本的に読み込むだけ</strong>で自動的に要素の解釈を行ってくれます。</p>
+
+<ol>
+<li>古いIEでのセクショニングコンテンツの認識</li>
+<li>IE6-9（及びその他レガシーブラウザ）のベースのスタイル付与</li>
+</ol>
+
+<p>1.に関しては、そもそも未知の要素なので、要素としての認識が上手く行われていません。これをDOMツリーの構築前に内部で document.createElement(&#8220;header&#8221;) などを呼ぶことで、要素として認識させることができます。 このあたりの話は、<a href="http://paulirish.com/2011/the-history-of-the-html5-shiv/" target="_blank">The Story of the HTML5 Shiv</a> という形でまとまっています。</p>
+
+<p>また、未知の要素であるため、デフォルトのスタイルもあたっていません。 こちらに関しては、IE9も含めてデフォルトのスタイルがあたってない場合がありますので、header, sectionなどの未知の要素に <code>display: block</code> をあてて、他にスタイルがあたってない状態でも、崩れがおきないようにしてくれます。</p>
+
+<p>ついでに html5shiv.js を適用した後でDOMツリーがどうなっているかも見ておきます。</p>
+
+<p><img src="/img/2013/02/html5shiv02.png" alt="" /></p>
+
+<!-- doctype html -->
+
+<p><head>
+  </p> <header class="block1"> 文字列 &#8211; block1</p> <section class="block2"> 文字列 &#8211; block2</p> <footer class="block3"> 文字列 &#8211; block3</p></p>
+
+<p><p>
+    きちんとDOMツリーが正しく構築され、描画も意図通りに行われています。
+  </p></p>
+
+<p><h2>
+    html5.js と html5shiv.js の違い
+  </h2></p>
+
+<p><p>
+    一言でいうと、html5shiv.js のが新しいのでこちらを使うべきです。
+  </p></p>
+
+<p><p>
+    詳しい話は、 <a href="http://www.skyward-design.net/blog/archives/000134.html">IE対応でよく利用するhtml5shivの使用方法変更について</a> に、もうそのまんま掲載されているので、こちらとこちらの記事内で紹介されているリンク先を参考にされると良いかと思います。
+  </p></p>
+
+<p><p>
+    こちらが、そのさらに参照先ですね。<a href="http://zoompf.com/2012/05/html5shiv-and-serving-content-from-code-repositories">html5shiv and Serving Content From Code Repositories</a>
+  </p></p>
+
+<p><p>
+    最新じゃないし、キャッシュもされないし、圧縮もされてないし・・・などの点がもろもろまとめられています。
+  </p></p>
+
+<p><h2>
+    html5shiv と html5shim の違い
+  </h2></p>
+
+<p><p>
+    shiv と shim の違いは v と m の違いでしかないですよー、それ以外は全部一緒ですよーと言われています。
+  </p></p>
+
+<p><p>
+    <a href="http://code.google.com/p/html5shiv/#shiv_or_shim?">html5shiv &#8211; shiv or shim?</a>
+  </p></p>
+
+<p><p>
+    ただ、<strong>shiv のがかっこいい</strong>らしいです。
+  </p></p>
+
+<p><h2>
+    まとめ
+  </h2></p>
+
+<p><p>
+    仮に上記の話が難しくて良く分からなかったとしても、結局のところ <strong>html5.js よりは html5shiv.js のが新しくて素敵なので、こっちを使ってね</strong>、ということですね。
+  </p></p>
+
+<p><p>
+    IE6-8では基本読み込むだけで利用できますし、IE9でもベースのスタイルがあたるので読み込んでおくと良いかもしれません。
+  </p></p>
+
+<p><h2 id="ref">
+    参考URL
+  </h2></p>
+
+<p><ul>
+    <li>
+      <a href="https://github.com/aFarkas/html5shiv">html5shiv</a>
+    </li>
+    <li>
+      <a href="http://www.skyward-design.net/blog/archives/000134.html">IE対応でよく利用するhtml5shivの使用方法変更について</a>
+    </li>
+    <li>
+      <a href="http://zoompf.com/2012/05/html5shiv-and-serving-content-from-code-repositories">html5shiv and Serving Content From Code Repositories</a>
+    </li>
+  </ul></p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年2月4日">2013年2月4日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/html5/">HTML5</a></li>
+    <li class="flow"><a href="/tags/oldie/">oldIE</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/690">HTML5のタグで書いてはいけないレアケース</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年1月29日">2013年1月29日</time>
@@ -98,9 +533,171 @@
   </ul>
 </div>
 
+
+
+
+<p>個人的には、</p>
+
+<ol>
+<li><strong>IE8以前</strong>のブラウザが対応ブラウザに入っていて、</li>
+<li>かなり公共性の高いと思われる（≒<strong>JavaScriptの動作によらず閲覧できる</strong>必要あり）</li>
+</ol>
+
+<p>というケースでは、<strong>HTML5の新しいタグは使ってはいけない</strong>と思っています。</p>
+
+<p>実際に書いてみて考えてみようと思います。</p>
+
+<h2 id="try">試しにHTML書いてみる</h2>
+
+<p>こんな感じのものを書いてみました。</p>
+
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;sample&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;index.css&quot;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;header class=&quot;block1&quot;&gt;
+      block1
+    &lt;/header&gt;
+    &lt;section class=&quot;block2&quot;&gt;
+      block2
+    &lt;/section&gt;
+    &lt;footer class=&quot;block3&quot;&gt;
+      block3
+    &lt;/footer&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>スタイルシートは省略しますが、実際に表示するとこんな感じになりました。</p>
+
+<p><img src="/img/2013/01/html5study02.png" alt="" /></p>
+
+<p>さて、これをIE8で見てみます。わくわく。</p>
+
+<p><img src="/img/2013/01/html5study03.png" alt="" /></p>
+
+<p><strong>これはひどい。</strong></p>
+
+<p>崩れというか、もうスタイルがあたってないです。 スタイルがあたってないせいで、ブロックの大きさも判別できず、色もついていないです。</p>
+
+<h2 id="parse">古いブラウザでのHTML5のタグの解釈について</h2>
+
+<p>IE8以前と書きましたが、そもそもHTML5の新しいタグは、どのブラウザで解釈ができるのかをまず調べてみます。</p>
+
+<p><img src="/img/2013/01/html5study01.png" alt="" /></p>
+
+<p><a href="http://caniuse.com/#feat=html5semantic" target="_blank">http://caniuse.com/#feat=html5semantic</a></p>
+
+<p>こちらのサイトに各種ブラウザのサポート具合がまとめてあるのですが、その中の『New semantic elements』がそれにあたります。</p>
+
+<p>これによると、HTML5の新しいセマンティックな要素はIE8以前じゃ効きませんよー、とあります。</p>
+
+<p>こういうときは、html5shiv.jsを読み込んで、対応してないブラウザで未知の要素として扱われてしまうsection, headerなどの要素を、きちんと解釈させる必要が出てきます。（html5shiv.jsの話は、また別の機会に書けたらいいな）</p>
+
+<pre><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;title&gt;sample&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;index.css&quot;&gt;
+    &lt;!–[if lt IE 9]&gt;
+      &lt;script src=&quot;html5shiv.js&quot;&gt;&lt;/script&gt;
+    &lt;![endif]–&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;header class=&quot;block1&quot;&gt;
+      block1
+    &lt;/header&gt;
+    &lt;section class=&quot;block2&quot;&gt;
+      block2
+    &lt;/section&gt;
+    &lt;footer class=&quot;block3&quot;&gt;
+      block3
+    &lt;/footer&gt;
+  &lt;/body&gt;
+&lt;/html&gt; 
+</code></pre>
+
+<p>IEで有効となる条件付きコメントではさみつつ、html5shiv.jsを読み込む記述を入れてます。</p>
+
+<p>このスクリプトを読み込むことで、HTML5の新しいタグで書かれたページを上手く意図通りに表示することができます。</p>
+
+<p>逆に言うと、JavaScriptが動作していない場合にHTML5の新しいタグを読み込むと、上記のキャプチャのような大幅に崩れた意味をなさないページになってしまうため、</p>
+
+<ol>
+<li><strong>IE8以前</strong>のブラウザが対応ブラウザに入っていて、</li>
+<li>かなり公共性の高いと思われる（≒<strong>JavaScriptの動作によらず閲覧できる</strong>必要あり）</li>
+</ol>
+
+<p>というケースでは、新しいタグを使わずに書いた方が良いと思います。</p>
+
+<h2 id="じゃあ-新しいdoctype宣言も使ったらダメなんじゃないの">じゃあ、新しいdoctype宣言も使ったらダメなんじゃないの？</h2>
+
+<p>ちなみに、一番上にあるdoctype宣言については、元々は <code>で考えられていたのですが、古いIEなどでもきちんと標準準拠モードで解釈されつつ、極力シンプルになるように</code> に結局落ち着いたという経緯があるようです。</p>
+
+<p>一般的な用語として、今正しく動くものが将来出て来るであろう新しいバージョンで動くことが予想されるものを<strong>前方互換性(forward compatibility)</strong>、その逆に今正しく動くものが、過去のバージョンで動くことが予想されるものを<strong>後方互換性(backward compatibility)</strong>と言います。</p>
+
+<p>それとは別に、ブラウザのレンダリングモードには、<strong>後方互換モード</strong>と<strong>標準準拠モード</strong>があり、最近では<strong>標準準拠モード</strong>でのレンダリングが求められます。（ここでいう後方というのは、IE6よりも前の話ですね。）</p>
+
+<p>つまり、新しい書き方をしつつ、古いIEなどで標準準拠モードでレンダリングさせるためには、後方互換性を持たせた記述の仕方が必要となり、&#8220; となった、という話です。ちょっとややこしいですね。</p>
+
+<p>なので、レアケースであったとしても、新しいタグさえ使わなければ新しいdoctype宣言の書き方でも問題ないようなので、<strong>今すぐにでも使って良さそうです。</strong>ただし、先ほども言ったようなレアケースも頭の片隅に入れつつ、積極的にHTML5を取り入れていけるといいのではないでしょうか。</p>
+
+<h2 id="条件付きコメントの書き方-おまけ">条件付きコメントの書き方（おまけ）</h2>
+
+<p>ちなみに、条件付きコメントにある <code>lt IE 9</code> というのは、<strong>less than IE 9</strong> のことで、IE9未満という意味になります。</p>
+
+<pre><code>&lt;!--[if lt IE 9]&gt;
+  &lt;script src=&quot;html5shiv.js&quot;&gt;&lt;/script&gt;
+&lt;![endif]--&gt;
+</code></pre>
+
+<p>IE8以下、という意味合いで書きたいのなら、</p>
+
+<pre><code>&lt;!--[if lte IE 8]&gt;
+  &lt;script src=&quot;html5shiv.js&quot;&gt;&lt;/script&gt;
+&lt;![endif]--&gt;
+</code></pre>
+
+<p><code>lte IE 8</code>のように書くと、<strong>less than equal IE 8</strong> になるので、IE8未満と、IE8、つまりIE8以下という意味になりますね。</p>
+
+<p>どちらも結局IE8以下のものを指します。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://code.google.com/p/html5shiv/" target="_blank">html5shiv.js</a></li>
+<li><a href="http://annevankesteren.nl/2005/07/html5-doctype" target="_blank">DOCTYPE of HTML5（HTML5でのdoctype宣言についての経緯など）</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年1月29日">2013年1月29日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/html5/">HTML5</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/619">HTML5のタグを見直してみる（骨格編）</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年1月14日">2013年1月14日</time>
@@ -112,9 +709,238 @@
   </ul>
 </div>
 
+
+
+
+<p>HTML5カルタ大会にて思ったこと。</p>
+
+<p><strong>分からないものを分からないままにするの、良くなーい！！</strong></p>
+
+<p>ってことで、少しあやふやなところもあったHTML5のタグを、改めて見直してみたいなーと思いました。</p>
+
+<p>まず、重要そうな<strong>アウトライン</strong>に関連するところだけ、さらっと見直してみます。</p>
+
+<h2 id="アウトラインとは">アウトラインとは？</h2>
+
+<p>いわゆる概要のことです。そのアウトラインだけ見れば、その文章が何を言っているのかが一目瞭然で分かるようになっていなければなりません。</p>
+
+<p>HTML5では、アウトラインの定義が厳格になっています。HTML4と比べてどうなったのかをまず見てみたいと思います。</p>
+
+<pre><code>&lt;h1&gt;girigiribauerとは？&lt;/h1&gt;
+&lt;p&gt;いつもぎりぎり、girigiribauerですこんにちは。&lt;/p&gt;
+&lt;div&gt;
+  &lt;h2&gt;フロントエンドテロ対策とは？&lt;/h2&gt;
+  &lt;p&gt;フロントエンドで起きるテロを食い止めるお仕事のこと&lt;/p&gt;
+&lt;/div&gt;
+&lt;h3&gt;どうやって食い止めるの？&lt;/h3&gt;
+&lt;p&gt;詳しくはジャックバウアーの名言AdventCalendarでも見てください&lt;/p&gt;
+</code></pre>
+
+<p>上記HTMLのアウトラインは、HTML4ではこんな感じになります。（文章的に適切かどうかは置いておきます）</p>
+
+<pre><code>1. girigiribauerとは？
+  1. フロントエンドテロ対策とは？
+    1. どうやって食い止めるの？
+</code></pre>
+
+<p>見出しの h1 から h6 までを順に見ていくことで、だいたいこの文章に何が書いてあるかが分かるようになってますね。</p>
+
+<p>これに対して、HTML5では見出しタグ以外のタグがアウトラインに影響を及ぼすと定義されてます。</p>
+
+<pre><code>&lt;h1&gt;girigiribauerとは？&lt;/h1&gt;
+&lt;p&gt;いつもぎりぎり、girigiribauerですこんにちは。&lt;/p&gt;
+&lt;section&gt;
+  &lt;h2&gt;フロントエンドテロ対策とは？&lt;/h2&gt;
+  &lt;p&gt;フロントエンドで起きるテロを食い止めるお仕事のこと&lt;/p&gt;
+&lt;/section&gt;
+&lt;h3&gt;どうやって食い止めるの？&lt;/h3&gt;
+&lt;p&gt;詳しくはジャックバウアーの名言AdventCalendarでも見てください&lt;/p&gt;
+</code></pre>
+
+<p>div を section に変更してみました。同様にこれをアウトライン化してみると、以下のようになります。</p>
+
+<pre><code>1. girigiribauerとは？
+  1. フロントエンドテロ対策とは？
+  2. どうやって食い止めるの？
+</code></pre>
+
+<p>段差具合が変わりました。sectionタグに変わることで、文章の意味が変わっています。</p>
+
+<p>逆にHTML4までは、どんだけ意味的に深い階層だからといって div を重ねたとしても、<strong>意味的に深い階層であるということを表す術がなかった</strong>ということにもなります。 文章をより正しい意図で解釈させるためにも、このアウトラインは意識する必要があるのではないかなーと思っています。</p>
+
+<p>ちなみにこのアウトラインは、解析のアルゴリズムが仕様としても公開されていますし、<a href="http://gsnedders.html5.org/outliner/" target="_blank">HTML5 Outliner</a>でも簡単に確認することができます。</p>
+
+<h2 id="セクション-見出し">セクション、見出し</h2>
+
+<p>セクショニングコンテンツ（Sectioning content）と、見出しコンテンツ（Heading content）について触れてみます。それぞれのタグの意味というよりは、アウトラインに影響を及ぼすかどうかという観点で見ていこうと思います。</p>
+
+<p>アウトラインに影響を及ぼすタグ、セクショニングコンテンツは以下の4つしかありません。</p>
+
+<ul>
+<li>article</li>
+<li>aside</li>
+<li>nav</li>
+<li>section</li>
+</ul>
+
+<p>つまり、これが入っているかどうかでアウトラインが変化するということになります。</p>
+
+<p>また、元々アウトラインに影響するタグとして、h1〜h6の見出しタグが存在しています。それと新たに追加された hgroup を含めたものが<strong>見出しコンテンツ</strong>となります。</p>
+
+<ul>
+<li>h1</li>
+<li>h2</li>
+<li>h3</li>
+<li>h4</li>
+<li>h5</li>
+<li>h6</li>
+<li>hgroup</li>
+</ul>
+
+<p>それでは試しに書いてみます。</p>
+
+<p>[html]   </p> <section>    </p>
+
+<h1 id="girigiribauerとは">girigiribauerとは？</h1>
+
+<p>    いつもぎりぎり、girigiribauerですこんにちは。   <section></p>
+
+<h2 id="フロントエンドテロ対策とは">フロントエンドテロ対策とは？</h2>
+
+<p>フロントエンドで起きるテロを食い止めるお仕事のこと   </section></p>
+
+<p>  </section></p>
+
+<pre><code>&lt;/body&gt;
+</code></pre>
+
+<p>そして、このHTMLをアウトライン表示してみます。</p>
+
+<pre><code>1. Untitled Section
+  1. girigiribauerとは？
+    1. フロントエンドテロ対策とは？
+</code></pre>
+
+<p><strong>これはよくありがちな間違い</strong>だと思います。bodyタグの直下でsectionタグを用いて全体を括ってから、h1タグを入れていますが、body自身はセクションの一番親（セクショニングルート）として扱われるため、<strong>一番外側のsectionタグは不要</strong>になりますね。</p>
+
+<p>実際にアウトライン表示して見てみると、一番上のアウトラインのところは対応する見出しがないため、<strong>Untitled Section</strong>と表示されてしまっています。『タイトルのないセクションだぜー』と言われちゃってますね。</p>
+
+<h2 id="セクショニングルートの要素-sectioning-root">セクショニングルートの要素（Sectioning root）</h2>
+
+<p>bodyタグがセクションの一番親になる、セクショニングルートの要素であるということでしたが、実はbodyタグ以外にもセクショニングルートの要素が存在しています。</p>
+
+<p>body以外のこれらは、bodyの中のどこかに入ってくることになりますので、<strong>アウトラインの中に別のアウトラインが出来る</strong>ということになりますね。</p>
+
+<ul>
+<li>body</li>
+<li>blockquote</li>
+<li>details</li>
+<li>dialog</li>
+<li>fieldset</li>
+<li>figure</li>
+<li>td</li>
+</ul>
+
+<p>それぞれのタグの説明にはあまり踏み込みませんが、一番分かりやすいのはblockquoteタグかもしれません。 これは引用文を記述するためのタグになりますので、引用元独自のアウトラインがあってもいいはずです。</p>
+
+<h2 id="hgroupってなに">hgroupってなに？</h2>
+
+<p>上でちょっとスルーしてましたが、h1からh6に加えて新たにhgroupタグが追加されています。</p>
+
+<p>これのあるなしで、どうアウトラインが変わるのかを見ていきます。</p>
+
+<pre><code>&lt;h1&gt;girigiribauerとは？&lt;/h1&gt;
+&lt;p&gt;いつもぎりぎり、girigiribauerですこんにちは。&lt;/p&gt;
+&lt;section&gt;
+  &lt;h2&gt;フロントエンドテロ対策とは？&lt;/h2&gt;
+  &lt;p&gt;フロントエンドで起きるテロを食い止めるお仕事のこと&lt;/p&gt;
+&lt;/section&gt;
+&lt;h3&gt;どうやって食い止めるの？&lt;/h3&gt;
+&lt;h4&gt;テロの食い止め方など&lt;/h4&gt;
+&lt;p&gt;詳しくはジャックバウアーの名言AdventCalendarでも見てください&lt;/p&gt;
+</code></pre>
+
+<p>まずこれ。先ほどのサンプルに加えて、h3の下にh4を入れました。</p>
+
+<pre><code>1. girigiribauerとは？
+  1. フロントエンドテロ対策とは？
+  2. どうやって食い止めるの？
+    1. テロの食い止め方など
+</code></pre>
+
+<p>そうすると、sectionで囲っていないものの、h4が一段下に下がり、暗黙的にセクションが出来たことが分かります。</p>
+
+<p>つまり、元々h3のセクションに含まれていた 詳しくは〜〜 のpタグは、h4のセクションに含まれることになります。</p>
+
+<p>でも本当は（サンプルの文章が正しいかは置いておいて）、h3 と h4 の両方が、その下に係るpタグを含んだセクションとしたいわけなので、意味的には間違ってきてしまいました。</p>
+
+<pre><code>&lt;h1&gt;girigiribauerとは？&lt;/h1&gt;
+&lt;p&gt;いつもぎりぎり、girigiribauerですこんにちは。&lt;/p&gt;
+&lt;section&gt;
+  &lt;h2&gt;フロントエンドテロ対策とは？&lt;/h2&gt;
+  &lt;p&gt;フロントエンドで起きるテロを食い止めるお仕事のこと&lt;/p&gt;
+&lt;/section&gt;
+&lt;hgroup&gt;
+  &lt;h3&gt;Aどうやって食い止めるの？&lt;/h3&gt;
+  &lt;h4&gt;Bテロの食い止め方など&lt;/h4&gt;
+&lt;/hgroup&gt;
+&lt;p&gt;詳しくはジャックバウアーの名言AdventCalendarでも見てください&lt;/p&gt;
+</code></pre>
+
+<p>それに対して h3 と h4 を hgroup で囲ったものはどうなるでしょうか？</p>
+
+<pre><code>1. girigiribauerとは？
+  1. フロントエンドテロ対策とは？
+  2. どうやって食い止めるの？
+</code></pre>
+
+<p>おっと、h4 に相当するセクションが消えました。ご覧の通り、h3 と h4 がグループ扱いとなり、 h4 だけの暗黙的なセクションが生成されなくなりましたね。</p>
+
+<p>上記の h3 と h4 の例の通り、<strong>hgroupは、セクションを分けるほどでもないけど、補足的な見出しに相当するものをグルーピングする</strong>役割を持っています。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>HTML5でのアウトラインは、HTML4に比べて厳密に定義されているため、HTML4よりも文書構造がより意味的に解釈しやすくなったと言えます。</p>
+
+<p>h1〜h6だけでは表現しきれなかった文書のツリー構造も、HTML5で適切にセクショニングコンテンツを用いてアウトラインを定義することで、よりその文書の意味に沿ったアウトラインが定義できますね。</p>
+
+<p>HTML5のカルタ大会のときは、<strong>『tdってセクショニングルートだったっけ？』</strong>とか、ちょっとあやふやなところがあったので、見直してみてすっきりです。</p>
+
+<p>HTML5の仕様も2012/12/17に勧告候補になりましたので、今後安定化への動きが加速していくことと思います。先行して勉強していた人も、広まってからでいいやーって思っていた人も、ひょっとしたら<strong>今が勉強を見直す or 始めるチャンス</strong>かもしれません。</p>
+
+<h2 id="references">参考URL</h2>
+
+<ul>
+<li><a href="http://www.w3.org/2012/12/html5-cr" target="_blank">W3CがHTML5仕様策定完了を発表、相互運用性テストおよびパフォーマンス向上へ</a></li>
+<li><a href="http://www.w3.org/TR/2012/CR-html5-20121217/" target="_blank">HTML5の仕様（英語）</a></li>
+<li><a href="https://groups.google.com/forum/#!msg/html5-developers-jp/1HyddqTMFnU/AR-OJ-8CzTMJ" target="_blank">tdがなぜセクショニングルートなのか、に関するhtml5j.org上でのやりとり</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年1月14日">2013年1月14日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/html5/">HTML5</a></li>
+    <li class="flow"><a href="/tags/html5-outline/">HTML5-outline</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/604">『新春!!HTML5KARUTA大会』名古屋も盛況でした！</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年1月6日">2013年1月6日</time>
@@ -125,7 +951,125 @@
   </ul>
 </div>
 
+
+
+
+<p>新年あけましておめでとうございます！ 今年もぎりぎりで行くのでどうぞよろしくお願いします！</p>
+
+<p>今年初のブログ記事は、HTML5のカルタ大会というイベントについてのご紹介をしようと思います。</p>
+
+<h2 id="html5karutaとは">HTML5KARUTAとは？</h2>
+
+<p><a href="http://roadstohtml5.com/html5karuta/" target="_blank">http://roadstohtml5.com/html5karuta/</a></p>
+
+<p><img src="/img/2013/01/971d8e55f47b226c41d21e2a69fafc891.png" alt="" /></p>
+
+<p>昨年末、webcre8さんがHTML5のカルタコンテンツを公開されました。</p>
+
+<p>それの現物バージョンとして、実際のカルタまで作られたとのことで、 カルタを使ってみんなで楽しくHTML5を覚えましょう！という趣旨のイベントまで開催されました。</p>
+
+<p>さらに全国各地で同時開催する大きなうねりとなり、そこで縁あって名古屋にてご一緒させていただくこととなりました。</p>
+
+<p>名古屋ではどんな感じだったのかを簡単にご紹介するのとともに、 こういった<strong>楽しみながら学ぶことのメリット</strong>についても触れたいと思います。</p>
+
+<p>※ちなみにフォトレポートではないので写真はほぼないです</p>
+
+<h2 id="新春-html5karuta大会-名古屋">『新春!!HTML5KARUTA大会』名古屋</h2>
+
+<p>名古屋・伏見の会場（MYCAFEさんをお借りしました）では9名の方が来てくださり、だいたい以下のような形で進めさせていただきました。</p>
+
+<ol>
+<li>HTML5KARUTAの簡単なご紹介（5〜10分程度）</li>
+<li>軽く練習として、初級セットの36枚から5枚前後を順に読み上げ（15分程度）</li>
+<li>初級セットでカルタ大会（40分程度）</li>
+<li>休憩（10分）</li>
+<li>中級セットでカルタ大会（50分程度）</li>
+<li>休憩（10分）</li>
+<li>上級セットでカルタ大会（50分程度）</li>
+<li>結果発表、景品授与など</li>
+</ol>
+
+<p>ちなみに、カルタの現物はこんな感じでした。</p>
+
+<p><img src="/img/2013/01/html5karuta2.jpg" alt="" /></p>
+
+<p>思ったよりもホントにカルタっぽくて、良いですね〜良いですね〜。</p>
+
+<h2 id="良かったところ-悪かったところ">良かったところ、悪かったところ</h2>
+
+<p>さて、上記のような流れで一通りやってみたのですが、予想以上にカルタっぽく楽しめることができ、正直時間余るかもしれないなーと思っていたところ、少しだけオーバーしてしまうくらい白熱したカルタ大会を行えました。</p>
+
+<p>簡単に良かったところや改善出来そうなところをまとめておきたいと思います。</p>
+
+<h3 id="良かったところ">良かったところ</h3>
+
+<ul>
+<li>純粋にカルタとして楽しめた
+
+<ul>
+<li>『見出しのタグ1』などの名称は、h1〜6まですべて共通なので、お手つきが出やすく盛り上がる</li>
+<li>HTML5とか分からない人でも、チートシートが用意してあればかなり安心できる</li>
+<li>数が少なくなってくるとますますカルタっぽくスピード感あふれてくる</li>
+<li>108を36×3の3つに分けてあるのは、ちょうど良い分け具合だったのかも</li>
+</ul></li>
+<li>タグごとの補足情報（tips）が勉強になった
+
+<ul>
+<li>合間合間に、今読み上げたタグに関する補足情報を入れていくと、自分ごと化しやすい</li>
+</ul></li>
+<li>俺フォームに強い、見出しタグだけは譲らない、などでも盛り上がれる</li>
+</ul>
+
+<h3 id="改善出来そうなところ">改善出来そうなところ</h3>
+
+<ul>
+<li>予めtipsが複数あって、読み上げる人が空気読んで適切なtipsが出せるとより良いかも</li>
+<li>HTML4になくて5にある、もしくは用途が変わったとかが、予めまとまっていると良いかも</li>
+</ul>
+
+<p>といった感じです。</p>
+
+<p>主に改善出来そうなところに関しては、読み上げ手（もしくは側で解説する人）が知っておくべき内容だと思います。</p>
+
+<p>個人的には、普段利用頻度のそんなに高くないタグに関しては、毎回必要になってから調べるで終わらせてしまうことが多かったので、「こういう時に使うよね、でも利用頻度はこれくらいだよね」みたいな補足が出来れば良かったなと思っています。これから精進します。</p>
+
+<h2 id="楽しみながら学ぶことのメリット">楽しみながら学ぶことのメリット</h2>
+
+<p>今回、このカルタ大会をご一緒させてもらって、一番のメリットだなと思ったところが<strong>楽しみながら学べる</strong>というところではないかと思いました。</p>
+
+<p>やってみて思ったのですが、これはチートシートさえあれば、<strong>HTML5のタグの知っている・知らないに関わらず誰でも楽しむことができます。</strong></p>
+
+<p>その反面、補足的なtipsを合間にはさむことで、「へー、そんな使い方できるんだー」と、豆知識的に覚えることができ、やらなきゃいけない、けど覚えるの苦痛だ・・・と思っている人にとっては苦労せずとも身につけることが出来ます。良いですね。</p>
+
+<p>という感じで、カルタ大会の名古屋の会場もかなり盛り上がっておりました。</p>
+
+<p>このようなイベントにご一緒でき、学べることが多かったように思います。感謝感謝です！</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年1月6日">2013年1月6日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/html5/">HTML5</a></li>
+  </ul>
 </div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -146,7 +1090,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -236,7 +1180,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

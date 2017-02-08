@@ -28,8 +28,186 @@
 
 <h1>Tags / oldIE</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1636">CSS3 PIE の動作の仕組みと副作用について</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2014年10月23日">2014年10月23日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/css3/">CSS3</a></li>
+    <li class="flow"><a href="/tags/oldie/">oldIE</a></li>
+    <li class="flow"><a href="/tags/polyfills/">polyfills</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>2014年9月現在、IE のシェアは過去と比べて劇的に変化しています。</p>
+
+<p><a href="http://gs.statcounter.com/#desktop-browser_version_partially_combined-JP-monthly-201309-201409" target="_blank">http://gs.statcounter.com/#desktop-browser_version_partially_combined-JP-monthly-201309-201409</a> を見ると分かるように、 IE11 が全ブラウザの 30% を上回り、IE8,9,10 がそれぞれ 4% 前後の値です。</p>
+
+<p><img src="/img/2014/10/css3pie01.png" alt="" /></p>
+
+<p>ここまで来ると、oldIE の対応は完全にマイノリティとなってきており、 出来るブラウザを基準にして作るのがもう当たり前になってきていると言っていいかもしれません。</p>
+
+<hr />
+
+<p>そんな中、</p>
+
+<p><strong>『IE7,8 などでも、どうしても同じように見せなきゃいけないんだ・・・！』</strong></p>
+
+<p>という非常にもったいないケースにおいて、 <strong>CSS3 PIE</strong> というライブラリが検討の選択肢に入ってくることもあるかと思います。 （いやぁもったいないですね・・・）</p>
+
+<p><img src="/img/2014/10/css3pie02.png" alt="" /></p>
+
+<p>このライブラリで、border-radius, box-shadow, linear-gradient などの、本来 oldIE では使えなかった CSS3 のプロパティが使えるようになるわけです。</p>
+
+<p>ですが、<strong>動作原理を知っておかないと思わぬところではまる場合が出てくるので注意が必要です。</strong> 全く同じように動作するわけではなく、<strong>副作用が存在します。</strong></p>
+
+<h2 id="css3-pie-の使い方-振り返り">CSS3 PIE の使い方（振り返り）</h2>
+
+<p>ということで、まずは CSS3 PIE の使い方を軽く振り返ります。</p>
+
+<p><a href="http://css3pie.com/" target="_blank">http://css3pie.com/</a></p>
+
+<ol>
+<li>PIE.js を読み込む</li>
+<li>対象セレクタ内に behavior: url(PIE.php); を入れる</li>
+</ol>
+
+<p>PIE.php 内では、</p>
+
+<pre><code>header( 'Content-type: text/x-component' );
+include( 'PIE.htc' );
+</code></pre>
+
+<p>とあるだけなので、Web サーバの方で ContentType の追加さえできれば、 直接 PIE.htc を読み込んでも良いわけですね。</p>
+
+<h2 id="pie-htc-の中身">PIE.htc の中身</h2>
+
+<p>そもそも htc というのは、<strong>HTML Components</strong> のことを指しています。 （最近流行の Web Components とは全く関係ありません・・・。）</p>
+
+<p>IE9 までは、CSS 内に</p>
+
+<pre><code>behavior: ***;
+</code></pre>
+
+<p>などと書くことで、CSS 内部にスクリプトを埋め込むことが出来ます。</p>
+
+<p>ちなみに、PIE.htc の中身はこんな感じにちょっと独自拡張したスクリプトになっています。</p>
+
+<pre><code>&lt;!--
+PIE: CSS3 rendering for IE
+Version 1.0.0
+http://css3pie.com
+Dual-licensed for use under the Apache License Version 2.0 or the General Public License (GPL) Version 2.
+--&gt;
+&lt;PUBLIC:COMPONENT lightWeight=&quot;true&quot;&gt;
+&lt;!-- saved from url=(0014)about:internet --&gt;
+&lt;PUBLIC:ATTACH EVENT=&quot;oncontentready&quot; FOR=&quot;element&quot; ONEVENT=&quot;init()&quot; /&gt;
+&lt;PUBLIC:ATTACH EVENT=&quot;ondocumentready&quot; FOR=&quot;element&quot; ONEVENT=&quot;init()&quot; /&gt;
+&lt;PUBLIC:ATTACH EVENT=&quot;ondetach&quot; FOR=&quot;element&quot; ONEVENT=&quot;cleanup()&quot; /&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+var doc = element.document;var f=window.PIE;
+...（以下略）
+</code></pre>
+
+<p>今更覚えても何の得にもならないと思うので、詳しく知りたい方は以下をご覧ください。</p>
+
+<p><a href="http://msdn.microsoft.com/ja-jp/library/ms532146(v=vs.85).aspx" target="_blank">http://msdn.microsoft.com/ja-jp/library/ms532146(v=vs.85).aspx</a></p>
+
+<h2 id="開発者ツールで見てみる">開発者ツールで見てみる</h2>
+
+<p>css3pie.com のトップにちょうどサンプルがあるので、それに対してどんな変化が起きているのか開発者ツールで見てみます。</p>
+
+<p><img src="/img/2014/10/css3pie03.png" alt="" /></p>
+
+<p>なお、IE の開発者ツールは、<strong>HTML が一通り読み込まれた後の DOM の変化については、更新ボタンを押さないと反映されない</strong>ので、左上にある『最新の情報に更新』のアイコンをクリックします。</p>
+
+<p><img src="/img/2014/10/css3pie04.png" alt="" /></p>
+
+<p>すると、こんな感じに</p>
+
+<pre><code>&lt;css3pie id=_pie_101&gt;
+  &lt;pievml:shape id=_pie_shadow0_98&gt;
+    &lt;pievml:fill&gt;&lt;/pievml:fill&gt;
+  &lt;/pievml:shape&gt;
+  &lt;pievml:shape id=_pie_bgImage0_99&gt;
+    &lt;pievml:fill&gt;&lt;/pievml:fill&gt;
+  &lt;/pievml:shape&gt;
+  &lt;pievml:shape id=_pie_border0_100&gt;
+    &lt;pievml:fill&gt;&lt;/pievml:fill&gt;
+  &lt;/pievml:shape&gt;
+&lt;/css3pie&gt;
+&lt;div class=&quot; pie_first-child &quot; id=&quot;target&quot;&gt;
+</code></pre>
+
+<p>対象の要素の上に css3pie という要素が追加され、見た目の情報がすべてそちらに描画されます。（動的なスタイルは長くなるので省略）</p>
+
+<p>ちなみに、 css3pie.com のトップでは、どうやら PIE-2.0 beta1 を利用しているようで、 ダウンロードしてきたファイルの PIE_IE678.js 内には、</p>
+
+<pre><code>H.createElement(&quot;css3pie&quot;);
+</code></pre>
+
+<p>や、</p>
+
+<pre><code>'&lt;css3pie id=&quot;_pie'+h.Q.pa(this)+'&quot; style=&quot;'+this.ac()+'&quot;&gt;'
+</code></pre>
+
+<p>といった記述が存在しており、HTML Components を利用して、見た目だけの要素を動的に生成していることがここからも分かります。</p>
+
+<h2 id="css3-pie-の副作用">CSS3 PIE の副作用</h2>
+
+<p>例えば、CSS3 を用いたスタイルを当てたい対象が、以下のようなツリーだったとします。</p>
+
+<pre><code>&lt;ul&gt;
+  &lt;li&gt;item 1&lt;/li&gt;
+  &lt;li id=&quot;target&quot;&gt;item 2&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+<p>これに対して、</p>
+
+<pre><code>li + li {
+  background-color: #f00;
+}
+</code></pre>
+
+<p>といったように、連続した兄弟セレクタに対して別途スタイルをあてる記述が存在していた場合、 これが<strong>上手く適用されないケース</strong>が存在します。</p>
+
+<p>CSS3 PIE のライブラリが id=&#8221;target&#8221; に対して動作した場合、 ツリーは以下のように変化します。</p>
+
+<pre><code>&lt;ul&gt;
+  &lt;li&gt;item 1&lt;/li&gt;
+  &lt;css3pie ... &gt;&lt;/css3pie&gt;
+  &lt;li id=&quot;target&quot;&gt;item 2&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+<p>こうなってしまうと、li が連続している前提のスタイルは、<strong>DOM ツリーが変化してしまうことにより</strong> スタイルがあたらない（または意図してないスタイルがあたる）ケースが出てきます。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p><strong>そのライブラリが、（大まかにでも）何やってるのか把握するべきだと思います。</strong></p>
+
+<p>今回のケースでは、『CSS3 PIE というのは、見た目用の要素を対象の要素のすぐ下に生成し、見た目の情報をそちらに全部載せることで実現していて、副作用として DOM ツリーが変化してしまっている』ということまで分かっていれば、どうとでも対処できます。</p>
+
+<p>なんでもかんでも『これさえ読み込めばオッケー！』みたいに考えてると、いざってときに何も出来ないので、 大まかにでも良いのでどういう仕組みで動いているのか、理解することは大事だなーと思います。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2014年10月23日">2014年10月23日</time>
@@ -42,9 +220,7 @@
   </ul>
 </div>
 
-</div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/719">html5shiv.jsの使いどころ</a></h2>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年2月4日">2013年2月4日</time>
@@ -56,9 +232,150 @@
   </ul>
 </div>
 
+
+
+
+<p><a href="/archives/690/">HTML5のタグで書いてはいけないレアケース</a> にて、『html5shiv.jsを読み込んで・・・』みたいな記事を書いたのですが、そもそも html5shiv.js とは何でしょうか。</p>
+
+<p>似たようなものの中に、html5.js, html5shim.js, html5shiv.js などが見られますが、これらの違いについても調べてみたいと思います。</p>
+
+<h2 id="html5shiv-jsってなに">html5shiv.jsってなに？</h2>
+
+<p>html5shiv.js が読み込まれなかったとき、oldIEではどうなってしまうのかを、もう少し詳細に見てみたいと思います。</p>
+
+<p><img src="/img/2013/02/html5shiv01.png" alt="" /></p>
+
+<p>これは <a href="/archives/690/">HTML5のタグで書いてはいけないレアケース</a> で書いたサンプルページを、IE8の開発者ツールで見てみた時のスクリーンショットです。</p>
+
+<pre><code>&lt;!-- doctype html --&gt;
+&lt;html lang=&quot;ja&quot;&gt;
+  &lt;body&gt;
+    &lt;header class=&quot;block1&quot;&gt;
+    文字列 - block1
+    &lt;/header/&gt;
+    &lt;section class=&quot;block2&quot;&gt;
+    文字列 - block2
+    &lt;/section/&gt;
+    &lt;footer class=&quot;block3&quot;&gt;
+    文字列 - block3
+    &lt;/footer/&gt;
+</code></pre>
+
+<p>DOMツリーを見てみると分かるように、oldIEから見ると未知の要素である header などが上手く解釈されず、<strong>header と /header の別要素だと解釈されてしまっています。</strong>閉じタグも1つの要素として解釈されてしまっていますね。</p>
+
+<p>html5shiv.js では、<strong>基本的に読み込むだけ</strong>で自動的に要素の解釈を行ってくれます。</p>
+
+<ol>
+<li>古いIEでのセクショニングコンテンツの認識</li>
+<li>IE6-9（及びその他レガシーブラウザ）のベースのスタイル付与</li>
+</ol>
+
+<p>1.に関しては、そもそも未知の要素なので、要素としての認識が上手く行われていません。これをDOMツリーの構築前に内部で document.createElement(&#8220;header&#8221;) などを呼ぶことで、要素として認識させることができます。 このあたりの話は、<a href="http://paulirish.com/2011/the-history-of-the-html5-shiv/" target="_blank">The Story of the HTML5 Shiv</a> という形でまとまっています。</p>
+
+<p>また、未知の要素であるため、デフォルトのスタイルもあたっていません。 こちらに関しては、IE9も含めてデフォルトのスタイルがあたってない場合がありますので、header, sectionなどの未知の要素に <code>display: block</code> をあてて、他にスタイルがあたってない状態でも、崩れがおきないようにしてくれます。</p>
+
+<p>ついでに html5shiv.js を適用した後でDOMツリーがどうなっているかも見ておきます。</p>
+
+<p><img src="/img/2013/02/html5shiv02.png" alt="" /></p>
+
+<!-- doctype html -->
+
+<p><head>
+  </p> <header class="block1"> 文字列 &#8211; block1</p> <section class="block2"> 文字列 &#8211; block2</p> <footer class="block3"> 文字列 &#8211; block3</p></p>
+
+<p><p>
+    きちんとDOMツリーが正しく構築され、描画も意図通りに行われています。
+  </p></p>
+
+<p><h2>
+    html5.js と html5shiv.js の違い
+  </h2></p>
+
+<p><p>
+    一言でいうと、html5shiv.js のが新しいのでこちらを使うべきです。
+  </p></p>
+
+<p><p>
+    詳しい話は、 <a href="http://www.skyward-design.net/blog/archives/000134.html">IE対応でよく利用するhtml5shivの使用方法変更について</a> に、もうそのまんま掲載されているので、こちらとこちらの記事内で紹介されているリンク先を参考にされると良いかと思います。
+  </p></p>
+
+<p><p>
+    こちらが、そのさらに参照先ですね。<a href="http://zoompf.com/2012/05/html5shiv-and-serving-content-from-code-repositories">html5shiv and Serving Content From Code Repositories</a>
+  </p></p>
+
+<p><p>
+    最新じゃないし、キャッシュもされないし、圧縮もされてないし・・・などの点がもろもろまとめられています。
+  </p></p>
+
+<p><h2>
+    html5shiv と html5shim の違い
+  </h2></p>
+
+<p><p>
+    shiv と shim の違いは v と m の違いでしかないですよー、それ以外は全部一緒ですよーと言われています。
+  </p></p>
+
+<p><p>
+    <a href="http://code.google.com/p/html5shiv/#shiv_or_shim?">html5shiv &#8211; shiv or shim?</a>
+  </p></p>
+
+<p><p>
+    ただ、<strong>shiv のがかっこいい</strong>らしいです。
+  </p></p>
+
+<p><h2>
+    まとめ
+  </h2></p>
+
+<p><p>
+    仮に上記の話が難しくて良く分からなかったとしても、結局のところ <strong>html5.js よりは html5shiv.js のが新しくて素敵なので、こっちを使ってね</strong>、ということですね。
+  </p></p>
+
+<p><p>
+    IE6-8では基本読み込むだけで利用できますし、IE9でもベースのスタイルがあたるので読み込んでおくと良いかもしれません。
+  </p></p>
+
+<p><h2 id="ref">
+    参考URL
+  </h2></p>
+
+<p><ul>
+    <li>
+      <a href="https://github.com/aFarkas/html5shiv">html5shiv</a>
+    </li>
+    <li>
+      <a href="http://www.skyward-design.net/blog/archives/000134.html">IE対応でよく利用するhtml5shivの使用方法変更について</a>
+    </li>
+    <li>
+      <a href="http://zoompf.com/2012/05/html5shiv-and-serving-content-from-code-repositories">html5shiv and Serving Content From Code Repositories</a>
+    </li>
+  </ul></p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年2月4日">2013年2月4日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/html5/">HTML5</a></li>
+    <li class="flow"><a href="/tags/oldie/">oldIE</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/733">ベクターデータで軽量だと噂のアイコンフォントを導入してみた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年2月2日">2013年2月2日</time>
@@ -73,7 +390,135 @@
   </ul>
 </div>
 
+
+
+
+<p>表示スピードを速くするために、ベクターデータであるSVGを用いるのは、最近よく見られる手法だと思います。</p>
+
+<p>ただ、特に古いIEなどでは、SVGはサポートが十分ではない側面があると思います。 そのデメリットを解消する方法の1つとして、<strong>アイコンフォント</strong>という手法が挙げられます。</p>
+
+<p>気になっていたので、このブログに導入しつつどんな感じか検証してみました。</p>
+
+<h2 id="アイコンフォントとは">アイコンフォントとは</h2>
+
+<p>ヘッダーのアイコンがそれになってます。</p>
+
+<p><img src="/img/2013/02/iconfont01.png" alt="" /></p>
+
+<p>拡大しても綺麗に表示されていますね！</p>
+
+<p>こちらは、『Fontello &#8211; icon fonts generator』というのを利用させていただいて、 必要なアイコンのみを選択し、それをダウンロードして埋め込む形で導入しています。</p>
+
+<p><img src="/img/2013/02/iconfont02.png" alt="" /></p>
+
+<p><a href="https://fontello.com/" target="_blank">Fontello &#8211; icon fonts generator</a></p>
+
+<p>Webサービスを利用すれば、導入するだけならとてもシンプルです。 こちらをダウンロードすると、以下の形式のフォントデータが生成されます。</p>
+
+<ul>
+<li>EOT形式（Embedded OpenType fonts）</li>
+<li>WOFF形式（Web Open Font Format）</li>
+<li>TTF形式（TrueType font）</li>
+<li>SVG形式</li>
+</ul>
+
+<p><strong>EOT形式</strong>は、主にIEでサポートされているフォント形式です。 <strong>WOFF形式</strong>は、IE9+とそれ以外のモダンブラウザでサポートされています。 <strong>TTF形式</strong>は、IE9+で条件付き、とそれ以外のモダンブラウザでサポートされています。 最後に<strong>SVG形式</strong>は、フォントとしてもサポートされています。今現在では（古くなっているかもしれませんが）IEとFirefox以外で概ねサポートされています。</p>
+
+<p>サポート具合の詳細に関しては、『Can I use』をご覧いただくと細かく分かるのではないかと思います。</p>
+
+<p><a href="http://caniuse.com/#search=font" target="_blank">http://caniuse.com/#search=font</a></p>
+
+<p>ダウンロードファイルの中には demo.html も含まれており、組み込み例が掲載されていますので、そちらを参考にすると実装も素早くできると思います。</p>
+
+<p><img src="/img/2013/02/iconfont03.png" alt="" /></p>
+
+<p>これを比較的そのまま持ってきています。<strong>楽チンですね！</strong></p>
+
+<p>各種ブラウザで、それに対応したフォントを使ってくれるので、実装する側も非常に楽です。</p>
+
+<h2 id="アイコンフォントを使うメリット">アイコンフォントを使うメリット</h2>
+
+<p>アイコンフォントを使うメリットは何が挙げられるかというと、</p>
+
+<ol>
+<li>IE6からでも使える</li>
+<li>SVGとは異なり、一般的な方法で対応が出来る</li>
+<li>ベクターデータなので、拡大縮小に強い</li>
+<li>フォントなので、テキストに対するスタイルが一通り適用出来る</li>
+</ol>
+
+<p>あたりではないかと思います。</p>
+
+<p><strong>IE6から使える</strong>というのは、先ほどの通りEOT形式でカバー出来ています。 EOT形式であれば、Webフォントとしての利用がIEでも可能であるため、 やっていることは単にテキストデータを表示するだけです。いわば<strong>一般的な方法での対応</strong>ですね。</p>
+
+<p><strong>ベクターデータ</strong>というのも、テキストデータであれば当たり前ですね。 自由にフォントサイズが変えられるのと同様に、アイコンフォントであってもフォントサイズが自由に変えることができ、 大きく表示したとしても綺麗に表示することが、上の画像の通り分かると思います。</p>
+
+<p><strong>テキストに対するスタイルが一通り適用出来る</strong>というのは、副次的効果として出てきます。 最近ではCSS3を用いたグラデーションであったり、影をつけたりも出来ちゃったりするので、 これも同様にアイコンフォントへの適用も可能です。</p>
+
+<p>このあたりはKAYACさんのブログに綺麗にまとまっているので、そちらを参考になさると良いかと思います。</p>
+
+<p><a href="http://design.kayac.com/topics/2012/02/webFontIcons.php" target="_blank">意外と知らない？アイコンはWebフォントでつくるとこんなに便利！</a></p>
+
+<h2 id="アイコンフォントのデメリット">アイコンフォントのデメリット</h2>
+
+<p>やってみて実感したのですが、逆にデメリットもあります。</p>
+
+<p>上記の通り、フォントファイルは各種ブラウザに応じて複数用意してやる必要が出てきます。 仮に独自のアイコンを複数作って、それをアイコンフォント化しようとした場合、 まず自分でフォントファイルを作る必要があります。</p>
+
+<p>上記の例では、外部のWebサービスを利用したため、かなりの面倒くさい部分を自動的にやってくれていたわけですが、 この<strong>フォントを作る</strong>という工程はかなり時間がかかると思います。大変ですね・・・。 （おまけに作ったフォントを複数種類に変換してやる必要も出てきます・・・。）</p>
+
+<h2 id="アイコンフォントの使いどころ">アイコンフォントの使いどころ</h2>
+
+<p>この手間を考えると、場合によっては<strong>導入すべき、導入すべきでないケース</strong>が出てくると思います。</p>
+
+<p>例えば、2〜3のアイコンをそのまま表示するだけなら、<strong>スプライト画像なりbase64でHTML・CSSに埋め込む</strong>などした方が良さそうです。 アイコンの大きさがそれほどでもなく、拡大もする必要がないのなら、ラスターデータとして持っておいて、リクエストを減らす方向へ考えた方が、<strong>制作時間と表示時間を踏まえて考えると導入しない方が良い？</strong>のではないかと思います。</p>
+
+<p>逆に、アイコンをふんだんに使い、拡大縮小の表現を多く含み、かつアイコンがCSSのスタイルでカバーできる範囲のカラーリングで収まるようなコンテンツであれば、ある程度の手間をかけて導入するのはありかなーと思います。</p>
+
+<p>以上を踏まえて、現状だとWebサービスを利用して導入するのが妥当で、それ以上は規模によっては割に合わないかも？という印象です。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>さっと利用するだけならお手軽なのでおすすめですが、コンテンツの要素としてある程度多く用いるときは、<strong>制作時間と表示時間との兼ね合いで検討すべき</strong>かなーと思いました。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://archiva.jp/web/html-css/webfont-trimed.html" target="_blank">Webフォントを分割、というか削りたい</a></li>
+<li><a href="https://fontello.com/" target="_blank">Fontello &#8211; icon fonts generator</a></li>
+<li><a href="http://caniuse.com/#search=font" target="_blank">http://caniuse.com/#search=font</a></li>
+<li><a href="http://design.kayac.com/topics/2012/02/webFontIcons.php" target="_blank">意外と知らない？アイコンはWebフォントでつくるとこんなに便利！</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年2月2日">2013年2月2日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/oldie/">oldIE</a></li>
+    <li class="flow"><a href="/tags/svg/">SVG</a></li>
+    <li class="flow"><a href="/tags/webfont/">WebFont</a></li>
+    <li class="flow"><a href="/tags/icon-font/">Icon-Font</a></li>
+    <li class="flow"><a href="/tags/font/">Font</a></li>
+  </ul>
 </div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -94,7 +539,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -184,7 +629,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

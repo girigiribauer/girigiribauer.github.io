@@ -28,8 +28,164 @@
 
 <h1>Tags / Homebrew</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20161004/">Homebrew で Golang のバイナリを公開してみた</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2016年10月4日">2016年10月4日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/golang/">Golang</a></li>
+    <li class="flow"><a href="/tags/homebrew/">Homebrew</a></li>
+    <li class="flow"><a href="/tags/cli/">CLI</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>超楽だったのでメモっておきます。</p>
+
+<p>こちらにドキュメントあります。（Golang のバイナリの場合ではないので少し異なりますが）</p>
+
+<p><a href="https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md" target="_blank">https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md</a></p>
+
+<h2 id="homebrew-対応">Homebrew 対応</h2>
+
+<p>自作コマンド <a href="https://github.com/girigiribauer/db-cli" target="_blank">https://github.com/girigiribauer/db-cli</a> を公開している時に
+リリースバイナリまで GitHub に登録できて一息つけたーというタイミングで、
+ふと <code>brew install db-cli</code> でインストールできたらいいなあと思ったので
+調べてやってみたらさくっと1時間もかからずいけました。</p>
+
+<p>自作コマンド用のリポジトリとは別に、</p>
+
+<p><a href="https://github.com/girigiribauer/homebrew-db-cli" target="_blank">https://github.com/girigiribauer/homebrew-db-cli</a></p>
+
+<p>という &ldquo;homebrew-&rdquo; プレフィックス付きの名前の Homebrew 用のリポジトリを用意し、Ruby ファイルを追加します。</p>
+
+<p><code>brew create</code> コマンドでいけるようですが、
+シンプルなので自分で用意しています。</p>
+
+<pre><code>require 'formula'
+
+REPOSITORY_URL='https://github.com/girigiribauer/db-cli'
+HOMEBREW_DBCLI_VERSION='0.1.24'
+
+class DbCli &lt; Formula
+  desc '`db` command line tools (Docker based)'
+  homepage REPOSITORY_URL
+  url &quot;#{REPOSITORY_URL}/releases/download/v#{HOMEBREW_DBCLI_VERSION}/db-darwin-amd64.tar.gz&quot;, :tag =&gt; &quot;v#{HOMEBREW_DBCLI_VERSION}&quot;
+  sha256 '6bfc2486db1b17ab93d3b3783f5981b3676299319ff9208efd599a4843599a06'
+  head REPOSITORY_URL, :branch =&gt; 'master'
+  version HOMEBREW_DBCLI_VERSION
+
+  def install
+    bin.install 'db'
+  end
+end
+</code></pre>
+
+<p>Formula クラスの継承をしたうえで、各種ローカル変数を定義します。
+下に書いてあるのですが、db-cli という名前なのでクラス名は DbCli で自動で決まるみたいですね。
+最初は &ldquo;DBCli&rdquo; と書いていました・・・。</p>
+
+<p>install メソッドを定義し、
+場合によっては Ruby の外部コマンド実行ができる system コマンドで
+実際にインストールに必要なコマンド類を入力してやる必要があるみたいなのですが、
+<strong>今回の場合は配布想定のバイナリファイルを配置するだけで Golang 環境は不要なので、
+bin.install で指定するだけで問題無い</strong> ようです。</p>
+
+<p>これも Golang の強みの1つですね。
+ビルド後のバイナリファイルは、Golang 環境がなくとも（go コマンドがインストールされてなくとも）
+普通に動作するので、事前に動作環境をあれこれ入れる必要がないです。</p>
+
+<p>ちなみに bin.install で指定するだけで勝手に圧縮ファイルを展開、配置までしてくれるようですね。</p>
+
+<p>push できたら試しに <code>brew tap</code> してみます。</p>
+
+<pre><code>$ brew tap girigiribauer/db-cli
+</code></pre>
+
+<p>どうやら Homebrew 1.0 あたりで auto update が自動で行われるようになったようです。
+なのでアップデート待ちです。</p>
+
+<pre><code>==&gt; Tapping girigiribauer/db-cli
+Cloning into '/usr/local/Homebrew/Library/Taps/girigiribauer/homebrew-db-cli'...
+remote: Counting objects: 4, done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 4 (delta 0), reused 3 (delta 0), pack-reused 0
+Unpacking objects: 100% (4/4), done.
+Checking connectivity... done.
+Error: Invalid formula: /usr/local/Homebrew/Library/Taps/girigiribauer/homebrew-db-cli/db-cli.rb
+No available formula with the name &quot;db-cli&quot;
+In formula file: /usr/local/Homebrew/Library/Taps/girigiribauer/homebrew-db-cli/db-cli.rb
+Expected to find class DbCli, but only found: DBCli.
+Error: Cannot tap girigiribauer/db-cli: invalid syntax in tap!
+</code></pre>
+
+<p>あっその名前ダメですか・・・。
+Golang だと逆に Db は DB にしろって言われるんですけどね・・・。
+Ruby に素直に従っておきます。</p>
+
+<p>ということで素直に DbCli に変更して再度トライ。</p>
+
+<pre><code>$ brew tap girigiribauer/db-cli
+==&gt; Tapping girigiribauer/db-cli
+Cloning into '/usr/local/Homebrew/Library/Taps/girigiribauer/homebrew-db-cli'...
+remote: Counting objects: 4, done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 4 (delta 0), reused 2 (delta 0), pack-reused 0
+Unpacking objects: 100% (4/4), done.
+Checking connectivity... done.
+Tapped 1 formula (27 files, 20.3K)
+
+$ brew install db-cli
+==&gt; Installing db-cli from girigiribauer/db-cli
+==&gt; Downloading https://github.com/girigiribauer/db-cli/releases/download/v0.1.24/db-darwin-amd64.tar.gz
+==&gt; Downloading from https://github-cloud.s3.amazonaws.com/releases/69738247/d805382a-8822-11e6-89f4-aff058332cdf.g
+######################################################################## 100.0%
+🍺  /usr/local/Cellar/db-cli/0.1.24: 3 files, 8.6M, built in 9 seconds
+</code></pre>
+
+<p>ひゃっほーい🍺
+オレオレ自作コマンドがとうとう Homebrew 経由で自分の元に。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>バイナリ配置するだけなんで、
+Homebrew の install メソッド内部でやってることもすごくシンプルですね。</p>
+
+<p>namespace 的には既存の Homebrew には影響しないので、
+今回のように超短いコマンド名で公開しても全く影響ありません。
+（全くではないですね、インストール時に名前がかぶる可能性はあるので、その場合は別途リポジトリ指定する必要があるかもです）</p>
+
+<p><img src="/img/2016/10/firsttime-homebrew01.jpg" alt="" /></p>
+
+<p>全然関係ないけど、Homebrew の命名センスは結構好きですね。
+ビールの自家醸造に例えて色々コマンド名が決まってて素敵だなあと思います。</p>
+
+<p>僕ももうちょっとセンスのある命名を考えていければなと思います。
+（末尾に24とかつけてる場合じゃない）</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md" target="_blank">https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md</a></li>
+<li><a href="http://dev.classmethod.jp/tool/new-formula-request-to-homebrew/" target="_blank">http://dev.classmethod.jp/tool/new-formula-request-to-homebrew/</a></li>
+<li><a href="http://blog.monochromegane.com/blog/2014/05/19/homebrew-formula-for-golang/" target="_blank">http://blog.monochromegane.com/blog/2014/05/19/homebrew-formula-for-golang/</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2016年10月4日">2016年10月4日</time>
@@ -42,7 +198,8 @@
   </ul>
 </div>
 
-</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -63,7 +220,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -153,7 +310,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

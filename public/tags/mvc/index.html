@@ -28,8 +28,103 @@
 
 <h1>Tags / MVC</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/846">大なごやJS vol.5 に行ってきたまとめ</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2013年3月1日">2013年3月1日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/javascript/">JavaScript</a></li>
+    <li class="flow"><a href="/tags/mvc/">MVC</a></li>
+    <li class="flow"><a href="/tags/output/">output</a></li>
+    <li class="flow"><a href="/tags/functionallanguage/">FunctionalLanguage</a></li>
+    <li class="flow"><a href="/tags/event-conference/">event-conference</a></li>
+  </ul>
+</div>
+
+
+
+
+<h2 id="大なごやjs-dainagoyajs">大なごやJS(#daiNagoyaJS)</h2>
+
+<p>数か月に1回、みんながやりたくなったタイミングで行い、<strong>主催がころころ入れ替わっていくという謎の勉強会。</strong></p>
+
+<p>その<strong>大なごやJS</strong>の vol.5 が、この前の 2/23 にあったので、簡単に記録を残しておきます。</p>
+
+<h2 id="vol-5-の概要">vol.5 の概要</h2>
+
+<p>資料などがあるものは、リンク付きで載せておきます。（発表順）</p>
+
+<ul>
+<li>@eiji_sm さんの、jQueryのみ、Backbone.js、AngularJSによるスライダーUIの実装の話 <a href="http://todododo.hatenablog.com/entry/dainagoya5slidermvc" target="_blank">http://todododo.hatenablog.com/entry/dainagoya5slidermvc</a></li>
+<li>@_tk84 さんの、MVCにおけるviewの設計の話</li>
+<li>@niccolli さんの、Web Speech API の話</li>
+<li>自分の WebRTC, Web Audio API の話 <a href="http://www.slideshare.net/girigiribauer/webrtc-web-audio-api" target="_blank">http://www.slideshare.net/girigiribauer/webrtc-web-audio-api</a></li>
+<li>@ka2n さんの、PhoneGapの話 <a href="https://gist.github.com/ka2n/9e630557f9c45a7f2aef" target="_blank">https://gist.github.com/ka2n/9e630557f9c45a7f2aef</a></li>
+<li>@maeda_ さんの、Elm と Functional Reactive Programming の話 <a href="http://www.slideshare.net/maedaunderscore/elmfunctional-reactive-programming" target="_blank">http://www.slideshare.net/maedaunderscore/elmfunctional-reactive-programming</a></li>
+<li>@s3pw さんの、jQueryのリファレンスサイトの話 <a href="http://s3pw.com/qrefy/" target="_blank">http://s3pw.com/qrefy/</a></li>
+</ul>
+
+<p>盛りだくさんですねー。</p>
+
+<p>ちなみにどうでもいいですが、今回は「JavaScriptではないですが、・・・」みたいなのは1つも無かったですね。<strong>不思議です。</strong></p>
+
+<p>JavaScript という括りだけでこんなに幅広くなるのは、それだけ JavaScript が色んなところに使われているからではないかなーと思います。この中で自分が気になったやつだけをピンポイントでメモっておきたいと思います。</p>
+
+<h2 id="tk84-さんの-mvcにおけるviewの設計の話">@_tk84 さんの、MVCにおけるviewの設計の話</h2>
+
+<p>これ、<strong>ぜひとも発表用資料を展開していただきたいなー</strong>と思うほど、分かりやすく綺麗にまとまっている発表だったと思います。</p>
+
+<p>まずページ遷移前提のステートレスから、時代は状態管理の必要のあるステートフルに変わってきたよ、みたいな必要性の話から、 viewに対する考え方を「このように考えるとすっきりするんじゃないでしょうか？」という話や、それを上手く実現するために、Hamlを使った場合にこういう規約を課しているなど、MVCのview周りを中心とした盛りだくさんな内容でした。</p>
+
+<p>個人的には、まだまだこのあたりの経験値が足りないので、継続してしっかり押さえていきたいなと思います。</p>
+
+<p><strong>資料がほしいー。</strong></p>
+
+<h2 id="niccolli-さんの-web-speech-api-の話">@niccolli さんの、Web Speech API の話</h2>
+
+<p>Web Speech API の実装がされ始めたタイミングから、けっこうこの API は気になっていながらも触れていなかったのですが、@niccolli さんがデモ付きで紹介してくれました。 「貴社の記者が汽車で帰社した」と話した言葉を、きちんと認識できるのはすごいですね。</p>
+
+<p>Web Speech API と Web Audio API (+ Web RTC) との使い分けですが、どちらも一長一短なので、やりたいことに合わせて適切に選択できるといいなと思います。</p>
+
+<p>Web Speech API の方は、どうしても通信が発生してしまってタイムラグが発生するため、対話的なやりとりで、なおかつ言葉の識別が必要な場合に使うべきで、Web Audio API の方は、リアルタイムに音として認識して何かさせたいときに使うべきですね。</p>
+
+<p>あと、音声認識の精度までパラメータとして取れるのは、さすがGoogleだなーと思いました。</p>
+
+<h2 id="ka2n-さんの-phonegapの話">@ka2n さんの、PhoneGapの話</h2>
+
+<p>こちら資料が公開されているのですが、iOS のネイティブアプリを作るにあたって、WebView -&gt; ネイティブ、ネイティブ -&gt; WebView のデータのやりとりの方法がまとめられてました。</p>
+
+<p>アプリの性質によって、HTMLベースで作った方が早いし運用しやすい、みたいなケースもあると思うので、状況に応じて（＆セキュリティに配慮しつつ）このあたりを参考に使えればいいなーと思います。</p>
+
+<h2 id="maeda-さんの-elm-と-functional-reactive-programming-の話">@maeda_ さんの、Elm と Functional Reactive Programming の話</h2>
+
+<p>（純粋）関数型プログラミング言語の Haskell をベースに作られた、Elmという言語を紹介しつつ、とっかかりとしてすぐに目の前で動作するWebアプリケーションを Elm で作るのも良いのでは？というお話でした。</p>
+
+<p>Reactive とは何か？という考え方のところから、純粋な（副作用のない）世界と Reactive な世界を型として分けておいて、liftして最終的に Signal Element 型にすることで、全体のWebアプリケーションを構築する話や、 意味イベントという考え方を引用して、小さく抽象的なイベントを合成することにより、具体的な意味のあるイベントを作るという話など、興味深い話ばかりでした。</p>
+
+<p>liftするってところが、僕個人は今まで聞いたこと無かった話だったので、もうちょっと掘り下げて調べてみようと思います。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>MVCの話や、デバイスとの連携の話、Functionalな話など、今回も盛りだくさんで非常に面白かったです。</p>
+
+<p>毎回、なんだかんだで時間いっぱいまで発表があるし、内容も何かに偏らずにバランスがとれて面白いし、また次回あるなら何か面白ネタでも発表してみようかなーと思います。</p>
+
+<p>あまり書けてない感じですが、このあたりでまとめておきます。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2013年3月1日">2013年3月1日</time>
@@ -44,7 +139,8 @@
   </ul>
 </div>
 
-</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -65,7 +161,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -155,7 +251,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>

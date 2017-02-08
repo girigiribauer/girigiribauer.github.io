@@ -28,8 +28,117 @@
 
 <h1>Tags / Vagrant</h1>
 
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20161129/">nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</a></h2>
+<div class="poststatus">
+  <p>  <time datetime="2016年11月29日">2016年11月29日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ansible/">Ansible</a></li>
+    <li class="flow"><a href="/tags/docker/">Docker</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>メモとして残しておきます。</p>
+
+<h2 id="ansible-playbook-で急に表示できなくなった">ansible-playbook で急に表示できなくなった</h2>
+
+<p>本番環境の CentOS7 と、その検証環境（Vagrant on Mac）で
+Ansible 経由で Docker をインストールして使っていたのですが、
+ある日 <code>ansible-playbook</code> を実行すると急に表示できなくなりました。</p>
+
+<p>（Chef を使ってたころはこういうの頻発してたなあ・・・）</p>
+
+<p>その間は Vagrant のアップデートくらいしかしてなかったので、
+順に確認していくことに。</p>
+
+<h3 id="各種ログ">各種ログ</h3>
+
+<p>nginx-proxy のログは</p>
+
+<pre><code>lrwxrwxrwx 1 root root   11 Aug 24 03:51 access.log -&gt; /dev/stdout
+lrwxrwxrwx 1 root root   11 Aug 24 03:51 error.log -&gt; /dev/stderr
+</code></pre>
+
+<p>のような感じで、特に何も指定してなければ外にログとして出るようになってます。</p>
+
+<p><code>docker logs -f nginx-proxy</code> などとしてログを表示させたりしても特に問題は見受けられず。</p>
+
+<p>また、 /etc/nginx/conf.d/default.conf のファイルも特に問題なく、
+コンテナが作られると適切に設定が書き換わっているようでした。</p>
+
+<h3 id="自動と手動">自動と手動</h3>
+
+<p>次に ansible のレイヤーで問題が起きている可能性を考えて、
+自動で作った Docker コンテナをそのまま手動で作ってみました。</p>
+
+<p>するとコンソールに見慣れないメッセージが。</p>
+
+<pre><code>WARNING: IPv4 forwarding is disabled. Networking will not work.
+</code></pre>
+
+<p>なんだこれ。</p>
+
+<h3 id="本番環境と検証環境">本番環境と検証環境</h3>
+
+<p>さらに、本番環境と検証環境とで同様にコンテナを作って比較してみると、
+上記メッセージは表示されずに、問題なくコンテナが作成されました。</p>
+
+<h3 id="最後にググる">最後にググる</h3>
+
+<p>ここまでくるとローカルの環境に何かしら問題が起きた可能性があるので、
+先ほどのメッセージも加味して調べると、以下のような情報が引っかかりました。</p>
+
+<p><a href="http://chrisgilmerproj.github.io/ubuntu/network/docker/2013/09/05/ipv4-forwarding-and-docker.html" target="_blank">http://chrisgilmerproj.github.io/ubuntu/network/docker/2013/09/05/ipv4-forwarding-and-docker.html</a></p>
+
+<p>どうやら <code>sysctl</code> コマンドでカーネルパラメータを変更して、
+IPv4 を有効にしてやる必要があるようなのですが、
+正直どうしてこうなった感が満載です。</p>
+
+<p>うーん・・・今まで問題なく動作していたんですが。
+（とはいえ、ここから先の原因追求は不毛なのでやめておきます。）</p>
+
+<p>ローカルの VM にのみ起きる問題であるため、こちらについては Ansible で行おうとせず、
+その手前の Vagrantfile で VM を作る段階で差分を吸収することにします。</p>
+
+<pre><code>config.vm.define &quot;vmname&quot; do |node|
+  # for docker networking
+  node.vm.provision &quot;shell&quot;, :inline =&gt; &quot;sudo sysctl -w net.ipv4.ip_forward=1&quot;, run: &quot;always&quot;
+end
+</code></pre>
+
+<h3 id="おまけ">おまけ</h3>
+
+<p>調べる途中で nginx-proxy のログのタイムゾーンが UTC だったので、
+これなんとかならんかなーと思って少し寄り道して調べてたのですが、
+スマートな方法があったのでついでに。</p>
+
+<p><a href="http://qiita.com/ganta/items/a0f34866c994ebaeef69" target="_blank">http://qiita.com/ganta/items/a0f34866c994ebaeef69</a></p>
+
+<p>docker run するときにホストの /etc/localtime をコンテナの /etc/localtime にバインドしてやれば良かったのでした。</p>
+
+<blockquote>
+<p>-v /etc/localtime:/etc/localtime:ro</p>
+</blockquote>
+
+<p>なんで思いつかなかったんだろう。すごくシンプルで良いです。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
 
 <div class="poststatus">
   <p>  <time datetime="2016年11月29日">2016年11月29日</time>
@@ -42,9 +151,7 @@
   </ul>
 </div>
 
-</div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/20160819/">vagrant global-status の代替方法、あるいは jq コマンドの使い方</a></h2>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2016年8月19日">2016年8月19日</time>
@@ -56,9 +163,159 @@
   </ul>
 </div>
 
+
+
+
+<p>VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。</p>
+
+<p>tmux の <code>set-option -g status-right</code> で指定できるスクリプトは
+一定間隔で常に呼ばれるような仕組みなのですが、
+（更新間隔は set-option -g status-interval で設定可能）
+あまり間隔を空けすぎると確認しづらくなってしまうので 5 秒くらいに指定しています。</p>
+
+<p>このスクリプト内で Vagrant 経由で起動している VM 名と Docker サービスが立ち上がっているかどうかを
+集約して表示しているのですが、
+この中で <strong><code>vagrant global-status</code> を呼ぶコストが意外にも高い</strong> ことに今更ながらに気づきました。
+（たぶんディレクトリツリーを全走査とかしてるんですかね・・・？）</p>
+
+<p>top とか ps とかで詳しく調べてみるとすげー CPU を使ってたっぽかったので、
+（5 秒間隔で常に動作してるわけじゃなかったので気づかずにスルーしてました）
+これはなんとかしなくてはと思い、代替方法を検討しました。</p>
+
+<h2 id="vagrant-d-内の設定ファイル">~/vagrant.d 内の設定ファイル</h2>
+
+<p>後の Vagrant のバージョンアップで変わるかもしれませんが、
+以下の場所に仮想マシンの一覧情報がまとめられていて、
+Vagrant の仮想マシンのステータスが変更されるたびにこのファイルが更新されます。</p>
+
+<pre><code>~/.vagrant.d/data/machine-index/index
+</code></pre>
+
+<p>こちらはただのテキストファイルなので、
+5 秒間隔で tmux から重いコマンドを実行するよりは、
+こちらの設定ファイルを読みにいった方がはるかに軽いです。</p>
+
+<p>ただ、こちらのファイルは JSON ファイルを圧縮したようなファイルになっているので、
+こちらを（あまりコストかけずに）さくっとフィルタリングして
+必要な情報だけ抜き出したいですね。</p>
+
+<h2 id="jq-は-json-ファイルをフィルタリングするコマンド">jq は JSON ファイルをフィルタリングするコマンド</h2>
+
+<p><a href="https://stedolan.github.io/jq/" target="_blank">https://stedolan.github.io/jq/</a></p>
+
+<p>ずいぶん前から簡易的に利用してはいたのですが、
+JSON ファイルから必要な情報をフィルタリングなどするコマンドとして
+<strong>jq コマンド</strong> というのがあります。</p>
+
+<p>これは jq コマンドを使うところだ！と思い、
+この Vagrant の設定ファイルから必要な情報を jq コマンドを使って抜き出してみました。</p>
+
+<pre><code>{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}
+</code></pre>
+
+<p>ちょっと固有パス、ID などは修正してますが、だいたいこんな感じで入っています。</p>
+
+<p>ここから、machines オブジェクト内に入っているものを抜き出したいので、
+<code>jq &quot;.machines&quot;</code> でパイプをつなげてやることで、フィルタリングされた出力結果が出ます。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines&quot;
+{
+  &quot;aaabbbccc&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;alpha&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;poweroff&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;bento/centos-7.2&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;2.2.7&quot;
+      }
+    }
+  },
+  &quot;dddeeefff&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;bravo&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;running&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;0&quot;
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>さらに、1つずつのオブジェクトごとに分けつつ、name と state だけ配列形式にして引っこ抜きます。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines | .[] | [.name, .state]&quot;
+[
+  &quot;alpha&quot;,
+  &quot;poweroff&quot;
+]
+[
+  &quot;bravo&quot;,
+  &quot;running&quot;
+]
+</code></pre>
+
+<p>これを半角スペースでつないで1行ごとに出力したかったので、[] で囲んで join で繋ぎ直しました。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;[ .machines | .[] | [.name, .state] | join(\&quot; \&quot;) ] | join(\&quot;\n\&quot;)&quot;
+&quot;alpha poweroff\nbravo running&quot;
+</code></pre>
+
+<p>これで目的の文字列になったので、running がある行だけ簡易的に引っこ抜いて tmux に表示すれば OK です。</p>
+
+<p>jq のマニュアルページには色々な機能が載っていますが、
+実際に使うのはそこまで多くないんじゃないかなーという印象です。
+正直見ながらじゃないと使えないです・・・。</p>
+
+<p><a href="https://stedolan.github.io/jq/manual/" target="_blank">https://stedolan.github.io/jq/manual/</a></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>そのまま <code>vagrant global-status</code> を使っていたころよりも圧倒的に軽くなり、
+排熱もほとんどなくなりました。
+（もしかして最近の排熱の主因はほぼこれだったんじゃあ・・・）</p>
+
+<p>jq コマンドは、こういった使い方以外にも外部の API を直接叩いてそのまま jq コマンドに通して使う、
+といった使い方も多いので、もう少しさらっと使いこなせるようになりたいですね。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016年8月19日">2016年8月19日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/jq/">jq</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1878">Docker と Vagrant の明確な違い</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年8月6日">2015年8月6日</time>
@@ -70,9 +327,77 @@
   </ul>
 </div>
 
+
+
+
+<p>そもそも比較するようなものではないものの、分かりづらい解説しかなかったので、 超個人的な主観でまとめておこうと思いました。</p>
+
+<h2 id="docker-の特徴">Docker の特徴</h2>
+
+<ul>
+<li>Linux 上でのみ動く (Windows, Mac 上では動かない)</li>
+<li>Linux のリソースを流用しつつも小さく閉じた環境を作ることができる</li>
+<li>小さいので作っては捨て、が容易</li>
+</ul>
+
+<p>例えるなら・・・</p>
+
+<ul>
+<li>病院の中に超小型隔離施設を作るようなもの</li>
+<li>隔離されてるものの、診察も受けられるし隔離施設ごとトイレにも行ける</li>
+<li>Docker コンテナをたくさん作る ≒ 病院内に超小型隔離患者がたくさん、みたいなイメージ</li>
+</ul>
+
+<h2 id="vagrant-の特徴">Vagrant の特徴</h2>
+
+<ul>
+<li>Windows / Mac / Linux それぞれにパッケージが用意されている</li>
+<li>実際は VirtualBox や VMWare のような仮想環境を提供してくれるものとセットで使う</li>
+<li>仮想環境としての Linux は、普通にインストールした Linux とほぼ変わらない構成</li>
+</ul>
+
+<p>例えるなら・・・</p>
+
+<ul>
+<li>病院の敷地の中に病院を建てるようなもの</li>
+<li>内側の病院も、普通に診察できるし手術もできるし遜色なく利用できちゃう</li>
+<li>Vagrant で VM たくさん作る ≒ 外側の病院敷地内に中小病院をたくさん建てる、みたいなイメージ</li>
+<li>複数建てるときは資金力がいる</li>
+</ul>
+
+<hr />
+
+<p>Mac で Docker いじるってことは、超軽量な Linux を boot2docker とかでインストールして、その上で動いているケースが多く（あるいは他 VM を立ち上げてるとか）、結局 Docker は Linux 上でのみ動くってことになります。（今後 Windows 方面がサポートするかもしれないけど）</p>
+
+<p>たぶん本番環境の検証という意味では、Vagrant + Chef で本番環境にできるだけ近しい状態を構築して検証とかすべきなんですけど、開発環境をいくつも立ち上げては消しみたいなことをやりたいんだったら、Docker の方が軽くて良いのでは？と思っているところです。</p>
+
+<p>もし本番環境に Docker を入れて色々利用したいのなら、まずは Vagrant + Chef の環境を手元に作って、Chef のレシピで Docker の環境を整えるレシピを書けばいいんだろうか。（まだその辺りはすっきりしてませんのでこれからですかね・・・）</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年8月6日">2015年8月6日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/docker/">Docker</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1867">Chef を本番投入してみた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年6月9日">2015年6月9日</time>
@@ -84,9 +409,131 @@
   </ul>
 </div>
 
+
+
+
+<p>メモレベルでごめんなさい。</p>
+
+<p>サーバを移設してみました。 せっかくなので、移設ついでにブログのリニューアル（簡素化）と <strong>Chef cookbook を利用したプロビジョニング</strong>にも挑戦してみたよ、という記録です。</p>
+
+<h2 id="やったこと概要">やったこと概要</h2>
+
+<ol>
+<li>Vagrant を利用してローカルに同じ環境を作る（空のVM）</li>
+<li>レシピを書きつつ、ローカルと本番環境との差異などを attributes に括り出す</li>
+<li>ローカル環境へのプロビジョニングが問題なければ、同じレシピを本番にも適用</li>
+</ol>
+
+<p>本当は Serverspec なども試していきたいですが、そちらは今後やっていければと思います・・・。</p>
+
+<p>多くのサードパーティ製レシピは、<a href="https://supermarket.chef.io/" target="_blank">Chef Supermarket</a> に登録してあるのですが、読み方や使い方が分かっていないと意味をなさないケースも多かったです。</p>
+
+<p>レシピは大きく分けて2種類あり、<strong>attributes として json ファイルに値を書いていくスタイル</strong>のものと、もともと Chef に用意されている file, template のような、<strong>レシピ内に Chef の resources として記述するスタイル</strong>のものがあります。以下の記事にもわかりやすく紹介されてます。</p>
+
+<p><a href="http://tsuchikazu.net/vps_chef_solo/" target="_blank">http://tsuchikazu.net/vps_chef_solo/</a></p>
+
+<p>例えば、今回レシピを適用したいマシンを仮に alpha としておいて、<code>nodes/alphalocal.json</code> と <code>nodes/alphaproduction.json</code> の2ファイル用意し、それぞれ設定を括り出しておきたいところを記述しておきます。 以下は nodes/alphalocal.json のサンプルです。（実際はもうちょい複雑ですが）</p>
+
+<pre><code>{
+  &quot;name&quot;: &quot;alphalocal&quot;,
+  &quot;automatic&quot;: {
+    &quot;ipaddress&quot;: &quot;192.168.0.10&quot;
+  },
+
+  &quot;fqdn&quot;:             &quot;alphalocal&quot;,
+  &quot;platform_family&quot;:  &quot;rhel&quot;,
+  &quot;platform&quot;:         &quot;centos&quot;,
+  &quot;platform_version&quot;: &quot;6.6&quot;,
+
+  &quot;run_list&quot;: [
+    &quot;recipe[selinux::disabled]&quot;,
+
+    &quot;recipe[yum]&quot;,
+    &quot;recipe[yum-epel]&quot;,
+    &quot;recipe[yum-remi]&quot;,
+
+    &quot;recipe[ntp]&quot;,
+    &quot;recipe[locale]&quot;,
+    &quot;recipe[timezone-ii]&quot;
+  ],
+
+  &quot;locale&quot;: {
+    &quot;lang&quot;: &quot;ja_JP.utf8&quot;,
+    &quot;lc_all&quot;: &quot;ja_JP.utf8&quot;
+  },
+  &quot;ntp&quot;: {
+    &quot;servers&quot;: [
+      &quot;ntp.nict.jp&quot;,
+      &quot;ntp1.jst.mfeed.ad.jp&quot;,
+      &quot;ntp2.jst.mfeed.ad.jp&quot;,
+      &quot;ntp3.jst.mfeed.ad.jp&quot;
+    ]
+  },
+  &quot;tz&quot;: &quot;Asia/Tokyo&quot;
+}
+</code></pre>
+
+<p>これは前者の <strong>attributes として json ファイルに値を書いていくスタイル</strong>ですね。後者の場合は、独自にレシピを書いていきつつも、レシピ内で独自の resources を使って書いていく感じです。</p>
+
+<p>以下は apache2 のレシピで用意されている <strong>web_app</strong> resource を用いて、自ら用意したレシピ内でバーチャルホストの設定をするサンプルです。（この通り動いているわけではありません）</p>
+
+<pre><code>  web_app host[&quot;id&quot;] do
+    server_name         host[&quot;server_name&quot;]
+    server_aliases      host[&quot;server_alias&quot;]
+    docroot             host[&quot;docroot&quot;]
+    enable              host[&quot;enable&quot;]
+  end
+</code></pre>
+
+<p>ちょっと話が逸れましたが、attributes として設定を括り出しておくことで、本番環境で動作させるためのレシピを、あらかじめローカル環境で検証することができるようになりました。</p>
+
+<h2 id="やってみて気づいたこと-思ったこと">やってみて気づいたこと、思ったこと</h2>
+
+<p>だいたいこんなところです。</p>
+
+<ul>
+<li>どこまでレシピで書くべきか？</li>
+<li>データベースのバックアップ大事</li>
+<li>レシピのテストしなきゃ</li>
+</ul>
+
+<p>どこまでレシピで書くべきか？についてですが、全部レシピで書いて自動化すればいいってもんでもないんですよねえ。特にデプロイ対象のものについては、レシピで書かずに別のツールやシェルスクリプトなどで、いつでもマシン内から呼び出せるようにしておいた方が良さそうです。</p>
+
+<p>Web コンテンツなら、vhosts の設定をして、そこにファイルを置けば表示はされるけど、入れ物だけは用意してあるよー、というあたりが落とし所かなと思いました。（あとは capistrano とかですかね・・・？）</p>
+
+<h2 id="ついでにリニューアルを">ついでにリニューアルを</h2>
+
+<p>読みづらい部分がまだあったので、読みやすさを重視して見直してみました。</p>
+
+<p>あと一つ気づいたことがあるんですよ。ブログタイトルに丸々ドメイン名とか入れちゃうと、twitter とかその他外部サービスにタイトル付きで貼り付けたときに、<strong>タイトル内に含まれるサイト名にリンクが貼られてしまうんですよねえ・・・。</strong></p>
+
+<p>これは正直運用するまで盲点でした。今後 gTLD が増えていくのは間違いないので、リンクが意図せず貼られてしまうリスクも併せて考えていった方がいいかもしれませんね。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年6月9日">2015年6月9日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1749">Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年4月1日">2015年4月1日</time>
@@ -99,9 +546,171 @@
   </ul>
 </div>
 
+
+
+
+<p>2013年に書いていた、『Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話』（<a href="http://girigiribauer.com/archives/1127/" target="_blank">http://girigiribauer.com/archives/1127/</a>）という記事の続きです。</p>
+
+<p>2013年の段階では、まだまだ考え方みたいなものがまとまりきっておらず、Vagrant が用いる接続ポート番号を変えるという方向で色々考えていたのですが、今振り返ってみるとそもそも根本の考え方を見直すべきでした。</p>
+
+<hr />
+
+<h2 id="vagrant-の使いどころ-考えどころ">Vagrant の使いどころ・考えどころ</h2>
+
+<p>ざっと『Vagrant の使いどころ・考えどころ』（<a href="http://girigiribauer.com/archives/1729/" target="_blank">http://girigiribauer.com/archives/1729/</a>）に書いたのですが、Vagrant を用いる用途としては大きく2種類あると考えています。</p>
+
+<ol>
+<li><strong>ローカルの開発用</strong>としてローカルでのみ使い続ける</li>
+<li><strong>本番環境の検証用</strong>として、同じレシピを仮想マシン・リモート環境にそれぞれ適用</li>
+</ol>
+
+<p>SSH の接続ポート番号を変えるという大きな理由は<strong>セキュリティ</strong>にあると思います。 デフォルトの22番ポートで使っていると外部からのアタックに弱いため、ポート番号を変えたい、そのためのレシピを書きたい、という点が根本にあると思います。</p>
+
+<p>つまり、2.の<strong>『本番環境の検証用として、同じレシピを仮想マシン・リモート環境にそれぞれ適用』</strong>ってのがやりたいわけです。</p>
+
+<p>もし1.が目的だったのなら、わざわざポート番号を変える必要はありません。<a href="http://girigiribauer.com/archives/1127/" target="_blank">Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話</a> にもあるように、ホスト OS が 2424 番、ゲスト OS が 22 番で接続している最中に、<strong>ゲスト OS を 22 番をレシピで別ポートに変更してしまうと接続が切れてしまいます。ローカルで動作しているのならわざわざ変える必要はありません。</strong>何が面倒なのかは、詳しくはそちらの記事をご覧ください。</p>
+
+<h2 id="同じレシピをローカル-リモートに適用する">同じレシピをローカル、リモートに適用する</h2>
+
+<p>本番環境の検証用として利用したいという用途で、 同じレシピをローカル、リモートの両方に適用したいということであれば、<strong>json ファイルに設定をくくり出してやれば OK</strong> です。</p>
+
+<p>ローカルは Vagrant で動いていますが、リモートはそうではないので、両方で同じレシピ適用方法が可能な <strong>knife コマンド</strong>を使いましょうー。</p>
+
+<h3 id="ローカル">ローカル</h3>
+
+<p>以下は実際にそのまま使っているわけではないですが、<code>nodes/localhost.json</code> として Vagrant で動作しているローカル VM にレシピを適用するための設定ファイル（の一例）です</p>
+
+<pre><code>{
+  &quot;name&quot;: &quot;localhost&quot;,
+  &quot;automatic&quot;: {
+    &quot;ipaddress&quot;: &quot;192.168.24.24&quot;
+  },
+
+  &quot;fqdn&quot;: &quot;localhost&quot;,
+  &quot;platform_family&quot;: &quot;rhel&quot;,
+  &quot;platform&quot;: &quot;centos&quot;,
+  &quot;platform_version&quot;: &quot;6.6&quot;,
+
+  &quot;run_list&quot;: [
+    &quot;recipe[openssh]&quot;
+  ],
+
+  &quot;openssh&quot;: {
+    &quot;server&quot;: {
+      &quot;port&quot;: 22,
+      &quot;password_authentication&quot;: &quot;no&quot;
+    }
+  }
+}
+</code></pre>
+
+<p>あとは knife コマンドにて、</p>
+
+<pre><code>knife solo bootstrap localhost
+</code></pre>
+
+<p>あるいは</p>
+
+<pre><code>knife solo prepare localhost
+knife solo cook localhost
+</code></pre>
+
+<p>でレシピを適用してやるだけです。</p>
+
+<p>Vagrant 上で openssh のレシピを適用するのですが、<strong>ポート番号は 22 から 22 に変える、みたいなレシピにしておく</strong>と良いです。変更後のポート番号を設定値としてくくり出しておきます。</p>
+
+<p>あっ、Berkshelf の説明とか platform, platform_family とかの項目の説明は端折ってますが、また別記事にでも書いておきます。。。</p>
+
+<h3 id="リモート">リモート</h3>
+
+<p>同様に、リモートマシン（nodes/production.json）に対しては、</p>
+
+<pre><code>{
+  &quot;name&quot;: &quot;production&quot;,
+  &quot;automatic&quot;: {
+    &quot;ipaddress&quot;: &quot;123.456.789.012&quot;
+  },
+
+  &quot;fqdn&quot;: &quot;example.com&quot;,
+  &quot;platform_family&quot;: &quot;rhel&quot;,
+  &quot;platform&quot;: &quot;centos&quot;,
+  &quot;platform_version&quot;: &quot;6.6&quot;,
+
+  &quot;run_list&quot;: [
+    &quot;recipe[openssh]&quot;
+  ],
+
+  &quot;openssh&quot;: {
+    &quot;server&quot;: {
+      &quot;port&quot;: 12345,
+      &quot;password_authentication&quot;: &quot;no&quot;
+    }
+  }
+}
+</code></pre>
+
+<p>同様にポート番号をくくり出しておき、それを利用してレシピを適用することで、 リモートのサーバの SSH のポート番号を変更することが可能です。</p>
+
+<p>で、ちょっと気をつけないといけないのが、 <strong>初回のレシピ適用時と、2回目以降のレシピ適用時のポート番号が異なる点</strong>です。</p>
+
+<p>僕は以下のように、初回のみオプションで上書きしています。</p>
+
+<pre><code>knife solo bootstrap production -p 22 -x root
+</code></pre>
+
+<p><code>knife solo prepare --help</code> には以下のようなオプションがあり、</p>
+
+<pre><code>-p, --ssh-port PORT              The ssh port
+-x, --ssh-user USERNAME          The ssh username
+</code></pre>
+
+<p>これを利用して、初回のみポート番号を 22 で、かつ root ユーザーにてレシピ適用します。 （この段階ではもちろんパスワード認証なので、何回かパスワードの入力を求められます。）</p>
+
+<h3 id="リモートにレシピを適用するときの注意点">リモートにレシピを適用するときの注意点</h3>
+
+<p>それ以外にも、自分がはまったなーというものをメモっておきます。</p>
+
+<p>初回アクセス時に <code>~/.ssh/known_hosts</code> に接続情報が保持されます。</p>
+
+<p>「あー、ぐちゃぐちゃしてきたから、一旦リセットして最初からレシピを適用し直したいなー」というときに、 上記ファイルに残っている情報をクリアしておかないと接続ができないケースがあるようです。</p>
+
+<p>また、さくらVPS のサービスを利用しているのですが、OS のインストールをし直した際は、少し時間を置いてからでないとうまく適用できません。焦らずコーヒーでも飲みましょう。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<ul>
+<li>Vagrant を用いる際の目的をはっきりさせる</li>
+<li>サーバの設定値をくくり出す</li>
+</ul>
+
+<p>なお、本当にどうでもいい話ですが、ドラマ TwentyFour では、テロリストや CTU 職員が IP アドレスを指定するときに、262.xxx.xxx.xxx のような、実際には存在しない 255 を超えた数値をドラマ内で言ったりします。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年4月1日">2015年4月1日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/ssh/">SSH</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1742">Vagrant を開発用 Web サーバとして利用するときの注意点</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年3月25日">2015年3月25日</time>
@@ -114,9 +723,123 @@
   </ul>
 </div>
 
+
+
+
+<p>罠があるのでまとめておきます。（体験談） なお、box ファイルは CentOS6 ベースのもの、Web サーバは apache です。（本番環境を想定した開発環境なので、nginx は別のところで使っています）</p>
+
+<h2 id="レシピを適用しても上手く表示されない">レシピを適用しても上手く表示されない</h2>
+
+<p>レシピ適用した後で、 <code>vagrant up</code> や <code>vagrant reload</code> などで VM を起動したとしても、Web サーバがうまく動かなかったケースとかありませんでしたか？私はありました。</p>
+
+<p><strong>/var/www を synced folder に指定しているとはまります。</strong></p>
+
+<p>なんともならなかったので、毎回 ssh でログインして <code>sudo service httpd restart</code> してごまかしてましたが、なんだかはまる人多そうだなーと思ったのでこちらにまとめておきます。</p>
+
+<h3 id="vagrant-の動作順おさらい">Vagrant の動作順おさらい</h3>
+
+<p>レシピの指定を Vagrantfile に書いているケース、knife コマンドを使うケースのいずれにおいても、 <code>vagrant up --provision</code> もしくは <code>vagrant provision</code> 時に以下のような順序で動作します。（ログ見れば分かりますが）</p>
+
+<ol>
+<li>box ファイルの設定、仮想マシンの電源ON（ブート処理）</li>
+<li>Vagrant が使う SSH のポートフォワーディング周りの設定</li>
+<li>synced folder の設定</li>
+<li>（Vagrantfile 内に記述があれば）レシピの適用</li>
+</ol>
+
+<p>なお、古いバージョンの Vagrant では、<code>vagrant up</code> とするだけで up した後に <code>vagrant provision</code> を実行した時の処理が毎回走っていましたが、最近のやつは <code>vagrant up</code> するだけでは Vagrantfile 内に書かれたレシピは適用されなくなりました。（こちらが通常だと思います）</p>
+
+<p>なぜ synced folder を Web サーバのドキュメントルートにしてしまった場合にうまく動かないかというと、 <strong>1.の段階で Web サービスが起動してしまい（chkconfig など）、3.で行われるはずの synced folder の設定がこの段階では行われておらず、/var/www が無いために Web サービスがうまく動かない</strong>、といったことが起きています。</p>
+
+<p>この動作順はどうしようもないので、別の方法を考えなくてはいけません。</p>
+
+<h3 id="upstart-の仕組みを利用する">Upstart の仕組みを利用する</h3>
+
+<p>Upstart というワードをよくご存知の方は、なんとなく予想がつくかと思いますが、 システム起動時に特定のイベントが起きた際、予め指定されたジョブを実行するという仕組みがあります。</p>
+
+<p>Linux は起動時に色々なサービスを立ち上げていますが、 <code>/etc/init</code> 以下に設定ファイルを設置することで、それらを行っています。</p>
+
+<p>今回は、<strong><code>/etc/init/httpd.conf</code> というファイルを作成</strong>し、以下のような内容を記述します。</p>
+
+<pre><code># start apache on vagrant mounted
+start on vagrant-mounted
+exec sudo service httpd start
+</code></pre>
+
+<p>この2行目の <code>vagrant-mounted</code> というのが、先ほどの Vagrant の動作順の 3. である synced folder の設定に相当するので、こちらのマウントが行われたら、<code>sudo service httpd start</code> を行う設定です。 ちなみに、<code>/var/www</code> が無い状態では httpd は起動してないので、restart ではなく start で問題無いようです。</p>
+
+<p>こうすることで、1.の段階で Web サービスの起動に失敗したとしても、3.の直後に Upstart の仕組みによって Web サービスが起動するので、手動で Web サービスの起動などをしなくとも良くなりますね。</p>
+
+<p>Upstart に関してはこちらに詳細あります。</p>
+
+<ul>
+<li><a href="http://stackoverflow.com/questions/22718785/apache-doesnt-start-after-vagrant-reload" target="_blank">http://stackoverflow.com/questions/22718785/apache-doesnt-start-after-vagrant-reload</a></li>
+<li><a href="http://www.usupi.org/sysad/188.html" target="_blank">http://www.usupi.org/sysad/188.html</a></li>
+</ul>
+
+<p>ちなみに、これはあくまで CentOS6, apache の際の話です。CentOS7 は Upstart ではなく systemd になったとかいう話を聞いていつつもまだ試せてないので、お試しになった方がいれば <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> まで教えていただけると嬉しいです。</p>
+
+<h2 id="表示がおかしい-ファイルが途中で途切れる">表示がおかしい、ファイルが途中で途切れる</h2>
+
+<p>これも知らずにはまりました。</p>
+
+<p>特に動的にコンテンツを出力しているわけではないのに、<strong>途中からファイルが \0 やら謎の文字列やらで埋め尽くされ、どうやら途中で切れている</strong>ようでした。ざっくり言うとシステムコールのキャッシュに起因する問題のようで、静的なファイルが対象です。</p>
+
+<p>apache の EnableSendfile ディレクティブ を OFF にしておく必要があるので、 自分で用意した Cookbook の場合は、httpd.conf の template に</p>
+
+<pre><code>EnableSendfile Off
+</code></pre>
+
+<p>を入れておきます。</p>
+
+<p>詳しくは EnableSendfile ディレクティブや sendfile システムコールに関しての詳細はこちら。</p>
+
+<ul>
+<li><a href="http://httpd.apache.org/docs/2.2/mod/core.html#enablesendfile" target="_blank">http://httpd.apache.org/docs/2.2/mod/core.html#enablesendfile</a></li>
+<li><a href="http://blog.1000k.net/2013/03/20/vm-%E3%81%AE%E5%85%B1%E6%9C%89%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E5%86%85%E3%81%AE-%E9%9D%99%E7%9A%84%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%8C%E6%AD%A3%E3%81%97%E3%81%8F%E3%83%AD%E3%83%BC/" target="_blank">http://blog.1000k.net/2013/03/20/vm-%E3%81%AE%E5%85%B1%E6%9C%89%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E5%86%85%E3%81%AE-%E9%9D%99%E7%9A%84%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%8C%E6%AD%A3%E3%81%97%E3%81%8F%E3%83%AD%E3%83%BC/</a></li>
+<li><a href="https://github.com/hiboma/hiboma/blob/master/VirtualBox%E3%81%AEsendfile%E3%81%AE%E3%83%8F%E3%82%99%E3%82%AF%E3%82%99.md" target="_blank">https://github.com/hiboma/hiboma/blob/master/VirtualBox%E3%81%AEsendfile%E3%81%AE%E3%83%8F%E3%82%99%E3%82%AF%E3%82%99.md</a></li>
+</ul>
+
+<p>正直、カーネルレベルまで掘り下げて調べてもメリットが少なかったので、あまり掘り下げて理解してません。。。</p>
+
+<p>※ 2015/04/16 追記</p>
+
+<p>nginx では <code>sendfile off;</code> で良さそうですね。</p>
+
+<p><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#sendfile" target="_blank">http://nginx.org/en/docs/http/ngx_http_core_module.html#sendfile</a></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>このあたりがクリア出来た頃あたりからは、Vagrant 上の開発環境に問題が起きることが少なくなりました。</p>
+
+<p>この辺に対応するだけでグッと使えるようになると思うので、開発環境を本番環境に近づけられるよう設定してみてはいかがでしょうか。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年3月25日">2015年3月25日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/apache/">Apache</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/webserver/">WebServer</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1736">Vagrant で個人的に必須なプラグイン</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年3月4日">2015年3月4日</time>
@@ -127,9 +850,131 @@
   </ul>
 </div>
 
+
+
+
+<p>先に <a href="http://girigiribauer.com/archives/1729/" target="_blank">Vagrant の使いどころ・考えどころ</a> を見ると良いかもです。</p>
+
+<p>先に列挙します。 Vagrant 1.6.5 時点で入れたやつなので、すぐに変わる可能性ありです。</p>
+
+<ul>
+<li>vagrant-omnibus (1.4.1)</li>
+<li>vagrant-vbguest (0.10.0)</li>
+<li>sahara (0.0.17)</li>
+<li>vagrant-dnsmasq (0.1.1)</li>
+<li>landrush (0.18.0)</li>
+</ul>
+
+<h2 id="初回の-vagrant-up-に重宝するプラグイン">初回の vagrant up に重宝するプラグイン</h2>
+
+<p><a href="https://github.com/chef/vagrant-omnibus" target="_blank">https://github.com/chef/vagrant-omnibus</a></p>
+
+<p>box ファイルを起動する際に、Chef が入っていなかったらインストールしてくれるプラグインです。 以下のように指定しておけば常に最新版を入れてくれます。</p>
+
+<pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  # ------------------------------ #
+  # plugin settings
+  # see: vagrant plugin list
+  # ------------------------------ #
+
+  # 中略
+
+  if defined? config.omnibus
+    config.omnibus.chef_version = :latest
+  end
+
+  # 中略
+
+end
+</code></pre>
+
+<p>ちなみに、Vagrant のプラグインのインストールは vagrant のサブコマンドから出来ます。</p>
+
+<pre><code>vagrant plugin install --help
+</code></pre>
+
+<p><a href="https://github.com/dotless-de/vagrant-vbguest" target="_blank">https://github.com/dotless-de/vagrant-vbguest</a></p>
+
+<p>VirtualBox + Vagrant で使っているので、仮想 OS は VirtualBox が用意してくれているわけですが、 VirtualBox での利用をより便利にするために、GuestAddition をインストールします。</p>
+
+<p>Guest Additions 自体の説明は、以下のページが分かりやすいかもしれません。</p>
+
+<p><a href="http://vboxmania.net/content/guest-additions%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" target="_blank">http://vboxmania.net/content/guest-additions%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB</a></p>
+
+<p>ただ、この Guest Additions と VirtualBox 自体のバージョンに差異があったりすると、 vagrant up がうまくいかないケースが出てきます。 Guest Additions が予め入った box ファイルでも、 VirtualBox 自体のバージョンを上げた際にうまく合わずにエラーが出るケースがあるので、 その辺の調整を行ってくれるプラグインを導入しました。</p>
+
+<pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  # ------------------------------ #
+  # plugin settings
+  # see: vagrant plugin list
+  # ------------------------------ #
+
+  # 中略
+  unless defined? config.vbguest
+    require &quot;vagrant-vbguest&quot;
+  end
+  config.vbguest.auto_update = true
+
+  # 中略
+
+end
+</code></pre>
+
+<p>これを入れる前はその辺の細かなバージョンの差異に悩まされることが多かったのですが、 導入後は意識しないくらいスムーズになりました。感謝しています。</p>
+
+<h2 id="レシピを繰り返し適用するときに重宝するプラグイン">レシピを繰り返し適用するときに重宝するプラグイン</h2>
+
+<p><a href="https://github.com/jedi4ever/sahara" target="_blank">https://github.com/jedi4ever/sahara</a></p>
+
+<p>過去に <a href="http://girigiribauer.com/archives/1003/" target="_blank">Vagrant に仮想マシンのスナップショットがとれる sahara というプラグインを入れた</a> で書いてたのですが、未だに使ってます。</p>
+
+<p><a href="http://girigiribauer.com/archives/1729/" target="_blank">Vagrant の使いどころ・考えどころ</a> でも書いたのですが、Vagrantfile にレシピを書かない方針で進めているので、初回の vagrant up は、仮想マシンの起動と最低限の設定のみになっているはずです。</p>
+
+<p>その段階で一度スナップショットを取る癖をつけておくと、いつでもクリーンな状態にすぐ戻せるのでレシピを書くのがはかどります。</p>
+
+<pre><code>vagrant sandbox on [vm_machine_name]
+</code></pre>
+
+<h2 id="開発時のサブドメインの名前解決に重宝するプラグイン">開発時のサブドメインの名前解決に重宝するプラグイン</h2>
+
+<p>正直なところ、この辺りは時間が出来たらちょっと見直したいところなのですが、 今のままでも全然問題なく使えています。 （欲を言えば、他の VM からも設定なしで名前解決できるようにしたい・・・）</p>
+
+<p><a href="https://github.com/mattes/vagrant-dnsmasq" target="_blank">https://github.com/mattes/vagrant-dnsmasq</a></p>
+
+<p>landrush というプラグインも、以下の記事を読んで試してみたのですがなかなか便利でした。</p>
+
+<p><a href="http://uasi.hatenablog.com/entry/2014/06/26/232348" target="_blank">vagrant up すると .dev ローカルドメインを設定してくれる Landrush が便利な話</a></p>
+
+<p>開発用の名前解決なので、名前の解決さえできればそれほど望むことは多くなく、 hosts ファイルを直接編集してくれる vagrant-hostsupdater でも事足りるかもしれません。</p>
+
+<h2 id="その他">その他</h2>
+
+<p><a href="http://vagrantmanager.com/" target="_blank">Vagrant Manager</a> という、GUI で Vagrant の状態管理ができるツールがあるので、試しに使ってみています。 近い将来、GUI だけで使うとどうなるか？みたいなところで上手く使えたらいいなと思っています。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年3月4日">2015年3月4日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1729">Vagrant の使いどころ・考えどころ</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2015年3月3日">2015年3月3日</time>
@@ -142,9 +987,151 @@
   </ul>
 </div>
 
+
+
+
+<p>Vagrant, Chef 周りの知見が溜まってきたのでそろそろまとめていきたいと思っているのですが、 まだまだ自分の中で分からない部分も多く、 かつ自分はインフラエンジニアではないので、 正直どこまで書いたらいいのか迷っています。</p>
+
+<p>また、chef-solo はなくなるから、これからは chef-zero だ、なんて言われても、 インフラに関する前提知識が薄いので、なかなかついていくことができません・・・。</p>
+
+<p>とはいえ、少なくとも使っていく中で<strong>自分なりの思想</strong>みたいなものははっきりしてきたので、 まずはそこから書いてみようと思います。</p>
+
+<h2 id="vagrant-の用途を考える">Vagrant の用途を考える</h2>
+
+<p>Vagrant が何なのかを知らない人に説明するとすれば、 <strong>仮想マシン（VM）をコマンドラインで統一的に扱えるインターフェース</strong>のようなものだと説明できると思います。</p>
+
+<p>決して仮想環境そのものではなく、仮想環境を提供してくれるものと<strong>セットで</strong>使います。 例えば VirtualBox や VMWare 、あるいはリモートですが AWS(Amazon Web Service) なんかも選択肢になり得ます。</p>
+
+<p>詳しくは <a href="https://www.vagrantup.com/" target="_blank">https://www.vagrantup.com/</a> からインストール手順などを参考にして、実際に試されると良いかと思います。 （今回はこの辺り、一切触れません）</p>
+
+<p>Vagrant をどういう用途で使うかというと、おそらく大きく2種類に分かれると思います。（主観）</p>
+
+<ol>
+<li><strong>ローカルの開発用</strong>としてローカルでのみ使い続ける</li>
+<li><strong>本番環境の検証用</strong>として、同じレシピを仮想マシン・リモート環境にそれぞれ適用</li>
+</ol>
+
+<p>1.は<strong>開発寄り</strong>の人が一番思いつきやすい用途だと思います。 全く同一でもない限り、ローカルで開発したものをリモート環境へ持っていくと、 少なからず環境による差異が問題になってきます。</p>
+
+<p>2.は、<strong>運用寄り</strong>（インフラ寄り？）の人が一番思いつきやすい用途だと思います。 いくら Chef が便利だからといっても、本番環境にトライアンドエラーでレシピ適用して 問題がないケースはほとんどないと言っていいと思います。 この場合、手元の仮想マシンに対してレシピを適用して検証、問題なければ本番マシンに対して適用、 という流れが良いのではないかと考えています。</p>
+
+<h2 id="僕なりの-vagrant-chef-の使い方">僕なりの Vagrant, Chef の使い方</h2>
+
+<p>ここからはポイントに絞ってまとめていきます。</p>
+
+<h3 id="開発と運用とで-vagrantfile-を分けた">開発と運用とで Vagrantfile を分けた</h3>
+
+<p>上記の用途の違いから、もし両方の用途が想定される場合は、 そもそも <strong>Vagrantfile を複数ディレクトリで分けて管理</strong>するとすっきりします。</p>
+
+<p>Vagrantfile 上には、複数の仮想マシンの定義が記述できるため、 まとめて書こうと思えば全然書けてしまうのですが、 目的が全然異なっているので、<strong>使うレシピも共通化しない</strong>ケースが多くなってくると思います。 （例えば開発用であれば、本番環境ほどセキュリティに過敏にならなくても良い場合があります）</p>
+
+<p>Vagrantfile と同階層に cookbooks, site-cookbooks といった 適用するレシピのディレクトリを作って管理していますが、 レシピを共通化しないのであれば、あえて混ぜる理由もありません。</p>
+
+<h3 id="ポート番号-ip-アドレスの管理をしっかり行う">ポート番号、IP アドレスの管理をしっかり行う</h3>
+
+<p>Vagrantfile が複数存在していると、今度は <strong>SSH で接続するためのポート番号や、 VM にアクセスするための IP アドレスが重複してくる可能性</strong>がどんどん高くなります。</p>
+
+<p>開発想定の VM は何番から何番のポートを順に使い、IP アドレスはここから順に割り当てる、 運用想定の VM はこの番号から順に使う、といったように、 ポート番号、IP アドレスの管理をしっかり行うのが重要だと思います。</p>
+
+<p>.ssh/config に、しっかり名前付きで記述しておき、 どの VM にもすぐにアクセスできるようにしておくと気持ちいいです。</p>
+
+<pre><code>Host virtual_machine_name
+  HostName 127.0.0.1
+  User vagrant
+  Port 12345
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile /path/to/insecure_private_key
+  IdentitiesOnly yes
+  LogLevel FATAL
+</code></pre>
+
+<p>認証鍵のレシピがうまく適用できるようになったら、 この辺りの設定も、その認証鍵設定済みのユーザーで気軽にアクセスできるようになっていると なお気持ちいいです。 （この辺りの話はまた改めてまとめ直したいです・・・）</p>
+
+<p>あっ、当たり前ですが、Vagrant で VM を複数管理するときは、 ポート番号を全部バラバラにしないといけません。（当たり前）</p>
+
+<pre><code>vagrant ssh-config &gt;&gt; ~/.ssh/config
+</code></pre>
+
+<p>上記コマンドで設定を勝手に吐き出して追記してくれる便利なコマンドが用意されていますが、 複数 VM を想定したものになっていない（と思われる）ため、 例えば apple_vm, banana_vm の設定を順に追記してのち、 banana_vm に SSH してたつもりが、ずっと apple_vm に SSH してたことになってた、 なんてことが起こるかもしれません。（体験談）</p>
+
+<p>接続ではまらないためにも、<strong>VM にアクセスするためのポート番号と VM 作成時の IP アドレスは きちんと管理</strong>すると良いと思います。</p>
+
+<h3 id="レシピの適用は-vagrant-provision-よりも-knife-コマンドで">レシピの適用は vagrant provision よりも knife コマンドで</h3>
+
+<p>Vagrant はあくまで<strong>仮想マシン（VM）をコマンドラインで統一的に扱えるインターフェース</strong>なので、 仮想マシンの管理に徹した方がすっきりします。</p>
+
+<p>以下は、Vagrant 1.6.5 で vagrant init したときの初期設定（コメント付き）を抜粋したものです。</p>
+
+<pre><code>config.vm.provision &quot;chef_solo&quot; do |chef|
+  chef.cookbooks_path = &quot;../my-recipes/cookbooks&quot;
+  chef.roles_path = &quot;../my-recipes/roles&quot;
+  chef.data_bags_path = &quot;../my-recipes/data_bags&quot;
+  chef.add_recipe &quot;mysql&quot;
+  chef.add_role &quot;web&quot;
+
+  # You may also specify custom JSON attributes:
+  chef.json = { mysql_password: &quot;foo&quot; }
+end
+</code></pre>
+
+<p>このような形で、レシピの変更があるたびに Vagrantfile を触るというのは、 なんというか本質的ではないので、あくまで Vagrantfile には以下の情報のみが書かれているのが望ましいのでは？と思っています。（もちろん追加で synced_folder とか）</p>
+
+<ul>
+<li>vm.hostname（名前）</li>
+<li>vm.box = &#8220;chef/centos-6.6&#8243;（box ファイル用）</li>
+<li>vm.network :forwarded_port, id: &#8220;ssh&#8221;, host: 12345, guest: 22（Vagrant 用ポート番号）</li>
+<li>vm.network :forwarded_port, host: 8080, guest: 80（HTTP 用ポート番号）</li>
+<li>vm.network :private_network, ip: &#8220;192.168.24.24&#8221;（IP アドレス）</li>
+</ul>
+
+<p>2つ目のところは自分が使いたい box ファイルを URL で指定すれば良いらしいですが、 以下に公開されているところを名前を指定するだけでも OK です。</p>
+
+<p><a href="https://vagrantcloud.com/boxes/search" target="_blank">https://vagrantcloud.com/boxes/search</a></p>
+
+<p>ちょっと脱線しましたが、<strong>Vagrantfile 上には仮想マシンの定義のみをできるだけシンプルに管理しつつ、 レシピの適用は knife コマンドを用いて行った方がスムーズ</strong>だと思います。</p>
+
+<p>こちらの方法のメリットとして、上記の運用想定の Vagrant 管理において、 ローカル環境、本番環境とで同一の knife コマンドでレシピの適用ができるため、 レシピの適用方法が、適用先の環境に依存することなくスムーズにレシピ適用できる点があると思います。</p>
+
+<p>また、仮想マシンが起動中に Vagrantfile の設定変更を行ってしまうことで、 うまく再起動などができなくなるケースが出てきます。 （例えば Vagrant 自身が SSH で接続するポート番号を途中で変えてしまうなど） <strong>起動中に Vagrantfile はできるだけ触らない方が良い</strong>のではないかと思います。</p>
+
+<p>ただ、vagrant provision でレシピを適用できるようにしておくと、 一通り GUI で扱えるようにしておいた場合に、 コマンドラインが苦手な人とも一緒に扱えるという利点が出てくる場合もあり得ます。</p>
+
+<p>とはいえ、knife コマンドに慣れておいて損はないかなと、使ってみてそう思っています。 （この辺の掘り下げた話も追い追いで・・・）</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>時間もそこまで取れなかったので、とりあえず自分なりの思想的なところまでをまとめてみました。</p>
+
+<p>実際まだまだ書ききれないことも多く、 例えば Vagrant のプラグインでこれ入れておくとこういうシーンで便利とか、 Web サーバにおいて、Vagrant 特有のはまりポイントと解決方法など、 過去に書いた記事の疑問点もだいぶ解消されてきたところもあるので、 改めてまとめ直したいと思います。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2015年3月3日">2015年3月3日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/ssh/">SSH</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1127">Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年7月26日">2013年7月26日</time>
@@ -157,9 +1144,183 @@
   </ul>
 </div>
 
+
+
+
+<p>2015/04/01追記：続き書きました。<a href="/archives/1749/">Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた</a></p>
+
+<p>最近は、隙を見つけて（あんまりないけど） Vagrant + Chef で色々検証をしてたりします。</p>
+
+<p>現実のサーバ構築になるべく即した形でレシピを書こうとしたとき、 <strong>SSH のポート番号を変更する</strong>、といったケースは往々にして出てくるかと思います。（デフォルトは22ですが、そのまま22を使うとアタックを受けやすくなるので変えましょう、という記事は山のようにありますね）</p>
+
+<p><a href="http://easyramble.com/change-ssh-port-number.html" target="_blank">SSH 接続のポート番号を変更 | EasyRamble</a></p>
+
+<p>ただ、Vagrant で SSH のポート番号を変更すると、ちょっとしたところではまってしまって 思いのほか時間がかかったところがあったので、その部分だけメモっておきたいと思います。</p>
+
+<p>なお、CentOS 6 での検証です。他のディストリビューションで設定ファイルなどが異なる可能性はありますが、考え方などはほぼ共通しているかと思いますので、適宜置き換えて考えていただければと思います。</p>
+
+<h2 id="通常のサーバの設定箇所">通常のサーバの設定箇所</h2>
+
+<p>まず、Vagrant などを使わずに設定する場合、どのファイルをいじる必要があるかというと、以下のファイルになるかと思います。</p>
+
+<ol>
+<li>/etc/ssh/sshd_config</li>
+<li>/etc/sysconfig/iptables</li>
+</ol>
+
+<p>1.は、SSH のポート番号を何番にするか？などの設定ファイルです。（もちろん他にも色々項目ありますが）</p>
+
+<p>こちらに、</p>
+
+<pre><code>Port 22
+</code></pre>
+
+<p>という設定が書かれているので、これを適当な番号、</p>
+
+<pre><code>Port 12424
+</code></pre>
+
+<p>などとして、 <code>/etc/init.d/sshd restart</code> で SSH のサービスを再起動することで設定が有効になります。</p>
+
+<p>2.は、そのポート番号の通信を許可するかどうか？などの設定ファイルです。</p>
+
+<p>こちらに、</p>
+
+<pre><code>-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+</code></pre>
+
+<p>という設定が書かれているので、こちらも先ほどの番号に合わせる形で</p>
+
+<pre><code>-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 12424 -j ACCEPT
+</code></pre>
+
+<p>などとします。 こちらも同様に <code>/etc/init.d/networking restart</code> でネットワークの再起動をすることで設定が有効になります。</p>
+
+<p>ここまでは特に新しいことではなく、&#8221;linux ssh ポート 変更&#8221; とか、&#8221;linux iptables&#8221; とかでググればたくさんありますので、紹介程度にとどめておきます。</p>
+
+<h2 id="vagrant-chef-で行う場合">Vagrant + Chef で行う場合</h2>
+
+<p>今までの記事、<a href="http://girigiribauer.localhost/archives/1048" target="_blank">http://girigiribauer.localhost/archives/1048</a> などを見てもらえれば分かるように、 各 Resource のうち、以下だけで上記レシピは書くことができるはずです。</p>
+
+<ul>
+<li>file（ファイルの設置）</li>
+<li>service（サービスの起動・停止・再起動）</li>
+</ul>
+
+<p>ですが、結論から言うと、 SSH のポート番号を変えた際に、vagrant コマンド経由で仮想マシンへの接続が出来なくなってしまい、 （正確には、ポート番号を変えてサービスの再起動を行ったタイミングですね） 結果として上手くいきませんでした。</p>
+
+<p>具体的には、<code>vagrant up</code> にて、最初のレシピが実行され、<code>vagrant up</code> の終了までは上手くいきます。 ですが、そこから <code>vagrant halt</code> や、<code>vagrant reload</code> などを行っても、そもそも仮想マシンとの通信が上手くいかなくなってしまい、最終的には <code>vagrant destroy</code> で世界の終わりを迎えるしかなくなってしまいます。</p>
+
+<p>うーん、困りましたね。みなさんどうしているのでしょうか？</p>
+
+<h3 id="vagrant-up-などで使うポート">vagrant up などで使うポート</h3>
+
+<p><code>vagrant up</code> や、<code>vagrant halt</code> 、または <code>vagrant reload</code> のコマンドで仮想マシンに接続するのですが、 こちらの接続にも（おそらく）SSH が使われています。 デフォルトで22番ポートを使用することになるかと思います。</p>
+
+<p>1回も仮想マシンを動かしておらず、Chef のレシピも実行されていないとき、仮想マシンのセットアップ処理が走ります。</p>
+
+<p>結果として、vagrant という名前のユーザーとともに、すべて初期の設定ファイルが設置されるため、 SSH の接続も、最初は22番ポートでせざるをえないのかなーと思います。</p>
+
+<h2 id="解決方法を色々考えてみた">解決方法を色々考えてみた</h2>
+
+<p>まず前置きとして、Vagrantfile に書かれていない SSH の設定項目が存在しています。</p>
+
+<p>ホストOSとゲストOSを SSH で接続する際、ホストOSの22番ポートを使わず、代わりに別の番号（2222番とか）を使用する、<strong>ポートフォワーディング</strong>の設定が暗黙的に行われています。</p>
+
+<ul>
+<li>host:2222 =&gt; guest: 22</li>
+</ul>
+
+<p>この設定が暗黙的に行われることで、ホスト側の2222番ポートでアクセスすると、ゲスト側である仮想OSの22番ポートに接続される、といった仕組みです。</p>
+
+<p>今回やりたいのは、初回のレシピが実行され、SSH のポート番号が変更された時点で、</p>
+
+<ul>
+<li>host: 2222 =&gt; guest: 12424</li>
+</ul>
+
+<p>という接続ポート番号の変更を行いたいわけです。</p>
+
+<h2 id="無理っぽくね">無理っぽくね？</h2>
+
+<p>Vagrantfile が解釈されるのは、<code>vagrant up</code> などのコマンドが入力された時点になるかと思います。</p>
+
+<p>その後レシピが実行されて SSH のポート番号が変更になっても、初回実行時はまだ22番ポートで普通に接続しているので、 レシピの実行が終わり、<code>vagrant halt</code> もしくは <code>vagrant reload</code> で再度仮想マシンに接続し直すと、 もうすでにポート番号が変わっていて、22番で接続できなくなっているという状態に陥ります。</p>
+
+<h3 id="vagrantfile-上での-ssh-のポート番号の変更">Vagrantfile 上での SSH のポート番号の変更</h3>
+
+<p>ちなみに、Vagrantfile 上で SSH のポート番号の変更をするには、以下のように書けば良いっぽいです。</p>
+
+<pre><code>ssh_port = 12424
+
+Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;CentOS_6.4_x86_64_Minimal&quot;
+
+  config.ssh.guest_port = ssh_port
+
+  config.vm.define :vmclient1 do |vmclient|
+
+    vmclient.vm.hostname = &quot;vmclient1&quot;
+    vmclient.vm.network :private_network, ip: &quot;192.168.100.11&quot;
+    vmclient.vm.network :forwarded_port, guest: ssh_port, host: 2222, id: &quot;ssh&quot;
+（以下略）
+</code></pre>
+
+<p>ゲスト側、つまりレシピが実際に動いている仮想OS上の SSH ポート番号を、変数 ssh_port としてありますが、当然直に書いても動きます。</p>
+
+<p>forwarded_port の設定で、 <strong>id: &#8220;ssh&#8221; と付け加えてやることで、SSH のデフォルトで動くポートフォワーディングの設定の上書きが出来る</strong>ようです。</p>
+
+<h3 id="レシピ実行中に-ssh-のポート番号を変える">レシピ実行中に SSH のポート番号を変える・・・？</h3>
+
+<p>Vagrantfile 上でなんとかレシピの実行中にポート番号変えられないかと色々調べてもみましたが、やはり無理そうです。</p>
+
+<p>となると、 Vagrantfile 上でポート番号を変えるまでは、サービスの再起動などをしてはいけないことになります。</p>
+
+<p>初回だけは、22番ポートを使って接続しつつ、設定ファイルのみ書き換えておき、サービスの再起動は後回し。 その後仮想OSをシャットダウンさせ（<code>vagrant reload</code> だと、この後 Vagrantfile を書き換えるタイミングを見失うので、ここでは <code>vagrant halt</code> でシャットダウンさせる）、 Vagrantfile の、さっきの ssh_port の変数のところを 22 から 12424 などに変え、<code>vagrant up</code> でゲストOSを立ち上げます。</p>
+
+<p>こうすれば、SSH のポート番号の変更が可能になるわけですが、非常にめんどくさい話ですね。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>本当に何から何まで自動化したい場合は、vagrant コマンドの外側を管理する何かが必要になるんじゃないかなーとか思ってます。 （1回目の起動は22番使って、そこから自動で <code>vagrant halt</code> して、Vagrantfile のポート書き換えて再度 <code>vagrant up</code> してくれる何か）</p>
+
+<p>とはいっても、そこまで厳密にワンストップですべて自動化したいかと言われると、そうでもなかったりするので、 SSH のポート番号を変えたいときは、以下の手順でやろうと思いました。</p>
+
+<ol>
+<li><strong>初回だけ22番</strong>で動かし、ssh の設定を走らせる（<strong>サービスの再起動はしない</strong>）</li>
+<li><code>vagrant halt</code> で一旦シャットダウンする</li>
+<li>Vagrantfile の<strong>ポート部分書き換え</strong></li>
+<li>普通に <code>vagrant up</code></li>
+</ol>
+
+<p>逆になんかいい方法あれば教えてほしいです。ぜひ。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年7月26日">2013年7月26日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/ssh/">SSH</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1095">Chef の サードパーティ Cookbook を利用して、yum のリポジトリを追加してみる</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年5月17日">2013年5月17日</time>
@@ -172,9 +1333,285 @@
   </ul>
 </div>
 
+
+
+
+<p>よーし、いろいろアプリケーションのインストールの自動化しちゃうぞー！ と思っていましたが、 先に試しておいた方が良さそうなものがあったので、そちらを先にやります。</p>
+
+<h2 id="yum-のリポジトリの追加">yum のリポジトリの追加</h2>
+
+<p>RPM系Linuxディストリビューション、つまり CentOS だったり、 Fedora などの Linux のディストリビューションでは、 <strong>yum (Yellowdog Updater Modified)</strong> と呼ばれるパッケージ管理システムが採用されています。</p>
+
+<p>yum に限らずですが、ソースコードから毎回インストールするのはかなり骨の折れる作業だったりします。 （もちろんやったことない場合には、絶対経験しておくべき作業ではあると思うのですが。）</p>
+
+<p>この yum は、パッケージのインストールがコマンド 1行で出来るので非常に便利ではあるものの、そのまま使うと場合によってはちょっと古めのパッケージ（PHP5.3, MySQL5.1 など）がインストールされてしまいます。</p>
+
+<p>ゲストOS上で、sandbox モードになった状態で試しに PHP をインストールしてみます。</p>
+
+<p>※これは、ゲストOSに実際にログインして手作業でコマンド打ってます。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ sudo yum install php
+（略）
+Dependencies Resolved
+
+================================================================================
+ Package            Arch        Version                      Repository    Size
+================================================================================
+Installing:
+ php                x86_64      5.3.3-22.el6                 base         1.1 M
+Installing for dependencies:
+ apr                x86_64      1.3.9-5.el6_2                base         123 k
+ apr-util           x86_64      1.3.9-3.el6_0.1              base          87 k
+ apr-util-ldap      x86_64      1.3.9-3.el6_0.1              base          15 k
+ httpd              x86_64      2.2.15-28.el6.centos         updates      821 k
+ httpd-tools        x86_64      2.2.15-28.el6.centos         updates       73 k
+ mailcap            noarch      2.1.31-2.el6                 base          27 k
+ php-cli            x86_64      5.3.3-22.el6                 base         2.2 M
+ php-common         x86_64      5.3.3-22.el6                 base         524 k
+
+Transaction Summary
+================================================================================
+Install       9 Package(s)
+
+Total download size: 4.9 M
+Installed size: 16 M
+Is this ok [y/N]: （y と入力）
+（略）
+Installed:
+  php.x86_64 0:5.3.3-22.el6
+
+Dependency Installed:
+  apr.x86_64 0:1.3.9-5.el6_2                       apr-util.x86_64 0:1.3.9-3.el6_0.1        apr-util-ldap.x86_64 0:1.3.9-3.el6_0.1        httpd.x86_64 0:2.2.15-28.el6.centos
+  httpd-tools.x86_64 0:2.2.15-28.el6.centos        mailcap.noarch 0:2.1.31-2.el6            php-cli.x86_64 0:5.3.3-22.el6                 php-common.x86_64 0:5.3.3-22.el6
+
+Complete!
+</code></pre>
+
+<p>入りました。さてバージョンを表示してみます。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ php -v
+PHP 5.3.3 (cli) (built: Feb 22 2013 02:51:11)
+Copyright (c) 1997-2010 The PHP Group
+Zend Engine v2.3.0, Copyright (c) 1998-2010 Zend Technologies
+</code></pre>
+
+<p><strong>5.3.3</strong> が入ったようです。</p>
+
+<p>ちなみに現時点での最新が5.4.15 で、5.5.0 の RC1（リリース候補版、もうすぐ出るよー的な意味）も出ていますし、 5.3 は若干古くなっているバージョンと言ってもいいかもしれません。 （というと、古くねえよ！全然マシだろ！という声がどこかから上がってくるかもしれませんが・・・）</p>
+
+<p>また、PHP の拡張モジュールも何が入っているのやらさっぱりです。</p>
+
+<p>yum のリポジトリを追加することで、最新のパッケージを選択することが可能となるので、 <strong>RPMforge, EPEL, Remi</strong> あたりのリポジトリを追加して、最新のパッケージをインストールできるよう、Chef で色々設定してみます。</p>
+
+<h2 id="手動でリポジトリ追加するのけっこうめんどい">手動でリポジトリ追加するのけっこうめんどい</h2>
+
+<p>学生のころ、yum のリポジトリの追加を手動で何回かやったことがあるのですが、 これがちょっとめんどくさかった記憶があります。</p>
+
+<p>確かに今まで出て来た方法でやれば、yum のリポジトリの追加は自動化できるのですが、 そろそろ先人の知恵をお借りしてもいいのではないかなと思います。</p>
+
+<p><img src="/img/2013/05/chef-thirdparty.png" alt="" /></p>
+
+<p>公式のコミュニティサイトでは、先人の知恵が詰まった Cookbook が多数公開されています。 <a href="http://community.opscode.com/cookbooks" target="_blank">http://community.opscode.com/cookbooks</a></p>
+
+<p>この中に、yum というのももちろん公開されているので、どんなものかを一通り眺めつつ、サードパーティの Cookbook を使って yum のリポジトリの追加を行ってみようと思います。</p>
+
+<h3 id="先にリポジトリの一覧を調べておく">先にリポジトリの一覧を調べておく</h3>
+
+<p>一応、入ったかどうか確認するために、あらかじめ現在の yum のリポジトリ一覧を確認しておきましょう。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ yum repolist all
+（長いので略）
+base                                                                            CentOS-6 - Base                                                                         enabled: 6,381
+c6-media                                                                        CentOS-6 - Media                                                                        disabled
+centosplus                                                                      CentOS-6 - Plus                                                                         disabled
+contrib                                                                         CentOS-6 - Contrib                                                                      disabled
+debug                                                                           CentOS-6 - Debuginfo                                                                    disabled
+extras                                                                          CentOS-6 - Extras                                                                       enabled:    12
+updates                                                                         CentOS-6 - Updates                                                                      enabled:   676
+repolist: 7,069
+</code></pre>
+
+<p>あとで比較に使おうと思います。</p>
+
+<h2 id="vagrantfile-に-cookbook-を追加する">Vagrantfile に Cookbook を追加する</h2>
+
+<p>Vagrant で使用する Cookbook は、~/Vagrant/cookbooks ディレクトリに入れていくルールにしてましたので、</p>
+
+<pre><code>$ cd ~/Vagrant/cookbooks
+</code></pre>
+
+<p>cookbooks ディレクトリへ移動して、</p>
+
+<pre><code>$ git clone https://github.com/opscode-cookbooks/yum.git
+</code></pre>
+
+<p>公開されている yum の Cookbook を git clone で持ってきます。</p>
+
+<p>すると、自分で作った vmclient1, vmclient2 の他に、yum というディレクトリが出来ているはずなので、ざっと中を覗いてみます。</p>
+
+<pre><code>$ cd yum/recipes
+</code></pre>
+
+<p>自分で書いたように、通常は recipes/default.rb が呼ばれますので、こちらを見てみると・・・</p>
+
+<p><strong>コメント文だけで中には特に何も書いてありませんでした。</strong></p>
+
+<p>さてさて、Vagrant のドキュメントを見てみます。</p>
+
+<p><img src="/img/2013/05/chef-thirdparty02.png" alt="" /></p>
+
+<p>&#8216;apache&#8217; っていう Cookbook が使いたかったら、<code>chef.add_recipe 'apache'</code> って書くと追加できるよ！とあります。</p>
+
+<p>また、EPEL であれば &#8216;yum::epel&#8217; 、remi であれば &#8216;yum::remi&#8217; と入れることで Cookbook の指定が出来るようです。</p>
+
+<p>つまり、<strong>default.rb</strong> には何も書いてないけど、<strong>epel.rb</strong> や <strong>remi.rb</strong> にレシピが書いてあるので、 この名前を指定することで<strong>ライブラリのように呼び出して使う</strong>ことができるようですね。</p>
+
+<p>なるほど。</p>
+
+<p>ではさっそく Vagrant に追記して、実行してみます。</p>
+
+<h3 id="vagrantfile-への追記">Vagrantfile への追記</h3>
+
+<p>Vagrantfile の必要なところだけ抜粋します。</p>
+
+<pre><code>vmclient.vm.provision :chef_solo do |chef|
+  chef.cookbooks_path = &quot;cookbooks&quot;
+  chef.data_bags_path = &quot;data_bags&quot;
+  chef.add_recipe &quot;yum::epel&quot;
+  chef.add_recipe &quot;yum::remi&quot;
+  chef.add_recipe &quot;vmclient1&quot;
+end
+</code></pre>
+
+<p>※どうやら最初にレシピ書いた段階では、<code>chef.run_list</code> と書いてましたが、<code>chef.add_recipe</code> の方で統一すべきのようです。</p>
+
+<h3 id="cookbook-への追記">Cookbook への追記</h3>
+
+<pre><code>package 'php' do
+  action  :install
+end
+</code></pre>
+
+<p>ここに options &#8216;hogehoge&#8217; と書くことで、コマンドラインにつけるオプションをそのまま書くことが出来るようですが、 Cookbook で yum のリポジトリを追加するだけでどう変化するのかを見るので、一旦何も指定せずにそのままインストールしてみます。</p>
+
+<h3 id="vagrant-sandbox-rollback-で元に戻す">vagrant sandbox rollback で元に戻す</h3>
+
+<p>そして、さっきゲストOSを色々いじってしまったので、 <code>vagrant sandbox rollback</code> で元に戻してから、仮想マシンを再起動します。</p>
+
+<pre><code>$ vagrant sandbox rollback
+</code></pre>
+
+<p>綺麗さっぱり元通りです。</p>
+
+<h2 id="yum-のリポジトリ追加-php-のインストールのコンボ">yum のリポジトリ追加 → PHP のインストールのコンボ</h2>
+
+<pre><code>$ vagrant reload
+</code></pre>
+
+<p>さてどうなるでしょうか。</p>
+
+<p>さすがにログ全部は長過ぎなんで、ポイントだけを順番に抜粋してみます。</p>
+
+<pre><code>[2013-05-16T18:11:39+00:00] INFO: Setting the run_list to [&quot;recipe[yum::epel]&quot;, &quot;recipe[yum::remi]&quot;, &quot;recipe[vmclient1]&quot;] from JSON
+[2013-05-16T18:11:39+00:00] INFO: Run List is [recipe[yum::epel], recipe[yum::remi], recipe[vmclient1]]
+[2013-05-16T18:11:39+00:00] INFO: Run List expands to [yum::epel, yum::remi, vmclient1]
+</code></pre>
+
+<p>3つのレシピが順に実行されていくのが分かります。</p>
+
+<pre><code>[2013-05-16T18:12:35+00:00] WARN: Cloning resource attributes for yum_key[RPM-GPG-KEY-EPEL-6] from prior resource (CHEF-3694)
+[2013-05-16T18:12:35+00:00] WARN: Previous yum_key[RPM-GPG-KEY-EPEL-6]: /tmp/vagrant-chef-1/chef-solo-1/cookbooks/yum/recipes/epel.rb:22:in `from_file'
+[2013-05-16T18:12:35+00:00] WARN: Current  yum_key[RPM-GPG-KEY-EPEL-6]: /tmp/vagrant-chef-1/chef-solo-1/cookbooks/yum/providers/repository.rb:85:in `repo_config'
+</code></pre>
+
+<p>途中でGPGキーに関する警告が色々出てるっぽいです。この辺今回はすっ飛ばしてやってますからねー。</p>
+
+<pre><code>[2013-05-16T18:12:36+00:00] INFO: template[/etc/yum.repos.d/epel.repo] updated content
+[2013-05-16T18:12:36+00:00] INFO: template[/etc/yum.repos.d/epel.repo] mode changed to 644
+[2013-05-16T18:12:36+00:00] INFO: template[/etc/yum.repos.d/epel.repo] sending run action to execute[yum-makecache] (immediate)
+</code></pre>
+
+<p>Template Resource を使って、 `/etc/yum.repos.d/epel.repo を色々書いてくれていますね。</p>
+
+<pre><code>[2013-05-16T18:15:39+00:00] INFO: Processing yum_key[RPM-GPG-KEY-remi] action add (yum::remi line 22)
+</code></pre>
+
+<p>remi リポジトリも同様でした。</p>
+
+<pre><code>[2013-05-16T18:24:58+00:00] INFO: Processing package[php][/php] action install (vmclient1::default line 19)
+[2013-05-16T18:24:58+00:00] INFO: package[php][/php] installing php-5.4.15-1.el6.remi from remi repository
+</code></pre>
+
+<p>さて、PHP のインストールがされているようですが、 どうやら <strong>PHP 5.4.15</strong> が入っているようですね！</p>
+
+<p>こんな感じで一通りの自動化作業が終わったところで、実際に何がインストールされたか見てみましょう。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ php -v
+PHP 5.4.15 (cli) (built: May  9 2013 08:20:20)
+Copyright (c) 1997-2013 The PHP Group
+Zend Engine v2.4.0, Copyright (c) 1998-2013 Zend Technologies
+</code></pre>
+
+<p>おおー、ちゃんと入っておりました。</p>
+
+<p>ちなみに yum のリポジトリはどうでしょう？</p>
+
+<pre><code>base                                                              CentOS-6 - Base                                                                                       enabled: 6,381
+c6-media                                                          CentOS-6 - Media                                                                                      disabled
+centosplus                                                        CentOS-6 - Plus                                                                                       disabled
+contrib                                                           CentOS-6 - Contrib                                                                                    disabled
+debug                                                             CentOS-6 - Debuginfo                                                                                  disabled
+epel                                                              Extra Packages for Enterprise Linux                                                                   enabled: 8,783
+extras                                                            CentOS-6 - Extras                                                                                     enabled:    12
+remi                                                              Les RPM de remi pour Enterprise Linux 6.4 - x86_64                                                    enabled: 1,015
+updates                                                           CentOS-6 - Updates                                                                                    enabled:   678
+repolist: 16,869
+</code></pre>
+
+<p><strong>epel と remi が増えておりますね！</strong></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>時間がないので今回はここまでですが、あとでサードパーティ Cookbook の中で何が行われていて、結果どういうファイルがどう変わったか？というのは、しっかりと見ておこうと思います。</p>
+
+<p>中で何やってるのかよく分からないけど、順番通りにやったらなんかできましたーみたいなのをよく聞きますが、 そういう<strong>ブラックボックス的な使い方は非常に危険だと思う</strong>ので、 あくまで「普通にやったら 100 の労力かかるけど、それを 1 にしてくれるショートカットツール」みたいな、 <strong>めんどくさいところの時間短縮を行ってくれるツール、という位置づけで常に使うことを心がけていきたいです。</strong></p>
+
+<p>（あ、前者の使い方って、実装者が「よくわかんないけど jQuery プラグインをポンと入れたら動いちゃったんでオッケーですー」って言ってるのと大差ないかもしれないですね・・・。）</p>
+
+<h2 id="参考url">参考URL</h2>
+
+<ul>
+<li><a href="http://community.opscode.com/cookbooks" target="_blank">http://community.opscode.com/cookbooks</a></li>
+<li><a href="https://github.com/opscode-cookbooks/yum" target="_blank">https://github.com/opscode-cookbooks/yum</a></li>
+<li><a href="http://qiita.com/items/98a7cc5ac33225619e69" target="_blank">CentOS6 で remi から php や mysql をインストールするための yum の設定</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年5月17日">2013年5月17日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1066">Chef の Data Bag を使ってユーザー作成の自動化をしてみる</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年5月14日">2013年5月14日</time>
@@ -187,9 +1624,596 @@
   </ul>
 </div>
 
+
+
+
+<p>Chef のユーザー管理を突き詰めてみるだけでも、色々と勉強になっていますね。</p>
+
+<p>前回までで、Chef の Cookbook にユーザー作成やグループ作成のレシピを記述することで、 ユーザー作成の自動化を試してみましたが、今回はもうちょっと複雑なことをやりたいので、 別の方法を試してみようと思います。</p>
+
+<p>『入門 Chef Solo』によると、</p>
+
+<blockquote>
+<p>システムに追加されるべきユーザーの各種データなどはノードの「属性」でもないし Resource の「属性」でもないデータと見ることができます。 こういったドメインモデル的なデータは Chef のデータ管理の仕組みである Data Bag を使うほうが扱いやすい。</p>
+
+<p>(『入門 Chef Solo』 #19 Attribute と Data Bag より引用)</p>
+</blockquote>
+
+<p>とのことで、データを扱うための仕組みが存在するようです。</p>
+
+<p>また、</p>
+
+<blockquote>
+<p>Data Bag はクックブック単位ではなく、レポジトリ全体にグローバルなスコープのデータです。</p>
+
+<p>(『入門 Chef Solo』 #19 Attribute と Data Bag より引用)</p>
+</blockquote>
+
+<p>ともありますね。</p>
+
+<p>ということで、今回は Data Bag の仕組みを使って、もうちょっと凝ったユーザー作成の自動化をやってみようと思います。</p>
+
+<h2 id="まずは-data-bag-を使ってみる">まずは Data Bag を使ってみる</h2>
+
+<p>この Data Bag、Cookbook とは別のところに書いて、Cookbook 側から読み込んで使う類のものらしいです。 対象ディレクトリの下に、種別のサブディレクトリを区切って、その中に JSON ファイルをデータごとに用意するようです。</p>
+
+<p>であれば、まずは自分で作った cookbooks ディレクトリと並列なところに、 data_bags というディレクトリでも作り、users というサブディレクトリを作っておきます。</p>
+
+<pre><code>$ mkdir -p data_bags/users
+$ cd data_bags/users
+</code></pre>
+
+<p>で、それぞれのユーザーごとに [ユーザー名].json のファイルを作ります。 ちなみにこの JSON ファイルは、あくまで任意のデータを扱うためのもので、あとで Cookbook 側から読み込むために用意するので、 前回設定した項目がこちらに用意できればオーケーですね。前回と同じことが出来るところまで設定しましょう。</p>
+
+<pre><code>$ cat alice.json
+// alice
+{
+  &quot;id&quot;: &quot;alice&quot;,
+  &quot;shell&quot;: &quot;/bin/bash&quot;,
+  &quot;password&quot;: &quot;megckhCt3LluU&quot;
+}
+</code></pre>
+
+<p>そして、default.rb のレシピはこんな感じ。</p>
+
+<pre><code># Cookbook ユーザーとグループのテスト
+
+data_ids = data_bag('users')
+data_ids.each do |id|
+  u = data_bag_item('users', id)
+  user u['id'] do
+    shell    u['shell']
+    password u['password']
+    supports :manage_home =&gt; true, :non_unique =&gt; false
+    action   [:create]
+  end
+end
+
+group 'samplegroup' do
+  group_name 'samplegroup'
+  members    ['alice', 'bob']
+  action     [:create]
+end
+</code></pre>
+
+<p>Data Bag の機能を使っているところとしては、</p>
+
+<ul>
+<li><strong>data_bag(&#8216;[サブディレクトリ名]&#8217;)</strong> で id 一覧が取得できる</li>
+<li><strong>data_bag_item(&#8216;[サブディレクトリ名]&#8217;, id)</strong> で指定した ID のオブジェクトを Data Bag から取り出し</li>
+</ul>
+
+<p>ですね。この辺は Ruby のスクリプトであることを意識すればそれほど難しいことではないかなーと思います。</p>
+
+<p>また、書いてるときにちょっと気づいたのですが、 Ruby で色々書こうとするときに、<strong>変数名とかに配慮が必要</strong>ですね。</p>
+
+<p>というのも、<code>user</code> とか <code>group</code> とか <code>directory</code> とか書くと、実際はメソッド呼び出しになっている部分の上書きになると思うので、 きっとこの辺の名前は使えません。</p>
+
+<p>『入門 Chef Solo』にも、u とか使ってたのですが、これは user だとかぶってしまうからなのではないかなーと邪推してます。</p>
+
+<h3 id="vagrantfile-の編集">Vagrantfile の編集</h3>
+
+<p>Vagrant から、Cookbook のファイルは見えていますが、Data Bag のファイルはまだ見えてません。</p>
+
+<p>Vagrant の公式のドキュメントの中の、Chef Solo のページにちゃんと書いてあるので見てみます。</p>
+
+<p><a href="http://docs.vagrantup.com/v2/provisioning/chef_solo.html" target="_blank">http://docs.vagrantup.com/v2/provisioning/chef_solo.html</a></p>
+
+<p><img src="/img/2013/05/chef-user06.png" alt="" /></p>
+
+<p>Cookbook の場所の指定と同じように、Data Bag の場所も指定してやります。</p>
+
+<p>今回は、cookbook ディレクトリと同列に data_bags ディレクトリを作ったので、以下のようになるはずです。</p>
+
+<pre><code>vmclient.vm.provision :chef_solo do |chef|
+  chef.cookbooks_path = &quot;cookbooks&quot;
+  chef.data_bags_path = &quot;data_bags&quot;
+  chef.run_list = &quot;recipe[vmclient1]&quot;
+end
+</code></pre>
+
+<h3 id="vagrant-up">vagrant up!</h3>
+
+<p>さて、ここまで書けたら <code>vagrant up</code> なり <code>vagrant reload</code> なりで起動して確認してみます。 一度まっさらな状態にして確認してみるのもいいかもしれません。</p>
+
+<pre><code>[vmclient1] -- /tmp/vagrant-chef-1/chef-solo-1/cookbooks
+[vmclient1] -- /tmp/vagrant-chef-1/chef-solo-2/data_bags
+</code></pre>
+
+<p>お、Cookbook だけじゃなく、Data Bag も何らか作用していることがログから確認できますね。</p>
+
+<p>さらにさらに、</p>
+
+<pre><code>[2013-05-11T19:16:29+00:00] INFO: Processing user[alice] action create (vmclient1::default line 6)
+[2013-05-11T19:16:29+00:00] INFO: Processing user[bob] action create (vmclient1::default line 6)
+[2013-05-11T19:16:29+00:00] INFO: Processing user[carol] action create (vmclient1::default line 6)
+[2013-05-11T19:16:29+00:00] INFO: user[carol] created
+[2013-05-11T19:16:29+00:00] INFO: Processing group[samplegroup] action create (vmclient1::default line 14)
+[2013-05-11T19:16:29+00:00] INFO: Chef Run complete in 0.071730458 seconds
+[2013-05-11T19:16:29+00:00] INFO: Running report handlers
+[2013-05-11T19:16:29+00:00] INFO: Report handlers complete
+</code></pre>
+
+<p>僕は前回のところから立て続けにやっているので、carol だけが削除されていない状態でした。</p>
+
+<p>alice, bob はもう作られていたので、carol だけが作られているのが、<code>user[carol] created</code> というログから予想できます。</p>
+
+<p>さて、ログインして見てみます。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ su - alice
+パスワード:
+[alice@vmclient1 ~]$ su - bob
+Password:
+[bob@vmclient1 ~]$ su - carol
+Password:
+[carol@vmclient1 ~]$
+</code></pre>
+
+<p><strong>成功しました！</strong></p>
+
+<p>前回までと同じく、パスワード認証ではありますが、それぞれ3人のユーザーを作ることが出来ていますね。</p>
+
+<p>ただ、前回の検証時にもあったように、単にCookbook から記述を消すだけではユーザーの削除は行われないので、<a href="http://tech.blog.piyo.org/2012/06/19/chef-data-bag%E6%B4%BB%E7%94%A8%E6%B3%95/" target="_blank">http://tech.blog.piyo.org/2012/06/19/chef-data-bag%E6%B4%BB%E7%94%A8%E6%B3%95/</a> にもあるように、ユーザーの有効/無効を Data Bag のパラメータとして管理する方法が良いのかもしれません。</p>
+
+<h3 id="普通にパスワード認証で-ssh-までしてみる">普通にパスワード認証で SSH までしてみる</h3>
+
+<p>ちょっと脇道それます。これまでは、ゲストOS内で <code>su - alice</code> などで確認をしてましたが、 実際仮想マシン作っているので、ちゃんとIPアドレスも割り振られていて、普通に SSH で入れるはずですよね。</p>
+
+<p>ホストOS（つまり今触ってるPC）から、ゲストOSへ SSH で接続確認をしてみます。</p>
+
+<p>まずは始めから用意されていて、<code>vagrant ssh vmclient1</code> とかでいつも SSH でログインしているであろう vagrant ユーザーで試します。</p>
+
+<pre><code>$ ssh vagrant@192.168.100.11
+The authenticity of host '192.168.100.11 (192.168.100.11)' can't be established.
+RSA key fingerprint is xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '192.168.100.11' (RSA) to the list of known hosts.
+vagrant@192.168.100.11's password:
+Last login: Sat May 11 19:20:10 2013 from xxx.xxx.xxx.xxx
+Welcome to your Vagrant-built virtual machine.
+[vagrant@vmclient1 ~]$ logout
+</code></pre>
+
+<p>はい、これは出来て当然ですね。 いつも &#8216;default&#8217; というホスト名でログインしちゃってたので、IPアドレス直打ちだと最初に「初めて接続するけどいい？」って聞かれますが、問題ないので <strong>yes</strong> ですね。</p>
+
+<p>お次は alice ユーザーです。</p>
+
+<pre><code>$ ssh alice@192.168.100.11
+alice@192.168.100.11's password:
+Welcome to your Vagrant-built virtual machine.
+[alice@vmclient1 ~]$
+</code></pre>
+
+<p>やったー、SSH で入れました！</p>
+
+<h2 id="鍵認証したくてたまらない">鍵認証したくてたまらない</h2>
+
+<p>今度は、パスワード認証以外の方法を自動化できるようにしていきたいなーと思います。</p>
+
+<p>パスワードなしで鍵認証が出来るようにするには、この辺の設定が自動化出来ればいいんじゃないかと思います。</p>
+
+<ul>
+<li>手元に各ユーザーの鍵ファイルを作成</li>
+<li>/home/[ユーザー名]/.ssh/authorized_keys へ公開鍵を登録する</li>
+<li>パーミッションの変更 (0600)</li>
+<li>/etc/ssh/sshd_config の設定項目編集</li>
+<li>sshd サービスの再起動</li>
+</ul>
+
+<p>実際の運用フローを考えるのなら、秘密鍵は本人以外誰にも渡すべきではないものなので、 本人が作成した鍵のうち、公開鍵のみをサーバ運用担当に「これで登録しておいてー」と渡す感じになるのかなと思います。</p>
+
+<p>今回は検証用なので、各ユーザーごとに秘密鍵・公開鍵を用意して、公開鍵のみをさっきの Data Bag の方に記載してみることにします。</p>
+
+<h3 id="公開鍵認証の仕組みについて">公開鍵認証の仕組みについて</h3>
+
+<p>これは完全に余談で、ググったらたくさん情報が載っているのですが、触れずに進めるのもアレなので さらっと鍵認証の仕組みについて触れておきます。</p>
+
+<p><strong>鍵を作るとき</strong></p>
+
+<ol>
+<li>秘密鍵、公開鍵という2種類の鍵が存在（今から作る）</li>
+<li>なんかの文字列に対して、<strong>暗号化だけできるのが公開鍵、それを元に戻せる（復号化）できるのが秘密鍵</strong></li>
+<li>手元には、誰にも見せない秘密鍵を置いておく</li>
+<li>接続対象のサーバには、公開鍵を置いておく</li>
+</ol>
+
+<p><strong>接続するとき</strong></p>
+
+<ol>
+<li>ユーザーがサーバに対して「接続したいですー」とアクセス</li>
+<li>サーバ側は、持っている公開鍵でなんかの文字を暗号化してユーザーに返す</li>
+<li>ユーザーは、持っている秘密鍵で復号化して、なんかの文字をサーバに再度送る</li>
+<li><strong>秘密鍵でしか復号化できない＝秘密鍵をもってる正規のユーザー</strong> であることが確認できる</li>
+</ol>
+
+<p>という流れですね。</p>
+
+<p>つまり今からやろうとしているのは、ホストOS上で鍵を作り、公開鍵のみを Data Bag に書き込み、ゲストOSの公開鍵として設定しようとしているわけです。</p>
+
+<p>その後、ホストOSで一緒に作った秘密鍵を使って、ゲストOSに鍵認証で接続確認をする流れです。</p>
+
+<h3 id="公開鍵と秘密鍵を用意する">公開鍵と秘密鍵を用意する</h3>
+
+<p>alice だけだと複数人のときでも上手くいってる保証にならないので、2人分の alice と bob の鍵を用意しておきます。</p>
+
+<p>検証用なので作る場所はどこでも良いのですが、ホームディレクトリに作った Vagrant ディレクトリの直下に、 alice, bob のディレクトリを作って、そこに入れておくことにします。</p>
+
+<pre><code>$ mkdir alice
+$ mkdir bob
+$ cd alice
+</code></pre>
+
+<p><code>ssh-keygen</code> というコマンドを用いるので、先に help を読み漁りましょう。</p>
+
+<pre><code>SSH-KEYGEN(1)             BSD General Commands Manual            SSH-KEYGEN(1)
+
+NAME
+     ssh-keygen -- authentication key generation, management and conversion
+
+SYNOPSIS
+     ssh-keygen [-q] [-b bits] -t type [-N new_passphrase] [-C comment] [-f output_keyfile]
+
+(中略)
+
+     -t type
+             Specifies the type of key to create.  The possible values are ``rsa1'' for protocol version 1 and ``dsa'', ``ecdsa'' or ``rsa'' for protocol version
+             2.
+</code></pre>
+
+<p>長いので使うところだけ抜粋します。</p>
+
+<p><code>-t</code> オプションで鍵の種類を指定できて、<strong>rsa1, dsa, ecdsa, rsa</strong> の4種類が指定できるようです。 今回は rsa を使います。</p>
+
+<p><code>ssh-keygen -t rsa</code> のコマンドを実行すると、後は対話的に進みます。</p>
+
+<pre><code>$ ssh-keygen -t rsa
+Generating public/private rsa key pair.
+</code></pre>
+
+<p>公開鍵・秘密鍵のセットを作りますよー、と。</p>
+
+<pre><code>Enter file in which to save the key (/Users/[ユーザー名]/.ssh/id_rsa): /Users/[ユーザー名]/Vagrant/alice/id_rsa
+</code></pre>
+
+<p>ファイルをどこに保存するか聞かれていますが、デフォルトのままだとホストOSのホームディレクトリ直下の .ssh 以下に入っちゃうので、 ここは Vagrant/alice になるようにします。</p>
+
+<pre><code>Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+</code></pre>
+
+<p>認証するときのパスフレーズですが、ここは空にしておきます。2回聞かれます。</p>
+
+<pre><code>Your identification has been saved in /Users/[ユーザー名]/Vagrant/alice/id_rsa.
+Your public key has been saved in /Users/[ユーザー名]/Vagrant/alice/id_rsa.pub.
+The key fingerprint is:
+（略）
+The key's randomart image is:
+（略）
+</code></pre>
+
+<p>なんかずらずらーと出ます。これで鍵は出来てます。（検証用なのでさらしても問題はないのですが、臆病なのでやめておきます・・・）</p>
+
+<pre><code>$ ls
+id_rsa     id_rsa.pub
+</code></pre>
+
+<p>id_rsa が秘密鍵で、id_rsa.pub の方が公開鍵ですね。</p>
+
+<p>サーバに登録するのは公開鍵なので、公開鍵の中身を Data Bag の方へ &#8220;key&#8221; という項目を新たに設けて追加しておきます。</p>
+
+<pre><code>$ cat data_bags/users/alice.json
+// alice
+{
+  &quot;id&quot;: &quot;alice&quot;,
+  &quot;shell&quot;: &quot;/bin/bash&quot;,
+  &quot;password&quot;: &quot;megckhCt3LluU&quot;,
+  &quot;key&quot;: &quot;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDE......（略）&quot;
+}
+</code></pre>
+
+<p>bob も同様に作ります。</p>
+
+<pre><code>$ cat data_bags/users/bob.json
+// bob
+{
+  &quot;id&quot;: &quot;bob&quot;,
+  &quot;shell&quot;: &quot;/bin/bash&quot;,
+  &quot;password&quot;: &quot;8Q14e7OP5wroc&quot;,
+  &quot;key&quot;: &quot;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCg......（略）&quot;
+}
+</code></pre>
+
+<p>これで鍵ファイル自体の用意はできました。</p>
+
+<h2 id="ユーザーの公開鍵における-cookbook-見直し">ユーザーの公開鍵における Cookbook 見直し</h2>
+
+<p>Cookbook 内でディレクトリとファイルを作る必要があります。opscode からドキュメント探します。</p>
+
+<p><a href="http://docs.opscode.com/resource_directory.html" target="_blank">http://docs.opscode.com/resource_directory.html</a> <a href="http://docs.opscode.com/resource_file.html" target="_blank">http://docs.opscode.com/resource_file.html</a></p>
+
+<p>こちらを参考にして、各ユーザーごとのホームディレクトリに .ssh ディレクトリと、authorized_keys ファイルを権限など変えつつ 自動的に作るレシピを書きます。</p>
+
+<pre><code># Cookbook ユーザーとグループのテスト
+
+data_ids = data_bag('users')
+data_ids.each do |id|
+  u = data_bag_item('users', id)
+  user u['id'] do
+    shell    u['shell']
+    password u['password']
+    supports :manage_home =&gt; true, :non_unique =&gt; false
+    action   [:create]
+  end
+
+  directory &quot;/home/#{id}/.ssh&quot; do
+    owner u['id']
+    group u['id']
+    mode 0700
+    action :create
+  end
+
+  file &quot;/home/#{id}/.ssh/authorized_keys&quot; do
+    owner u['id']
+    mode  0600
+    content u['key']
+    action :create_if_missing
+  end
+end
+
+group 'samplegroup' do
+  group_name 'samplegroup'
+  members    ['alice', 'bob']
+  action     [:create]
+end
+</code></pre>
+
+<p>ディレクトリは、本人だけが読み書き実行 (0700)、ファイルについても、本人だけが読み書き (0600) という権限のものを作ります。</p>
+
+<p>鍵認証の確認の前に、実際にディレクトリやファイルが出来ているかどうかだけでも確認しておきましょう。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ su - alice
+パスワード:
+[alice@vmclient1 ~]$ ls -la
+total 28
+drwx------  3 alice alice 4096 May 11 21:49 .
+drwxr-xr-x. 7 root  root  4096 May 11 19:16 ..
+-rw-------  1 alice alice   23 May 11 21:45 .bash_history
+-rw-r--r--  1 alice alice   18 Feb 21 21:09 .bash_logout
+-rw-r--r--  1 alice alice  176 Feb 21 21:09 .bash_profile
+-rw-r--r--  1 alice alice  124 Feb 21 21:09 .bashrc
+drwx------  2 alice alice 4096 May 11 21:49 .ssh
+</code></pre>
+
+<p>おおー、.ssh ディレクトリは出来ておりますね。</p>
+
+<pre><code>[alice@vmclient1 ~]$ cd .ssh/
+[alice@vmclient1 .ssh]$ ls
+authorized_keys
+[alice@vmclient1 .ssh]$ cat authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDE...（略）[alice@vmclient1 .ssh]$
+</code></pre>
+
+<p>authorized_keys というファイルも出来ていて、中身も反映されておりました。ここまではオーケーですね！</p>
+
+<h2 id="template-を使って設定ファイルを配置する">Template を使って設定ファイルを配置する</h2>
+
+<p>さあ、あと残っているのは『/etc/ssh/sshd_config の設定項目編集』と『sshd サービスの再起動』だけです。</p>
+
+<p>※sshd サービスの再起動に関しては、パッケージのインストールを詳しくやるタイミングで併せてやった方がいいので、今回は仮想マシンの再起動で代用してしまおうと思います。</p>
+
+<p>今まで Cookbook の中に user, group, file, directory, package という記述を色々書いてきましたが、 これらは Resource と呼ばれています。</p>
+
+<p>今度はこういったサーバの設定ファイルを配置するための Resource である、<strong>template</strong> を使います。</p>
+
+<h3 id="まずはテンプレートのファイルを用意する">まずはテンプレートのファイルを用意する</h3>
+
+<p>レシピの方からテンプレートを指定するわけですが、先にテンプレートファイルを設置します。</p>
+
+<p>Cookbook の中に recipes ディレクトリを作り、その中に default.rb というレシピファイルを作って今までいじってきましたが、 この recipes ディレクトリと並列に <strong>templates ディレクトリ</strong> を作ります。</p>
+
+<pre><code>$ mkdir cookbooks/vmclient1/templates
+</code></pre>
+
+<p><strong>※実はここ、置き場所間違ってますが後で説明します・・・</strong></p>
+
+<p>その下に、sshd_config というファイルであれば、sshd_config.erb というファイルを作り、実際にゲストOSで使われている /etc/ssh/sshd_config というファイルの中身をごっそりもってきて、以下の必要最低限のところだけ修正します。</p>
+
+<pre><code>$ cat cookbooks/vmclient1/templates/sshd_config.erb
+（長いので略）
+PubkeyAuthentication yes
+AuthorizedKeysFile     .ssh/authorized_keys
+（長いので略）
+</code></pre>
+
+<p>公開鍵認証を有効にする設定のコメントアウトを外し、認証鍵ファイルの置き場所の設定もコメントアウトします。置き場所はさっきの通りですね。</p>
+
+<p>これだけだと、変数とかの埋め込みがなくてテンプレート使ってる意味がないかもしれませんが、ここから先は erb の記法と同じく変数の埋め込みが可能です。（機会があれば後日行いたいと思います。）</p>
+
+<blockquote>
+<p>※あとで調べたら、変数使わずに単にファイルを設置するときは、Template じゃなくて、File を使えば良かったっぽいですね。。。 <a href="http://docs.opscode.com/resource_file.html" target="_blank">http://docs.opscode.com/resource_file.html</a></p>
+</blockquote>
+
+<h3 id="テンプレートをレシピから読み込む">テンプレートをレシピから読み込む</h3>
+
+<p>レシピが徐々に長くなってきたので、追記部分のみ記載しておきます。</p>
+
+<pre><code>template '/etc/ssh/sshd_config' do
+  owner 'root'
+  group 'root'
+  mode 0600
+end
+</code></pre>
+
+<p>元々置いてあったファイルが上記の設定だったので、合わせて root:root, 0600 にしてあります。</p>
+
+<p>さて、さっき作ったテンプレートファイルは、ファイル名を合わせておけばこれだけで動くとのことですが、 ホントにこれだけで問題ないのか試してみます。</p>
+
+<h3 id="vagrant-up-vagrant-up">vagrant up! vagrant up!</h3>
+
+<pre><code>[2013-05-11T22:35:06+00:00] FATAL: Chef::Exceptions::FileNotFound: template[/etc/ssh/sshd_config] (vmclient1::default line 28) had an error: Chef::Exceptions::FileNotFound: Cookbook 'vmclient1' (0.0.0) does not contain a file at any of these locations:
+  templates/centos-6.4/sshd_config.erb
+  templates/centos/sshd_config.erb
+  templates/default/sshd_config.erb
+</code></pre>
+
+<p>なんかエラー出ました。これによると、テンプレートファイルが見つからなかったようです。</p>
+
+<p>テンプレートファイルは、<strong>&#8216;Linuxディストリビューション名&#8217;-&#8216;バージョン&#8217;, &#8216;Linuxディストリビューション名&#8217;, &#8216;default&#8217;</strong> を それぞれ自動で探してくれるようになっているようです。<strong>素敵ですねー。</strong></p>
+
+<p>ということで、<strong>正しいパスは templates/default/sshd_config.erb でしたー。</strong>移動させて再度試します。</p>
+
+<pre><code>[2013-05-11T22:41:13+00:00] INFO: Processing template[/etc/ssh/sshd_config] action create (vmclient1::default line 28)
+[2013-05-11T22:41:13+00:00] INFO: template[/etc/ssh/sshd_config] backed up to /var/chef/backup/etc/ssh/sshd_config.chef-20130511224113
+[2013-05-11T22:41:13+00:00] INFO: template[/etc/ssh/sshd_config] updated content
+[2013-05-11T22:41:13+00:00] INFO: template[/etc/ssh/sshd_config] owner changed to 0
+[2013-05-11T22:41:13+00:00] INFO: template[/etc/ssh/sshd_config] group changed to 0
+[2013-05-11T22:41:13+00:00] INFO: template[/etc/ssh/sshd_config] mode changed to 600
+[2013-05-11T22:41:13+00:00] INFO: Chef Run complete in 0.121144117 seconds
+[2013-05-11T22:41:13+00:00] INFO: Running report handlers
+[2013-05-11T22:41:13+00:00] INFO: Report handlers complete
+</code></pre>
+
+<p>ログを見る限りだと、上手いこと出来たっぽいですね！</p>
+
+<p>さて、ログインして見てみましょう！</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ su
+パスワード:（vagrant といれた）
+[root@vmclient1 vagrant]# cat /etc/ssh/sshd_config
+（略）
+PubkeyAuthentication yes
+AuthorizedKeysFile     .ssh/authorized_keys
+（略）
+</code></pre>
+
+<p><strong>おおー、ちゃんとテンプレートが反映されておりました！</strong></p>
+
+<p>ということは、これで一通り SSH 周りの設定が完了したことになります。（sshd の再起動を除く）</p>
+
+<p>最後に、再度 <code>vangrant reload</code> しておきます。sshd の再起動もそうなんですが、サービスの起動、再起動についてはまた後日やりたいと思います。</p>
+
+<h2 id="鍵認証でログイン">鍵認証でログイン</h2>
+
+<p>ここから先はホストOS上での作業です。</p>
+
+<p><code>ssh</code> のオプションいろいろつけて、鍵ファイル指定するとかめんどくさいので、~/.ssh/config に alice, bob 用の設定を追加しておきましょう。</p>
+
+<pre><code>$ vi ~/.ssh/config
+</code></pre>
+
+<p>ここに Host default の設定項目があって、 vagrant ユーザーが接続するための設定がずらずら書いてあるのでこれを流用して、 alice ユーザー、bob ユーザーでログインできるようにしてみます。</p>
+
+<pre><code>Host vmclient1_by_alice
+  HostName 192.168.100.11
+  User alice
+  Port 22
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile &quot;/Users/[ユーザー名]/Vagrant/alice/id_rsa&quot;
+  IdentitiesOnly yes
+  LogLevel FATAL
+
+Host vmclient1_by_bob
+  HostName 192.168.100.11
+  User bob
+  Port 22
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile &quot;/Users/[ユーザー名]/Vagrant/bob/id_rsa&quot;
+  IdentitiesOnly yes
+  LogLevel FATAL
+</code></pre>
+
+<p>そして、<code>ssh</code> を実行してみます！</p>
+
+<pre><code>$ ssh vmclient1_by_alice
+Welcome to your Vagrant-built virtual machine.
+[alice@vmclient1 ~]$
+</code></pre>
+
+<p><strong>alice 鍵認証きたーーー！！</strong> ええ、もちろんパスワード入力しておりません。</p>
+
+<p>さあ、bob はどうでしょう？</p>
+
+<pre><code>$ ssh vmclient1_by_bob
+Welcome to your Vagrant-built virtual machine.
+[bob@vmclient1 ~]$
+</code></pre>
+
+<p><strong>bob も鍵認証きたーーー！！</strong></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>これで最低限の<strong>ユーザー管理の自動化</strong>が出来るようになったと言ってもいいのかもしれません。</p>
+
+<p>また、汎用的に以下のことが少し出来るようになりました。</p>
+
+<ul>
+<li><strong>Cookbook からのファイル、ディレクトリの作成</strong></li>
+<li><strong>Cookbook からのユーザーの作成、グループの作成</strong></li>
+<li><strong>Data Bag によるデータ管理</strong></li>
+<li><strong>Cookbook と Data Bag の連携</strong></li>
+<li><strong>Cookbook からのテンプレートファイルの配置</strong></li>
+</ul>
+
+<p>次はアプリケーションのインストールを色々やってみて、 この辺がある程度慣れてくれば、レシピも比較的自由に書けるようになるのではないかなーと思います。 がんばります！</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://docs.opscode.com/essentials_data_bags.html" target="_blank">http://docs.opscode.com/essentials_data_bags.html</a></li>
+<li><a href="http://tech.blog.piyo.org/2012/06/19/chef-data-bag%E6%B4%BB%E7%94%A8%E6%B3%95/" target="_blank">http://tech.blog.piyo.org/2012/06/19/chef-data-bag%E6%B4%BB%E7%94%A8%E6%B3%95/</a></li>
+<li><a href="http://ed.victavision.co.uk/blog/post/4-8-2012-chef-solo-encrypted-data-bags" target="_blank">http://ed.victavision.co.uk/blog/post/4-8-2012-chef-solo-encrypted-data-bags</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年5月14日">2013年5月14日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1048">Vagrant と Chef でユーザー作成の自動化をしてみる</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年5月13日">2013年5月13日</time>
@@ -202,9 +2226,444 @@
   </ul>
 </div>
 
+
+
+
+<p>だんだんと Chef いじりが楽しくなってきた girigiribauer です、こんにちは。</p>
+
+<p>この前<strong>『入門 Chef Solo』</strong>というKindle本（電子書籍）を購入して、休憩時などに少しずつ読み進めていたのですが、 ようやくざっと一通り目を通すことができました。</p>
+
+<p>今回以降、この辺も見ながらいろいろ試してみようと思います。</p>
+
+<h2 id="レシピを書くとどんなことが設定できるの">レシピを書くとどんなことが設定できるの？</h2>
+
+<p><a href="/archives/1013/">前回</a>までで、Vagrant と Chef を連携させて、 超シンプルなレシピを書いてみたわけですが、 今回はレシピを書くことで他にどんなことが出来ちゃうのかを、もう少し試してみようと思います！</p>
+
+<p>『入門 Chef Solo』に、この Cookbook はユーザーの設定やらグループの設定やらが一通り載っていて、 最初に全体像を見るのにいいよ！と書かれていたので、まずはこちらの <a href="https://github.com/treasure-data/chef-td-agent" target="_blank">https://github.com/treasure-data/chef-td-agent</a> を参考にしてみます。</p>
+
+<p><img src="/img/2013/05/chef-user01.png" alt="" /></p>
+
+<p>ログデータの収集に使うツールと、それ専用のユーザーなりを設定してくれる Cookbook のようですね。</p>
+
+<p>recipes/default.rb を早速見てみます。</p>
+
+<pre><code>#
+# Cookbook Name:: td-agent
+# Recipe:: default
+#
+# Copyright 2011, Treasure Data, Inc.
+#
+
+group 'td-agent' do
+  group_name 'td-agent'
+  gid        403
+  action     [:create]
+end
+
+user 'td-agent' do
+  comment  'td-agent'
+  uid      403
+  group    'td-agent'
+  home     '/var/run/td-agent'
+  shell    '/bin/false'
+  password nil
+  supports :manage_home =&gt; true
+  action   [:create, :manage]
+end
+
+directory '/etc/td-agent/' do
+  owner  'td-agent'
+  group  'td-agent'
+  mode   '0755'
+  action :create
+end
+（以下略）
+</code></pre>
+
+<p>中身は Ruby のコードとはいえ、見ると何をやっているのかは何となく分かりそうな感じです。</p>
+
+<ul>
+<li>一番上のブロックで &#8216;td-agent&#8217; という名前のグループを作る</li>
+<li>gid（Linux などでグループに割り振られるID）は 403 にする</li>
+</ul>
+
+<p>続けて、</p>
+
+<ul>
+<li>&#8216;td-agent&#8217; という名前のユーザーを作る</li>
+<li>uid（Linux などでユーザーに割り振られるID）は 403 にする</li>
+<li>ホームディレクトリは &#8216;/var/run/td-agent&#8217; にする</li>
+<li>シェルは指定せず、パスワードもなし</li>
+<li><code>supports :manage_home =&gt; true</code> が何を意味しているのかは後で調べます</li>
+</ul>
+
+<p>最後に、</p>
+
+<ul>
+<li>&#8216;/etc/td-agent/&#8217; という名前のディレクトリを作る</li>
+<li>所有者は、&#8217;td-agent&#8217;、グループは &#8216;td-agent&#8217; になるようにする</li>
+<li>権限は &#8216;0755&#8217;（つまり所有者が読み書き実行、同一グループが読み＆実行、それ以外のユーザーも読み＆実行）</li>
+</ul>
+
+<p>というレシピのようです。</p>
+
+<h3 id="これ-linux-とかに詳しくないと出来ないの">これ、Linux とかに詳しくないと出来ないの？</h3>
+
+<p>個人的には逆だと思っていて、 <strong>設定すべき項目が明らかになっている分、どういうポイントを調べればいいのかが明確になっています。</strong> そもそも知らなきゃ調べようもなかった設定に対して、ググるチャンスをもらえたと思って、 分からないところはどんどんググるべきだなーと思います。</p>
+
+<p>例えば、シェルの指定が &#8216;/bin/false&#8217; になっている箇所なんかは、 適当に <strong>linux /bin/false</strong> とかでググれば、ログインできないユーザーを作る方法であることが分かるので、 このレシピでは、ログインできないユーザーを作ろうとしていることが分かり、 ググったついでに実際の設定方法なども分かって勉強にもなりますね。</p>
+
+<p>ってことで、分からないところはどんどんググって覚えていこうと思います。</p>
+
+<h2 id="ユーザーの設定項目について">ユーザーの設定項目について</h2>
+
+<p>これは公式を見た方が良さそうなので見てみます。 <a href="http://docs.opscode.com/resource_user.html" target="_blank">http://docs.opscode.com/resource_user.html</a></p>
+
+<p>設定項目は、大きく分けて Actions と Attributes の2種類あるようなので、まず先に Attributes の方を見てみます。</p>
+
+<p><img src="/img/2013/05/chef-user02.png" alt="" /></p>
+
+<p>あれ、読んでも何のことだかさっぱりだなーと思ったら、そのすぐ下に詳しく説明載ってました。</p>
+
+<p><img src="/img/2013/05/chef-user03.png" alt="" /></p>
+
+<p>要するに、 key, value の対になるものを設定できて、設定できるのが <strong>:manage_home</strong>, <strong>:non_unique</strong> の2つ、 :manage_home は<strong>ホームディレクトリの作成有無</strong>、:non_unique は <strong>UID の重複を許すかどうか</strong>のようです。</p>
+
+<p>なるほどなるほどー。</p>
+
+<p>お次は、Actions の方を見てみます。</p>
+
+<p><img src="/img/2013/05/chef-user04.png" alt="" /></p>
+
+<p><code>action   [:create, :manage]</code> とあるので、該当ユーザーがなければユーザーを作り、 Attributes の通りに設定を合わせてくれるようです。 読む限りだと、create だけでも既存ユーザーに対しては設定を合わせてくれるみたいなんですが、 manage も必要なんでしょうかね？後で試してみましょうか。</p>
+
+<h2 id="グループの設定項目について">グループの設定項目について</h2>
+
+<p>グループはこちらですね。<a href="http://docs.opscode.com/resource_group.html" target="_blank">http://docs.opscode.com/resource_group.html</a></p>
+
+<p>こちらも Actions, Attributes を引用します。</p>
+
+<p><img src="/img/2013/05/chef-user05.png" alt="" /></p>
+
+<p>レシピに書かれた内容だけだと、単に create で作って GID を設定しているだけですね。</p>
+
+<p>ユーザーとグループの関係でちょっと気になるところが出て来たのですが、 ユーザーは複数のグループに属することが出来るはずなので、ユーザーの設定項目の group で、配列として指定してやればいいんでしょうか？</p>
+
+<h2 id="ユーザーとグループのレシピを書く">ユーザーとグループのレシピを書く！</h2>
+
+<p>この前 2台構成にしてましたが、一旦1台に戻してレシピを書きましょう。（インストールとか時間かかるので）</p>
+
+<pre><code>group 'samplegroup' do
+  group_name 'samplegroup'
+  members    ['alice', 'bob', 'carol']
+  action     [:create]
+end
+
+user 'alice' do
+  shell    '/bin/zsh'
+  password 'alice'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'bob' do
+  shell    '/bin/zsh'
+  password 'bob'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'carol' do
+  shell    '/bin/zsh'
+  password 'carol'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+</code></pre>
+
+<p>ささっと書いて試してみます！</p>
+
+<h3 id="vagrant-up">vagrant up!!</h3>
+
+<pre><code>$ vagrant up
+
+Expected process to exit with [0], but received '3'
+---- Begin output of gpasswd -M alice,bob,carol samplegroup ----
+STDOUT:
+STDERR: gpasswd: user 'alice' does not exist
+gpasswd: user 'bob' does not exist
+gpasswd: user 'carol' does not exist
+---- End output of gpasswd -M alice,bob,carol samplegroup ----
+Ran gpasswd -M alice,bob,carol samplegroup returned 3[0m
+</code></pre>
+
+<p>なんかエラー出てますね。グループを作るときにそのユーザーがないと言われているようですね。</p>
+
+<p>ちょっとユーザーとグループの作成の順番を変えてやってみます。</p>
+
+<pre><code>[vmclient1] Running provisioner: chef_solo...
+Generating chef JSON and uploading...
+Running chef-solo...
+[2013-05-10T21:02:02+00:00] INFO: *** Chef 11.4.0 ***
+[2013-05-10T21:02:02+00:00] INFO: Setting the run_list to &quot;recipe[vmclient1]&quot; from JSON
+[2013-05-10T21:02:02+00:00] INFO: Run List is [recipe[vmclient1]]
+[2013-05-10T21:02:02+00:00] INFO: Run List expands to [vmclient1]
+[2013-05-10T21:02:02+00:00] INFO: Starting Chef Run for vmclient1
+[2013-05-10T21:02:02+00:00] INFO: Running start handlers
+[2013-05-10T21:02:02+00:00] INFO: Start handlers complete.
+[2013-05-10T21:02:02+00:00] INFO: Processing user[alice] action create (vmclient1::default line 3)
+[2013-05-10T21:02:02+00:00] INFO: user[alice] created
+[2013-05-10T21:02:02+00:00] INFO: Processing user[bob] action create (vmclient1::default line 10)
+[2013-05-10T21:02:02+00:00] INFO: user[bob] created
+[2013-05-10T21:02:02+00:00] INFO: Processing user[carol] action create (vmclient1::default line 17)
+[2013-05-10T21:02:02+00:00] INFO: user[carol] created
+[2013-05-10T21:02:02+00:00] INFO: Processing group[samplegroup] action create (vmclient1::default line 24)
+[2013-05-10T21:02:02+00:00] INFO: group[samplegroup] altered
+[2013-05-10T21:02:02+00:00] INFO: Chef Run complete in 0.145912047 seconds
+[2013-05-10T21:02:02+00:00] INFO: Running report handlers
+[2013-05-10T21:02:02+00:00] INFO: Report handlers complete
+</code></pre>
+
+<p>お、<code>user[alice] created</code> と表示されているので、今度は上手く行ったようですかね？</p>
+
+<p>早速 vagrant ssh で中を確認してみます。</p>
+
+<pre><code>$ vagrant ssh vmclient1
+Welcome to your Vagrant-built virtual machine.
+[vagrant@vmclient1 ~]$
+</code></pre>
+
+<p>んで、それぞれのユーザーに成り代わります。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ su alice
+パスワード: (ここで alice っていれた)
+su: パスワードが違います
+[vagrant@vmclient1 ~]$ su bob
+パスワード: (ここで bob っていれた)
+su: パスワードが違います
+[vagrant@vmclient1 ~]$ su carol
+パスワード: (ここで carol っていれた)
+su: パスワードが違います
+[vagrant@vmclient1 ~]$
+</code></pre>
+
+<p>むむむ・・・。パスワードが有効でない？？</p>
+
+<p>ついでに /etc/group もみてみます。</p>
+
+<pre><code>samplegroup:x:503:alice,bob,carol
+</code></pre>
+
+<p>グループを新規で作って、そこにユーザーを追加するのは出来ているようです。</p>
+
+<h2 id="ユーザーの作成の見直し">ユーザーの作成の見直し</h2>
+
+<p>どうやらパスワードが上手く登録できてないようなので、その辺りを見直してみます。</p>
+
+<p><img src="/img/2013/05/chef-user02.png" alt="" /></p>
+
+<p>さっきのユーザーの Attributes を見直してみると、どうやら<strong>パスワードはハッシュ化</strong>されたものをここに入れる必要があるみたいです。</p>
+
+<pre><code># Cookbook ユーザーとグループのテスト
+
+user 'alice' do
+  shell    '/bin/zsh'
+  password 'megckhCt3LluU'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'bob' do
+  shell    '/bin/zsh'
+  password '8Q14e7OP5wroc'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'carol' do
+  shell    '/bin/zsh'
+  password 'fcv1NMIRSDH/Y'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+group 'samplegroup' do
+  group_name 'samplegroup'
+  members    ['alice', 'bob', 'carol']
+  action     [:create]
+end
+</code></pre>
+
+<p>一応まだテストなので、 <code>openssl passwd</code> でハッシュ化してみましたが、 この方法で安全かどうかまでは保証できないので、実戦配備するタイミングで同様の機会があれば、この辺見直したいと思います。 （＆安全な方法知ってたら教えてください・・・）</p>
+
+<p>さて、<code>vagrant reload</code> で再起動です。</p>
+
+<pre><code>[2013-05-11T15:54:57+00:00] INFO: *** Chef 11.4.0 ***
+[2013-05-11T15:54:58+00:00] INFO: Setting the run_list to &quot;recipe[vmclient1]&quot; from JSON
+[2013-05-11T15:54:58+00:00] INFO: Run List is [recipe[vmclient1]]
+[2013-05-11T15:54:58+00:00] INFO: Run List expands to [vmclient1]
+[2013-05-11T15:54:58+00:00] INFO: Starting Chef Run for vmclient1
+[2013-05-11T15:54:58+00:00] INFO: Running start handlers
+[2013-05-11T15:54:58+00:00] INFO: Start handlers complete.
+[2013-05-11T15:54:58+00:00] INFO: Processing user[alice] action create (vmclient1::default line 3)
+[2013-05-11T15:54:58+00:00] INFO: user[alice] altered
+[2013-05-11T15:54:58+00:00] INFO: Processing user[bob] action create (vmclient1::default line 10)
+[2013-05-11T15:54:58+00:00] INFO: user[bob] altered
+[2013-05-11T15:54:58+00:00] INFO: Processing user[carol] action create (vmclient1::default line 17)
+[2013-05-11T15:54:58+00:00] INFO: user[carol] altered
+[2013-05-11T15:54:58+00:00] INFO: Processing group[samplegroup] action create (vmclient1::default line 24)
+[2013-05-11T15:54:58+00:00] INFO: Chef Run complete in 0.099637811 seconds
+[2013-05-11T15:54:58+00:00] INFO: Running report handlers
+[2013-05-11T15:54:58+00:00] INFO: Report handlers complete
+</code></pre>
+
+<p>さっきと違って、created じゃなくて altered になってますね。置き換えてくれたっぽいです。 （ちなみに sandbox は使ってないので、さっきの状態から再起動しただけです）</p>
+
+<p>さて、ログインして見てみます。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ su alice
+パスワード: (ここで alice っていれた)
+su: /bin/zsh: そのようなファイルやディレクトリはありません
+[vagrant@vmclient1 ~]$ which zsh
+/usr/bin/which: no zsh in (/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/vagrant/bin)
+[vagrant@vmclient1 ~]$ which bash
+/bin/bash
+</code></pre>
+
+<p>おおーっと、<strong>zsh がないですねww</strong> 寝ぼけてましたゴメンナサイゴメンナサイ。</p>
+
+<p>シェルの設定は後回しにして、とりあえず存在してる bash に設定変更して、 もう一度 <code>vagrant relaod</code>, <code>vagrant ssh vmclient1</code> でログインして見てみます。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ su - alice
+パスワード: (ここで alice っていれた)
+[alice@vmclient1 ~]$ pwd
+/home/alice
+</code></pre>
+
+<p><strong>きたーーーーー！！！</strong></p>
+
+<pre><code>[alice@vmclient1 ~]$ su - bob
+Password: (ここで bob っていれた)
+[bob@vmclient1 ~]$ pwd
+/home/bob
+[bob@vmclient1 ~]$ su - carol
+Password: (ここで carol っていれた)
+[carol@vmclient1 ~]$ pwd
+/home/carol
+</code></pre>
+
+<p><strong>きたきたきたーー！！ ユーザー3人分出来ておりました！！</strong></p>
+
+<h2 id="ユーザーの変更があったときどうなるの">ユーザーの変更があったときどうなるの？</h2>
+
+<p>さらに、<strong>ユーザーが居なくなったらどうなるのか気になった</strong>ので、試しに Cookbook の中から carol を消して実行してみます。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ su - carol
+パスワード:
+[carol@vmclient1 ~]$ pwd
+/home/carol
+</code></pre>
+
+<p>うーむなるほど、Cookbook の記述を削除するだけでは、ユーザーは無くならないようですね。ここまでは予想通りです。</p>
+
+<p>さて、さっきの Chef の公式の user のページ中に、<strong>:remove</strong> というアクションがあったので、 おそらく :create のところを、:remove にしてやれば、ユーザーが削除された状態に Chef が合わせてくれることでしょう。</p>
+
+<p>やってみます。</p>
+
+<pre><code># Cookbook ユーザーとグループのテスト
+
+user 'alice' do
+  shell    '/bin/bash'
+  password 'megckhCt3LluU'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'bob' do
+  shell    '/bin/bash'
+  password '8Q14e7OP5wroc'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'carol' do
+  shell    '/bin/bash'
+  password 'fcv1NMIRSDH/Y'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:remove]
+end
+
+group 'samplegroup' do
+  group_name 'samplegroup'
+  members    ['alice', 'bob']
+  action     [:create]
+end
+</code></pre>
+
+<p>設定などは一旦そのままで、action のところだけ :remove に変更してみました。</p>
+
+<p>さて、どうなるでしょう。</p>
+
+<pre><code>[2013-05-11T16:21:53+00:00] INFO: Processing user[carol] action remove (vmclient1::default line 17)
+[2013-05-11T16:21:53+00:00] INFO: user[carol] removed
+</code></pre>
+
+<p>おお？ Chef のログからは削除がされているように見えますね。</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ su - carol
+su: carol というユーザは存在しません
+</code></pre>
+
+<p><strong>carol さん消えたーーー！</strong></p>
+
+<p>なるほどなるほど、ということは Chef の Cookbook 内で、削除されたユーザーも含めて、こちらにまとめておいた方がいいんでしょうかね。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>ちょっと長くなってきちゃったので、一旦ここでまとめたいと思います。</p>
+
+<ul>
+<li><strong>Cookbook に記述することで、ユーザー作成、グループ作成が可能</strong></li>
+<li><strong>パスワードはハッシュ化されたものを Cookbook 内に記述しておく</strong></li>
+<li><strong>ユーザーの削除も可能</strong></li>
+</ul>
+
+<p>まだまだユーザー周りについては、試したいこと色々ありますよね。鍵認証にするとか、sudo 出来るようにするとか、この辺も追々試してみようと思います！</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://github.com/treasure-data/chef-td-agent" target="_blank">https://github.com/treasure-data/chef-td-agent</a></li>
+<li><a href="http://docs.opscode.com/resource_user.html" target="_blank">http://docs.opscode.com/resource_user.html</a></li>
+<li><a href="http://docs.opscode.com/resource_group.html" target="_blank">http://docs.opscode.com/resource_group.html</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年5月13日">2013年5月13日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1013">Vagrant と Chef で仮想マシンの環境をいろいろいじれるようにしたい！</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年5月10日">2013年5月10日</time>
@@ -218,9 +2677,362 @@
   </ul>
 </div>
 
+
+
+
+<p><a href="/archives/966/">前々回</a>、<a href="/archives/1003/">前回</a>までで、ようやく気軽に作って壊せる仮想環境が用意できたので、 ここからは実際に仮想環境に作っていくところをやりたいと思います。</p>
+
+<p><strong>※まだあやふやな部分が多いので、明らかに違っていた箇所はあとで修正する可能性があります。</strong></p>
+
+<p>もちろんゴールは、実際に少し作れるところまでです。（ファイルを自動で配置するとか、アプリケーションインストール済みの状態にするとか）</p>
+
+<p>ただ、そこまで大規模なものは想定していないので（数百台を一元管理とかは絶対やらない）、ローカル環境だけで気軽に試せる方法をとっていきます。</p>
+
+<p>以下、こんな感じで最小構成で進めていきます。</p>
+
+<ol>
+<li>Vagrant を最低限使えるようにする（終わってます）</li>
+<li>Chef を最低限使えるようにする</li>
+<li>簡単な Cookbook を用意する</li>
+<li>Vagrant, Chef を連携させて、仮想環境が変化するか見てみる</li>
+</ol>
+
+<h2 id="chef-とは">Chef とは？</h2>
+
+<p>最近かなり頻繁に聞くワードです。</p>
+
+<p>サーバ構築、システム管理の自動化を助けてくれるツールです。アプリケーションのインストールや、OS・ミドルウェアの設定などを、Cookbook と呼ばれる設定ファイルに落とし込んでおくと、各プラットフォームの差異を吸収したうえで、その設定ファイルの状態に保ってくれます。</p>
+
+<p>詳しくはまだまだこれからです。ただ気軽に試せる環境を用意したので、ここからどんどんと試してみようと思います。</p>
+
+<p>また、自動化というメリットの他にも、こういう気軽に試して壊してが出来るってところは大きなメリットだなーと思います。 では早速。</p>
+
+<h2 id="chef-をインストール">Chef をインストール</h2>
+
+<p>まず Chef に関連したパッケージを gem でインストールしてみます。gem ならば比較的すぐです。</p>
+
+<pre><code>$ gem install chef
+Fetching: chef-11.4.4.gem (100%)
+Successfully installed chef-11.4.4
+1 gem installed
+$ chef-solo -v
+Chef: 11.4.4
+</code></pre>
+
+<p>chefというパッケージを入れると、<strong>chef-solo, chef-client, knife</strong> などのコマンドが一式用意されるようです。試しに chef-solo -v と打ってみたら、「Chef のバージョンは11.4.4ですよー」と表示されました。</p>
+
+<p>ちなみに、数百、数千台とか管理するわけでもないので、Chef Server を用意してうんぬん・・・というのは今回やらずに、 サーバの役割を内包しつつ単独で動く、<strong>Chef Solo</strong> を使っていきます。</p>
+
+<p>さてさて、何か Cookbook を作ってみることにします。</p>
+
+<h2 id="cookbook-を作る">Cookbook を作る！</h2>
+
+<p>※以下、2012年10月に発売された『Software Design / Chef 入門』を参考に進めます。</p>
+
+<p>Cookbook 自体は、<strong>ただのディレクトリとテキストファイル群</strong>にすぎないので、 実際 Chef のコマンド一式なくても作れます。 （knife というひな形を作ってくれるコマンドがあるものの、後回しにしようと思います。）</p>
+
+<p>また、設定ファイルも最近よくある、設定ファイルっぽく書いていたら実はそれが Ruby のスクリプトだった（DSL）という類のものなので、 これもエディタさえあれば用意できてしまいます。</p>
+
+<p>実際に Chef が担当するのは、その Cookbook に書かれた設定項目に沿って、アプリケーションなり設定値なりを反映するところになるので、 そのあたりを理解するためにも、最初は手書きで用意してみようと思います。</p>
+
+<h3 id="vagrantfile-を若干見直し">Vagrantfile を若干見直し</h3>
+
+<p>Cookbook を用意する前に、1つだけ Vagrantfile の見直しをしたいと思います。 というのも、今後こちらに Cookbook の置き場所の指定などをするためです。</p>
+
+<pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;CentOS_6.4_x86_64_Minimal&quot;
+
+  config.vm.define :vmclient1 do |vmclient|
+    vmclient.vm.hostname = &quot;vmclient1&quot;
+    vmclient.vm.network :private_network, ip: &quot;192.168.100.11&quot;
+  end
+
+  config.vm.define :vmclient2 do |vmclient|
+    vmclient.vm.hostname = &quot;vmclient2&quot;
+    vmclient.vm.network :private_network, ip: &quot;192.168.100.12&quot;
+  end
+end
+</code></pre>
+
+<p>こんな感じで、<code>config.vm.define</code> で仮想マシンを複数立ち上げることが可能です。 先にも書いたようにこれ実際は Ruby のコードなので、ループとかで回すこともできますね。 （とはいえ、ゲストOS立ち上げまくったらホストOSが重くなるのは必然ですし、それぞれの起動時間もそれなりにかかります。）</p>
+
+<p>ゆくゆくは仮想マシン間のネットワークの検証なども行っていきたいので、最小構成は2台としておきたいなーと思います。</p>
+
+<p>それぞれを、vmclient1, vmclient2 として管理していき、 vmclient1 の方は<strong>簡単なテキストファイルの設置</strong> (/tmp/test.txt) を、 vmclient2 の方は<strong>簡単なアプリケーションの設置</strong> (Webサーバ, Apache) を行ってみようと思います。</p>
+
+<h3 id="レシピを用意する">レシピを用意する</h3>
+
+<p>前回までで、Vagrant 用のディレクトリを作っていたので、その中で Cookbook 用のディレクトリを用意します。</p>
+
+<pre><code>$ cd ~/Vagrant
+$ mkdir cookbooks
+</code></pre>
+
+<p>vmclient1, vmclient2 用のレシピを用意します。まず vmclient1 から。</p>
+
+<pre><code>cat cookbooks/vmclient1/recipes/default.rb
+# Cookbook ファイル設置テスト
+
+file &quot;/tmp/test.txt&quot; do
+  content &quot;vmclient1 にダミーテキストファイルを作りました！&quot;
+end
+</code></pre>
+
+<p>こちらは、content に書かれた内容のファイルを、仮想マシンの /tmp/test.txt へと作成するレシピです。</p>
+
+<p>続けて vmclient2 の方です。</p>
+
+<pre><code>cat cookbooks/vmclient2/recipes/default.rb
+# Cookbook アプリケーション設置テスト
+
+package &quot;httpd&quot; do
+  action :install
+end
+</code></pre>
+
+<p>こちらは、httpd（つまりApache）をインストールするというレシピになります。</p>
+
+<p>※まだこのあたりが完全に分かってないのですが、CentOS では httpd で良さげでも、他ディストリビューションなどでは apache2 というパッケージ名にしたりする必要があるらしく、この辺のパッケージ名は吸収してくれないのかなーとか、ちょっと疑問でした。</p>
+
+<h2 id="vagrant-chef-の連携">Vagrant, Chef の連携</h2>
+
+<p>Vagrantfile の中には、<strong>chef-solo</strong> の設定項目も存在します。</p>
+
+<p><a href="http://docs.vagrantup.com/v2/provisioning/chef_solo.html" target="_blank">http://docs.vagrantup.com/v2/provisioning/chef_solo.html</a></p>
+
+<p>これを使って、Vagrant 経由で起動した仮想マシンに対して、レシピを適用してみます。</p>
+
+<h3 id="再度-vagrantfile-を見直し">再度 Vagrantfile を見直し</h3>
+
+<pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  config.vm.box = &quot;CentOS_6.4_x86_64_Minimal&quot;
+
+  config.vm.define :vmclient1 do |vmclient|
+    vmclient.vm.hostname = &quot;vmclient1&quot;
+    vmclient.vm.network :private_network, ip: &quot;192.168.100.11&quot;
+
+    vmclient.vm.provision :chef_solo do |chef|
+      chef.cookbooks_path = &quot;cookbooks&quot;
+      chef.run_list = &quot;recipe[vmclient1]&quot;
+    end
+  end
+
+  config.vm.define :vmclient2 do |vmclient|
+    vmclient.vm.hostname = &quot;vmclient2&quot;
+    vmclient.vm.network :private_network, ip: &quot;192.168.100.12&quot;
+
+    vmclient.vm.provision :chef_solo do |chef|
+      chef.cookbooks_path = &quot;cookbooks&quot;
+      chef.run_list = &quot;recipe[vmclient2]&quot;
+    end
+  end
+end
+</code></pre>
+
+<p>やってることは簡単で、今回用意した2つの仮想マシンそれぞれに対して、chef-solo の設定項目を設け、 Cookbook のパスとレシピ名を指定しているだけです。</p>
+
+<p>とりあえずここまでやったら、一旦仮想マシンを壊して初期状態に戻しておきます。</p>
+
+<pre><code>$ vagrant destroy
+Are you sure you want to destroy the 'vmclient2' VM? [y/N] y
+[vmclient2] Forcing shutdown of VM...
+[vmclient2] Destroying VM and associated drives...
+Are you sure you want to destroy the 'vmclient1' VM? [y/N] y
+[vmclient1] Forcing shutdown of VM...
+[vmclient1] Destroying VM and associated drives...
+</code></pre>
+
+<h3 id="レシピの適用">レシピの適用！</h3>
+
+<p>さて、いよいよレシピを適用してみます。<strong>vagrant up!! vagrant up!!</strong></p>
+
+<pre><code>$ vagrant up
+</code></pre>
+
+<p>すると、ずらずらーっとログが出力されます。</p>
+
+<pre><code>Bringing machine 'vmclient1' up with 'virtualbox' provider...
+Bringing machine 'vmclient2' up with 'virtualbox' provider...
+[vmclient1] Importing base box 'CentOS_6.4_x86_64_Minimal'...
+
+[vmclient1] Matching MAC address for NAT networking...
+[vmclient1] Setting the name of the VM...
+[vmclient1] Clearing any previously set forwarded ports...
+[vmclient1] Fixed port collision for 22 =&gt; 2222. Now on port 2202.
+[vmclient1] Creating shared folders metadata...
+[vmclient1] Clearing any previously set network interfaces...
+[vmclient1] Preparing network interfaces based on configuration...
+[vmclient1] Forwarding ports...
+[vmclient1] -- 22 =&gt; 2202 (adapter 1)
+[vmclient1] Booting VM...
+[vmclient1] Waiting for VM to boot. This can take a few minutes.
+[vmclient1] VM booted and ready for use!
+[vmclient1] Setting hostname...
+[vmclient1] Configuring and enabling network interfaces...
+[vmclient1] Mounting shared folders...
+[vmclient1] -- /vagrant
+</code></pre>
+
+<p>2つの仮想マシンを立ち上げているので、それぞれログにも名前がついてます。 ただ基本的に1台のときとやっていることは同じで、 ネットワークの設定やら共有ディレクトリの設定やらをやってくれてます。</p>
+
+<p>ここまでは同じですね！　さらに出力は続きます。</p>
+
+<pre><code>[vmclient1] -- /tmp/vagrant-chef-1/chef-solo-1/cookbooks
+[vmclient1] Running provisioner: chef_solo...
+Generating chef JSON and uploading...
+Running chef-solo...
+</code></pre>
+
+<p>おっと、ここから chef-solo が起動してることが確認できました。</p>
+
+<pre><code>[2013-05-09T22:14:33+00:00] INFO: *** Chef 11.4.0 ***
+[2013-05-09T22:14:33+00:00] INFO: Setting the run_list to &quot;recipe[vmclient1]&quot; from JSON
+[2013-05-09T22:14:33+00:00] INFO: Run List is [recipe[vmclient1]]
+[2013-05-09T22:14:33+00:00] INFO: Run List expands to [vmclient1]
+[2013-05-09T22:14:33+00:00] INFO: Starting Chef Run for vmclient1
+[2013-05-09T22:14:33+00:00] INFO: Running start handlers
+[2013-05-09T22:14:33+00:00] INFO: Start handlers complete.
+[2013-05-09T22:14:33+00:00] INFO: Processing file[/tmp/test.txt] action create (vmclient1::default line 3)
+[2013-05-09T22:14:33+00:00] INFO: entered create
+[2013-05-09T22:14:33+00:00] INFO: file[/tmp/test.txt] created file /tmp/test.txt
+[2013-05-09T22:14:33+00:00] INFO: Chef Run complete in 0.060882068 seconds
+[2013-05-09T22:14:33+00:00] INFO: Running report handlers
+[2013-05-09T22:14:33+00:00] INFO: Report handlers complete
+</code></pre>
+
+<p>・・・vmclient1 のログはここまでのようですね。</p>
+
+<p>Vagrantfile に指定されたレシピが、 chef-solo を介して実行され、実際にファイルの設置が行われていたようです。</p>
+
+<p>確認は後回しにして、さらに vmclient2 のログも見てみます。</p>
+
+<pre><code>[vmclient2] Importing base box 'CentOS_6.4_x86_64_Minimal'...
+
+[vmclient2] Matching MAC address for NAT networking...
+[vmclient2] Setting the name of the VM...
+[vmclient2] Clearing any previously set forwarded ports...
+[vmclient2] Fixed port collision for 22 =&gt; 2202. Now on port 2203.
+[vmclient2] Creating shared folders metadata...
+[vmclient2] Clearing any previously set network interfaces...
+[vmclient2] Preparing network interfaces based on configuration...
+[vmclient2] Forwarding ports...
+[vmclient2] -- 22 =&gt; 2203 (adapter 1)
+[vmclient2] Booting VM...
+[vmclient2] Waiting for VM to boot. This can take a few minutes.
+[vmclient2] VM booted and ready for use!
+[vmclient2] Setting hostname...
+[vmclient2] Configuring and enabling network interfaces...
+[vmclient2] Mounting shared folders...
+[vmclient2] -- /vagrant
+</code></pre>
+
+<p>vmclient2 も、ここまでは今までと同様です。</p>
+
+<pre><code>[vmclient2] -- /tmp/vagrant-chef-1/chef-solo-1/cookbooks
+[vmclient2] Running provisioner: chef_solo...
+Generating chef JSON and uploading...
+Running chef-solo...
+[2013-05-09T22:15:42+00:00] INFO: *** Chef 11.4.0 ***
+[2013-05-09T22:15:42+00:00] INFO: Setting the run_list to &quot;recipe[vmclient2]&quot; from JSON
+[2013-05-09T22:15:42+00:00] INFO: Run List is [recipe[vmclient2]]
+[2013-05-09T22:15:42+00:00] INFO: Run List expands to [vmclient2]
+[2013-05-09T22:15:42+00:00] INFO: Starting Chef Run for vmclient2
+[2013-05-09T22:15:42+00:00] INFO: Running start handlers
+[2013-05-09T22:15:42+00:00] INFO: Start handlers complete.
+[2013-05-09T22:15:42+00:00] INFO: Processing package[httpd] action install (vmclient2::default line 3)
+[2013-05-09T22:15:59+00:00] INFO: package[httpd] installing httpd-2.2.15-26.el6.centos from base repository
+[2013-05-09T22:16:06+00:00] INFO: Chef Run complete in 23.898427112 seconds
+[2013-05-09T22:16:06+00:00] INFO: Running report handlers
+[2013-05-09T22:16:06+00:00] INFO: Report handlers complete
+</code></pre>
+
+<p>こちらのログは、httpd 関連のログになってますね。ログを見る限りではインストールは正しく行われたようです。</p>
+
+<h3 id="正しくレシピが反映されたか確認してみる">正しくレシピが反映されたか確認してみる</h3>
+
+<p>まず vmclient1 の方へログインしてみます。</p>
+
+<pre><code>$ vagrant ssh vmclient1
+Welcome to your Vagrant-built virtual machine.
+</code></pre>
+
+<p>さて、ファイルは存在しているでしょうか？</p>
+
+<pre><code>[vagrant@vmclient1 ~]$ cat /tmp/test.txt
+vmclient1 にダミーテキストファイルを作りました！[vagrant@vmclient1 ~]$
+</code></pre>
+
+<p>あ・・・最後に改行が入ってなかったのでちょっとアレですが、 でも<strong>ファイルはちゃんと出来てました！</strong></p>
+
+<p>ついでに、こちらに httpd がインストールされていないことを確認しておきます。</p>
+
+<pre><code>$ which httpd
+/usr/bin/which: no httpd in (/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/vagrant/bin)
+</code></pre>
+
+<p>入ってませんでした。</p>
+
+<p>続けて、vmclient2 の方へログインしてみます。</p>
+
+<pre><code>$ vagrant ssh vmclient2
+Welcome to your Vagrant-built virtual machine.
+
+[vagrant@vmclient2 ~]$ which httpd
+/usr/sbin/httpd
+</code></pre>
+
+<p><strong>おおー、入ってますね。</strong></p>
+
+<p>こちらもついでに、上記パスにテキストファイルが置かれていないことを確認しておきます。</p>
+
+<pre><code>[vagrant@vmclient2 ~]$ cat /tmp/test.txt
+cat: /tmp/test.txt: そのようなファイルやディレクトリはありません
+</code></pre>
+
+<p>無かったですね。レシピがきちんと環境ごとに分かれて適用されてました。すげー。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>Cookbook をローカルで気軽に試してレシピが書ける環境があれば、 <strong>物理マシンや VPS 上などでの作業が格段に減り、かなりの効率化が図れるなーという印象です。</strong></p>
+
+<p>個人的には、何よりも作って試して、時には壊して、という<strong>気持ち的な敷居が低いところがとてもいいなー</strong>と思います。 かなり楽しんでやれちゃいそうです。</p>
+
+<p>ここから先は、Cookbook の書き方を種類ごとに覚えつつも、 自分で作った Cookbook を実践配備するところも併せてやっていけたらなーと思います！</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://docs.vagrantup.com/v2/" target="_blank">Vagrant Documentation</a></li>
+<li><a href="http://blog.madoro.org/mn/81" target="_blank">Chefを最速で使いこなすためのいくつかのポイント &#8211; Masatomo Nakano Blog</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年5月10日">2013年5月10日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualbox/">VirtualBox</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/1003">Vagrant に仮想マシンのスナップショットがとれる sahara というプラグインを入れた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年5月7日">2013年5月7日</time>
@@ -233,9 +3045,153 @@
   </ul>
 </div>
 
+
+
+
+<p>個々の仮想マシンのアプリケーションを入れていく前に、仮想マシンの操作でよくある<strong>『スナップショット機能』</strong>的なものが使えるように、 Vagrant のプラグインの追加をしたいと思います。</p>
+
+<h2 id="sahara-プラグインのインストール">sahara プラグインのインストール</h2>
+
+<p>Vagrant 1.0 までは vagrant に続けて gem サブコマンドで入れられたようですが、 Vagrant 1.1 以降は、<code>plugin</code> サブコマンドを使うようです。</p>
+
+<p>と思って試したら、どうやら Vagrant1.1 以降では対応してないようで・・・。</p>
+
+<p>で色々と調べていたら、対応させている方が！素敵ですねー。</p>
+
+<p><a href="http://www.ryuzee.com/contents/blog/6555" target="_blank">Vagrantの必須プラグインSaharaをVagrant 1.1に対応させました | Ryuzee.com</a></p>
+
+<p>こちらの方の記事にもあるように、『Vagrantを使っている人であれば必携のプラグイン』とあるので、 これはぜひとも入れておき、砂場のように作りは消し、作りは消しが簡単に出来るようにしておきたいですね！ （必携といわれるくらいなので、ひょっとしたら後で記事見直したら、この辺きちんと整備されているかもしれませんね。）</p>
+
+<pre><code>$ git clone https://github.com/ryuzee/sahara.git
+（略）
+$ cd sahara
+$ bundle install
+Fetching gem metadata from http://rubygems.org/..........
+Fetching gem metadata from http://rubygems.org/..
+Resolving dependencies...
+Using rake (0.9.2.2)
+Installing Platform (0.4.0)
+Using bundler (1.3.5)
+Installing open4 (1.3.0)
+Installing popen4 (0.1.2)
+Installing thor (0.18.1)
+Using sahara (0.0.14) from source at .
+Your bundle is complete!
+Use `bundle show [gemname]` to see where a bundled gem is installed.
+$ bundle exec rake build
+sahara 0.0.14 built to pkg/sahara-0.0.14.gem.
+</code></pre>
+
+<p>bundle 使ってビルドすると、 sahara/pkg/ 以下に gem ファイルが出来ました。これを以下の代わりに</p>
+
+<pre><code>$ vagrant plugin install sahara
+</code></pre>
+
+<p>gem ファイルを指定してやってインストールする、と。</p>
+
+<pre><code>$ vagrant plugin install pkg/sahara-0.0.14.gem
+Installing the 'pkg/sahara-0.0.14.gem' plugin. This can take a few minutes...
+Installed the plugin 'sahara (0.0.14)'!
+</code></pre>
+
+<p>これで入りました。 （この辺整備されたら、git clone でリポジトリ持ってくるところから <code>vagrant plugin install sahara</code> の手前までは不要ですね。）</p>
+
+<p>入ったことを確認するために、<code>list</code> サブコマンドを使ってみます。</p>
+
+<pre><code>$ vagrant plugin list
+sahara (0.0.14)
+</code></pre>
+
+<p>これで入りました。</p>
+
+<h2 id="sahara-プラグインを使ってみる">sahara プラグインを使ってみる</h2>
+
+<p>インストールの仕方がちょっと違っただけで、使い方は同じなので、配布先見てみます。</p>
+
+<p><a href="https://github.com/jedi4ever/sahara" target="_blank">https://github.com/jedi4ever/sahara</a></p>
+
+<p>こちらによると、以下のコマンドが用意されているようです。</p>
+
+<pre><code>vagrant sandbox on
+vagrant sandbox commit
+vagrant sandbox rollback
+vagrant sandbox off
+</code></pre>
+
+<p>サンドボックスモードをオンにしたあと、commit か rollback でその作業をしたことにするか、あるいはしてなかったことにするかを決められるようです。データベースと同じですね。</p>
+
+<p>では、一番シンプルで分かりやすいであろう、仮想マシンのホームディレクトリに &#8216;hello&#8217; という空ファイルを作り、 rollback して元に戻っているかどうかを検証したいと思います。</p>
+
+<pre><code>$ vagrant sandbox on
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+</code></pre>
+
+<p>お、なんですかねこの数字。きっとスナップショットを取るのにある程度時間がかかるのでしょう。（といっても数秒でしたが）</p>
+
+<pre><code>$ vagrant ssh
+Last login: Sat May  4 23:10:49 2013 from [your-ip-address]
+Welcome to your Vagrant-built virtual machine.
+[vagrant@localhost ~]$ touch hello
+[vagrant@localhost ~]$ ls
+hello
+</code></pre>
+
+<p>はい、さくっとホームディレクトリに空の &#8216;hello&#8217; というファイルを作りました。</p>
+
+<p>そして、世界を戻してみます。</p>
+
+<pre><code>$ logout
+Connection to 127.0.0.1 closed.
+$ vagrant sandbox rollback
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+</code></pre>
+
+<p>おお、なんかスナップショット周りに変化があったようですね。</p>
+
+<p>もう一度さっきのファイルを確認するために、ssh で接続してみます。</p>
+
+<pre><code>vagrant ssh
+Last login: Sat May  4 23:10:49 2013 from [your-ip-address]
+Welcome to your Vagrant-built virtual machine.
+[vagrant@localhost ~]$ ls
+[vagrant@localhost ~]$
+</code></pre>
+
+<p>おおー！なくなってたー！</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>sahara プラグインのような、スナップショットをコントロールできる機能は、やはり有ると無いのとでは全然違いますね。</p>
+
+<p>ここから先の検証は、上手くいくかどうか怪しいところでスナップショットを取っておいて、 ごにょごにょやったあとで上手く行ったら commit で決定、失敗したら rollback で破棄すれば、 <strong>検証がしやすくなること間違いなしです！</strong></p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年5月7日">2013年5月7日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualbox/">VirtualBox</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
 </div>
-<div class="articleitem">
-  <h2><a href="http://girigiribauer.com/archives/966">仮想環境を CUI（コマンドライン）でいじれる Vagrant を試してみた</a></h2>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 <div class="poststatus">
   <p>  <time datetime="2013年5月5日">2013年5月5日</time>
@@ -248,7 +3204,481 @@
   </ul>
 </div>
 
+
+
+
+<p>もう最近では、OSの上にOSを動かす仮想環境が当たり前になってきていますが、そのソフトウェアの1つに <strong>VirtualBox</strong> というものがあります。</p>
+
+<p><strong>Vagrant</strong> は、元々この VirtualBox を CUI（コマンドライン）でいじれるツールだったのですが、 バージョン1.1以降で VirtualBox 以外のソフトウェアにも対応してくれるようになったため、 今では VirtualBox に限らず使えます。</p>
+
+<p>ちなみに個人としては、Windows に関しては描画の再現性なども考慮して、Mac 上で <strong>VMWare Fusion</strong> （有料）を起動して、その上に Windows7 やら Windows8 やらをインストールして検証用に使っています。（それでもさくさく動く Retina MacBook Pro 最高ですね！）</p>
+
+<p>一方で、サーバ用途に用いられるような、描画の再現性を考えなくてもよいOSについての検証は、VirtualBox を起動して、その上に CentOS などを入れて今後検証していこうかなと考えています。（まだまだこれからです）</p>
+
+<p>このような、後者のサーバ用途に用いるOSの検証で、いちいち VirtualBox（や他のソフトウェア） を GUI から立ち上げて、GUI でぽちぽちとインストールを行って、起動させるような作業を毎回繰り返す場合、Vagrant はかなり役に立ってくれるのではないかと思います。</p>
+
+<p>まずは Vagrant の準備の仕方や考え方などを軽くまとめてみました。</p>
+
+<h2 id="virtualbox-vagrant-のインストール">VirtualBox, Vagrant のインストール</h2>
+
+<p>まず、事前に VirtualBox を入れておきます。（Vagrant 1.1 からは必ずしも VirtualBox ではなくてもいいのですが、前述の通り今回はサーバ用途で VirtualBox を使うという前提での準備なので、VirtualBox でやります）</p>
+
+<p>Vagrant の 1.0 も入れたことがあるのですが、こちらは <code>gem install vagrant</code> で一発インストールだったのに比べ、1.1以降は専用のパッケージをインストールします。（ちなみに記事書いてる時点の最新は、1.2.2 のようです）</p>
+
+<p><img src="/img/2013/05/vagrant01.png" alt="" /></p>
+
+<p>なんか開発速度がめちゃ早いので、あとでこの記事見返したらバージョン古くなってることでしょう。</p>
+
+<p><img src="/img/2013/05/vagrant02.png" alt="" /></p>
+
+<p>あとは普通にインストールをしていきます。</p>
+
+<p><img src="/img/2013/05/vagrant03.png" alt="" /></p>
+
+<p>はい、インストール完了しました。</p>
+
+<pre><code>$ which vagrant
+/usr/bin/vagrant
+</code></pre>
+
+<p>この時点で、vagrant というコマンドが用意されていると思うので、 ここから先は vagrant コマンドとそれに続くサブコマンドで、仮想環境を作って行きます。</p>
+
+<p>ちなみに help は、<code>vagrant -h</code> で出ます。</p>
+
+<pre><code>$ vagrant -h
+Usage: vagrant [-v] [-h] command [&lt;args&gt;]
+
+    -v, --version                    Print the version and exit.
+    -h, --help                       Print this help.
+
+Available subcommands:
+     box
+     destroy
+     halt
+     init
+     package
+     plugin
+     provision
+     reload
+     resume
+     ssh
+     ssh-config
+     status
+     suspend
+     up
+
+For help on any individual command run `vagrant COMMAND -h`
+</code></pre>
+
+<h2 id="vagrant-でよく使う名前とかコマンドとか">Vagrant でよく使う名前とかコマンドとか</h2>
+
+<p>僕もそんなに物理PCのセットアップを数多くやってきているわけではないのですが、 ここから先は物理PCのセットアップの、どの作業に対応しているかを考えながらやった方が イメージがしやすいのではないかと思います。</p>
+
+<ol>
+<li>ボックスを用意する（物理PCにおけるインストールディスクを用意する、に近い）</li>
+<li>仮想マシンのインストール（物理PCにおける物理マシンのインストール、に近い）</li>
+<li>インストール後の設定など</li>
+</ol>
+
+<p>こんな感じの流れで進めていきます。</p>
+
+<h2 id="ボックスを用意する">ボックスを用意する</h2>
+
+<p>まずはボックスを追加してやる必要があります。このボックスから仮想マシンを作るため、<strong>例えるならインストールディスクを用意する工程に相当</strong>するのかもしれません。</p>
+
+<p>ボックスを追加するコマンドは <code>vagrant box add</code> なので、とりあえず help でもみてみます。</p>
+
+<pre><code>vagrant box add -h
+Usage: vagrant box add &lt;name&gt; &lt;url&gt; [--provider provider] [-h]
+
+    -f, --force                      Overwrite an existing box if it exists.
+        --insecure                   If set, SSL certs will not be validated.
+        --provider provider          The provider that backs the box.
+    -h, --help                       Print this help
+</code></pre>
+
+<p>この name というのは、例えるならインストールディスクに名前をつける行為に相当するので、 例えば CensOS のバージョン何々で・・・みたいな名前になるわけで、（あるいはOSやバージョンに紐づいた用途別の名前など）決して<strong>仮想マシンのPC名になるわけではありません。</strong> （僕はここで勘違いをして、変な名前をつけて混乱してました。）</p>
+
+<p>また、url はボックスファイルが公開されている場所に相当します。ボックスファイルは、各OS、ディストリビューション、初期で入ってるアプリケーションごとに色々以下に用意されています。ありがたいですね。</p>
+
+<p><a href="http://www.vagrantbox.es/" target="_blank">http://www.vagrantbox.es/</a></p>
+
+<p>そもそもこのボックスファイルというのは何なのか、というところなのですが、実はこれ自分で作れます。</p>
+
+<p><a href="http://tk0miya.hatenablog.com/entry/2013/03/15/115710" target="_blank">vagrant ユーザよ、その VM は安全なのか? (veewee のすゝめ) &#8211; Hack like a rolling stone</a></p>
+
+<p>確かにやろうと思えば、不正なプログラムをこっそり入れたボックスファイルを公開して、ってのも全然出来なくない話なので、 相当な信頼性を求められるようなものであれば、こういった自分で作る方法も検討すべきなのですが、 今回はそうではないので vagrantbox.es を利用させていただきます。</p>
+
+<p>また、自分で作る方法を見ればなんとなく予想がつくように、ボックスファイルは配布されている ISO ディスクイメージに 設定ファイルを合わせたようなものにすぎないため、ほぼ公開されているディスクイメージに近いものだと考えてもよさそうです。</p>
+
+<h3 id="どれを選べばいいの">どれを選べばいいの？</h3>
+
+<p>この辺は、知らないキーワードがあれば1つずつぐぐりながら調べていくしかないのですが、 今回はサーバ用途の検証に使うので、よくある VPS（Virtual Private Server）構成に近いものを選びます。</p>
+
+<ul>
+<li>CentOS の現時点での最新であるバージョン 6.4</li>
+<li>64ビット (i386 が32ビット, x86_64 が64ビットで、最近はほぼ全て64ビット）</li>
+<li>GUI で立ち上げたときの必要な設定は予めやっといてほしい（Guest Additions）</li>
+<li>余計なアプリケーションが入ってない最小構成（Minimal）</li>
+<li>あとでアプリケーションのインストールとかも自動化したい（Chef or Puppet）</li>
+</ul>
+
+<p>と考えると、これが一番適してそうに思えます。</p>
+
+<p><img src="/img/2013/05/vagrant04.png" alt="" /></p>
+
+<p>わざわざコピーボタンがついているのは、<code>vagrant box add</code> の url のところにコピペするためです。</p>
+
+<pre><code>$ vagrant box add CentOS_6.4_x86_64_Minimal http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130309.box
+Downloading or copying the box...
+Progress: 9% (Rate: 3033k/s, Estimated time remaining: 0:02:47))
+</code></pre>
+
+<p>こんな感じで、名前をつけてやりつつ、さっきのURLを指定してボックスを作成し始めると、まずはダウンロードが開始されます。</p>
+
+<p>ちなみに、名前のところに無駄に半角スペースが入っていると、どこが name でどこが url なのかが分からなくなるので、<strong>バックスラッシュで半角スペースの手前をエスケープするとか、そもそも半角スペースやめるとか</strong>しましょう。</p>
+
+<p>ボックスファイルが羅列してあったさっきのページを見てみると分かるように、ボックスファイルはほぼディスクイメージなので重いです。 まったりコーヒーでも飲みながら気長に待ちましょう。</p>
+
+<h3 id="ボックスファイルが用意出来たかどうかの確認">ボックスファイルが用意出来たかどうかの確認</h3>
+
+<p><code>vagrant box -h</code> で help を見てみます。</p>
+
+<pre><code>$ vagrant box -h
+Usage: vagrant box &lt;command&gt; [&lt;args&gt;]
+
+Available subcommands:
+     add
+     list
+     remove
+     repackage
+
+For help on any individual command run `vagrant box COMMAND -h`
+</code></pre>
+
+<p><code>list</code> というサブコマンドがあるので、<code>vagrant box list</code> と入力してみます。</p>
+
+<pre><code>$ vagrant box list
+CentOS_6.4_x86_64_Minimal (virtualbox)
+</code></pre>
+
+<p>おーー、出来ておりますね。これでボックスは用意できました。</p>
+
+<h3 id="ちなみにボックスを削除するときは">ちなみにボックスを削除するときは</h3>
+
+<pre><code>$ vagrant box remove -h
+Usage: vagrant box remove &lt;name&gt; &lt;provider&gt;
+    -h, --help                       Print this help
+</code></pre>
+
+<p>サブコマンドとして remove がありますね。name, provider（仮想マシンが動くソフトウェア、ここでは virtualbox）を指定してやればいいようです。</p>
+
+<pre><code>$ vagrant box remove CentOS 6.4 x86_64 Minimal virtualbox
+Removing box 'CentOS 6.4 x86_64 Minimal' with provider 'virtualbox'...
+</code></pre>
+
+<p>試しに半角スペースありの名前で作ったボックスファイルを消しました。</p>
+
+<h3 id="ボックスファイルはいずこへ">ボックスファイルはいずこへ？</h3>
+
+<p>実は、この時点でもうホームディレクトリに .vagrant.d というディレクトリが出来ていて、 その下の boxes ディレクトリにボックスファイルが格納されています。</p>
+
+<pre><code>$ cd ~/.vagrant.d/boxes/
+</code></pre>
+
+<p>この下にある virtualbox ディレクトリの中に、実体である box-disk1.vmdk というファイルが用意されているので、 仮想マシンのインストールは、これらを元に行うことになります。</p>
+
+<p><strong>ちなみに、まだボックスファイルを用意しただけなので、仮想マシンは何にも出来てません。</strong> これも僕が初期に勘違いしてたところで、今はまだインストールディスクを用意しただけにすぎないのですね。</p>
+
+<h2 id="仮想マシンのインストール">仮想マシンのインストール</h2>
+
+<p>仮想マシンを作る前に、仮想マシンの置き場所へ移動してからインストール作業を始めた方が良さげです。</p>
+
+<p>さっきのはボックスファイルなので、自動的に .vagrant.d 以下へ格納されますが、仮想マシンは別の場所へ作る必要があります。</p>
+
+<pre><code>$ mkdir ~/Vagrant
+$ cd ~/Vagrant
+</code></pre>
+
+<p>僕は ホームディレクトリに Vagrant というディレクトリを区切って、そちらで作業することにします。</p>
+
+<h3 id="仮想マシンの設定ファイルを準備する-vagrantfile">仮想マシンの設定ファイルを準備する（Vagrantfile）</h3>
+
+<p>さてさて、早速 help を漁りましょう。</p>
+
+<pre><code>$ vagrant -h
+Usage: vagrant [-v] [-h] command [&lt;args&gt;]
+
+    -v, --version                    Print the version and exit.
+    -h, --help                       Print this help.
+
+Available subcommands:
+     box
+     destroy
+     halt
+     init
+     package
+     plugin
+     provision
+     reload
+     resume
+     ssh
+     ssh-config
+     status
+     suspend
+     up
+
+For help on any individual command run `vagrant COMMAND -h`
+</code></pre>
+
+<p><code>init</code> というサブコマンドがあります。これを使ってボックスファイルから仮想マシンをインストールしてみます。まずは help から。</p>
+
+<pre><code>$ vagrant init -h
+Usage: vagrant init [box-name] [box-url]
+    -h, --help                       Print this help
+</code></pre>
+
+<p>box-name は、オプションになっていますが、先ほどのボックスファイル名を指定します。</p>
+
+<pre><code>$ vagrant init CentOS_6.4_x86_64_Minimal
+A `Vagrantfile` has been placed in this directory. You are now
+ready to `vagrant up` your first virtual environment! Please read
+the comments in the Vagrantfile as well as documentation on
+`vagrantup.com` for more information on using Vagrant.
+$ ls
+Vagrantfile
+</code></pre>
+
+<p><code>vagrant init [box-name]</code> を実行すると、同一ディレクトリ内に Vagrantfile なるものが生成されます。 早速これを覗いてみましょう。</p>
+
+<pre><code># -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(&quot;2&quot;) do |config|
+  # All Vagrant configuration is done here. The most common configuration
+  # options are documented and commented below. For a complete reference,
+  # please see the online documentation at vagrantup.com.
+
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = &quot;CentOS_6.4_x86_64_Minimal&quot;
+
+  # The url from where the 'config.vm.box' box will be fetched if it
+  # doesn't already exist on the user's system.
+  # config.vm.box_url = &quot;http://domain.com/path/to/above.box&quot;
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing &quot;localhost:8080&quot; will access port 80 on the guest machine.
+  # config.vm.network :forwarded_port, guest: 80, host: 8080
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network :private_network, ip: &quot;192.168.33.10&quot;
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network :public_network
+</code></pre>
+
+<p>以下ずらずらとコメント行が続きますが、まずは config.vm.box のところに指定したボックスファイル名が 入っていることが確認できます。</p>
+
+<p>また、コメントから3種類のネットワーク設定が可能であることが分かります。</p>
+
+<ol>
+<li>ポートフォワーディング（ゲストOSの特定ポートを、ゲストOSの別ポートにつなぐ）</li>
+<li>プライベートネットワーク</li>
+<li>パブリックネットワーク（ブリッジ接続）</li>
+</ol>
+
+<p>このあたりの設定は、仮想環境を作る際に検討すべき、ホストOS（今いじってるOS）とゲストOS（今作ろうとしてるOS）とをどのように接続するかの話になってきます。</p>
+
+<p>コメント状態のまま仮想マシンを立ち上げると、NAT接続で繋がると思うので、この辺は最初はいじらないでおきます。 NAT接続は、ざっくり言うとゲストOSからの通信が、外から見るとあたかもホストOSが通信しているかのように見えます。</p>
+
+<p>それ以外にも、コメントにいろいろ「こんな設定できるよー」と書いてあるので、読みながら試してみるのも良いのではないでしょうか。 VirtualBox の GUI から設定出来ることは、この設定ファイルから設定できるはずです。</p>
+
+<h2 id="vagrant-up-で仮想マシンの電源オン">Vagrant up で仮想マシンの電源オン</h2>
+
+<p><code>vagrant up -h</code> で help を読んでみます。</p>
+
+<pre><code>$ vagrant up -h
+Usage:vagrant up [vm-name] [options] [-h]
+
+        --[no-]provision             Enable or disable provisioning
+        --provision-with x,y,z       Enable only certain provisioners, by type.
+        --[no-]parallel              Enable or disable parallelism if provider supports it.
+        --provider provider          Back the machine with a specific provider.
+    -h, --help                       Print this help
+</code></pre>
+
+<p>vm-name がオプションになっていますが、一旦仮想マシンは1つだけにしておくので、 複数作って名前を指定するのはまたの機会にしておきます。</p>
+
+<p>ということで、オプションなしで実行します。</p>
+
+<pre><code>$ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+[default] Importing base box 'CentOS_6.4_x86_64_Minimal'...
+[default] Matching MAC address for NAT networking...
+[default] Setting the name of the VM...
+[default] Clearing any previously set forwarded ports...
+[default] Fixed port collision for 22 =&gt; 2222. Now on port 2201.
+[default] Creating shared folders metadata...
+[default] Clearing any previously set network interfaces...
+[default] Preparing network interfaces based on configuration...
+[default] Forwarding ports...
+[default] -- 22 =&gt; 2201 (adapter 1)
+[default] Booting VM...
+[default] Waiting for VM to boot. This can take a few minutes.
+[default] VM booted and ready for use!
+[default] Configuring and enabling network interfaces...
+[default] Mounting shared folders...
+[default] -- /vagrant
+</code></pre>
+
+<p>実行するとすぐに、<strong>「マシン名は &#8216;default&#8217; にしておいてやったぜ」</strong>という表記が出ます。 Vagrantfile に設定がなかったので &#8216;default&#8217; という仮想マシンを作ろうとしています。</p>
+
+<p>また、ネットワークの設定も特にしていないので、<strong>「ネットワークは &#8216;NAT接続&#8217; にしておいてやったぜ」</strong>という表記が出ます。</p>
+
+<p>さらに、<strong>「ssh の 22番ポートが衝突しちゃうから 2201 で接続できるようにしておいてやったぜ」</strong>という表記も出ています。</p>
+
+<p><strong>・・・けっこう色々初期設定で便利な感じにやってくれてますね。</strong></p>
+
+<p>ついでに /vagrant という共有ディレクトリも用意してくれているようです。</p>
+
+<h3 id="もう立ち上がってるの">もう立ち上がってるの？？？</h3>
+
+<p>実はもう電源オンの状態になっています。コマンドラインなので実感が湧かないかもしれません。</p>
+
+<p>そういうときは、立ち上がっているかどうかを確認する <code>status</code> というサブコマンドを使ってみます。</p>
+
+<pre><code>$ vagrant status
+Current machine states:
+
+default                  running (virtualbox)
+
+The VM is running. To stop this VM, you can run `vagrant halt` to
+shut it down forcefully, or you can run `vagrant suspend` to simply
+suspend the virtual machine. In either case, to restart it again,
+simply run `vagrant up`.
+</code></pre>
+
+<p>&#8216;default&#8217; という仮想マシン（さっき作りました）が、 &#8216;running&#8217; つまり動いていると。</p>
+
+<p>ついでに止めたいときは &#8216;vagrant halt&#8217; と打てばいいよ、と教えてくれています。</p>
+
+<p>まだまだこれだけだと、普通に1台インストールしただけなので良さは体感できないかもしれませんが、 これが<strong>複数台になった場合</strong>や、<strong>ちょっとだけ設定変えて別々にインストール</strong>、みたいな状況だと、 この設定ファイルの利点が出てくるのではないかなーと思います。</p>
+
+<p>とにかくこれでもうインストール完了してます。便利だなー。</p>
+
+<h2 id="インストール後の設定など">インストール後の設定など</h2>
+
+<p>動いているとはいえ、とりあえず接続してログインまではやりたいですよね。</p>
+
+<p>さて、再び help 漁りをしてみます。</p>
+
+<pre><code>$ vagrant -h
+Usage: vagrant [-v] [-h] command [&lt;args&gt;]
+
+    -v, --version                    Print the version and exit.
+    -h, --help                       Print this help.
+
+Available subcommands:
+     box
+     destroy
+     halt
+     init
+     package
+     plugin
+     provision
+     reload
+     resume
+     ssh
+     ssh-config
+     status
+     suspend
+     up
+</code></pre>
+
+<p>この中に、<code>ssh</code> と <code>ssh-config</code> があります。 ssh でつなぐためには、<code>vagrant ssh-config</code> で表示された内容を、ホームディレクトリにある <strong>~/.ssh/config</strong> に入れてやればOKです。</p>
+
+<pre><code>$ vagrant ssh-config
+Host default
+  HostName 127.0.0.1
+  User vagrant
+  Port 2201
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile &quot;/Users/[your-name]/.vagrant.d/insecure_private_key&quot;
+  IdentitiesOnly yes
+  LogLevel FATAL
+</code></pre>
+
+<p>※~/.ssh/config は、複数のSSHの設定を管理するテキストファイルで、各接続先の接続方法やら、鍵ファイルの場所やらを記述しておくことで、接続時にパスワードなど打たずに接続が可能と成ります。（詳しくはグーグル先生にでも・・・）</p>
+
+<p>接続設定を <strong>~/.ssh/config</strong> に追加したら、そのまま <code>vagrant ssh</code> を実行してみます。</p>
+
+<pre><code>$ vagrant ssh
+Welcome to your Vagrant-built virtual machine.
+[vagrant@localhost ~]$
+</code></pre>
+
+<p>おお〜〜、接続できました。どうやら初期設定で <strong>vagrant</strong> というユーザーを作っているようです。 本当に作った仮想マシンに接続できているか、いくつかコマンド打って確認してみます。</p>
+
+<pre><code>$ uname -a
+Linux localhost.localdomain 2.6.32-358.el6.x86_64 #1 SMP Fri Feb 22 00:31:26 UTC 2013 x86_64 x86_64 x86_64 GNU/Linux
+$ cat /etc/redhat-release
+CentOS release 6.4 (Final)
+</code></pre>
+
+<p>うん、間違いなく作った仮想マシンに接続出来ています。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>とりあえず仮想マシンのインストール、接続確認までですが、思った以上にめんどくさいところが初期設定として用意されていて、 正直ちょっとわくわくしました。</p>
+
+<p>たぶんコマンドラインで仮想マシンを構築する真価が発揮されるのは、もうちょっとやった先になるとは思いますが、とりあえず1台インストール出来たので、今回はここまでにしたいと思います。</p>
+
+<p>続き: <a href="/archives/1003/">Vagrant に仮想マシンのスナップショットがとれる sahara というプラグインを入れた</a></p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://www.virtualbox.org/" target="_blank">VirtualBox</a></li>
+<li><a href="http://www.vagrantup.com/" target="_blank">Vagrant</a></li>
+<li><a href="http://docs.vagrantup.com/v2" target="_blank">Vagrant Documentation</a></li>
+<li><a href="http://d.hatena.ne.jp/naoya/20130205/1360062070" target="_blank">Vagrant &#8211; naoyaのはてなダイアリー</a></li>
+<li><a href="http://www.ryuzee.com/contents/blog/4292" target="_blank">Vagrantで簡単仮想マシン構築 | Ryuzee.com</a></li>
+<li><a href="http://www.vagrantbox.es/" target="_blank">Vagrantbox.es</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013年5月5日">2013年5月5日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualbox/">VirtualBox</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
 </div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
 
 
 
@@ -269,7 +3699,7 @@
     <a href="/tags/apache">Apache (1)</a>
   </li>
   <li class="flow">
-    <a href="/tags/cli">CLI (9)</a>
+    <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
     <a href="/tags/css">CSS (3)</a>
@@ -359,7 +3789,7 @@
     <a href="/tags/scala">Scala (2)</a>
   </li>
   <li class="flow">
-    <a href="/tags/shellscript">ShellScript (2)</a>
+    <a href="/tags/shellscript">ShellScript (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/smartphone">Smartphone (2)</a>
