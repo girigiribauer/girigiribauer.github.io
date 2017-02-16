@@ -28,10 +28,9 @@
 
 <h1>Tags / SVG</h1>
 
-<div class="poststatus">
-  <p>  <time datetime="2013年2月2日">2013年2月2日</time>
-</p>
 
+  <h2 class="archive-title">  <time datetime="2013年2月2日">2013年2月2日</time>
+ - <a href="http://girigiribauer.com/archives/733">ベクターデータで軽量だと噂のアイコンフォントを導入してみた</a></h2>
   <ul class="tags">
     <li class="flow"><a href="/tags/oldie/">oldIE</a></li>
     <li class="flow"><a href="/tags/svg/">SVG</a></li>
@@ -39,138 +38,6 @@
     <li class="flow"><a href="/tags/icon-font/">Icon-Font</a></li>
     <li class="flow"><a href="/tags/font/">Font</a></li>
   </ul>
-</div>
-
-
-
-
-<p>表示スピードを速くするために、ベクターデータであるSVGを用いるのは、最近よく見られる手法だと思います。</p>
-
-<p>ただ、特に古いIEなどでは、SVGはサポートが十分ではない側面があると思います。 そのデメリットを解消する方法の1つとして、<strong>アイコンフォント</strong>という手法が挙げられます。</p>
-
-<p>気になっていたので、このブログに導入しつつどんな感じか検証してみました。</p>
-
-<h2 id="アイコンフォントとは">アイコンフォントとは</h2>
-
-<p>ヘッダーのアイコンがそれになってます。</p>
-
-<p><img src="/img/2013/02/iconfont01.png" alt="" /></p>
-
-<p>拡大しても綺麗に表示されていますね！</p>
-
-<p>こちらは、『Fontello &#8211; icon fonts generator』というのを利用させていただいて、 必要なアイコンのみを選択し、それをダウンロードして埋め込む形で導入しています。</p>
-
-<p><img src="/img/2013/02/iconfont02.png" alt="" /></p>
-
-<p><a href="https://fontello.com/" target="_blank">Fontello &#8211; icon fonts generator</a></p>
-
-<p>Webサービスを利用すれば、導入するだけならとてもシンプルです。 こちらをダウンロードすると、以下の形式のフォントデータが生成されます。</p>
-
-<ul>
-<li>EOT形式（Embedded OpenType fonts）</li>
-<li>WOFF形式（Web Open Font Format）</li>
-<li>TTF形式（TrueType font）</li>
-<li>SVG形式</li>
-</ul>
-
-<p><strong>EOT形式</strong>は、主にIEでサポートされているフォント形式です。 <strong>WOFF形式</strong>は、IE9+とそれ以外のモダンブラウザでサポートされています。 <strong>TTF形式</strong>は、IE9+で条件付き、とそれ以外のモダンブラウザでサポートされています。 最後に<strong>SVG形式</strong>は、フォントとしてもサポートされています。今現在では（古くなっているかもしれませんが）IEとFirefox以外で概ねサポートされています。</p>
-
-<p>サポート具合の詳細に関しては、『Can I use』をご覧いただくと細かく分かるのではないかと思います。</p>
-
-<p><a href="http://caniuse.com/#search=font" target="_blank">http://caniuse.com/#search=font</a></p>
-
-<p>ダウンロードファイルの中には demo.html も含まれており、組み込み例が掲載されていますので、そちらを参考にすると実装も素早くできると思います。</p>
-
-<p><img src="/img/2013/02/iconfont03.png" alt="" /></p>
-
-<p>これを比較的そのまま持ってきています。<strong>楽チンですね！</strong></p>
-
-<p>各種ブラウザで、それに対応したフォントを使ってくれるので、実装する側も非常に楽です。</p>
-
-<h2 id="アイコンフォントを使うメリット">アイコンフォントを使うメリット</h2>
-
-<p>アイコンフォントを使うメリットは何が挙げられるかというと、</p>
-
-<ol>
-<li>IE6からでも使える</li>
-<li>SVGとは異なり、一般的な方法で対応が出来る</li>
-<li>ベクターデータなので、拡大縮小に強い</li>
-<li>フォントなので、テキストに対するスタイルが一通り適用出来る</li>
-</ol>
-
-<p>あたりではないかと思います。</p>
-
-<p><strong>IE6から使える</strong>というのは、先ほどの通りEOT形式でカバー出来ています。 EOT形式であれば、Webフォントとしての利用がIEでも可能であるため、 やっていることは単にテキストデータを表示するだけです。いわば<strong>一般的な方法での対応</strong>ですね。</p>
-
-<p><strong>ベクターデータ</strong>というのも、テキストデータであれば当たり前ですね。 自由にフォントサイズが変えられるのと同様に、アイコンフォントであってもフォントサイズが自由に変えることができ、 大きく表示したとしても綺麗に表示することが、上の画像の通り分かると思います。</p>
-
-<p><strong>テキストに対するスタイルが一通り適用出来る</strong>というのは、副次的効果として出てきます。 最近ではCSS3を用いたグラデーションであったり、影をつけたりも出来ちゃったりするので、 これも同様にアイコンフォントへの適用も可能です。</p>
-
-<p>このあたりはKAYACさんのブログに綺麗にまとまっているので、そちらを参考になさると良いかと思います。</p>
-
-<p><a href="http://design.kayac.com/topics/2012/02/webFontIcons.php" target="_blank">意外と知らない？アイコンはWebフォントでつくるとこんなに便利！</a></p>
-
-<h2 id="アイコンフォントのデメリット">アイコンフォントのデメリット</h2>
-
-<p>やってみて実感したのですが、逆にデメリットもあります。</p>
-
-<p>上記の通り、フォントファイルは各種ブラウザに応じて複数用意してやる必要が出てきます。 仮に独自のアイコンを複数作って、それをアイコンフォント化しようとした場合、 まず自分でフォントファイルを作る必要があります。</p>
-
-<p>上記の例では、外部のWebサービスを利用したため、かなりの面倒くさい部分を自動的にやってくれていたわけですが、 この<strong>フォントを作る</strong>という工程はかなり時間がかかると思います。大変ですね・・・。 （おまけに作ったフォントを複数種類に変換してやる必要も出てきます・・・。）</p>
-
-<h2 id="アイコンフォントの使いどころ">アイコンフォントの使いどころ</h2>
-
-<p>この手間を考えると、場合によっては<strong>導入すべき、導入すべきでないケース</strong>が出てくると思います。</p>
-
-<p>例えば、2〜3のアイコンをそのまま表示するだけなら、<strong>スプライト画像なりbase64でHTML・CSSに埋め込む</strong>などした方が良さそうです。 アイコンの大きさがそれほどでもなく、拡大もする必要がないのなら、ラスターデータとして持っておいて、リクエストを減らす方向へ考えた方が、<strong>制作時間と表示時間を踏まえて考えると導入しない方が良い？</strong>のではないかと思います。</p>
-
-<p>逆に、アイコンをふんだんに使い、拡大縮小の表現を多く含み、かつアイコンがCSSのスタイルでカバーできる範囲のカラーリングで収まるようなコンテンツであれば、ある程度の手間をかけて導入するのはありかなーと思います。</p>
-
-<p>以上を踏まえて、現状だとWebサービスを利用して導入するのが妥当で、それ以上は規模によっては割に合わないかも？という印象です。</p>
-
-<h2 id="まとめ">まとめ</h2>
-
-<p>さっと利用するだけならお手軽なのでおすすめですが、コンテンツの要素としてある程度多く用いるときは、<strong>制作時間と表示時間との兼ね合いで検討すべき</strong>かなーと思いました。</p>
-
-<h2 id="ref">参考URL</h2>
-
-<ul>
-<li><a href="http://archiva.jp/web/html-css/webfont-trimed.html" target="_blank">Webフォントを分割、というか削りたい</a></li>
-<li><a href="https://fontello.com/" target="_blank">Fontello &#8211; icon fonts generator</a></li>
-<li><a href="http://caniuse.com/#search=font" target="_blank">http://caniuse.com/#search=font</a></li>
-<li><a href="http://design.kayac.com/topics/2012/02/webFontIcons.php" target="_blank">意外と知らない？アイコンはWebフォントでつくるとこんなに便利！</a></li>
-</ul>
-
-
-<ul class="socialbuttons">
-  <li class="flow">
-    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-  </li>
-  <li class="flow">
-    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
-  </li>
-  <li class="flow">
-    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-  </li>
-</ul>
-
-<div class="poststatus">
-  <p>  <time datetime="2013年2月2日">2013年2月2日</time>
-</p>
-
-  <ul class="tags">
-    <li class="flow"><a href="/tags/oldie/">oldIE</a></li>
-    <li class="flow"><a href="/tags/svg/">SVG</a></li>
-    <li class="flow"><a href="/tags/webfont/">WebFont</a></li>
-    <li class="flow"><a href="/tags/icon-font/">Icon-Font</a></li>
-    <li class="flow"><a href="/tags/font/">Font</a></li>
-  </ul>
-</div>
-
-<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
-
-
 
 
 

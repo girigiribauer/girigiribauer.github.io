@@ -28,136 +28,14 @@
 
 <h1>Tags / Apache</h1>
 
-<div class="poststatus">
-  <p>  <time datetime="2015年3月25日">2015年3月25日</time>
-</p>
 
+  <h2 class="archive-title">  <time datetime="2015年3月25日">2015年3月25日</time>
+ - <a href="http://girigiribauer.com/archives/1742">Vagrant を開発用 Web サーバとして利用するときの注意点</a></h2>
   <ul class="tags">
     <li class="flow"><a href="/tags/apache/">Apache</a></li>
     <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
     <li class="flow"><a href="/tags/webserver/">WebServer</a></li>
   </ul>
-</div>
-
-
-
-
-<p>罠があるのでまとめておきます。（体験談） なお、box ファイルは CentOS6 ベースのもの、Web サーバは apache です。（本番環境を想定した開発環境なので、nginx は別のところで使っています）</p>
-
-<h2 id="レシピを適用しても上手く表示されない">レシピを適用しても上手く表示されない</h2>
-
-<p>レシピ適用した後で、 <code>vagrant up</code> や <code>vagrant reload</code> などで VM を起動したとしても、Web サーバがうまく動かなかったケースとかありませんでしたか？私はありました。</p>
-
-<p><strong>/var/www を synced folder に指定しているとはまります。</strong></p>
-
-<p>なんともならなかったので、毎回 ssh でログインして <code>sudo service httpd restart</code> してごまかしてましたが、なんだかはまる人多そうだなーと思ったのでこちらにまとめておきます。</p>
-
-<h3 id="vagrant-の動作順おさらい">Vagrant の動作順おさらい</h3>
-
-<p>レシピの指定を Vagrantfile に書いているケース、knife コマンドを使うケースのいずれにおいても、 <code>vagrant up --provision</code> もしくは <code>vagrant provision</code> 時に以下のような順序で動作します。（ログ見れば分かりますが）</p>
-
-<ol>
-<li>box ファイルの設定、仮想マシンの電源ON（ブート処理）</li>
-<li>Vagrant が使う SSH のポートフォワーディング周りの設定</li>
-<li>synced folder の設定</li>
-<li>（Vagrantfile 内に記述があれば）レシピの適用</li>
-</ol>
-
-<p>なお、古いバージョンの Vagrant では、<code>vagrant up</code> とするだけで up した後に <code>vagrant provision</code> を実行した時の処理が毎回走っていましたが、最近のやつは <code>vagrant up</code> するだけでは Vagrantfile 内に書かれたレシピは適用されなくなりました。（こちらが通常だと思います）</p>
-
-<p>なぜ synced folder を Web サーバのドキュメントルートにしてしまった場合にうまく動かないかというと、 <strong>1.の段階で Web サービスが起動してしまい（chkconfig など）、3.で行われるはずの synced folder の設定がこの段階では行われておらず、/var/www が無いために Web サービスがうまく動かない</strong>、といったことが起きています。</p>
-
-<p>この動作順はどうしようもないので、別の方法を考えなくてはいけません。</p>
-
-<h3 id="upstart-の仕組みを利用する">Upstart の仕組みを利用する</h3>
-
-<p>Upstart というワードをよくご存知の方は、なんとなく予想がつくかと思いますが、 システム起動時に特定のイベントが起きた際、予め指定されたジョブを実行するという仕組みがあります。</p>
-
-<p>Linux は起動時に色々なサービスを立ち上げていますが、 <code>/etc/init</code> 以下に設定ファイルを設置することで、それらを行っています。</p>
-
-<p>今回は、<strong><code>/etc/init/httpd.conf</code> というファイルを作成</strong>し、以下のような内容を記述します。</p>
-
-<pre><code># start apache on vagrant mounted
-start on vagrant-mounted
-exec sudo service httpd start
-</code></pre>
-
-<p>この2行目の <code>vagrant-mounted</code> というのが、先ほどの Vagrant の動作順の 3. である synced folder の設定に相当するので、こちらのマウントが行われたら、<code>sudo service httpd start</code> を行う設定です。 ちなみに、<code>/var/www</code> が無い状態では httpd は起動してないので、restart ではなく start で問題無いようです。</p>
-
-<p>こうすることで、1.の段階で Web サービスの起動に失敗したとしても、3.の直後に Upstart の仕組みによって Web サービスが起動するので、手動で Web サービスの起動などをしなくとも良くなりますね。</p>
-
-<p>Upstart に関してはこちらに詳細あります。</p>
-
-<ul>
-<li><a href="http://stackoverflow.com/questions/22718785/apache-doesnt-start-after-vagrant-reload" target="_blank">http://stackoverflow.com/questions/22718785/apache-doesnt-start-after-vagrant-reload</a></li>
-<li><a href="http://www.usupi.org/sysad/188.html" target="_blank">http://www.usupi.org/sysad/188.html</a></li>
-</ul>
-
-<p>ちなみに、これはあくまで CentOS6, apache の際の話です。CentOS7 は Upstart ではなく systemd になったとかいう話を聞いていつつもまだ試せてないので、お試しになった方がいれば <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> まで教えていただけると嬉しいです。</p>
-
-<h2 id="表示がおかしい-ファイルが途中で途切れる">表示がおかしい、ファイルが途中で途切れる</h2>
-
-<p>これも知らずにはまりました。</p>
-
-<p>特に動的にコンテンツを出力しているわけではないのに、<strong>途中からファイルが \0 やら謎の文字列やらで埋め尽くされ、どうやら途中で切れている</strong>ようでした。ざっくり言うとシステムコールのキャッシュに起因する問題のようで、静的なファイルが対象です。</p>
-
-<p>apache の EnableSendfile ディレクティブ を OFF にしておく必要があるので、 自分で用意した Cookbook の場合は、httpd.conf の template に</p>
-
-<pre><code>EnableSendfile Off
-</code></pre>
-
-<p>を入れておきます。</p>
-
-<p>詳しくは EnableSendfile ディレクティブや sendfile システムコールに関しての詳細はこちら。</p>
-
-<ul>
-<li><a href="http://httpd.apache.org/docs/2.2/mod/core.html#enablesendfile" target="_blank">http://httpd.apache.org/docs/2.2/mod/core.html#enablesendfile</a></li>
-<li><a href="http://blog.1000k.net/2013/03/20/vm-%E3%81%AE%E5%85%B1%E6%9C%89%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E5%86%85%E3%81%AE-%E9%9D%99%E7%9A%84%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%8C%E6%AD%A3%E3%81%97%E3%81%8F%E3%83%AD%E3%83%BC/" target="_blank">http://blog.1000k.net/2013/03/20/vm-%E3%81%AE%E5%85%B1%E6%9C%89%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E5%86%85%E3%81%AE-%E9%9D%99%E7%9A%84%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%8C%E6%AD%A3%E3%81%97%E3%81%8F%E3%83%AD%E3%83%BC/</a></li>
-<li><a href="https://github.com/hiboma/hiboma/blob/master/VirtualBox%E3%81%AEsendfile%E3%81%AE%E3%83%8F%E3%82%99%E3%82%AF%E3%82%99.md" target="_blank">https://github.com/hiboma/hiboma/blob/master/VirtualBox%E3%81%AEsendfile%E3%81%AE%E3%83%8F%E3%82%99%E3%82%AF%E3%82%99.md</a></li>
-</ul>
-
-<p>正直、カーネルレベルまで掘り下げて調べてもメリットが少なかったので、あまり掘り下げて理解してません。。。</p>
-
-<p>※ 2015/04/16 追記</p>
-
-<p>nginx では <code>sendfile off;</code> で良さそうですね。</p>
-
-<p><a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#sendfile" target="_blank">http://nginx.org/en/docs/http/ngx_http_core_module.html#sendfile</a></p>
-
-<h2 id="まとめ">まとめ</h2>
-
-<p>このあたりがクリア出来た頃あたりからは、Vagrant 上の開発環境に問題が起きることが少なくなりました。</p>
-
-<p>この辺に対応するだけでグッと使えるようになると思うので、開発環境を本番環境に近づけられるよう設定してみてはいかがでしょうか。</p>
-
-
-<ul class="socialbuttons">
-  <li class="flow">
-    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-  </li>
-  <li class="flow">
-    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
-  </li>
-  <li class="flow">
-    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-  </li>
-</ul>
-
-<div class="poststatus">
-  <p>  <time datetime="2015年3月25日">2015年3月25日</time>
-</p>
-
-  <ul class="tags">
-    <li class="flow"><a href="/tags/apache/">Apache</a></li>
-    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
-    <li class="flow"><a href="/tags/webserver/">WebServer</a></li>
-  </ul>
-</div>
-
-<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
-
-
 
 
 

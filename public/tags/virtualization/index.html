@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
-    <title>Virtualization - ばうあーろぐ</title>
-    <meta property="og:title" content="Virtualization - ばうあーろぐ">
+    <title>virtualization - ばうあーろぐ</title>
+    <meta property="og:title" content="virtualization - ばうあーろぐ">
     <meta property="og:type" content="article">
     <meta name="description" content="Webテクノロジーに関するメモ、あるいはTwentyFour">
     <meta property="og:description" content="Webテクノロジーに関するメモ、あるいはTwentyFour">
@@ -26,128 +26,52 @@
 
 <div class="maincontents">
 
-<h1>Tags / Virtualization</h1>
+<h1>Tags / virtualization</h1>
 
-<div class="poststatus">
-  <p>  <time datetime="2016年9月29日">2016年9月29日</time>
-</p>
 
+  <h2 class="archive-title">  <time datetime="2013年5月17日">2013年5月17日</time>
+ - <a href="http://girigiribauer.com/archives/1095">Chef の サードパーティ Cookbook を利用して、yum のリポジトリを追加してみる</a></h2>
   <ul class="tags">
-    <li class="flow"><a href="/tags/docker/">Docker</a></li>
-    <li class="flow"><a href="/tags/virtualization/">Virtualization</a></li>
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
   </ul>
-</div>
-
-
-
-
-<p>最初失敗したので、同じところではまるであろう人のためにメモっておきます。
-（念のため言っておきますが僕ははまったわけではないです・・・）</p>
-
-<p>そもそも Windows 10 検証用のために VMWare Fusion をインストールしているのですが、
-Mac で Docker を使いたいだけなら、
-<a href="https://docs.docker.com/engine/installation/mac/" target="_blank">Docker for Mac</a>を
-インストールするだけで問題ありません。
-（仮想レイヤーが増えるだけで全くおすすめできない）</p>
-
-<p>僕の場合は、Docker for Windows で検証したいことがあったため、
-Windows Update 中に（よくないけど）マシンが空いてたので入れてみようと思い、
-インストールしたはいいものの、以下のような画面になりました。</p>
-
-<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion01.png" alt="" /></p>
-
-<p>困り顔・・・。（このキャラクターの名前ってあるんですかね？）</p>
-
-<h2 id="docker-for-mac-windows-の動作の仕組み">Docker for Mac/Windows の動作の仕組み</h2>
-
-<p>仕組みといっても、そこまで詳しいことは書けないのですが、
-Docker は前提として <strong>Linux のコンテナ技術を用いているので、
-Linux なしに動作させることはできません。</strong></p>
-
-<p>Docker for Mac/Windows の1つ前のバージョンである Docker Toolbox では、
-VirtualBox を利用することで仮想 OS のうすーい Linux を手元に作り、
-そこの上に Docker コンテナを作ることで利用できてました。</p>
-
-<p>Docker for Mac/Windows になってもそれは同様で、
-ホスト型の VirtualBox を利用する代わりに、
-Mac であれば <strong>xhyve</strong> というハイパーバイザー型の仮想化技術を、
-Windows であれば <strong>Hyper-V</strong> というハイパーバイザー型の仮想化技術を
-それぞれ利用して超うすい Linux を作り、その上で Docker を動作させてます。</p>
-
-<p>そもそも、Docker for Windows の動作要件として、
-<a href="https://docs.docker.com/docker-for-windows/" target="_blank">https://docs.docker.com/docker-for-windows/</a> のページに
-こんなことが書いてあります。（2016/09/29 時点）</p>
-
-<pre><code>The Hyper-V package must be enabled for Docker for Windows to work. The Docker for Windows installer will enable it for you, if needed. (This requires a reboot).
-</code></pre>
-
-<p>ということで、VMWare Fusion で Docker for Windows を利用したい人は、
-結局のところ <strong>VMWare Fusion で Hyper-V を有効にしましょう</strong>、
-というところに帰着します。</p>
-
-<h2 id="docker-for-windows-のインストール">Docker for Windows のインストール</h2>
-
-<p><a href="http://itnews.jp/?p=9332" target="_blank">VMware Fusion上のWindows10にHyper-Vを構成する。</a> を
-少し参考にしています。</p>
-
-<p>&ldquo;プロセッサとメモリ&rdquo; のメニューを選択します。</p>
-
-<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion02.png" alt="" /></p>
-
-<p>その中に &ldquo;この仮想マシンでハイパーバイザー アプリケーションを有効にする&rdquo; というチェックボックスがあるのでチェックを入れます。</p>
-
-<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion03.png" alt="" /></p>
-
-<p>基本的にはこれで完了です。</p>
-
-<p>ただ、仮想 OS の上でさらに仮想環境をいじることになるので、
-メモリが足らなくなるケースが出てくるかと思います。</p>
-
-<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion04.png" alt="" /></p>
-
-<p>メモリだけは大量に積んであるので、推奨の倍まで増やしてやりました。
-たぶん Docker for Windows も、初期設定のままであれば 2048MB のメモリ設定になっているかと思います。</p>
-
-<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion05.png" alt="" /></p>
-
-<p>その後再度起動してみて、しばらくすると Docker is running の通知が。</p>
-
-<p>Settings から確認してみると &ldquo;Docker is running&rdquo; の文字を確認することができました。</p>
-
-<p><img src="/img/2016/09/docker_for_windows_on_vmware_fusion06.png" alt="" /></p>
-
-<h2 id="まとめ">まとめ</h2>
-
-<p>使うからには、最低限どういう原理で動作しているか、くらいは
-押さえておいた方がいいかもしれません。</p>
-
-
-<ul class="socialbuttons">
-  <li class="flow">
-    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-  </li>
-  <li class="flow">
-    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
-  </li>
-  <li class="flow">
-    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-  </li>
-</ul>
-
-<div class="poststatus">
-  <p>  <time datetime="2016年9月29日">2016年9月29日</time>
-</p>
-
+  <h2 class="archive-title">  <time datetime="2013年5月14日">2013年5月14日</time>
+ - <a href="http://girigiribauer.com/archives/1066">Chef の Data Bag を使ってユーザー作成の自動化をしてみる</a></h2>
   <ul class="tags">
-    <li class="flow"><a href="/tags/docker/">Docker</a></li>
-    <li class="flow"><a href="/tags/virtualization/">Virtualization</a></li>
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
   </ul>
-</div>
-
-<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
-
-
+  <h2 class="archive-title">  <time datetime="2013年5月13日">2013年5月13日</time>
+ - <a href="http://girigiribauer.com/archives/1048">Vagrant と Chef でユーザー作成の自動化をしてみる</a></h2>
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
+  <h2 class="archive-title">  <time datetime="2013年5月10日">2013年5月10日</time>
+ - <a href="http://girigiribauer.com/archives/1013">Vagrant と Chef で仮想マシンの環境をいろいろいじれるようにしたい！</a></h2>
+  <ul class="tags">
+    <li class="flow"><a href="/tags/chef/">Chef</a></li>
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualbox/">VirtualBox</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
+  <h2 class="archive-title">  <time datetime="2013年5月7日">2013年5月7日</time>
+ - <a href="http://girigiribauer.com/archives/1003">Vagrant に仮想マシンのスナップショットがとれる sahara というプラグインを入れた</a></h2>
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualbox/">VirtualBox</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
+  <h2 class="archive-title">  <time datetime="2013年5月5日">2013年5月5日</time>
+ - <a href="http://girigiribauer.com/archives/966">仮想環境を CUI（コマンドライン）でいじれる Vagrant を試してみた</a></h2>
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/virtualbox/">VirtualBox</a></li>
+    <li class="flow"><a href="/tags/virtualization/">virtualization</a></li>
+  </ul>
 
 
 

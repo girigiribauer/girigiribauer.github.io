@@ -2,6 +2,10 @@ body {
   margin: 0;
 }
 
+.markdown-body .archive-title {
+  border-bottom: 0;
+  font-size: 1.25em;
+}
 .markdown-body .flow {
   display: inline-block;
 }
@@ -15,7 +19,7 @@ body {
 .markdown-body .socialbuttons li {
   display: inline-block;
   vertical-align: top;
-  line-height: 1.0;
+  line-height: 1;
 }
 .markdown-body .socialbuttons li + li {
   margin-top: 0;

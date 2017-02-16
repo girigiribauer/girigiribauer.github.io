@@ -1,5 +1,10 @@
 {{- range .Paginator.Pages }}
 {{- if eq .Type "archives" }}
-{{- partial "item.html" . }}
+  <h2 class="archive-title">{{ partial "datetime.html" . }} - <a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+  <ul class="tags">
+{{- range .Params.tags }}
+    <li class="flow"><a href="/tags/{{ . | urlize }}/">{{ . }}</a></li>
+{{- end }}
+  </ul>
 {{- end }}
 {{- end }}

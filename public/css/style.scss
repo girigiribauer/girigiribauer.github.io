@@ -2,6 +2,10 @@ body {
   margin: 0;
 }
 .markdown-body {
+  .archive-title {
+    border-bottom: 0;
+    font-size: 1.25em;
+  }
   .flow {
     display: inline-block;
   }
@@ -14,7 +18,7 @@ body {
     li {
       display: inline-block;
       vertical-align: top;
-      line-height: 1.0;
+      line-height: 1;
       & + li {
         margin-top: 0;
       }
