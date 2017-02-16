@@ -11,16 +11,6 @@
     
       
         <item>
-          <title>Vim の Syntastic で sass-lint が上手く動かないときの debug の話</title>
-          <link>http://girigiribauer.com/archives/20170217/</link>
-          <pubDate>Fri, 17 Feb 2017 00:05:26 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20170217/</guid>
-          <description>一瞬はまったのでメモしておきます。 ~/.sass-lint.yml はホームディレクトリ外では無効でした まず問題の発端はここからです。 僕は今のところ Vim 上で scss ファイルを編集す</description>
-        </item>
-      
-    
-      
-        <item>
           <title>Vim の tabpage のカスタマイズ</title>
           <link>http://girigiribauer.com/archives/20161012/</link>
           <pubDate>Wed, 12 Oct 2016 12:00:58 +0900</pubDate>

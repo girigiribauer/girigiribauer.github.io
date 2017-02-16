@@ -29,228 +29,6 @@
 <h1>Tags / CSS</h1>
 
 <div class="poststatus">
-  <p>  <time datetime="2017年2月17日">2017年2月17日</time>
-</p>
-
-  <ul class="tags">
-    <li class="flow"><a href="/tags/vim/">Vim</a></li>
-    <li class="flow"><a href="/tags/lint/">lint</a></li>
-    <li class="flow"><a href="/tags/css/">CSS</a></li>
-  </ul>
-</div>
-
-
-
-
-<p>一瞬はまったのでメモしておきます。</p>
-
-<h2 id="sass-lint-yml-はホームディレクトリ外では無効でした">~/.sass-lint.yml はホームディレクトリ外では無効でした</h2>
-
-<p>まず問題の発端はここからです。</p>
-
-<p>僕は今のところ Vim 上で scss ファイルを編集するときに
-sass-lint を linter として利用しています。</p>
-
-<p><a href="https://github.com/sasstools/sass-lint" target="_blank">https://github.com/sasstools/sass-lint</a></p>
-
-<p>.sass-lint.yml が何も設定されていない状態だと、
-この中にあるルールの1つである <strong>property-sort-order</strong> が
-初期設定で <strong>alphabetical</strong> になっているため、
-scss ファイル内のプロパティがアルファベット順になっていない行で
-すべて警告が出ます。</p>
-
-<p>正直、うざいです・・・。</p>
-
-<p>ちなみに .sass-lint.yml のサンプルはこちらです。</p>
-
-<p><a href="https://github.com/sasstools/sass-lint/blob/develop/docs/sass-lint.yml" target="_blank">https://github.com/sasstools/sass-lint/blob/develop/docs/sass-lint.yml</a></p>
-
-<p>ルール一覧はこちら。それぞれ Markdown でまとめられてます。</p>
-
-<p><a href="https://github.com/sasstools/sass-lint/tree/develop/docs/rules" target="_blank">https://github.com/sasstools/sass-lint/tree/develop/docs/rules</a></p>
-
-<p>これらを参考にして、 lint が走ったときにうざくならないよう、
-設定をそれぞれ吟味したうえで <strong>~/.sass-lint.yml</strong> を配置しました。</p>
-
-<p>そして、ホームディレクトリのすぐ下にサンプル用 scss ファイルを置き、
-実際にルールが有効 / 無効になっているか確認していきました。</p>
-
-<p>これでいい感じになったなーという頃、実際に warning だらけになっていた対象ファイルで、
-試しに保存して linter 走らせてみることに。</p>
-
-<p>がっ。</p>
-
-<p><strong>動かない・・・。なぜ・・・。</strong></p>
-
-<p>そう、 <strong>~/.sass-lint.yml はホームディレクトリ外では無効</strong> なのでした。</p>
-
-<p>.sass-lint.yml 内にファイル指定できるオプションもあるのですが、</p>
-
-<pre><code>files:
-  include: '\*\*/\*.s+(c|a)ss'
-</code></pre>
-
-<p>これを &lsquo;*.scss&rsquo; にしても &lsquo;/**/*.scss&rsquo; にしてもなんともなりません。</p>
-
-<p>さてどうしたものか・・・。</p>
-
-<p>そこで少し考え方を変えて、 lint を走らせる側の設定を見直すことに。</p>
-
-<h2 id="vim-の-syntastic-はとても便利">Vim の Syntastic はとても便利</h2>
-
-<p>まず現状利用している Syntastic について先にメモしておきます。</p>
-
-<p>Vim で validation, lint を行うとなった場合に、
-主要な選択肢の1つになっていると思いますが、
-ファイルタイプに応じて様々な checker を指定できるようになっていて、
-とても使いやすい syntax checker です。</p>
-
-<p><a href="https://github.com/vim-syntastic/syntastic" target="_blank">https://github.com/vim-syntastic/syntastic</a></p>
-
-<p>まずは自分の使っているプラグインマネージャなどでインストールして、
-<code>:h syntastic</code> を読むと良いと思います。</p>
-
-<p>今回の話に沿った部分ですが、
-scss のファイルタイプの設定になるので、
-ftplugin/scss.vim 内に以下の設定を元々入れてあります。</p>
-
-<pre><code>let g:syntastic_scss_checkers = ['sass_lint']
-</code></pre>
-
-<p>これもヘルプに全部ある話ですが、</p>
-
-<p><strong>syntastic_<filetype>_checkers</strong> という名前で指定してやると、
-filetype ごとの設定が可能です。</p>
-
-<p>ここではファイルタイプが scss なので、
-<strong>syntastic_scss_checkers</strong> という名前になりますね。</p>
-
-<p>さらに、 checker ごとの細かな設定も可能です。</p>
-
-<pre><code>                                   *'syntastic_&lt;filetype&gt;_&lt;checker&gt;_&lt;option&gt;'*
-Checkers that use &quot;makeprgBuild()&quot; construct the corresponding command line
-like this: &gt;
-    let makeprg = self.makeprgBuild({
-                \ &quot;exe&quot;: self.getExec(),
-                \ &quot;args&quot;: &quot;-a -b -c&quot;,
-                \ &quot;fname&quot;: shellescape(expand(&quot;%&quot;, 1)),
-                \ &quot;post_args&quot;: &quot;--more --args&quot;,
-                \ &quot;tail&quot;: &quot;2&gt;/dev/null&quot; })
-&lt;
-The result is a command line of the form: &gt;
-    &lt;exe&gt; &lt;args&gt; &lt;fname&gt; &lt;post_args&gt; &lt;tail&gt;
-&lt;
-All fields above are optional, and can be overridden by setting global
-variables 'g:syntastic_&lt;filetype&gt;_&lt;checker-name&gt;_&lt;option-name&gt;' - even
-parameters not specified in the call to &quot;makeprgBuild()&quot;. For example to
-override the arguments and the tail: &gt;
-    let g:syntastic_c_pc_lint_args = &quot;-w5 -Iz:/usr/include/linux&quot;
-    let g:syntastic_c_pc_lint_tail = &quot;2&gt;/dev/null&quot;
-&lt;
-</code></pre>
-
-<p>ヘルプにもあるように、
-例えば filetype が c で checker が pc_lint 、さらに変更したいオプションが args であれば、
-<strong>g:syntastic_c_pc_lint_args</strong> という名前になります。</p>
-
-<p><strong>g:syntastic<em><filetype></em><checker-name>_<option-name></strong> というルールですね。</p>
-
-<h2 id="vim-の-syntastic-の-debug-方法について">Vim の Syntastic の debug 方法について</h2>
-
-<p>話は戻って sass-lint の設定の話です。</p>
-
-<p><strong>lint の実行時に設定ファイルを指定するようなオプション</strong> があれば、
-仮にホームディレクトリ外であっても、用意した設定ファイルを読み込んで利用できるはずです。</p>
-
-<p>どれが該当するかというと、先ほどの <strong>args オプション</strong> がそれです。</p>
-
-<p>また、具体的にどのオプションをつけるべきかは、
-sass-lint の CLI の項目を見ると良いです。</p>
-
-<p><a href="https://github.com/sasstools/sass-lint#cli" target="_blank">https://github.com/sasstools/sass-lint#cli</a></p>
-
-<p>だいたい予想済みだとは思いますが、 config ファイルなので -c オプションが用意されています。</p>
-
-<p>つまり、記述はこうなるはずです。</p>
-
-<pre><code>let g:syntastic_scss_sass_lint_args = '-c ~/.sass-lint.yml'
-</code></pre>
-
-<p>さて、これでオプション指定もできたので実行してみます！</p>
-
-<p>・・・。</p>
-
-<p>・・・・・・。</p>
-
-<p><strong>何も出ません。</strong></p>
-
-<p>なぜ何も出なくなったのか調べるために、
-ヘルプを色々と読み漁ってみます。</p>
-
-<p>中に syntastic-config-debug なる項目が。</p>
-
-<p>つまりこういう感じです。</p>
-
-<pre><code>let g:syntastic_debug = 1
-let g:syntastic_debug_file = &quot;~/syntastic.log&quot;
-</code></pre>
-
-<p>これを追記したうえで、
-自分の用意したオプションの有り無しで差分を見てみることに。</p>
-
-<pre><code>syntastic: 1.261645: （中略）'makeprg': 'sass-lint -c .sass-lint.yml -q -f compact index.scss', 'returns': [0, 1]}
-syntastic: 1.448422: （中略）'makeprg': 'sass-lint -v -q -f compact index.scss', 'returns': [0, 1]}
-</code></pre>
-
-<p>おっと、自らが追加したオプションが増えていることは確認できましたが、
-<strong>逆に -v オプションが消されてしまっておりますね。</strong></p>
-
-<p>ちなみに sass-lint における -v (verbose) オプションは、
-<strong>cli ではつけないとレポーティングされない、</strong> とあるので、これは必ずつけないといけません。</p>
-
-<p>つまり、最終的な記述はこうなります。</p>
-
-<pre><code>let g:syntastic_scss_checkers = ['sass_lint']
-let g:syntastic_scss_sass_lint_args = '-v -c ~/.sass-lint.yml'
-</code></pre>
-
-<p>ここまでやって、自分の用意した .sass-lint.yml が読み込まれ、
-warning だらけの lint からようやく解放されました。</p>
-
-<h2 id="まとめ">まとめ</h2>
-
-<p>今回もですが、 <strong>マニュアルやヘルプをきちんと読むといいことあります。</strong></p>
-
-<p>書いてくれた方のためにもちゃんと読む癖をつけましょう。</p>
-
-
-<ul class="socialbuttons">
-  <li class="flow">
-    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-  </li>
-  <li class="flow">
-    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
-  </li>
-  <li class="flow">
-    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-  </li>
-</ul>
-
-<div class="poststatus">
-  <p>  <time datetime="2017年2月17日">2017年2月17日</time>
-</p>
-
-  <ul class="tags">
-    <li class="flow"><a href="/tags/vim/">Vim</a></li>
-    <li class="flow"><a href="/tags/lint/">lint</a></li>
-    <li class="flow"><a href="/tags/css/">CSS</a></li>
-  </ul>
-</div>
-
-<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
-
-<div class="poststatus">
   <p>  <time datetime="2017年1月6日">2017年1月6日</time>
 </p>
 
@@ -566,7 +344,7 @@ sampleMask.delay(500).fadeOut(1500);
     <a href="/tags/cli">CLI (10)</a>
   </li>
   <li class="flow">
-    <a href="/tags/css">CSS (4)</a>
+    <a href="/tags/css">CSS (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/css3">CSS3 (1)</a>
@@ -665,7 +443,7 @@ sampleMask.delay(500).fadeOut(1500);
     <a href="/tags/vagrant">Vagrant (15)</a>
   </li>
   <li class="flow">
-    <a href="/tags/vim">Vim (4)</a>
+    <a href="/tags/vim">Vim (3)</a>
   </li>
   <li class="flow">
     <a href="/tags/virtualbox">VirtualBox (3)</a>
@@ -732,9 +510,6 @@ sampleMask.delay(500).fadeOut(1500);
   </li>
   <li class="flow">
     <a href="/tags/jsperf">jsperf (1)</a>
-  </li>
-  <li class="flow">
-    <a href="/tags/lint">lint (1)</a>
   </li>
   <li class="flow">
     <a href="/tags/mediaquery">mediaQuery (1)</a>
