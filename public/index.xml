@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>Vim の Syntastic で sass-lint が上手く動かないときの debug の話</title>
+          <link>http://girigiribauer.com/archives/20170217/</link>
+          <pubDate>Fri, 17 Feb 2017 00:16:01 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170217/</guid>
+          <description>一瞬はまったのでメモしておきます。 ~/.sass-lint.yml はホームディレクトリ外では無効でした まず問題の発端はここからです。 僕は今のところ Vim 上で scss ファイルを編集す</description>
+        </item>
+      
+    
+      
+        <item>
           <title>zsh で日付などを補完・入力補助する方法</title>
           <link>http://girigiribauer.com/archives/20170208/</link>
           <pubDate>Wed, 08 Feb 2017 18:10:11 +0900</pubDate>
@@ -496,16 +506,6 @@
           <pubDate>Sun, 24 Mar 2013 00:26:26 +0900</pubDate>
           <guid>http://girigiribauer.com/archives/905</guid>
           <description>最近、こんな勉強会に参加して、 こんなこと話しました、こんなこと聞きましたという記事を けっこう頻繁にアウトプット出来るようになってきて、個人的</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>HTMLの名前空間(namespace)について掘り下げてみる</title>
-          <link>http://girigiribauer.com/archives/860</link>
-          <pubDate>Mon, 11 Mar 2013 00:08:58 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/860</guid>
-          <description>例えば、 &amp;lt;html xmlns=&amp;quot;http://www.w3.org/1999/xhtml&amp;quot; xmlns:og=&amp;quot;http://ogp.me/ns#&amp;quot; xmlns:fb=&amp;quot;https://www.facebook.com/2008/fbml&amp;quot;&amp;gt; 『こういうのを HTML に埋め込んでください』とか、 &amp;lt;meta property=&amp;quot;og:title&amp;quot; content=&amp;quot;ソーシャル用のタイトルがここに入る&amp;quot;&amp;</description>
         </item>
       
     
