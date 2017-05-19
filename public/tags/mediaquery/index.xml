@@ -2,8 +2,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ばうあーろぐ</title>
-    <link>http://girigiribauer.com/tags/mediaquery/index.xml</link>
-    <atom:link rel="self" href="http://girigiribauer.com/tags/mediaquery/index.xml/index.xml" type="application/rss+xml" />
+    <link>http://girigiribauer.com/tags/mediaquery/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/mediaquery/index.xml" type="application/rss+xml" />
     <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
@@ -12,9 +12,9 @@
       
         <item>
           <title>mediaQuery における max-width, max-device-width の違い</title>
-          <link>http://girigiribauer.com/archives/1179</link>
+          <link>http://girigiribauer.com/archives/1179/</link>
           <pubDate>Wed, 13 Nov 2013 09:29:57 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1179</guid>
+          <guid>http://girigiribauer.com/archives/1179/</guid>
           <description>最近改めて使い分けないとなーと実感したので、その実感を忘れないうちにメモしておこうと思います。 デバイスの幅(width)と device-width の違いについて そ</description>
         </item>
       

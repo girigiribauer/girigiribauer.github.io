@@ -2,8 +2,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ばうあーろぐ</title>
-    <link>http://girigiribauer.com/tags/linux/index.xml</link>
-    <atom:link rel="self" href="http://girigiribauer.com/tags/linux/index.xml/index.xml" type="application/rss+xml" />
+    <link>http://girigiribauer.com/tags/linux/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/linux/index.xml" type="application/rss+xml" />
     <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
@@ -22,9 +22,9 @@
       
         <item>
           <title>コマンド履歴の Ctrl-R 使ってますか？</title>
-          <link>http://girigiribauer.com/archives/1873</link>
+          <link>http://girigiribauer.com/archives/1873/</link>
           <pubDate>Tue, 23 Jun 2015 11:01:36 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1873</guid>
+          <guid>http://girigiribauer.com/archives/1873/</guid>
           <description>大学で初めて Linux を触りつつも、 その後働き始めてほぼ GUI オンリーの生活を送り、 iTerm, tmux, Vim 達とのと出会いを経て、 コマンドライン中心の生活を送っている girigiribauer で</description>
         </item>
       
@@ -32,9 +32,9 @@
       
         <item>
           <title>LinuxサーバとPHPの初心者向け勉強会に参加してみた</title>
-          <link>http://girigiribauer.com/archives/673</link>
+          <link>http://girigiribauer.com/archives/673/</link>
           <pubDate>Tue, 22 Jan 2013 15:49:43 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/673</guid>
+          <guid>http://girigiribauer.com/archives/673/</guid>
           <description>先週末の 1/19（土）に、株式会社 音生（ねお）さんにお邪魔してきました。 その時の勉強会のレポートなどを軽くまとめてみようと思います。 概要 勉強</description>
         </item>
       

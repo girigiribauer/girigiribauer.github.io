@@ -2,8 +2,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ばうあーろぐ</title>
-    <link>http://girigiribauer.com/tags/event-conference/index.xml</link>
-    <atom:link rel="self" href="http://girigiribauer.com/tags/event-conference/index.xml/index.xml" type="application/rss+xml" />
+    <link>http://girigiribauer.com/tags/event-conference/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/event-conference/index.xml" type="application/rss+xml" />
     <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
@@ -12,9 +12,9 @@
       
         <item>
           <title>比較的大きめのtechイベントやるとき用メモ</title>
-          <link>http://girigiribauer.com/archives/1630</link>
+          <link>http://girigiribauer.com/archives/1630/</link>
           <pubDate>Fri, 11 Jul 2014 10:32:50 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1630</guid>
+          <guid>http://girigiribauer.com/archives/1630/</guid>
           <description>メモだけ残しておきます。 予約系 100名規模の会場は3か月前だとぎりぎり、もうちょっと手前で押さえるべき オプション品（マイクやらプロジェクタ、</description>
         </item>
       
@@ -22,9 +22,9 @@
       
         <item>
           <title>関西のHTML5など勉強会に参加してきた話</title>
-          <link>http://girigiribauer.com/archives/905</link>
+          <link>http://girigiribauer.com/archives/905/</link>
           <pubDate>Sun, 24 Mar 2013 00:26:26 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/905</guid>
+          <guid>http://girigiribauer.com/archives/905/</guid>
           <description>最近、こんな勉強会に参加して、 こんなこと話しました、こんなこと聞きましたという記事を けっこう頻繁にアウトプット出来るようになってきて、個人的</description>
         </item>
       
@@ -32,9 +32,9 @@
       
         <item>
           <title>大なごやJS vol.5 に行ってきたまとめ</title>
-          <link>http://girigiribauer.com/archives/846</link>
+          <link>http://girigiribauer.com/archives/846/</link>
           <pubDate>Fri, 01 Mar 2013 14:14:23 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/846</guid>
+          <guid>http://girigiribauer.com/archives/846/</guid>
           <description>大なごやJS(#daiNagoyaJS) 数か月に1回、みんながやりたくなったタイミングで行い、主催がころころ入れ替わっていくという謎の勉強会</description>
         </item>
       
@@ -42,9 +42,9 @@
       
         <item>
           <title>HTML5勉強会 名古屋 #1 に参加してきた話</title>
-          <link>http://girigiribauer.com/archives/785</link>
+          <link>http://girigiribauer.com/archives/785/</link>
           <pubDate>Sat, 09 Feb 2013 05:52:26 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/785</guid>
+          <guid>http://girigiribauer.com/archives/785/</guid>
           <description>特にしゃべってもないので、参加者目線でログを残したいなと思います。 HTML5勉強会 名古屋 #1 今まで名古屋でこういう会が無かったので、こういう月</description>
         </item>
       
@@ -52,9 +52,9 @@
       
         <item>
           <title>CSS Nite in Nagoyaに行ってきた話</title>
-          <link>http://girigiribauer.com/archives/762</link>
+          <link>http://girigiribauer.com/archives/762/</link>
           <pubDate>Sat, 02 Feb 2013 13:40:47 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/762</guid>
+          <guid>http://girigiribauer.com/archives/762/</guid>
           <description>内容は、どちらかというと後追いで追加されたワード、『&amp;#8220;伝える&amp;#8221;のがうまくなる！』っていうところが全面に出た内容だった</description>
         </item>
       

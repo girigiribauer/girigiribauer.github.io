@@ -2,8 +2,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ばうあーろぐ</title>
-    <link>http://girigiribauer.com/tags/html5/index.xml</link>
-    <atom:link rel="self" href="http://girigiribauer.com/tags/html5/index.xml/index.xml" type="application/rss+xml" />
+    <link>http://girigiribauer.com/tags/html5/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/html5/index.xml" type="application/rss+xml" />
     <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
@@ -12,9 +12,9 @@
       
         <item>
           <title>関西のHTML5など勉強会に参加してきた話</title>
-          <link>http://girigiribauer.com/archives/905</link>
+          <link>http://girigiribauer.com/archives/905/</link>
           <pubDate>Sun, 24 Mar 2013 00:26:26 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/905</guid>
+          <guid>http://girigiribauer.com/archives/905/</guid>
           <description>最近、こんな勉強会に参加して、 こんなこと話しました、こんなこと聞きましたという記事を けっこう頻繁にアウトプット出来るようになってきて、個人的</description>
         </item>
       
@@ -22,9 +22,9 @@
       
         <item>
           <title>スマートフォンサイト構築に役立ちそうな本を読んでみた</title>
-          <link>http://girigiribauer.com/archives/798</link>
+          <link>http://girigiribauer.com/archives/798/</link>
           <pubDate>Mon, 11 Feb 2013 11:16:14 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/798</guid>
+          <guid>http://girigiribauer.com/archives/798/</guid>
           <description>知り合いの方が本を出されたと聞いたので、早速読んでみました。 簡単に内容をさらっと紹介しつつ、どんな人向けの本なのかも考えてみようと思います。</description>
         </item>
       
@@ -32,9 +32,9 @@
       
         <item>
           <title>HTML5勉強会 名古屋 #1 に参加してきた話</title>
-          <link>http://girigiribauer.com/archives/785</link>
+          <link>http://girigiribauer.com/archives/785/</link>
           <pubDate>Sat, 09 Feb 2013 05:52:26 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/785</guid>
+          <guid>http://girigiribauer.com/archives/785/</guid>
           <description>特にしゃべってもないので、参加者目線でログを残したいなと思います。 HTML5勉強会 名古屋 #1 今まで名古屋でこういう会が無かったので、こういう月</description>
         </item>
       
@@ -42,9 +42,9 @@
       
         <item>
           <title>html5shiv.jsの使いどころ</title>
-          <link>http://girigiribauer.com/archives/719</link>
+          <link>http://girigiribauer.com/archives/719/</link>
           <pubDate>Mon, 04 Feb 2013 14:00:12 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/719</guid>
+          <guid>http://girigiribauer.com/archives/719/</guid>
           <description>HTML5のタグで書いてはいけないレアケース にて、『html5shiv.jsを読み込んで・・・』みたいな記事を書いたのですが、そもそも html5shiv.js とは</description>
         </item>
       
@@ -52,9 +52,9 @@
       
         <item>
           <title>HTML5のタグで書いてはいけないレアケース</title>
-          <link>http://girigiribauer.com/archives/690</link>
+          <link>http://girigiribauer.com/archives/690/</link>
           <pubDate>Tue, 29 Jan 2013 17:22:07 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/690</guid>
+          <guid>http://girigiribauer.com/archives/690/</guid>
           <description>個人的には、 IE8以前のブラウザが対応ブラウザに入っていて、 かなり公共性の高いと思われる（≒JavaScriptの動作によらず閲覧できる必要</description>
         </item>
       
@@ -62,9 +62,9 @@
       
         <item>
           <title>HTML5のタグを見直してみる（骨格編）</title>
-          <link>http://girigiribauer.com/archives/619</link>
+          <link>http://girigiribauer.com/archives/619/</link>
           <pubDate>Mon, 14 Jan 2013 08:12:04 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/619</guid>
+          <guid>http://girigiribauer.com/archives/619/</guid>
           <description>HTML5カルタ大会にて思ったこと。 分からないものを分からないままにするの、良くなーい！！ ってことで、少しあやふやなところもあったHTML5</description>
         </item>
       
@@ -72,9 +72,9 @@
       
         <item>
           <title>『新春!!HTML5KARUTA大会』名古屋も盛況でした！</title>
-          <link>http://girigiribauer.com/archives/604</link>
+          <link>http://girigiribauer.com/archives/604/</link>
           <pubDate>Sun, 06 Jan 2013 17:00:51 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/604</guid>
+          <guid>http://girigiribauer.com/archives/604/</guid>
           <description>新年あけましておめでとうございます！ 今年もぎりぎりで行くのでどうぞよろしくお願いします！ 今年初のブログ記事は、HTML5のカルタ大会というイ</description>
         </item>
       

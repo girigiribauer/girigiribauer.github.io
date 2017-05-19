@@ -2,8 +2,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ばうあーろぐ</title>
-    <link>http://girigiribauer.com/tags/html5-outline/index.xml</link>
-    <atom:link rel="self" href="http://girigiribauer.com/tags/html5-outline/index.xml/index.xml" type="application/rss+xml" />
+    <link>http://girigiribauer.com/tags/html5-outline/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/html5-outline/index.xml" type="application/rss+xml" />
     <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
@@ -12,9 +12,9 @@
       
         <item>
           <title>HTML5のタグを見直してみる（骨格編）</title>
-          <link>http://girigiribauer.com/archives/619</link>
+          <link>http://girigiribauer.com/archives/619/</link>
           <pubDate>Mon, 14 Jan 2013 08:12:04 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/619</guid>
+          <guid>http://girigiribauer.com/archives/619/</guid>
           <description>HTML5カルタ大会にて思ったこと。 分からないものを分からないままにするの、良くなーい！！ ってことで、少しあやふやなところもあったHTML5</description>
         </item>
       

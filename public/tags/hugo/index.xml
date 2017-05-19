@@ -2,12 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ばうあーろぐ</title>
-    <link>http://girigiribauer.com/tags/hugo/index.xml</link>
-    <atom:link rel="self" href="http://girigiribauer.com/tags/hugo/index.xml/index.xml" type="application/rss+xml" />
+    <link>http://girigiribauer.com/tags/hugo/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/hugo/index.xml" type="application/rss+xml" />
     <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
 
+    
+      
+        <item>
+          <title>Hugo v0.19 以上で 404 page not found になる件</title>
+          <link>http://girigiribauer.com/archives/20170519/</link>
+          <pubDate>Fri, 19 May 2017 17:53:08 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170519/</guid>
+          <description>軽い気持ちで v0.17 あたりから最新にアップデートしたら 先日思わぬところではまったのでメモ。 （ちょうど Hugo 使ったものが直近で必要だったので焦りました・</description>
+        </item>
+      
     
       
         <item>

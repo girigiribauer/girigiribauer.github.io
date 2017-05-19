@@ -6,12 +6,12 @@
     <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
-    <title>RDFa - ばうあーろぐ</title>
-    <meta property="og:title" content="RDFa - ばうあーろぐ">
+    <title>Hugo v0.19 以上で 404 page not found になる件 - ばうあーろぐ</title>
+    <meta property="og:title" content="Hugo v0.19 以上で 404 page not found になる件 - ばうあーろぐ">
     <meta property="og:type" content="article">
-    <meta name="description" content="Webテクノロジーに関するメモ、あるいはTwentyFour">
-    <meta property="og:description" content="Webテクノロジーに関するメモ、あるいはTwentyFour">
-    <meta property="og:url" content="http://girigiribauer.com/tags/rdfa/">
+    <meta name="description" content="軽い気持ちで v0.17 あたりから最新にアップデートしたら 先日思わぬところではまったのでメモ。 （ちょうど Hugo 使ったものが直近で必要だったので焦りました・">
+    <meta property="og:description" content="軽い気持ちで v0.17 あたりから最新にアップデートしたら 先日思わぬところではまったのでメモ。 （ちょうど Hugo 使ったものが直近で必要だったので焦りました・">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20170519/">
     <meta property="fb:app_id" content="396423247105258">
     <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
 <meta name="generator" content="Hugo 0.20.7" />
@@ -26,19 +26,85 @@
 
 <div class="maincontents">
 
-<h1>Tags / RDFa</h1>
+<h1>Hugo v0.19 以上で 404 page not found になる件</h1>
 
+<div class="poststatus">
+  <p>  <time datetime="2017年5月19日">2017年5月19日</time>
+</p>
 
-  <h2 class="archive-title">  <time datetime="2013年3月11日">2013年3月11日</time>
- - <a href="http://girigiribauer.com/archives/860/">HTMLの名前空間(namespace)について掘り下げてみる</a></h2>
   <ul class="tags">
-    <li class="flow"><a href="/tags/html/">HTML</a></li>
-    <li class="flow"><a href="/tags/namespace/">namespace</a></li>
-    <li class="flow"><a href="/tags/opengraph/">OpenGraph</a></li>
-    <li class="flow"><a href="/tags/rdfa/">RDFa</a></li>
+    <li class="flow"><a href="/tags/hugo/">Hugo</a></li>
   </ul>
+</div>
 
 
+
+
+<p>軽い気持ちで v0.17 あたりから最新にアップデートしたら
+先日思わぬところではまったのでメモ。</p>
+
+<p>（ちょうど Hugo 使ったものが直近で必要だったので焦りました・・・）</p>
+
+<h2 id="起きている事象">起きている事象</h2>
+
+<p>v0.19 以上の Hugo を利用して
+<code>hugo server --buildDrafts</code> などでページを見ていると、
+詳細ページだけが確認できず &lsquo;404 page not found&rsquo; になってしまう。</p>
+
+<h2 id="結論">結論</h2>
+
+<p>各記事の上の frontmatter 内にある、
+layout を削除すると正しく動作するようになります。</p>
+
+<p>frontmatter から layout の記述を削除して
+表示確認してから追加すると、 <code>hugo server</code> 動作中なら認識するけど、
+落としてからまた <code>hugo server</code> 立ち上げると再び not found になってしまう・・・。</p>
+
+<h2 id="細かいこと">細かいこと</h2>
+
+<p>Hugo ではコンテンツを content directory に格納し、
+layout ごとに sub directory を作って格納します。</p>
+
+<p><code>content/post/article01.md</code></p>
+
+<p>そういった仕組みがあるので、frontmatter 内に
+そもそも layout の指定は不要で、
+公式のドキュメントにもそのようなプロパティは存在してません。</p>
+
+<p>古い記述なのか、 v0.19 以上だと
+記述が入っていると not found になってしまうようです。</p>
+
+<p>deprecated とかも書いてなくてどこにも情報なかったので、
+特定にちょっと時間かかってしまいました・・・。</p>
+
+<p>いつからなくなったんだろうか・・・
+git blame でざっと見てみたけどそんなもの無かったです・・・
+最初からそんなプロパティ無かったんだろうか・・・</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017年5月19日">2017年5月19日</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/hugo/">Hugo</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 
 
@@ -310,7 +376,16 @@ _gaq.push(['_trackPageview']);
 
 
 
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
   </body>
 </html>
-
 
