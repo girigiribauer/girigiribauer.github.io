@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>改めて curl の使い方まとめ</title>
+          <link>http://girigiribauer.com/archives/20170721/</link>
+          <pubDate>Fri, 21 Jul 2017 23:12:06 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20170721/</guid>
+          <description>20162017 年にもなって curl の使い方をまとめるのもどうかという声もあるかもしれませんが、 実際 20162017 年になっても よく使うコマンド なので、 改めてよく使うオプショ</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Hugo v0.19 以上で 404 page not found になる件</title>
           <link>http://girigiribauer.com/archives/20170519/</link>
           <pubDate>Fri, 19 May 2017 17:53:08 +0900</pubDate>

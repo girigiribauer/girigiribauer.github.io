@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+    <title>改めて curl の使い方まとめ - ばうあーろぐ</title>
+    <meta property="og:title" content="改めて curl の使い方まとめ - ばうあーろぐ">
+    <meta property="og:type" content="article">
+    <meta name="description" content="20162017 年にもなって curl の使い方をまとめるのもどうかという声もあるかもしれませんが、 実際 20162017 年になっても よく使うコマンド なので、 改めてよく使うオプショ">
+    <meta property="og:description" content="20162017 年にもなって curl の使い方をまとめるのもどうかという声もあるかもしれませんが、 実際 20162017 年になっても よく使うコマンド なので、 改めてよく使うオプショ">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20170721/">
+    <meta property="fb:app_id" content="396423247105258">
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="generator" content="Hugo 0.20.7" />
+  </head>
+  <body>
+
+<div class="markdown-body">
+<header>
+<a href="/">ばうあーろぐ TOP へ戻る</a>
+</header>
+
+
+<div class="maincontents">
+
+<h1>改めて curl の使い方まとめ</h1>
+
+<div class="poststatus">
+  <p>  <time datetime="2017/07/21">2017/07/21</time>
+</p>
+
+  <ul class="tags">
+  </ul>
+</div>
+
+
+
+
+<p><del>2016</del>2017 年にもなって curl の使い方をまとめるのもどうかという声もあるかもしれませんが、
+実際 <del>2016</del>2017 年になっても <strong>よく使うコマンド</strong> なので、
+改めてよく使うオプションなどをまとめておきたいと思います。自分用です。</p>
+
+<p>ちなみに wget に関しては、クローリング機能があるのを過去に知らなかったので、
+そちらに関しては以下にまとめたことがあります。</p>
+
+<p><a href="/archives/925/">wgetが超絶便利なwebクローラー、クローリングツールだとは知らなかった・・・！</a></p>
+
+<h2 id="curl-の基本的な使い方">curl の基本的な使い方</h2>
+
+<p>wget はダウンロードが中心の使い方なのに対して、
+curl はケースごとにリクエストを投げる、といった使い方に向いてそうな気がします。
+アクセスできたかどうかの確認だけならば、
+わざわざブラウザを開かずとも黒い画面から <code>curl</code> コマンドだけで確認が可能です。</p>
+
+<p>ちなみにここからは以下のバージョンでの話になります。Mac です。</p>
+
+<p>curl 7.43.0 (x86_64-apple-darwin15.0) libcurl/7.43.0 SecureTransport zlib/1.2.5</p>
+
+<p>man curl をみると、</p>
+
+<pre><code>NAME
+       curl - transfer a URL
+
+SYNOPSIS
+       curl [options] [URL...]
+</code></pre>
+
+<p>もろもろオプションはあるものの、普通に使うだけならば以下のようにシンプルに使えます。</p>
+
+<pre><code>curl http://girigiribauer.com
+</code></pre>
+
+<p>-0 をつけないといけないみたいな紹介もあったりしますが、過去はそうだったんですかね？
+出力は得られた HTML ファイルがそのまま標準出力に表示されます。
+JSON ファイルの場合は、そのままパイプにつなげて jq コマンドあたりで整形やフィルタリングなどを
+しても便利かもしれません。</p>
+
+<p>ちなみに、プロトコルのバージョン指定のオプションは以下のようなものが用意されています。
+なにもつけなければ以下にあるように &ndash;http1.1 をつけたのと同じになります。（バージョン 7.33 から？）
+最近の HTTP/2 も追加されているようですね。</p>
+
+<pre><code>-0, --http1.0
+       (HTTP) Tells curl to use HTTP version 1.0 instead of using  its  internally
+       preferred: HTTP 1.1.
+
+--http1.1
+       (HTTP)  Tells  curl  to  use HTTP version 1.1. This is the internal default
+       version. (Added in 7.33.0)
+
+--http2
+       (HTTP) Tells curl to issue its requests using HTTP 2.  This  requires  that
+       the underlying libcurl was built to support it. (Added in 7.33.0)
+</code></pre>
+
+<p>また、何もつけなければ GET リクエストになりますが、本当にアクセスしたいだけなら
+<code>--head</code> オプションをつけることで HEAD リクエストにもなります。
+本文は送られてこないので、出力はレスポンスヘッダそのままです。</p>
+
+<pre><code>% curl --head example.com
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Cache-Control: max-age=604800
+Content-Type: text/html
+Date: Wed, 14 Sep 2016 14:55:05 GMT
+Etag: &quot;359670651&quot;
+Expires: Wed, 21 Sep 2016 14:55:05 GMT
+Last-Modified: Fri, 09 Aug 2013 23:54:35 GMT
+Server: ECS (pae/3796)
+X-Cache: HIT
+x-ec-custom-error: 1
+Content-Length: 1270
+</code></pre>
+
+<p>このあたりを最低限知っておくだけでも、
+HTTP で GET リクエストの確認をしたいだけの場合に
+わざわざブラウザを開かずに済むと思います。</p>
+
+<p>あと、 <code>-v</code> オプション（&ndash;verbose）をつけることでも
+リクエストヘッダ＆レスポンスヘッダを確認することができます。</p>
+
+<pre><code>% curl --head -v example.com
+* Rebuilt URL to: example.com/
+*   Trying 93.184.216.34...
+* Connected to example.com (93.184.216.34) port 80 (#0)
+&gt; HEAD / HTTP/1.1
+&gt; Host: example.com
+&gt; User-Agent: curl/7.43.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+&lt; Accept-Ranges: bytes
+Accept-Ranges: bytes
+&lt; Cache-Control: max-age=604800
+Cache-Control: max-age=604800
+&lt; Content-Type: text/html
+Content-Type: text/html
+&lt; Date: Thu, 15 Sep 2016 09:10:38 GMT
+Date: Thu, 15 Sep 2016 09:10:38 GMT
+&lt; Etag: &quot;359670651&quot;
+Etag: &quot;359670651&quot;
+&lt; Expires: Thu, 22 Sep 2016 09:10:38 GMT
+Expires: Thu, 22 Sep 2016 09:10:38 GMT
+&lt; Last-Modified: Fri, 09 Aug 2013 23:54:35 GMT
+Last-Modified: Fri, 09 Aug 2013 23:54:35 GMT
+&lt; Server: ECS (pae/3796)
+Server: ECS (pae/3796)
+&lt; X-Cache: HIT
+X-Cache: HIT
+&lt; x-ec-custom-error: 1
+x-ec-custom-error: 1
+&lt; Content-Length: 1270
+Content-Length: 1270
+
+&lt;
+* Connection #0 to host example.com left intact
+</code></pre>
+
+<p>頭に &gt; がついている方がリクエスト、
+頭に &lt; がついている方がレスポンスですね。</p>
+
+<p>このあたり＋ <code>man curl</code> を覚えておけば、
+最低限調べながら使えると思います。</p>
+
+<h2 id="curl-用途別の使い方">curl 用途別の使い方</h2>
+
+<p>よく使うものをケースごとにまとめておきます。</p>
+
+<h3 id="basic-認証内のページにアクセスする">basic 認証内のページにアクセスする</h3>
+
+<p><code>--basic</code> オプションと <code>--user</code> オプションをつければ OK なのですが、
+<code>--user</code> オプションだけでもいけちゃったりします。</p>
+
+<pre><code>curl -u username:password example.com
+</code></pre>
+
+<p>man ページ内の関連部分を抜粋しておきます。</p>
+
+<pre><code>--basic
+       (HTTP)  Tells  curl  to use HTTP Basic authentication with the remote host.
+       This is the default and this option is usually pointless, unless you use it
+       to  override  a  previously set option that sets a different authentication
+       method (such as --ntlm, --digest, or --negotiate).
+
+       Used together with -u, --user and -x, --proxy.
+
+(中略)
+
+-u, --user &lt;user:password&gt;
+       Specify the user name and password to use for server authentication.  Over-
+       rides -n, --netrc and --netrc-optional.
+</code></pre>
+
+<h3 id="フォームから-post-する">フォームから POST する</h3>
+
+<p>結構簡単です。</p>
+
+<pre><code>curl -F &quot;id=foobar&quot; example.com
+</code></pre>
+
+<p>POST の場合、<code>-x</code> オプション（<code>--request</code>）のあとに POST と指定することもできますが、
+試してみたところ <code>-F</code> オプション（<code>--form</code>）をつけるだけで POST になるようですね。</p>
+
+<h3 id="json-を-post-する">JSON を POST する</h3>
+
+<p>上記と少し異なり、 <code>-H</code> オプションでヘッダの Content-type を json に変えつつ、
+実際にポストするデータを <code>-d</code> オプションで送ってやれば OK です。</p>
+
+<pre><code>curl -H &quot;Content-type: application/json&quot; -d '{&quot;id&quot;: &quot;foobar&quot;}' example.com
+</code></pre>
+
+<p><code>-d</code> オプション（<code>--data</code>）で指定しているところは、実際の JSON データが入るので、
+もちろん JSON valid である必要があります。JSON はダブルクオテーションです。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>普通に使う分には、</p>
+
+<ul>
+<li>通常の GET</li>
+<li>フォーム経由の POST</li>
+<li>JSON 経由の POST</li>
+<li>basic 認証などでも使えるヘッダー付きアクセス</li>
+</ul>
+
+<p>あたりを知っておけば必要十分ですし、それ以上必要なときは <code>curl --help</code> を引けば OK だと思います。</p>
+
+<p>また、戻り値が JSON であった場合は、 <code>jq</code> コマンドにパイプで繋げてやればスムーズに確認が可能です。</p>
+
+<pre><code>curl -H &quot;Content-type: application/json&quot; -d '{&quot;id&quot;: &quot;foobar&quot;}' example.com | jq &quot;.&quot;
+</code></pre>
+
+<p>そういえば前に jq について少し書いてました。</p>
+
+<p><a href="/archives/20160819/">vagrant global-status の代替方法、あるいは jq コマンドの使い方</a></p>
+
+<p>ちなみにこちらの curl の記事、本当は2016年に書いてあって放置してあって、 curl 使うたびにこの下書きをちらちら見てたりもしたので、実際これくらいが必要十分だと思います。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://takuya71.hatenablog.com/entry/2012/11/10/143415" target="_blank">http://takuya71.hatenablog.com/entry/2012/11/10/143415</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017/07/21">2017/07/21</time>
+</p>
+
+  <ul class="tags">
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
+
+
+</div>
+
+<footer>
+
+<h2>Tags</h2>
+
+<ul class="tags">
+  <li class="flow">
+    <a href="/tags/ansible">Ansible (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apache">Apache (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cli">CLI (10)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css">CSS (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css3">CSS3 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cssfilter">CSSfilter (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/canvas">Canvas (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/chef">Chef (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/crawler">Crawler (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/dom">DOM (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/docker">Docker (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ftp">FTP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/font">Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/functionallanguage">FunctionalLanguage (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/glsl">GLSL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/git">Git (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/golang">Golang (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html">HTML (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5">HTML5 (7)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5-outline">HTML5-outline (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/homebrew">Homebrew (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/hugo">Hugo (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/icon-font">Icon-Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/javascript">JavaScript (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/linux">Linux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mvc">MVC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/opengraph">OpenGraph (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/php">PHP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rdfa">RDFa (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ssh">SSH (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/svg">SVG (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/scala">Scala (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/shellscript">ShellScript (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/smartphone">Smartphone (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/static-site-generator">Static Site Generator (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vagrant">Vagrant (15)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vim">Vim (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualbox">VirtualBox (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">Virtualization (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webapp">WebApp (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webaudioapi">WebAudioAPI (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webfont">WebFont (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webgl">WebGL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webrtc">WebRTC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webserver">WebServer (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/yeoman">Yeoman (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/zsh">Zsh (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ajax">ajax (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/automation">automation (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bugs">bugs (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/event-conference">event-conference (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/getusermedia">getUserMedia (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/gitconfig">gitconfig (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ios">iOS (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/iterm">iTerm (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jquery">jQuery (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jinja2">jinja2 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jq">jq (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jsperf">jsperf (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/lint">lint (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mediaquery">mediaQuery (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/namespace">namespace (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/oldie">oldIE (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/output">output (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/polyfills">polyfills (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/preloader">preloader (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rsync">rsync (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/tmux">tmux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/viewport">viewport (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vimrc">vimrc (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">virtualization (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/wget">wget (1)</a>
+  </li>
+</ul>
+
+<h2>Categories</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/">Category / Tech</a>
+  </li>
+  <li>
+    <a href="/categories/twentyfour/">Category / TwentyFour</a>
+  </li>
+</ul>
+
+<h2>RSS</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/index.xml" target="_blank">RSS: Category / Tech</a>
+  </li>
+  <li>
+    <a href="/index.xml" target="_blank">RSS: All articles</a>
+  </li>
+</ul>
+
+<hr>
+
+<ul>
+  <li>このブログは個人の見解であり、所属する組織の公式見解ではありません</li>
+  <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+</ul>
+<p>&copy; ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a> and <a href="https://github.com/sindresorhus/github-markdown-css" target="_blank">github-markdown-css</a></p>
+
+</footer>
+
+</div>
+
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36767095-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+  </body>
+</html>
+
