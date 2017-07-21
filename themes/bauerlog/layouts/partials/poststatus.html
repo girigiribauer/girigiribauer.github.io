@@ -1,5 +1,9 @@
 <div class="poststatus">
   <p>{{ partial "datetime.html" . }}</p>
+  {{ $oneYearAgo := (time .Date).AddDate 1 0 0 }}
+  {{ if $oneYearAgo.Before (time .Date) }}
+  <p><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+  {{ end }}
 
   <ul class="tags">
 {{- range .Params.tags }}
