@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://girigiribauer.com/archives/20170824/</loc>
+    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/archives/20170727/</loc>
     <lastmod>2017-07-27T17:45:52+09:00</lastmod>
   </url>
@@ -517,7 +522,7 @@
   
   <url>
     <loc>http://girigiribauer.com/archives/</loc>
-    <lastmod>2017-07-27T17:45:52+09:00</lastmod>
+    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -589,6 +594,18 @@
   <url>
     <loc>http://girigiribauer.com/tags/docker/</loc>
     <lastmod>2016-11-29T18:26:15+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/ecmascript/</loc>
+    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/english/</loc>
+    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -702,7 +719,7 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/javascript/</loc>
-    <lastmod>2014-02-12T15:00:46+00:00</lastmod>
+    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -751,6 +768,12 @@
   <url>
     <loc>http://girigiribauer.com/tags/namespace/</loc>
     <lastmod>2013-03-11T00:08:58+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/naming/</loc>
+    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -852,7 +875,7 @@
   
   <url>
     <loc>http://girigiribauer.com/categories/tech/</loc>
-    <lastmod>2017-07-27T17:45:52+09:00</lastmod>
+    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -966,7 +989,7 @@
   
   <url>
     <loc>http://girigiribauer.com/</loc>
-    <lastmod>2017-07-27T17:45:52+09:00</lastmod>
+    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
     <priority>0</priority>
   </url>
   
