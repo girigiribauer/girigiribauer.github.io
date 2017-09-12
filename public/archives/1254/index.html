@@ -30,6 +30,7 @@
 
 <div class="poststatus">
   <p>  <time datetime="2014/02/02">2014/02/02</time>
+  / lastmod: <time datetime="2017/09/12">2017/09/12</time>
 </p>
   <p><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
 
@@ -283,6 +284,39 @@ a === b; // =&gt; ?
 
 <p>と入力してみると、実際 <strong>false</strong> になります。 そういうときは、例えば <strong>console.dir</strong> などを使ってオブジェクトの中身を詳しく見てみると違いが分かると思います。</p>
 
+<p><strong>+++2017/09/12 追記ここから+++</strong></p>
+
+<p><blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">&gt;例えば、今開発者ツールを開いて、<br>&gt;var a = Object.create(null);<br>&gt;var b = {};<br>&gt;a === b; // =&gt; ?<br>&gt;と入力してみると、実際 false になります。<br>これでは参照値の比較になってしまうので</p>&mdash; こひな (@37coHiNa) <a href="https://twitter.com/37coHiNa/status/907378036965699585">2017年9月11日</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
+
+<p>でご指摘を受けておっしゃる通りでございます・・・。</p>
+
+<pre><code>var a = {};
+var b = {};
+a === b // =&gt; ?
+</code></pre>
+
+<p>そもそもこれでも <strong>false</strong> になりますね。</p>
+
+<p>改めて見直すと、上で <strong>本当の意味で何もない空のオブジェクト</strong> というのが何なのか、
+きちんと説明できてないのも良くないですね・・・。</p>
+
+<p><code>var b = {};</code> というのは、空のオブジェクトを生成しているものの、継承しているプロパティが存在しているために、
+実際 <code>toString()</code> メソッドやら <code>valueOf()</code> メソッドやらが存在しています。</p>
+
+<p>一方、 <code>var a = Object.create(null)</code> で作った何も継承していないオブジェクトは、何のメソッドも存在してません。</p>
+
+<p>ご指摘の通りそういった継承したものがあるかどうかを比較するなら、</p>
+
+<pre><code>var a = Object.create(null);
+var b = {};
+Object.getPrototypeOf(a)===Object.getPrototypeOf(b); // =&gt; false
+</code></pre>
+
+<p>と比較すると良いですね。あとは以下に続くように実際に console.dir などでオブジェクトの中身を見て見ると分かりやすいかと思います。</p>
+
+<p><strong>+++2017/09/12 追記ここまで+++</strong></p>
+
 <p><img src="/img/2014/02/polyfills06.png" alt="" /></p>
 
 <p>こちらが Firefox での console.dir の表示結果です。</p>
@@ -381,6 +415,7 @@ for (var name in buz) {
 
 <div class="poststatus">
   <p>  <time datetime="2014/02/02">2014/02/02</time>
+  / lastmod: <time datetime="2017/09/12">2017/09/12</time>
 </p>
   <p><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
 

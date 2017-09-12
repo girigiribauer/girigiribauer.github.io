@@ -6,7 +6,7 @@ hasCJKLanguage        = true
 Paginate              = 25
 preserveTaxonomyNames = true
 ignoreFiles           = ["\\.scss$"]
-EnableGitInfo         = true
+EnableGitInfo         = false
 
 [params]
 author      = "girigiribauer"
