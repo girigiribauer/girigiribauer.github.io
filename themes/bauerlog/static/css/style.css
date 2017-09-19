@@ -36,6 +36,12 @@ body {
   margin-bottom: 16px;
   border-bottom: 1px solid #eee;
 }
+.markdown-body .expired {
+  padding: 6px 8px;
+  background: #fff9f9;
+  border: 1px solid #d00;
+  color: #d00;
+}
 .markdown-body header {
   padding: 10px 20px;
 }

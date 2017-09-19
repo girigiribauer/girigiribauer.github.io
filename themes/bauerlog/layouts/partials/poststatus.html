@@ -2,7 +2,7 @@
   <p>{{ partial "datetime.html" . }}</p>
   {{- $oneYearAgo := (time now).AddDate -1 0 0 }}
   {{- if $oneYearAgo.After (time .Date) }}
-  <p><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
   {{- end }}
 
   <ul class="tags">
