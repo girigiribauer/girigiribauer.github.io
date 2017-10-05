@@ -58,6 +58,9 @@ body {
 .markdown-body h3 {
   margin-top: 40px;
 }
+.markdown-body img {
+  border: 1px solid #eee;
+}
 .markdown-body footer {
   padding: 0 20px;
 }
