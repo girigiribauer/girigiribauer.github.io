@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://girigiribauer.com/archives/20171005/</loc>
+    <lastmod>2017-10-05T10:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/archives/20170824/</loc>
     <lastmod>2017-08-24T15:35:39+09:00</lastmod>
   </url>
@@ -522,7 +527,13 @@
   
   <url>
     <loc>http://girigiribauer.com/archives/</loc>
-    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
+    <lastmod>2017-10-05T10:00:00+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/auth/</loc>
+    <lastmod>2017-10-05T10:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -618,6 +629,12 @@
   <url>
     <loc>http://girigiribauer.com/tags/ftp/</loc>
     <lastmod>2016-09-03T17:29:24+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/firebase/</loc>
+    <lastmod>2017-10-05T10:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -875,7 +892,7 @@
   
   <url>
     <loc>http://girigiribauer.com/categories/tech/</loc>
-    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
+    <lastmod>2017-10-05T10:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -923,13 +940,13 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/virtualization/</loc>
-    <lastmod>2013-05-17T08:05:27+00:00</lastmod>
+    <lastmod>2016-09-29T20:02:24+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://girigiribauer.com/tags/virtualization/</loc>
-    <lastmod>2016-09-29T20:02:24+09:00</lastmod>
+    <lastmod>2013-05-17T08:05:27+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -989,7 +1006,7 @@
   
   <url>
     <loc>http://girigiribauer.com/</loc>
-    <lastmod>2017-08-24T15:35:39+09:00</lastmod>
+    <lastmod>2017-10-05T10:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
