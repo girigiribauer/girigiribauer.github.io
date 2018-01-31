@@ -7,11 +7,6 @@
   </url>
   
   <url>
-    <loc>http://girigiribauer.com/archives/20171120/</loc>
-    <lastmod>2017-11-20T22:21:17+09:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://girigiribauer.com/archives/20171005/</loc>
     <lastmod>2017-10-05T10:00:00+09:00</lastmod>
   </url>
@@ -512,12 +507,6 @@
   </url>
   
   <url>
-    <loc>http://girigiribauer.com/tags/</loc>
-    <lastmod>2017-11-20T22:21:17+09:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://girigiribauer.com/tags/ajax/</loc>
     <lastmod>2017-09-12T15:00:00+09:00</lastmod>
     <priority>0</priority>
@@ -859,12 +848,6 @@
   </url>
   
   <url>
-    <loc>http://girigiribauer.com/tags/print/</loc>
-    <lastmod>2017-11-20T22:21:17+09:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>http://girigiribauer.com/tags/python/</loc>
     <lastmod>2017-07-27T17:45:52+09:00</lastmod>
     <priority>0</priority>
@@ -926,7 +909,7 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/</loc>
-    <lastmod>2017-11-20T22:21:17+09:00</lastmod>
+    <lastmod>2017-09-12T15:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -980,13 +963,13 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/virtualization/</loc>
-    <lastmod>2013-05-17T08:05:27+00:00</lastmod>
+    <lastmod>2016-09-29T20:02:24+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://girigiribauer.com/tags/virtualization/</loc>
-    <lastmod>2016-09-29T20:02:24+09:00</lastmod>
+    <lastmod>2013-05-17T08:05:27+00:00</lastmod>
     <priority>0</priority>
   </url>
   
