@@ -2,6 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://girigiribauer.com/archives/20180131/</loc>
+    <lastmod>2018-01-31T15:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/archives/20171120/</loc>
+    <lastmod>2017-11-20T22:21:17+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/archives/20171005/</loc>
     <lastmod>2017-10-05T10:00:00+09:00</lastmod>
   </url>
@@ -502,6 +512,12 @@
   </url>
   
   <url>
+    <loc>http://girigiribauer.com/tags/</loc>
+    <lastmod>2017-11-20T22:21:17+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/tags/ajax/</loc>
     <lastmod>2017-09-12T15:00:00+09:00</lastmod>
     <priority>0</priority>
@@ -527,7 +543,7 @@
   
   <url>
     <loc>http://girigiribauer.com/archives/</loc>
-    <lastmod>2017-10-05T10:00:00+09:00</lastmod>
+    <lastmod>2018-01-31T15:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -540,6 +556,12 @@
   <url>
     <loc>http://girigiribauer.com/tags/automation/</loc>
     <lastmod>2016-09-06T09:14:39+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/bot/</loc>
+    <lastmod>2018-01-31T15:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -676,7 +698,13 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/golang/</loc>
-    <lastmod>2017-01-03T14:35:35+09:00</lastmod>
+    <lastmod>2018-01-31T15:00:00+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/googleappengine/</loc>
+    <lastmod>2018-01-31T15:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -831,6 +859,12 @@
   </url>
   
   <url>
+    <loc>http://girigiribauer.com/tags/print/</loc>
+    <lastmod>2017-11-20T22:21:17+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/tags/python/</loc>
     <lastmod>2017-07-27T17:45:52+09:00</lastmod>
     <priority>0</priority>
@@ -873,6 +907,12 @@
   </url>
   
   <url>
+    <loc>http://girigiribauer.com/tags/slack/</loc>
+    <lastmod>2018-01-31T15:00:00+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/tags/smartphone/</loc>
     <lastmod>2013-11-13T09:29:57+00:00</lastmod>
     <priority>0</priority>
@@ -886,13 +926,13 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/</loc>
-    <lastmod>2017-09-12T15:00:00+09:00</lastmod>
+    <lastmod>2017-11-20T22:21:17+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://girigiribauer.com/categories/tech/</loc>
-    <lastmod>2017-10-05T10:00:00+09:00</lastmod>
+    <lastmod>2018-01-31T15:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -940,13 +980,13 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/virtualization/</loc>
-    <lastmod>2016-09-29T20:02:24+09:00</lastmod>
+    <lastmod>2013-05-17T08:05:27+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://girigiribauer.com/tags/virtualization/</loc>
-    <lastmod>2013-05-17T08:05:27+00:00</lastmod>
+    <lastmod>2016-09-29T20:02:24+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -1006,7 +1046,7 @@
   
   <url>
     <loc>http://girigiribauer.com/</loc>
-    <lastmod>2017-10-05T10:00:00+09:00</lastmod>
+    <lastmod>2018-01-31T15:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
