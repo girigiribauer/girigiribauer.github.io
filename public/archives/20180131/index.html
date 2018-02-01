@@ -206,7 +206,7 @@ target project:  [nfug-eventbot]
 
 <ul>
 <li>cron が普通に使えるのは、他のサーバーレスな仕組みだけ使うのと比べるとメリット</li>
-<li><strong>定期的に何かやるやつはこっちのが良さげ</strong> （逆に応答するだけなら aws lambda とか gcp cloud functions とか使ったら良さげ）</li>
+<li><del><strong>定期的に何かやるやつはこっちのが良さげ</strong> （逆に応答するだけなら aws lambda とか gcp cloud functions とか使ったら良さげ）</del> =&gt; AWS にも CloudWatch というサービスがあって、 cron っぽく書けるようです。知らんかったー。 (<a href="https://docs.aws.amazon.com/ja_jp/AmazonCloudWatch/latest/events/ScheduledEvents.html" target="_blank">https://docs.aws.amazon.com/ja_jp/AmazonCloudWatch/latest/events/ScheduledEvents.html</a>)</li>
 <li>GoogleAppEngine の Always Free の使用制限に気をつける <a href="https://cloud.google.com/free/docs/always-free-usage-limits" target="_blank">https://cloud.google.com/free/docs/always-free-usage-limits</a></li>
 <li>GoogleAppEngine はデプロイが楽（更新してくならここ大事）</li>
 <li>外から情報引っ張ってきて加工する系の bot は専用ライブラリ使う</li>
