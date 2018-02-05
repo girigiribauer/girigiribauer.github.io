@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>Docker 再入門2018 - コマンド編</title>
+          <link>http://girigiribauer.com/archives/20180206/</link>
+          <pubDate>Tue, 06 Feb 2018 08:37:51 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20180206/</guid>
+          <description>今回はコマンド編です。 コンテナ編から順に読むことをお勧めします。 目次 コンテナ編 読むと Docker のコンテナ周りがざっくり分かる コマンド編 （いまここ） 読</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Docker 再入門2018 - コンテナ編</title>
           <link>http://girigiribauer.com/archives/20180205/</link>
           <pubDate>Mon, 05 Feb 2018 11:52:41 +0900</pubDate>
