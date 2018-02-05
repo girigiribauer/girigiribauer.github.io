@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>Docker 再入門2018 - コンテナ編</title>
+          <link>http://girigiribauer.com/archives/20180205/</link>
+          <pubDate>Mon, 05 Feb 2018 11:52:41 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20180205/</guid>
+          <description>最近、Git, Docker あたりはほぼ必須のスキルセットになってきているかと思います。 前者の Git に関しては、 実際に数値を見たわけではないのですが、肌感覚</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Google App Engine / Go で slack に通知する bot を作った</title>
           <link>http://girigiribauer.com/archives/20180131/</link>
           <pubDate>Wed, 31 Jan 2018 15:00:00 +0900</pubDate>
