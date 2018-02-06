@@ -11,61 +11,11 @@
     
       
         <item>
-          <title>Chef の サードパーティ Cookbook を利用して、yum のリポジトリを追加してみる</title>
-          <link>http://girigiribauer.com/archives/1095/</link>
-          <pubDate>Fri, 17 May 2013 08:05:27 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1095/</guid>
-          <description>よーし、いろいろアプリケーションのインストールの自動化しちゃうぞー！ と思っていましたが、 先に試しておいた方が良さそうなものがあったので、そち</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Chef の Data Bag を使ってユーザー作成の自動化をしてみる</title>
-          <link>http://girigiribauer.com/archives/1066/</link>
-          <pubDate>Tue, 14 May 2013 11:00:29 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1066/</guid>
-          <description>Chef のユーザー管理を突き詰めてみるだけでも、色々と勉強になっていますね。 前回までで、Chef の Cookbook にユーザー作成やグループ作成のレシピを記述する</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Vagrant と Chef でユーザー作成の自動化をしてみる</title>
-          <link>http://girigiribauer.com/archives/1048/</link>
-          <pubDate>Mon, 13 May 2013 00:24:37 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1048/</guid>
-          <description>だんだんと Chef いじりが楽しくなってきた girigiribauer です、こんにちは。 この前『入門 Chef Solo』というKindle本（電子書籍）を購入して、休憩時などに少し</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Vagrant と Chef で仮想マシンの環境をいろいろいじれるようにしたい！</title>
-          <link>http://girigiribauer.com/archives/1013/</link>
-          <pubDate>Fri, 10 May 2013 03:11:38 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1013/</guid>
-          <description>前々回、前回までで、ようやく気軽に作って壊せる仮想環境が用意できたので、 ここからは実際に仮想環境に作っていくところをやりたいと思います。 ※ま</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>Vagrant に仮想マシンのスナップショットがとれる sahara というプラグインを入れた</title>
-          <link>http://girigiribauer.com/archives/1003/</link>
-          <pubDate>Tue, 07 May 2013 01:06:17 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1003/</guid>
-          <description>個々の仮想マシンのアプリケーションを入れていく前に、仮想マシンの操作でよくある『スナップショット機能』的なものが使えるように、 Vagrant のプラグイン</description>
-        </item>
-      
-    
-      
-        <item>
-          <title>仮想環境を CUI（コマンドライン）でいじれる Vagrant を試してみた</title>
-          <link>http://girigiribauer.com/archives/966/</link>
-          <pubDate>Sun, 05 May 2013 12:53:44 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/966/</guid>
-          <description>もう最近では、OSの上にOSを動かす仮想環境が当たり前になってきていますが、そのソフトウェアの1つに VirtualBox というものがあります。 Vagrant は、元々この VirtualBox</description>
+          <title>MacOS の VMWare Fusion 内で Docker for Windows をインストールする</title>
+          <link>http://girigiribauer.com/archives/20160929/</link>
+          <pubDate>Thu, 29 Sep 2016 20:02:24 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20160929/</guid>
+          <description>最初失敗したので、同じところではまるであろう人のためにメモっておきます。 （念のため言っておきますが僕ははまったわけではないです・・・） そもそ</description>
         </item>
       
     
