@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://girigiribauer.com/archives/20180208/</loc>
+    <lastmod>2018-02-08T09:20:03+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/archives/20180207/</loc>
     <lastmod>2018-02-07T07:15:52+09:00</lastmod>
   </url>
@@ -547,7 +552,7 @@
   
   <url>
     <loc>http://girigiribauer.com/archives/</loc>
-    <lastmod>2018-02-07T07:15:52+09:00</lastmod>
+    <lastmod>2018-02-08T09:20:03+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -630,7 +635,7 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/docker/</loc>
-    <lastmod>2018-02-07T07:15:52+09:00</lastmod>
+    <lastmod>2018-02-08T09:20:03+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -930,7 +935,7 @@
   
   <url>
     <loc>http://girigiribauer.com/categories/tech/</loc>
-    <lastmod>2018-02-07T07:15:52+09:00</lastmod>
+    <lastmod>2018-02-08T09:20:03+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -1044,7 +1049,7 @@
   
   <url>
     <loc>http://girigiribauer.com/</loc>
-    <lastmod>2018-02-07T07:15:52+09:00</lastmod>
+    <lastmod>2018-02-08T09:20:03+09:00</lastmod>
     <priority>0</priority>
   </url>
   
