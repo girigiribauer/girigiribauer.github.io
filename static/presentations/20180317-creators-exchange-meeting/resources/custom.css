@@ -1,0 +1,55 @@
+#backface {
+  background-image: url('face.jpg');
+}
+
+#prev {
+  border-right-color: #4078c0;
+}
+
+#next {
+  border-left-color: #4078c0;
+}
+
+#control,
+#pointer {
+  color: #4078c0;
+}
+
+[layout] h1 {
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+[layout] h1,
+[layout] h2,
+[layout] h3,
+[layout] h4,
+[layout] h5,
+[layout] h6 {
+  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+}
+
+[layout] ul {
+  list-style: circle;
+}
+
+[layout] ul ul {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 2rem;
+}
+
+.omake {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding: 20px;
+  font-size: 100%;
+  line-height: 1.0;
+  color: #fff;
+}
+
+.omake a {
+  color: #4078c0;
+}
