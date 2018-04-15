@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+
+    <title>mediaQuery における max-width, max-device-width の違い - ばうあーろぐ</title>
+    <meta property='og:title' content="mediaQuery における max-width, max-device-width の違い - ばうあーろぐ">
+    <meta property="og:type" content="article">
+
+    <meta property="og:url" content="http://girigiribauer.com/archives/1179">
+    
+    
+    <meta name="generator" content="Hugo 0.15" />
+</head>
+<body>
+  <div class="wrapper">
+    <header class="blogheader">
+
+      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="ばうあーろぐ"></a>
+
+    </header>
+
+
+    <div class="maincontents" role="main">
+      <header class="postheader">
+        <h1 class="posttitle">mediaQuery における max-width, max-device-width の違い</h1>
+        <div class="poststatus">
+          <span class="poststatus__date">2013年11月13日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>css</li>
+
+            <li><i class="icon-tag"></i>mediaQuery</li>
+
+            <li><i class="icon-tag"></i>viewport</li>
+
+            <li><i class="icon-tag"></i>スマートフォン</li>
+
+          </ul>
+          
+        </div>
+
+      </header>
+
+      <article class="postcontents freetext">
+
+
+<p>最近改めて使い分けないとなーと実感したので、その実感を忘れないうちにメモしておこうと思います。</p>
+
+<h2 id="デバイスの幅-width-と-device-width-の違いについて">デバイスの幅(width)と device-width の違いについて</h2>
+
+<p>そもそもの話ですが、そのデバイスで何ピクセル x 何ピクセルで表示できますよーという値と、 device-width の値は異なります。（結果的に同じ場合もあり得ますが）</p>
+
+<p><a href="http://screensiz.es/" target="_blank">http://screensiz.es/</a></p>
+
+<p><img src="/img/2014/01/device-width01.png" alt="" /></p>
+
+<p>こちらに、デバイスごとの width, device-width がまとめてあります。たまに見ます。</p>
+
+<p>iPhone 3GS の時代であれば、width = 320px, device-width = 320px であったので問題なかったのですが、 retina ディスプレイが出てきてから、 width = 640px, device-width = 320px になってきています。</p>
+
+<p>それならまだ 1:2 になるので分かりやすくて良かったのですが、 そうではない多種多様なデバイスが世に出回っています。</p>
+
+<p>例えば Surface Pro は、1920 x 1200px で device-width = 1280px であったり、 Nexus7 は、800 x 1280px で device-width = 601px であったり、 さらに Nexus7 の例のように、<strong>アップデートで device-width は変化したりもします。</strong></p>
+
+<p>一緒に作ってる人と話すときにそのあたりの認識が異なる場合がそこそこあるのですが、 device-width は、あくまでそのデバイスを提供している側が、<strong>見せたい側の都合の良いサイズ</strong>を決めているだけにすぎないもので、 width と device-width に依存関係はないと考えています。</p>
+
+<p>タブレット周りは特にそれが顕著で、サイズ的にも『PCレイアウトで見せたい！』というデバイスの開発側の意図により、 PCレイアウトに近くなるような device-width が決められています。 （768px であったり、1024px であったり・・・）</p>
+
+<p>そもそも device-width がどっちの辺を指すのか？も、デバイスの開発側の意図によるもので、 デバイスによって様々です。大変ですね。</p>
+
+<p>なので、「必ずこの端末は意図した通りのデザインで見せたい！」とか、 「アプリとしてリリースするけど、この部分はWebViewでー」とか、そういったケースで viewport のメタタグに device-width が設定してある場合などは、 （当たり前とは思いつつも）きちんとチーム内で作る対象のサイズを共有しなければと思っているところです。</p>
+
+<h2 id="max-width-と-max-device-width-の違い">max-width と max-device-width の違い</h2>
+
+<p>こちらが本題です。</p>
+
+<p>CSS の mediaQuery で幅に応じてスタイルの出し分けを行ったりするケースで使うのですが、</p>
+
+<blockquote>
+<p>@media only screen and (max-width: 480px) {</p>
+</blockquote>
+
+<p>とか、</p>
+
+<blockquote>
+<p>@media only screen and (max-device-width: 480px) {</p>
+</blockquote>
+
+<p>などのように使います。</p>
+
+<p>max-width と max-device-width はどのような違いがあるかというと、 <strong>表示領域の幅</strong>なのか、<strong>そのデバイスそのものの幅</strong>なのかの違いがあります。</p>
+
+<p>例えば以下のケースで、違いが顕著になってくると思います。</p>
+
+<ol>
+<li>スマートフォンレイアウトの検証を、簡易的にWebブラウザのウィンドウ幅を変えることで検証を行っている場合</li>
+<li>スマートフォンなどのモバイルデバイスを縦横に傾けた場合</li>
+</ol>
+
+<p>max-width などの表示領域の幅で指定がしてあった場合、 1.のケースでは例えば開発者ツールを開きながらの検証が非常にスムーズであると思います。 これは表示領域の幅で切り替えており、ウィンドウサイズを変えることでこちらの数値が変わるためにスタイルのあたり方が変化することによるものです。</p>
+
+<p>また、2.のケースでは、仮にしきい値が 480px にしてあった場合、iPhone5 などを縦から横に傾けた場合、 表示領域の幅が 320px から 568px に変化することにより、スタイルのあたり方は同様に変化します。</p>
+
+<p>max-device-width などのデバイスそのものの幅で指定がしてあった場合、 1.のケースでウィンドウサイズを変化させただけでは表示の変化はしません。 この場合は開発者ツールなどでデバイスのサイズ（device metrics）を上書きしてやる必要が出てくると思います。</p>
+
+<p>また、2.のケースでは、一部のデバイスを除き（どれまでかは細かく知らないです）、 デバイスごとに、device-widthを「Webコンテンツをこの幅で見せたいんだ！」と開発側が決めているため、 縦横に傾けてもこの数値は変わらず、上記の mediaQuery 指定でスタイルが変化することはありません。</p>
+
+<p>こういった違いがあるため、作っているものによって使い分ける必要があるのではないかと思います。</p>
+
+<h2 id="例えばレスポンシブレイアウトなど">例えばレスポンシブレイアウトなど</h2>
+
+<p>例えばレスポンシブレイアウトなどで、大きく 480px あたりでPC用リソース、スマートフォン用リソースを出し分けていると仮定します。</p>
+
+<p>max-width で指定してあった場合に、480px の幅を下回るデバイスで閲覧し、横に傾けて 480px を上回るケースでは、 傾けた時点で表示領域・幅が変化することになるため、 適用されるスタイルが大きく変わります。</p>
+
+<p>PC用、スマートフォン用とでリソースを多く出し分けていたとしたら、<strong>傾けた時点で多くのリソースの読み込みが発生してしまう</strong>ことになります。大変なことですね。</p>
+
+<p>どちらが良いとか決めうちで決められるものではないので、作っているものによってこのあたりの違いを踏まえて毎回適切な実装方法を考えていかないといけないなーと、改めて実感したところです。</p>
+
+      </article>
+
+      <footer class="postfooter">
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+        <div class="poststatus">
+          <span class="poststatus__date">2013年11月13日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>css</li>
+
+            <li><i class="icon-tag"></i>mediaQuery</li>
+
+            <li><i class="icon-tag"></i>viewport</li>
+
+            <li><i class="icon-tag"></i>スマートフォン</li>
+
+          </ul>
+          
+        </div>
+
+      </footer>
+    </div>
+
+      <footer class="blogfooter">
+        <div class="inner">
+          <ul class="links">
+            <li><a href="/categories/tech/" target="_blank"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
+            <li><a href="/categories/twentyfour/" target="_blank"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
+            <li><a href="/categories/tech/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで技術系の記事のみ取得（おすすめ）</a></li>
+            <li><a href="/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで全ての記事を取得</a></li>
+          </ul>
+          <p class="attention"><i class="icon icon-attention"></i>このブログは個人の見解であり、所属する組織の公式見解ではありません</p>
+          <p class="copyright"><i class="copyright-mark">&copy;</i> ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a></p>
+        </div>
+      </footer>
+    </div>
+
+    
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36767095-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+
+    
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  </body>
+</html>
+

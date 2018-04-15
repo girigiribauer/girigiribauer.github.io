@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="http://girigiribauer.com/css/style.css">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+
+    <title>Vagrant で個人的に必須なプラグイン - ばうあーろぐ</title>
+    <meta property='og:title' content="Vagrant で個人的に必須なプラグイン - ばうあーろぐ">
+    <meta property="og:type" content="article">
+
+    <meta property="og:url" content="http://girigiribauer.com/archives/1736">
+    
+    
+    <meta name="generator" content="Hugo 0.15" />
+</head>
+<body>
+  <div class="wrapper">
+    <header class="blogheader">
+
+      <a href="/" class="blogtitle"><img src="/images/sitetitle.png" alt="ばうあーろぐ"></a>
+
+    </header>
+
+
+    <div class="maincontents" role="main">
+      <header class="postheader">
+        <h1 class="posttitle">Vagrant で個人的に必須なプラグイン</h1>
+        <div class="poststatus">
+          <span class="poststatus__date">2015年3月4日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Vagrant</li>
+
+          </ul>
+          
+        </div>
+
+      </header>
+
+      <article class="postcontents freetext">
+
+
+<p>先に <a href="http://girigiribauer.com/archives/1729/" target="_blank">Vagrant の使いどころ・考えどころ</a> を見ると良いかもです。</p>
+
+<p>先に列挙します。 Vagrant 1.6.5 時点で入れたやつなので、すぐに変わる可能性ありです。</p>
+
+<ul>
+<li>vagrant-omnibus (1.4.1)</li>
+<li>vagrant-vbguest (0.10.0)</li>
+<li>sahara (0.0.17)</li>
+<li>vagrant-dnsmasq (0.1.1)</li>
+<li>landrush (0.18.0)</li>
+</ul>
+
+<h2 id="初回の-vagrant-up-に重宝するプラグイン">初回の vagrant up に重宝するプラグイン</h2>
+
+<p><a href="https://github.com/chef/vagrant-omnibus" target="_blank">https://github.com/chef/vagrant-omnibus</a></p>
+
+<p>box ファイルを起動する際に、Chef が入っていなかったらインストールしてくれるプラグインです。 以下のように指定しておけば常に最新版を入れてくれます。</p>
+
+<pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  # ------------------------------ #
+  # plugin settings
+  # see: vagrant plugin list
+  # ------------------------------ #
+
+  # 中略
+
+  if defined? config.omnibus
+    config.omnibus.chef_version = :latest
+  end
+
+  # 中略
+
+end
+</code></pre>
+
+<p>ちなみに、Vagrant のプラグインのインストールは vagrant のサブコマンドから出来ます。</p>
+
+<pre><code>vagrant plugin install --help
+</code></pre>
+
+<p><a href="https://github.com/dotless-de/vagrant-vbguest" target="_blank">https://github.com/dotless-de/vagrant-vbguest</a></p>
+
+<p>VirtualBox + Vagrant で使っているので、仮想 OS は VirtualBox が用意してくれているわけですが、 VirtualBox での利用をより便利にするために、GuestAddition をインストールします。</p>
+
+<p>Guest Additions 自体の説明は、以下のページが分かりやすいかもしれません。</p>
+
+<p><a href="http://vboxmania.net/content/guest-additions%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" target="_blank">http://vboxmania.net/content/guest-additions%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB</a></p>
+
+<p>ただ、この Guest Additions と VirtualBox 自体のバージョンに差異があったりすると、 vagrant up がうまくいかないケースが出てきます。 Guest Additions が予め入った box ファイルでも、 VirtualBox 自体のバージョンを上げた際にうまく合わずにエラーが出るケースがあるので、 その辺の調整を行ってくれるプラグインを導入しました。</p>
+
+<pre><code>Vagrant.configure(&quot;2&quot;) do |config|
+  # ------------------------------ #
+  # plugin settings
+  # see: vagrant plugin list
+  # ------------------------------ #
+
+  # 中略
+  unless defined? config.vbguest
+    require &quot;vagrant-vbguest&quot;
+  end
+  config.vbguest.auto_update = true
+
+  # 中略
+
+end
+</code></pre>
+
+<p>これを入れる前はその辺の細かなバージョンの差異に悩まされることが多かったのですが、 導入後は意識しないくらいスムーズになりました。感謝しています。</p>
+
+<h2 id="レシピを繰り返し適用するときに重宝するプラグイン">レシピを繰り返し適用するときに重宝するプラグイン</h2>
+
+<p><a href="https://github.com/jedi4ever/sahara" target="_blank">https://github.com/jedi4ever/sahara</a></p>
+
+<p>過去に <a href="http://girigiribauer.com/archives/1003/" target="_blank">Vagrant に仮想マシンのスナップショットがとれる sahara というプラグインを入れた</a> で書いてたのですが、未だに使ってます。</p>
+
+<p><a href="http://girigiribauer.com/archives/1729/" target="_blank">Vagrant の使いどころ・考えどころ</a> でも書いたのですが、Vagrantfile にレシピを書かない方針で進めているので、初回の vagrant up は、仮想マシンの起動と最低限の設定のみになっているはずです。</p>
+
+<p>その段階で一度スナップショットを取る癖をつけておくと、いつでもクリーンな状態にすぐ戻せるのでレシピを書くのがはかどります。</p>
+
+<pre><code>vagrant sandbox on [vm_machine_name]
+</code></pre>
+
+<h2 id="開発時のサブドメインの名前解決に重宝するプラグイン">開発時のサブドメインの名前解決に重宝するプラグイン</h2>
+
+<p>正直なところ、この辺りは時間が出来たらちょっと見直したいところなのですが、 今のままでも全然問題なく使えています。 （欲を言えば、他の VM からも設定なしで名前解決できるようにしたい・・・）</p>
+
+<p><a href="https://github.com/mattes/vagrant-dnsmasq" target="_blank">https://github.com/mattes/vagrant-dnsmasq</a></p>
+
+<p>landrush というプラグインも、以下の記事を読んで試してみたのですがなかなか便利でした。</p>
+
+<p><a href="http://uasi.hatenablog.com/entry/2014/06/26/232348" target="_blank">vagrant up すると .dev ローカルドメインを設定してくれる Landrush が便利な話</a></p>
+
+<p>開発用の名前解決なので、名前の解決さえできればそれほど望むことは多くなく、 hosts ファイルを直接編集してくれる vagrant-hostsupdater でも事足りるかもしれません。</p>
+
+<h2 id="その他">その他</h2>
+
+<p><a href="http://vagrantmanager.com/" target="_blank">Vagrant Manager</a> という、GUI で Vagrant の状態管理ができるツールがあるので、試しに使ってみています。 近い将来、GUI だけで使うとどうなるか？みたいなところで上手く使えたらいいなと思っています。</p>
+
+      </article>
+
+      <footer class="postfooter">
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+        <div class="poststatus">
+          <span class="poststatus__date">2015年3月4日</span>
+          <ul class="poststatus__tags">
+
+            <li><i class="icon-tag"></i>Vagrant</li>
+
+          </ul>
+          
+        </div>
+
+      </footer>
+    </div>
+
+      <footer class="blogfooter">
+        <div class="inner">
+          <ul class="links">
+            <li><a href="/categories/tech/" target="_blank"><i class="icon icon-folder"></i>技術系記事を読む</a></li>
+            <li><a href="/categories/twentyfour/" target="_blank"><i class="icon icon-folder"></i>TwentyFour のネタ記事を読む</a></li>
+            <li><a href="/categories/tech/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで技術系の記事のみ取得（おすすめ）</a></li>
+            <li><a href="/index.xml" target="_blank"><i class="icon icon-rss"></i>RSSで全ての記事を取得</a></li>
+          </ul>
+          <p class="attention"><i class="icon icon-attention"></i>このブログは個人の見解であり、所属する組織の公式見解ではありません</p>
+          <p class="copyright"><i class="copyright-mark">&copy;</i> ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a></p>
+        </div>
+      </footer>
+    </div>
+
+    
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36767095-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+    </script>
+
+
+    
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+  </body>
+</html>
+
