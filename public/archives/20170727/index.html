@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+    <title>pyenv で python2 と python3 の両バージョンを指定できるのを最近まで知らなかった - ばうあーろぐ</title>
+    <meta property="og:title" content="pyenv で python2 と python3 の両バージョンを指定できるのを最近まで知らなかった - ばうあーろぐ">
+    <meta property="og:type" content="article">
+    <meta name="description" content="なんで今まで知らなかったし、という感じです。 pyenv global 2.7.13 3.6.0 僕は anyenv を使って複数のバージョンを切り替えて使っているのですが、 pyenv であれば、 pyenv install --list でインス">
+    <meta property="og:description" content="なんで今まで知らなかったし、という感じです。 pyenv global 2.7.13 3.6.0 僕は anyenv を使って複数のバージョンを切り替えて使っているのですが、 pyenv であれば、 pyenv install --list でインス">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20170727/">
+    <meta property="fb:app_id" content="396423247105258">
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="generator" content="Hugo 0.20.7" />
+  </head>
+  <body>
+
+<div class="markdown-body">
+<header>
+<a href="/">ばうあーろぐ TOP へ戻る</a>
+</header>
+
+
+<div class="maincontents">
+
+<h1>pyenv で python2 と python3 の両バージョンを指定できるのを最近まで知らなかった</h1>
+
+<div class="poststatus">
+  <p>  <time datetime="2017/07/27">2017/07/27</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/anyenv/">anyenv</a></li>
+    <li class="flow"><a href="/tags/python/">Python</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>なんで今まで知らなかったし、という感じです。</p>
+
+<pre><code>pyenv global 2.7.13 3.6.0
+</code></pre>
+
+<p>僕は anyenv を使って複数のバージョンを切り替えて使っているのですが、</p>
+
+<p>pyenv であれば、 <code>pyenv install --list</code> でインストール可能なバージョンを調べつつ、
+<code>pyenv install 2.7.13</code> などのようにバージョンを指定してインストールし、
+実際にそのバージョンを表で使うときは <code>pyenv global 2.7.13</code> などと入力して使ってました。</p>
+
+<p>Python2 系と、 Python3 系の間には互換性がないため、
+それぞれのアプリケーションで2から3にアップデートしたとかしてないとか、
+色々と対応がネックになるところです。</p>
+
+<p>Python3 系が使いたい時は <code>pyenv install 3.6.0</code> のように、
+表で使えるようにグローバルを切り替えて使っていたのですが、
+なんとこれ同時に指定できたのですね・・・。</p>
+
+<pre><code>$ pyenv global 2.7.13 3.6.0
+$ pyenv rehash
+$ python -V
+Python 2.7.13
+$ python3 -V
+Python 3.6.0
+</code></pre>
+
+<p>あぁもっと早くに知っておきたかった・・・。</p>
+
+<p>ちなみに PATH は ANYENV_ROOT から見て</p>
+
+<pre><code>PYENV_ROOT=&quot;${ANYENV_ROOT}/envs/pyenv&quot;
+PATH=&quot;${PYENV_ROOT}/shims/&quot;
+</code></pre>
+
+<p>以下に python, python3 があります。
+bashrc や zshrc などの指定や、
+NeoVim とかに移るときに Python2 と Python3 の両方パスを通したいときなどに
+この辺指定すると良いと思います。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="http://qiita.com/yutaszk/items/4b9e35cd88659ba1ee88" target="_blank">http://qiita.com/yutaszk/items/4b9e35cd88659ba1ee88</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017/07/27">2017/07/27</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/anyenv/">anyenv</a></li>
+    <li class="flow"><a href="/tags/python/">Python</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
+
+
+</div>
+
+<footer>
+
+<h2>Tags</h2>
+
+<ul class="tags">
+  <li class="flow">
+    <a href="/tags/angular">Angular (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ansible">Ansible (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apache">Apache (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apps">Apps (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cli">CLI (10)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css">CSS (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css3">CSS3 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cssfilter">CSSfilter (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/canvas">Canvas (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/chef">Chef (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cordova">Cordova (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/crawler">Crawler (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/dom">DOM (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/docker">Docker (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ecmascript">ECMAScript (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/english">English (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ftp">FTP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/firebase">Firebase (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/font">Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/functionallanguage">FunctionalLanguage (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/glsl">GLSL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/git">Git (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/golang">Golang (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/googleappengine">GoogleAppEngine (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html">HTML (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5">HTML5 (7)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5-outline">HTML5-outline (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/homebrew">Homebrew (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/hugo">Hugo (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/icon-font">Icon-Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/javascript">JavaScript (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/linux">Linux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mvc">MVC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/opengraph">OpenGraph (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/php">PHP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/python">Python (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rdfa">RDFa (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ssh">SSH (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/svg">SVG (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/scala">Scala (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/shellscript">ShellScript (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/smartphone">Smartphone (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/static-site-generator">Static Site Generator (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vagrant">Vagrant (15)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vim">Vim (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualbox">VirtualBox (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">Virtualization (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webapp">WebApp (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webaudioapi">WebAudioAPI (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webfont">WebFont (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webgl">WebGL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webrtc">WebRTC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webserver">WebServer (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/yeoman">Yeoman (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/zsh">Zsh (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ajax">ajax (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/anyenv">anyenv (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/auth">auth (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/automation">automation (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bot">bot (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bugs">bugs (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/event-conference">event-conference (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/getusermedia">getUserMedia (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/gitconfig">gitconfig (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ios">iOS (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/iterm">iTerm (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ionic">ionic (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jquery">jQuery (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jinja2">jinja2 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jq">jq (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jsperf">jsperf (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/lint">lint (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mediaquery">mediaQuery (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/namespace">namespace (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/naming">naming (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/oldie">oldIE (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/output">output (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/polyfills">polyfills (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/preloader">preloader (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rsync">rsync (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/slack">slack (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/tmux">tmux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/viewport">viewport (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vimrc">vimrc (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">virtualization (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/wget">wget (1)</a>
+  </li>
+</ul>
+
+<h2>Categories</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/">Category / Tech</a>
+  </li>
+  <li>
+    <a href="/categories/twentyfour/">Category / TwentyFour</a>
+  </li>
+</ul>
+
+<h2>RSS</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/index.xml" target="_blank">RSS: Category / Tech</a>
+  </li>
+  <li>
+    <a href="/index.xml" target="_blank">RSS: All articles</a>
+  </li>
+</ul>
+
+<hr>
+
+<ul>
+  <li>このブログは個人の見解であり、所属する組織の公式見解ではありません</li>
+  <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+</ul>
+<p>&copy; ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a> and <a href="https://github.com/sindresorhus/github-markdown-css" target="_blank">github-markdown-css</a></p>
+
+</footer>
+
+</div>
+
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36767095-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+  </body>
+</html>
+

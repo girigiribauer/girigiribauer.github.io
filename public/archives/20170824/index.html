@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+    <title>最近の ECMAScript (JavaScript) に入ったやつをぐぐりたくても名前が分からないやつ - ばうあーろぐ</title>
+    <meta property="og:title" content="最近の ECMAScript (JavaScript) に入ったやつをぐぐりたくても名前が分からないやつ - ばうあーろぐ">
+    <meta property="og:type" content="article">
+    <meta name="description" content="明確に読み書きできるやつは良いのです。 読み書きできないやつでぐぐりたいときに、 「これ英語で（日本語で）何ていうんだっけ？」 みたいなのが不定期">
+    <meta property="og:description" content="明確に読み書きできるやつは良いのです。 読み書きできないやつでぐぐりたいときに、 「これ英語で（日本語で）何ていうんだっけ？」 みたいなのが不定期">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20170824/">
+    <meta property="fb:app_id" content="396423247105258">
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="generator" content="Hugo 0.20.7" />
+  </head>
+  <body>
+
+<div class="markdown-body">
+<header>
+<a href="/">ばうあーろぐ TOP へ戻る</a>
+</header>
+
+
+<div class="maincontents">
+
+<h1>最近の ECMAScript (JavaScript) に入ったやつをぐぐりたくても名前が分からないやつ</h1>
+
+<div class="poststatus">
+  <p>  <time datetime="2017/08/24">2017/08/24</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ecmascript/">ECMAScript</a></li>
+    <li class="flow"><a href="/tags/javascript/">JavaScript</a></li>
+    <li class="flow"><a href="/tags/naming/">naming</a></li>
+    <li class="flow"><a href="/tags/english/">English</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>明確に読み書きできるやつは良いのです。</p>
+
+<p>読み書きできないやつでぐぐりたいときに、
+<strong>「これ英語で（日本語で）何ていうんだっけ？」</strong>
+みたいなのが不定期で出てきて「あーなんて呼ぶか忘れたー」ってなります。
+みなさんもありますよね？？</p>
+
+<p><strong>もうこれ以上忘れたくないのでメモ</strong> っておきました。</p>
+
+<p>以下の見出しは「そうそうこういうやつなんだけど、それの名前を知りたい」レベルで逆引きできるものにしてあります。</p>
+
+<h2 id="ドットが3つ連続するやつ">ドットが3つ連続するやつ</h2>
+
+<pre><code>let a = {
+  key1: 'val1',
+};
+let b = {
+  key2: 'val2',
+  key3: 'val3',
+  ...a,
+};
+console.log(b);
+
+{key2: &quot;val2&quot;, key3: &quot;val3&quot;, key1: &quot;val1&quot;}
+</code></pre>
+
+<p>この <strong>展開</strong> するやつです。</p>
+
+<ul>
+<li>spread operator (or spread syntax)</li>
+<li>日本語ではスプレッド演算子</li>
+<li>ECMAScript 2015 から</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator</a></li>
+<li><strong>展開するので spread</strong> って覚えた</li>
+</ul>
+
+<p>文脈によって <strong>残り</strong> 全部受け取る、みたいに使うところでは、
+rest parameter と呼びます。</p>
+
+<ul>
+<li>rest parameter</li>
+<li>ECMAScript 2015 から</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters</a></li>
+<li><strong>残りだから rest</strong> って覚えた</li>
+</ul>
+
+<h2 id="プロパティのキーと値の名前が一致するやつ">プロパティのキーと値の名前が一致するやつ</h2>
+
+<pre><code>let a = 'foo';
+let b = {
+  a,
+};
+console.log(b);
+
+{a: &quot;foo&quot;}
+</code></pre>
+
+<p>本来 <code>a: a,</code> って書かないといけないところを <strong>短く書けちゃう</strong> やつです。</p>
+
+<ul>
+<li>shorthand property names</li>
+<li>日本語では簡略表現プロパティ名（by MDN）</li>
+<li>ECMAScript 2015 から</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Property_definitions" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Property_definitions</a></li>
+<li><strong>省略、省略といえばショートハンド</strong> まで頑張って連想する</li>
+</ul>
+
+<h2 id="オブジェクトの中にそのまま関数書いちゃうやつ">オブジェクトの中にそのまま関数書いちゃうやつ</h2>
+
+<pre><code>let a = {
+  b() { return 'foo' },
+};
+console.log(a.b());
+
+foo
+</code></pre>
+
+<p>本来 <code>b: function () { ... }</code> or <code>b: function b() { ... }</code> って書かないといけないところを
+<strong>短く書けちゃう</strong> やつなので、先ほどと同じです。</p>
+
+<p>プロパティがメソッドになったやつです。</p>
+
+<ul>
+<li>shorthand method names</li>
+<li>日本語では簡略表現メソッド名（by MDN）</li>
+<li>ECMAScript 2015 から</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Property_definitions" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Property_definitions</a></li>
+<li><strong>省略、省略といえばショートハンド</strong> まで頑張って連想する</li>
+</ul>
+
+<h2 id="オブジェクトのキー部分で四角い括弧で囲って計算できるやつ">オブジェクトのキー部分で四角い括弧で囲って計算できるやつ</h2>
+
+<pre><code>let a = 2;
+let b = {
+  key1: 'val1',
+  key2: 'val2',
+  key3: 'val3',
+};
+let c = {
+  ['key' + a]: 'computed key2',
+};
+console.log(c);
+
+{key2: &quot;computed key2&quot;}
+</code></pre>
+
+<p>本来あとで <code>c['key' + a]</code> とか書かないといけなかったところを、
+その場で <strong>計算</strong> できちゃうやつ。</p>
+
+<ul>
+<li>computed property names</li>
+<li>日本語名は無さげ、MDN には &ldquo;計算されたプロパティ名&rdquo; とある</li>
+<li>ECMAScript 2015 から</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Computed_property_names" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#Computed_property_names</a></li>
+<li><strong>計算できるプロパティだから computed property</strong> って覚える、そのままだけど</li>
+</ul>
+
+<h2 id="function-書かずに-で済んで-this-問題も解決するやつ">function 書かずに =&gt; で済んで this 問題も解決するやつ</h2>
+
+<pre><code>let a = {
+  b: () =&gt; 2 + 3,
+};
+console.log(a.b());
+
+5
+</code></pre>
+
+<p>function 書かずに済むやつですね。
+this も束縛されないので <code>var self = this;</code> みたいなのも書かずに済みます。</p>
+
+<ul>
+<li>arrow function</li>
+<li>日本語ではアロー関数</li>
+<li>ECMAScript 2015 から</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions</a></li>
+<li><strong>形から頑張って矢印っぽさを感じ取る</strong></li>
+</ul>
+
+<p>ちなみに arrow function で object literal を返すときは、
+<strong>丸括弧つけて返す必要がある</strong> のをけっこう忘れます・・・。</p>
+
+<pre><code>() =&gt; ({key1: 'val1'});
+</code></pre>
+
+<h2 id="代入するときに複数の変数で受け取れるやつ">代入するときに複数の変数で受け取れるやつ</h2>
+
+<pre><code>let [a, b] = [1, 2];
+console.log(a, b);
+
+1 2
+</code></pre>
+
+<p>こういう受け取る側で <strong>分割</strong> して複数の変数で受け取れちゃうやつです。</p>
+
+<p>ちなみに先ほどの rest parameter も使えます。</p>
+
+<pre><code>let [a, b, ...c] = [1, 2, 3, 4, 5];
+console.log(c);
+
+[3, 4, 5]
+</code></pre>
+
+<ul>
+<li>destructuring assignment</li>
+<li>日本語では分割代入</li>
+<li>ECMAScript 2015 から</li>
+<li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" target="_blank">https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment</a></li>
+<li>元々の値を <strong>分解して</strong> 何かするところから destructure まで頑張ってたどり着く、 <strong>英語頑張る</strong></li>
+</ul>
+
+<h2 id="引数に波括弧で受け取るやつ">引数に波括弧で受け取るやつ</h2>
+
+<pre><code>let a = {
+  key1: 1,
+  key2: 2,
+  key3: 3,
+};
+let b = ({ key1, key2 }) =&gt; {
+  return key1 + key2;
+}
+console.log(b(a));
+
+3
+</code></pre>
+
+<p>これも分解して受け取ってるので上と同じ <strong>分割代入</strong> の一種、
+destructuring assignment だそうです。</p>
+
+<ul>
+<li>unpacking fields from objects passed as function parameter</li>
+<li>日本語では &ldquo;引数に指定されたオブジェクトの属性への参照&rdquo; と MDN で訳されている・・・</li>
+<li>ECMAScript 2015 から</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#Unpacking_fields_from_objects_passed_as_function_parameter" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#Unpacking_fields_from_objects_passed_as_function_parameter</a></li>
+<li><strong>unpackされている</strong>  とだけ覚えられれば destructure とセットで調べられそう</li>
+</ul>
+
+<p>ちなみに import するときも使えます。</p>
+
+<pre><code>import { foo, bar } from 'library'
+</code></pre>
+
+<h2 id="バッククオートで囲む文字列のやつ">バッククオートで囲む文字列のやつ</h2>
+
+<pre><code>let a = 1;
+let b = `a is ${a}`;
+console.log(b);
+
+a is 1
+</code></pre>
+
+<p>ちなみに back quote は、 backtick ともいうらしいです。</p>
+
+<p>変数の埋め込みがやりやすくなったので、 <strong>テンプレート</strong> 用途などに使いやすいやつです。</p>
+
+<ul>
+<li>template literal (or template string)</li>
+<li>テンプレート文字列</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals" target="_blank">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals</a></li>
+<li><strong>テンプレートに使いやすい</strong> ってところから連想する</li>
+<li>一方 backtick でぐぐると日本のバンドがヒットしやすい、ググラビリティ若干低め</li>
+</ul>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>これ以外のやつは、書いてあるそのものでぐぐれば基本的に調べられるものだと思います。
+もし漏れているものがあればご指摘ください。追記しておきます。</p>
+
+<p>記号系のやつは、意外と読み方が分からなくて調べようがない、みたいなケースも多いんじゃないかと思います。</p>
+
+<p><strong>名前重要</strong> ですね。</p>
+
+<h2 id="ref">参考URL</h2>
+
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/" target="_blank">https://developer.mozilla.org/en-US/</a></li>
+<li><a href="https://developer.mozilla.org/ja/" target="_blank">https://developer.mozilla.org/ja/</a></li>
+</ul>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2017/08/24">2017/08/24</time>
+</p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/ecmascript/">ECMAScript</a></li>
+    <li class="flow"><a href="/tags/javascript/">JavaScript</a></li>
+    <li class="flow"><a href="/tags/naming/">naming</a></li>
+    <li class="flow"><a href="/tags/english/">English</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
+
+
+</div>
+
+<footer>
+
+<h2>Tags</h2>
+
+<ul class="tags">
+  <li class="flow">
+    <a href="/tags/angular">Angular (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ansible">Ansible (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apache">Apache (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apps">Apps (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cli">CLI (10)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css">CSS (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css3">CSS3 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cssfilter">CSSfilter (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/canvas">Canvas (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/chef">Chef (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cordova">Cordova (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/crawler">Crawler (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/dom">DOM (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/docker">Docker (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ecmascript">ECMAScript (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/english">English (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ftp">FTP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/firebase">Firebase (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/font">Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/functionallanguage">FunctionalLanguage (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/glsl">GLSL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/git">Git (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/golang">Golang (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/googleappengine">GoogleAppEngine (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html">HTML (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5">HTML5 (7)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5-outline">HTML5-outline (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/homebrew">Homebrew (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/hugo">Hugo (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/icon-font">Icon-Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/javascript">JavaScript (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/linux">Linux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mvc">MVC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/opengraph">OpenGraph (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/php">PHP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/python">Python (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rdfa">RDFa (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ssh">SSH (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/svg">SVG (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/scala">Scala (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/shellscript">ShellScript (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/smartphone">Smartphone (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/static-site-generator">Static Site Generator (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vagrant">Vagrant (15)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vim">Vim (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualbox">VirtualBox (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">Virtualization (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webapp">WebApp (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webaudioapi">WebAudioAPI (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webfont">WebFont (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webgl">WebGL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webrtc">WebRTC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webserver">WebServer (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/yeoman">Yeoman (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/zsh">Zsh (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ajax">ajax (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/anyenv">anyenv (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/auth">auth (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/automation">automation (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bot">bot (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bugs">bugs (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/event-conference">event-conference (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/getusermedia">getUserMedia (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/gitconfig">gitconfig (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ios">iOS (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/iterm">iTerm (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ionic">ionic (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jquery">jQuery (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jinja2">jinja2 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jq">jq (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jsperf">jsperf (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/lint">lint (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mediaquery">mediaQuery (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/namespace">namespace (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/naming">naming (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/oldie">oldIE (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/output">output (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/polyfills">polyfills (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/preloader">preloader (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rsync">rsync (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/slack">slack (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/tmux">tmux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/viewport">viewport (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vimrc">vimrc (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">virtualization (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/wget">wget (1)</a>
+  </li>
+</ul>
+
+<h2>Categories</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/">Category / Tech</a>
+  </li>
+  <li>
+    <a href="/categories/twentyfour/">Category / TwentyFour</a>
+  </li>
+</ul>
+
+<h2>RSS</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/index.xml" target="_blank">RSS: Category / Tech</a>
+  </li>
+  <li>
+    <a href="/index.xml" target="_blank">RSS: All articles</a>
+  </li>
+</ul>
+
+<hr>
+
+<ul>
+  <li>このブログは個人の見解であり、所属する組織の公式見解ではありません</li>
+  <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+</ul>
+<p>&copy; ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a> and <a href="https://github.com/sindresorhus/github-markdown-css" target="_blank">github-markdown-css</a></p>
+
+</footer>
+
+</div>
+
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36767095-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+  </body>
+</html>
+
