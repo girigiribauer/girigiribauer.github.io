@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://girigiribauer.com/archives/20180415/</loc>
+    <lastmod>2018-04-15T20:23:57+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/archives/20180208/</loc>
     <lastmod>2018-02-08T09:20:03+09:00</lastmod>
   </url>
@@ -533,6 +538,12 @@
   </url>
   
   <url>
+    <loc>http://girigiribauer.com/tags/angular/</loc>
+    <lastmod>2018-04-15T20:23:57+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/tags/ansible/</loc>
     <lastmod>2016-11-29T18:26:15+09:00</lastmod>
     <priority>0</priority>
@@ -551,8 +562,14 @@
   </url>
   
   <url>
+    <loc>http://girigiribauer.com/tags/apps/</loc>
+    <lastmod>2018-04-15T20:23:57+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/archives/</loc>
-    <lastmod>2018-02-08T09:20:03+09:00</lastmod>
+    <lastmod>2018-04-15T20:23:57+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -618,6 +635,12 @@
   <url>
     <loc>http://girigiribauer.com/tags/chef/</loc>
     <lastmod>2016-08-16T10:00:00+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/cordova/</loc>
+    <lastmod>2018-04-15T20:23:57+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -762,6 +785,12 @@
   <url>
     <loc>http://girigiribauer.com/tags/icon-font/</loc>
     <lastmod>2013-02-02T04:43:25+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/ionic/</loc>
+    <lastmod>2018-04-15T20:23:57+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -935,7 +964,7 @@
   
   <url>
     <loc>http://girigiribauer.com/categories/tech/</loc>
-    <lastmod>2018-02-08T09:20:03+09:00</lastmod>
+    <lastmod>2018-04-15T20:23:57+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -1049,7 +1078,7 @@
   
   <url>
     <loc>http://girigiribauer.com/</loc>
-    <lastmod>2018-02-08T09:20:03+09:00</lastmod>
+    <lastmod>2018-04-15T20:23:57+09:00</lastmod>
     <priority>0</priority>
   </url>
   
