@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ばうあーろぐ </title>
+    <title>ばうあーろぐ</title>
     <link>http://girigiribauer.com/tags/dom/</link>
-    <atom:link href="http://girigiribauer.com/tags/dom/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link rel="self" href="http://girigiribauer.com/tags/dom/index.xml" type="application/rss+xml" />
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
     <language>ja-jp</language>
     <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
 
@@ -11,9 +12,9 @@
       
         <item>
           <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その3</title>
-          <link>http://girigiribauer.com/archives/1269</link>
+          <link>http://girigiribauer.com/archives/1269/</link>
           <pubDate>Wed, 12 Feb 2014 15:00:46 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/1269</guid>
+          <guid>http://girigiribauer.com/archives/1269/</guid>
           <description>意図せずシリーズ化してしまった、前回からの続き3回目です。 jQuery から卒業するための第1歩を polyfills から学ぼう jQuery から卒業するための第1歩を polyfills から学ぼう –</description>
         </item>
       
