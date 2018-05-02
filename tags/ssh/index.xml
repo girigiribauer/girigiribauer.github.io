@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ばうあーろぐ</title>
+    <link>http://girigiribauer.com/tags/ssh/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/ssh/index.xml" type="application/rss+xml" />
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
+    <language>ja-jp</language>
+    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
+
+    
+      
+        <item>
+          <title>Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた</title>
+          <link>http://girigiribauer.com/archives/1749/</link>
+          <pubDate>Wed, 01 Apr 2015 10:28:44 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1749/</guid>
+          <description>2013年に書いていた、『Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話』（http://girigiribaue</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant の使いどころ・考えどころ</title>
+          <link>http://girigiribauer.com/archives/1729/</link>
+          <pubDate>Tue, 03 Mar 2015 10:17:52 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1729/</guid>
+          <description>Vagrant, Chef 周りの知見が溜まってきたのでそろそろまとめていきたいと思っているのですが、 まだまだ自分の中で分からない部分も多く、 かつ自分はインフラエン</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>SSH パスフレーズの手動入力を強いられているんだ！</title>
+          <link>http://girigiribauer.com/archives/1638/</link>
+          <pubDate>Tue, 12 Aug 2014 10:05:26 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1638/</guid>
+          <description>どうしても環境を変えられず SSH のパスフレーズを手動入力せざるをえないときってありますよね？ それが1回、2回であればまだ良いのですが、ある程度定</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話</title>
+          <link>http://girigiribauer.com/archives/1127/</link>
+          <pubDate>Fri, 26 Jul 2013 11:35:52 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1127/</guid>
+          <description>2015/04/01追記：続き書きました。Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた 最近は、隙を見つけて（あ</description>
+        </item>
+      
+    
+  </channel>
+</rss>
