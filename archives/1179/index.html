@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+    <title>mediaQuery における max-width, max-device-width の違い - ばうあーろぐ</title>
+    <meta property="og:title" content="mediaQuery における max-width, max-device-width の違い - ばうあーろぐ">
+    <meta property="og:type" content="article">
+    <meta name="description" content="最近改めて使い分けないとなーと実感したので、その実感を忘れないうちにメモしておこうと思います。 デバイスの幅(width)と device-width の違いについて そ">
+    <meta property="og:description" content="最近改めて使い分けないとなーと実感したので、その実感を忘れないうちにメモしておこうと思います。 デバイスの幅(width)と device-width の違いについて そ">
+    <meta property="og:url" content="http://girigiribauer.com/archives/1179/">
+    <meta property="fb:app_id" content="396423247105258">
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="generator" content="Hugo 0.20.7" />
+  </head>
+  <body>
+
+<div class="markdown-body">
+<header>
+<a href="/">ばうあーろぐ TOP へ戻る</a>
+</header>
+
+
+<div class="maincontents">
+
+<h1>mediaQuery における max-width, max-device-width の違い</h1>
+
+<div class="poststatus">
+  <p>  <time datetime="2013/11/13">2013/11/13</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/css/">CSS</a></li>
+    <li class="flow"><a href="/tags/mediaquery/">mediaQuery</a></li>
+    <li class="flow"><a href="/tags/viewport/">viewport</a></li>
+    <li class="flow"><a href="/tags/smartphone/">Smartphone</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>最近改めて使い分けないとなーと実感したので、その実感を忘れないうちにメモしておこうと思います。</p>
+
+<h2 id="デバイスの幅-width-と-device-width-の違いについて">デバイスの幅(width)と device-width の違いについて</h2>
+
+<p>そもそもの話ですが、そのデバイスで何ピクセル x 何ピクセルで表示できますよーという値と、 device-width の値は異なります。（結果的に同じ場合もあり得ますが）</p>
+
+<p><a href="http://screensiz.es/" target="_blank">http://screensiz.es/</a></p>
+
+<p><img src="/img/2014/01/device-width01.png" alt="" /></p>
+
+<p>こちらに、デバイスごとの width, device-width がまとめてあります。たまに見ます。</p>
+
+<p>iPhone 3GS の時代であれば、width = 320px, device-width = 320px であったので問題なかったのですが、 retina ディスプレイが出てきてから、 width = 640px, device-width = 320px になってきています。</p>
+
+<p>それならまだ 1:2 になるので分かりやすくて良かったのですが、 そうではない多種多様なデバイスが世に出回っています。</p>
+
+<p>例えば Surface Pro は、1920 x 1200px で device-width = 1280px であったり、 Nexus7 は、800 x 1280px で device-width = 601px であったり、 さらに Nexus7 の例のように、<strong>アップデートで device-width は変化したりもします。</strong></p>
+
+<p>一緒に作ってる人と話すときにそのあたりの認識が異なる場合がそこそこあるのですが、 device-width は、あくまでそのデバイスを提供している側が、<strong>見せたい側の都合の良いサイズ</strong>を決めているだけにすぎないもので、 width と device-width に依存関係はないと考えています。</p>
+
+<p>タブレット周りは特にそれが顕著で、サイズ的にも『PCレイアウトで見せたい！』というデバイスの開発側の意図により、 PCレイアウトに近くなるような device-width が決められています。 （768px であったり、1024px であったり・・・）</p>
+
+<p>そもそも device-width がどっちの辺を指すのか？も、デバイスの開発側の意図によるもので、 デバイスによって様々です。大変ですね。</p>
+
+<p>なので、「必ずこの端末は意図した通りのデザインで見せたい！」とか、 「アプリとしてリリースするけど、この部分はWebViewでー」とか、そういったケースで viewport のメタタグに device-width が設定してある場合などは、 （当たり前とは思いつつも）きちんとチーム内で作る対象のサイズを共有しなければと思っているところです。</p>
+
+<h2 id="max-width-と-max-device-width-の違い">max-width と max-device-width の違い</h2>
+
+<p>こちらが本題です。</p>
+
+<p>CSS の mediaQuery で幅に応じてスタイルの出し分けを行ったりするケースで使うのですが、</p>
+
+<blockquote>
+<p>@media only screen and (max-width: 480px) {</p>
+</blockquote>
+
+<p>とか、</p>
+
+<blockquote>
+<p>@media only screen and (max-device-width: 480px) {</p>
+</blockquote>
+
+<p>などのように使います。</p>
+
+<p>max-width と max-device-width はどのような違いがあるかというと、 <strong>表示領域の幅</strong>なのか、<strong>そのデバイスそのものの幅</strong>なのかの違いがあります。</p>
+
+<p>例えば以下のケースで、違いが顕著になってくると思います。</p>
+
+<ol>
+<li>スマートフォンレイアウトの検証を、簡易的にWebブラウザのウィンドウ幅を変えることで検証を行っている場合</li>
+<li>スマートフォンなどのモバイルデバイスを縦横に傾けた場合</li>
+</ol>
+
+<p>max-width などの表示領域の幅で指定がしてあった場合、 1.のケースでは例えば開発者ツールを開きながらの検証が非常にスムーズであると思います。 これは表示領域の幅で切り替えており、ウィンドウサイズを変えることでこちらの数値が変わるためにスタイルのあたり方が変化することによるものです。</p>
+
+<p>また、2.のケースでは、仮にしきい値が 480px にしてあった場合、iPhone5 などを縦から横に傾けた場合、 表示領域の幅が 320px から 568px に変化することにより、スタイルのあたり方は同様に変化します。</p>
+
+<p>max-device-width などのデバイスそのものの幅で指定がしてあった場合、 1.のケースでウィンドウサイズを変化させただけでは表示の変化はしません。 この場合は開発者ツールなどでデバイスのサイズ（device metrics）を上書きしてやる必要が出てくると思います。</p>
+
+<p>また、2.のケースでは、一部のデバイスを除き（どれまでかは細かく知らないです）、 デバイスごとに、device-widthを「Webコンテンツをこの幅で見せたいんだ！」と開発側が決めているため、 縦横に傾けてもこの数値は変わらず、上記の mediaQuery 指定でスタイルが変化することはありません。</p>
+
+<p>こういった違いがあるため、作っているものによって使い分ける必要があるのではないかと思います。</p>
+
+<h2 id="例えばレスポンシブレイアウトなど">例えばレスポンシブレイアウトなど</h2>
+
+<p>例えばレスポンシブレイアウトなどで、大きく 480px あたりでPC用リソース、スマートフォン用リソースを出し分けていると仮定します。</p>
+
+<p>max-width で指定してあった場合に、480px の幅を下回るデバイスで閲覧し、横に傾けて 480px を上回るケースでは、 傾けた時点で表示領域・幅が変化することになるため、 適用されるスタイルが大きく変わります。</p>
+
+<p>PC用、スマートフォン用とでリソースを多く出し分けていたとしたら、<strong>傾けた時点で多くのリソースの読み込みが発生してしまう</strong>ことになります。大変なことですね。</p>
+
+<p>どちらが良いとか決めうちで決められるものではないので、作っているものによってこのあたりの違いを踏まえて毎回適切な実装方法を考えていかないといけないなーと、改めて実感したところです。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2013/11/13">2013/11/13</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/css/">CSS</a></li>
+    <li class="flow"><a href="/tags/mediaquery/">mediaQuery</a></li>
+    <li class="flow"><a href="/tags/viewport/">viewport</a></li>
+    <li class="flow"><a href="/tags/smartphone/">Smartphone</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
+
+
+</div>
+
+<footer>
+
+<h2>Tags</h2>
+
+<ul class="tags">
+  <li class="flow">
+    <a href="/tags/angular">Angular (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ansible">Ansible (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apache">Apache (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apps">Apps (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cli">CLI (10)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css">CSS (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css3">CSS3 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cssfilter">CSSfilter (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/canvas">Canvas (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/chef">Chef (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cordova">Cordova (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/crawler">Crawler (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/dom">DOM (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/docker">Docker (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ecmascript">ECMAScript (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/english">English (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ftp">FTP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/firebase">Firebase (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/font">Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/functionallanguage">FunctionalLanguage (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/glsl">GLSL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/git">Git (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/golang">Golang (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/googleappengine">GoogleAppEngine (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html">HTML (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5">HTML5 (7)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5-outline">HTML5-outline (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/homebrew">Homebrew (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/hugo">Hugo (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/icon-font">Icon-Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/javascript">JavaScript (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/linux">Linux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mvc">MVC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mongodb">MongoDB (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/opengraph">OpenGraph (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/php">PHP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/python">Python (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rdfa">RDFa (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ssh">SSH (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/svg">SVG (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/scala">Scala (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/shellscript">ShellScript (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/smartphone">Smartphone (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/static-site-generator">Static Site Generator (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vagrant">Vagrant (15)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vim">Vim (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualbox">VirtualBox (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">Virtualization (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webapp">WebApp (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webaudioapi">WebAudioAPI (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webfont">WebFont (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webgl">WebGL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webrtc">WebRTC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webserver">WebServer (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/yeoman">Yeoman (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/zsh">Zsh (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ajax">ajax (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/anyenv">anyenv (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/auth">auth (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/automation">automation (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bot">bot (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bugs">bugs (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/event-conference">event-conference (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/getusermedia">getUserMedia (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/gitconfig">gitconfig (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ios">iOS (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/iterm">iTerm (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ionic">ionic (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jquery">jQuery (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jinja2">jinja2 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jq">jq (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jsperf">jsperf (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/lint">lint (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mediaquery">mediaQuery (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/namespace">namespace (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/naming">naming (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/oldie">oldIE (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/output">output (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/polyfills">polyfills (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/preloader">preloader (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rsync">rsync (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/slack">slack (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/tmux">tmux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/viewport">viewport (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vimrc">vimrc (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">virtualization (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/wget">wget (1)</a>
+  </li>
+</ul>
+
+<h2>Categories</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/">Category / Tech</a>
+  </li>
+  <li>
+    <a href="/categories/twentyfour/">Category / TwentyFour</a>
+  </li>
+</ul>
+
+<h2>RSS</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/index.xml" target="_blank">RSS: Category / Tech</a>
+  </li>
+  <li>
+    <a href="/index.xml" target="_blank">RSS: All articles</a>
+  </li>
+</ul>
+
+<hr>
+
+<ul>
+  <li>このブログは個人の見解であり、所属する組織の公式見解ではありません</li>
+  <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+</ul>
+<p>&copy; ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a> and <a href="https://github.com/sindresorhus/github-markdown-css" target="_blank">github-markdown-css</a></p>
+
+</footer>
+
+</div>
+
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36767095-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+  </body>
+</html>
+
