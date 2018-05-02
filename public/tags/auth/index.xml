@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ばうあーろぐ</title>
+    <link>http://girigiribauer.com/tags/auth/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/auth/index.xml" type="application/rss+xml" />
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
+    <language>ja-jp</language>
+    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
+
+    
+      
+        <item>
+          <title>Firebase を認証だけで利用すると色々捗る</title>
+          <link>http://girigiribauer.com/archives/20171005/</link>
+          <pubDate>Thu, 05 Oct 2017 10:00:00 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20171005/</guid>
+          <description>Firebase の認証周りは導入がめっちゃ楽です。 自分でやろうとすると大きく手間のかかる部分である認証部分の実装ですが、 Firebase を利用することで認証部分の実装を</description>
+        </item>
+      
+    
+  </channel>
+</rss>

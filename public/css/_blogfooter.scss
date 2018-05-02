@@ -1,0 +1,57 @@
+/**
+ * blogfooter styles
+ */
+.blogfooter {
+  width: 100%;
+  padding: 50px 0;
+  background: #444;
+  color: #fff;
+  @media #{$small} {
+    padding: 30px 0;
+  }
+  a {
+    color: #fff;
+  }
+  p {
+    font-size: $font-size-14px;
+    line-height: 1.6;
+  }
+  .inner {
+    width: $width-maincontents;
+    margin: 0 auto;
+    @include legacy-pie-clearfix;
+    @media #{$middle}, #{$small} {
+      width: auto;
+      padding: 0 30px;
+    }
+    @media #{$small} {
+      padding: 0 10px;
+    }
+  }
+  .links {
+    li {
+      font-size: $font-size-14px;
+      line-height: 1.6;
+    }
+    li + li {
+      margin: 0 10px 0 0;
+    }
+    .icon {
+      width: 26px;
+      display: inline-block;
+    }
+  }
+  .attention {
+    margin-top: 16px;
+  }
+  .copyright {
+    margin-top: 16px;
+    vertical-align: bottom;
+    line-height: 1.4;
+    .copyright-mark {
+      font-size: $font-size-21px;
+      line-height: 1.0;
+      vertical-align: bottom;
+    }
+  }
+}
