@@ -1,0 +1,137 @@
+/**
+ * post elements styles
+ */
+.postheader {
+  display: block;
+  padding: 30px 10px;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+  color: #000;
+  @media #{$small} {
+    padding: 20px 10px;
+  }
+}
+.posttitle {
+  font-size: $font-size-24px;
+  font-weight: bold;
+  @include font-family-gothic;
+  line-height: 1.1;
+  @media #{$small} {
+    font-size: $font-size-18px;
+  }
+}
+.poststatus {
+  margin-top: 15px;
+  color: #686868;
+  @include font-family-gothic;
+  #{&}__date {
+    font-size: $font-size-14px;
+    @media #{$small} {
+      font-size: $font-size-12px;
+    }
+  }
+  #{&}__notfound {
+    font-size: $font-size-14px;
+    @media #{$small} {
+      font-size: $font-size-12px;
+    }
+  }
+  #{&}__tags {
+    display: inline;
+    margin: 0 0 0 10px;
+    font-size: $font-size-14px;
+    word-break: break-all;
+    @media #{$small} {
+      font-size: $font-size-12px;
+    }
+    li {
+      display: inline;
+      & + li {
+        margin: 0 0 0 10px;
+      }
+    }
+  }
+  #{&}__caution {
+    display: block;
+    margin-top: 15px;
+    color: #dd5555;
+    font-size: $font-size-14px;
+    font-weight: bold;
+  }
+}
+.postfooter {
+  padding: 30px 10px;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+}
+.pagenavi {
+  padding: 50px 0;
+  @include legacy-pie-clearfix;
+  @media #{$small} {
+    padding: 30px 0;
+  }
+  a {
+    color: #444;
+    font-size: $font-size-18px;
+    font-weight: bold;
+  }
+  #{&}__newpost {
+    float: left;
+  }
+  #{&}__oldpost {
+    float: right;
+  }
+}
+.socialbuttons {
+  overflow: hidden;
+  li {
+    display: inline-block;
+    vertical-align: top;
+  }
+}
+.archivetitle {
+  padding: 30px 10px;
+  font-size: $font-size-24px;
+  font-weight: bold;
+  @include font-family-gothic;
+  line-height: 1.1;
+  @media #{$small} {
+    font-size: $font-size-18px;
+  }
+}
+.articlelist {
+  border-top: 1px solid #aaa;
+  #{&}__item {
+    border-bottom: 1px solid #aaa;
+  }
+  #{&}__link {
+    display: block;
+    padding: 30px 10px;
+    color: #000;
+    text-decoration: none;
+    &:hover {
+      background-color: #aaa;
+    }
+    @media #{$small} {
+      padding: 20px 10px;
+    }
+  }
+  #{&}__title {
+    font-size: $font-size-24px;
+    font-weight: bold;
+    @include font-family-gothic;
+    line-height: 1.1;
+    @media #{$small} {
+      font-size: $font-size-18px;
+    }
+  }
+}
+.notfound {
+  padding: 30px 10px;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+  @media #{$small} {
+    padding: 20px 10px;
+  }
+}
+

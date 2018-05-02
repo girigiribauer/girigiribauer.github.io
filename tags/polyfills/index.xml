@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ばうあーろぐ</title>
+    <link>http://girigiribauer.com/tags/polyfills/</link>
+    <atom:link rel="self" href="http://girigiribauer.com/tags/polyfills/index.xml" type="application/rss+xml" />
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
+    <language>ja-jp</language>
+    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
+
+    
+      
+        <item>
+          <title>CSS3 PIE の動作の仕組みと副作用について</title>
+          <link>http://girigiribauer.com/archives/1636/</link>
+          <pubDate>Thu, 23 Oct 2014 09:56:36 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1636/</guid>
+          <description>2014年9月現在、IE のシェアは過去と比べて劇的に変化しています。 http://gs.statcounter.com/#desktop-browser_version_partially_combined-JP-monthly-201309-201409 を見ると分かるように、 IE11 が全ブラウザの 30% を上回り、IE8,9,10 がそ</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その3</title>
+          <link>http://girigiribauer.com/archives/1269/</link>
+          <pubDate>Wed, 12 Feb 2014 15:00:46 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1269/</guid>
+          <description>意図せずシリーズ化してしまった、前回からの続き3回目です。 jQuery から卒業するための第1歩を polyfills から学ぼう jQuery から卒業するための第1歩を polyfills から学ぼう –</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その2</title>
+          <link>http://girigiribauer.com/archives/1254/</link>
+          <pubDate>Sun, 02 Feb 2014 15:00:10 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1254/</guid>
+          <description>前回からの続きです。 jQuery から卒業するための第1歩を polyfills から学ぼう https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込ま</description>
+        </item>
+      
+    
+      
+        <item>
+          <title>jQuery から卒業するための第1歩を polyfills から学ぼう</title>
+          <link>http://girigiribauer.com/archives/1233/</link>
+          <pubDate>Thu, 30 Jan 2014 15:00:53 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1233/</guid>
+          <description>jQuery というライブラリは非常に便利な JavaScript ライブラリであります。 jQuery 便利！ いやー、便利ですよね。便利すぎて、JavaScript を書いてHTML要素を</description>
+        </item>
+      
+    
+  </channel>
+</rss>

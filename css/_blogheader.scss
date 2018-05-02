@@ -1,0 +1,25 @@
+/**
+ * blogheader styles
+ */
+.blogheader {
+  width: $width-maincontents;
+  margin: 0 auto;
+  padding: 80px 0;
+  @media #{$middle} {
+    width: auto;
+    padding: 60px 30px;
+  }
+  @media #{$small} {
+    width: auto;
+    padding: 40px 10px;
+  }
+}
+.blogtitle {
+  display: inline-block;
+  margin: 0;
+  padding: 0 10px;
+  text-decoration: none;
+  img {
+    max-width: 100%;
+  }
+}
