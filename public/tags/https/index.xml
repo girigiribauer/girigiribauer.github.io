@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HTTPS on ばうあーろぐ</title>
+    <link>http://girigiribauer.com/tags/https/</link>
+    <description>Recent content in HTTPS on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Thu, 03 May 2018 07:00:00 +0900</lastBuildDate>
+    
+	<atom:link href="http://girigiribauer.com/tags/https/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>GitHub hosting の custom domain が HTTPS 対応したので HTTPS 化してみた</title>
+      <link>http://girigiribauer.com/archives/20180503/</link>
+      <pubDate>Thu, 03 May 2018 07:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/archives/20180503/</guid>
+      <description>タイトルの通りです。 ざっくりポイント https://help.github.com/articles/setting-up-an-apex-domain/ をよく読む 設定済みのカスタムドメインを1度削除し、再度追加する GitHub のリポジトリの setting ページにある Enforce HTTPS の項目</description>
+    </item>
+    
+  </channel>
+</rss>
