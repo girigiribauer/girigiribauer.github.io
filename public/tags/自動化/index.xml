@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ばうあーろぐ </title>
+    <link>http://girigiribauer.com/tags/%E8%87%AA%E5%8B%95%E5%8C%96/</link>
+    <atom:link href="http://girigiribauer.com/tags/%E8%87%AA%E5%8B%95%E5%8C%96/index.xml" rel="self" type="application/rss+xml" />
+    <language>ja-jp</language>
+    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
+
+    
+      
+        <item>
+          <title>SSH パスフレーズの手動入力を強いられているんだ！</title>
+          <link>http://girigiribauer.com/archives/1638</link>
+          <pubDate>Tue, 12 Aug 2014 10:05:26 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/1638</guid>
+          <description>どうしても環境を変えられず SSH のパスフレーズを手動入力せざるをえないときってありますよね？ それが1回、2回であればまだ良いのですが、ある程度定</description>
+        </item>
+      
+    
+  </channel>
+</rss>
