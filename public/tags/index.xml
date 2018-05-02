@@ -1,187 +1,798 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ばうあーろぐ</title>
+    <title>Tags on ばうあーろぐ</title>
     <link>http://girigiribauer.com/tags/</link>
-    <atom:link rel="self" href="http://girigiribauer.com/tags/index.xml" type="application/rss+xml" />
-    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
+    <description>Recent content in Tags on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
-
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
+    <lastBuildDate>Sun, 02 Feb 2014 15:00:10 +0000</lastBuildDate>
+    
+	<atom:link href="http://girigiribauer.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ajax</title>
+      <link>http://girigiribauer.com/tags/ajax/</link>
+      <pubDate>Sun, 02 Feb 2014 15:00:10 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/ajax/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Angular</title>
+      <link>http://girigiribauer.com/tags/angular/</link>
+      <pubDate>Sun, 15 Apr 2018 20:23:57 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/angular/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ansible</title>
+      <link>http://girigiribauer.com/tags/ansible/</link>
+      <pubDate>Tue, 29 Nov 2016 18:26:15 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/ansible/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Anyenv</title>
+      <link>http://girigiribauer.com/tags/anyenv/</link>
+      <pubDate>Thu, 27 Jul 2017 17:45:52 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/anyenv/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Apache</title>
+      <link>http://girigiribauer.com/tags/apache/</link>
+      <pubDate>Wed, 25 Mar 2015 08:43:58 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/apache/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Apps</title>
+      <link>http://girigiribauer.com/tags/apps/</link>
+      <pubDate>Sun, 15 Apr 2018 20:23:57 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/apps/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Auth</title>
+      <link>http://girigiribauer.com/tags/auth/</link>
+      <pubDate>Thu, 05 Oct 2017 10:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/auth/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Automation</title>
+      <link>http://girigiribauer.com/tags/automation/</link>
+      <pubDate>Tue, 06 Sep 2016 09:14:39 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/automation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bot</title>
+      <link>http://girigiribauer.com/tags/bot/</link>
+      <pubDate>Wed, 31 Jan 2018 15:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/bot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Bugs</title>
+      <link>http://girigiribauer.com/tags/bugs/</link>
+      <pubDate>Wed, 05 Feb 2014 15:00:52 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/bugs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CLI</title>
+      <link>http://girigiribauer.com/tags/cli/</link>
+      <pubDate>Wed, 08 Feb 2017 18:10:11 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/cli/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CSS</title>
+      <link>http://girigiribauer.com/tags/css/</link>
+      <pubDate>Fri, 17 Feb 2017 00:16:01 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/css/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CSS3</title>
+      <link>http://girigiribauer.com/tags/css3/</link>
+      <pubDate>Thu, 23 Oct 2014 09:56:36 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/css3/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CSSfilter</title>
+      <link>http://girigiribauer.com/tags/cssfilter/</link>
+      <pubDate>Fri, 21 Dec 2012 14:50:51 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/cssfilter/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Canvas</title>
+      <link>http://girigiribauer.com/tags/canvas/</link>
+      <pubDate>Sun, 24 Feb 2013 09:16:03 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/canvas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Chef</title>
+      <link>http://girigiribauer.com/tags/chef/</link>
+      <pubDate>Tue, 16 Aug 2016 10:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/chef/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cordova</title>
+      <link>http://girigiribauer.com/tags/cordova/</link>
+      <pubDate>Sun, 15 Apr 2018 20:23:57 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/cordova/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Crawler</title>
+      <link>http://girigiribauer.com/tags/crawler/</link>
+      <pubDate>Mon, 08 Apr 2013 00:20:54 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/crawler/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DOM</title>
+      <link>http://girigiribauer.com/tags/dom/</link>
+      <pubDate>Wed, 12 Feb 2014 15:00:46 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/dom/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>http://girigiribauer.com/tags/docker/</link>
+      <pubDate>Thu, 08 Feb 2018 09:20:03 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ECMAScript</title>
+      <link>http://girigiribauer.com/tags/ecmascript/</link>
+      <pubDate>Thu, 24 Aug 2017 15:35:39 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/ecmascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>English</title>
+      <link>http://girigiribauer.com/tags/english/</link>
+      <pubDate>Thu, 24 Aug 2017 15:35:39 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/english/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Event-conference</title>
+      <link>http://girigiribauer.com/tags/event-conference/</link>
+      <pubDate>Fri, 11 Jul 2014 10:32:50 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/event-conference/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>FTP</title>
+      <link>http://girigiribauer.com/tags/ftp/</link>
+      <pubDate>Sat, 03 Sep 2016 17:29:24 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/ftp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Firebase</title>
+      <link>http://girigiribauer.com/tags/firebase/</link>
+      <pubDate>Thu, 05 Oct 2017 10:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/firebase/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Font</title>
+      <link>http://girigiribauer.com/tags/font/</link>
+      <pubDate>Sat, 02 Feb 2013 04:43:25 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/font/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>FunctionalLanguage</title>
+      <link>http://girigiribauer.com/tags/functionallanguage/</link>
+      <pubDate>Fri, 01 Mar 2013 14:14:23 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/functionallanguage/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>GLSL</title>
+      <link>http://girigiribauer.com/tags/glsl/</link>
+      <pubDate>Fri, 21 Dec 2012 14:50:51 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/glsl/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>GetUserMedia</title>
+      <link>http://girigiribauer.com/tags/getusermedia/</link>
+      <pubDate>Sun, 24 Feb 2013 09:16:03 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/getusermedia/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Git</title>
+      <link>http://girigiribauer.com/tags/git/</link>
+      <pubDate>Tue, 27 Dec 2016 19:59:53 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Gitconfig</title>
+      <link>http://girigiribauer.com/tags/gitconfig/</link>
+      <pubDate>Tue, 13 Sep 2016 14:05:35 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/gitconfig/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Golang</title>
+      <link>http://girigiribauer.com/tags/golang/</link>
+      <pubDate>Wed, 31 Jan 2018 15:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>GoogleAppEngine</title>
+      <link>http://girigiribauer.com/tags/googleappengine/</link>
+      <pubDate>Wed, 31 Jan 2018 15:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/googleappengine/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HTML</title>
+      <link>http://girigiribauer.com/tags/html/</link>
+      <pubDate>Mon, 11 Mar 2013 00:08:58 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/html/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HTML5</title>
+      <link>http://girigiribauer.com/tags/html5/</link>
+      <pubDate>Sun, 24 Mar 2013 00:26:26 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/html5/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HTML5-outline</title>
+      <link>http://girigiribauer.com/tags/html5-outline/</link>
+      <pubDate>Mon, 14 Jan 2013 08:12:04 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/html5-outline/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Homebrew</title>
+      <link>http://girigiribauer.com/tags/homebrew/</link>
+      <pubDate>Tue, 04 Oct 2016 13:11:17 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/homebrew/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hugo</title>
+      <link>http://girigiribauer.com/tags/hugo/</link>
+      <pubDate>Fri, 19 May 2017 17:53:08 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/hugo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>IOS</title>
+      <link>http://girigiribauer.com/tags/ios/</link>
+      <pubDate>Wed, 05 Feb 2014 15:00:52 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/ios/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ITerm</title>
+      <link>http://girigiribauer.com/tags/iterm/</link>
+      <pubDate>Thu, 01 Sep 2016 17:48:32 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/iterm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Icon-Font</title>
+      <link>http://girigiribauer.com/tags/icon-font/</link>
+      <pubDate>Sat, 02 Feb 2013 04:43:25 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/icon-font/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ionic</title>
+      <link>http://girigiribauer.com/tags/ionic/</link>
+      <pubDate>Sun, 15 Apr 2018 20:23:57 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/ionic/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>JQuery</title>
+      <link>http://girigiribauer.com/tags/jquery/</link>
+      <pubDate>Wed, 12 Feb 2014 15:00:46 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/jquery/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>JavaScript</title>
+      <link>http://girigiribauer.com/tags/javascript/</link>
+      <pubDate>Thu, 24 Aug 2017 15:35:39 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Jinja2</title>
+      <link>http://girigiribauer.com/tags/jinja2/</link>
+      <pubDate>Mon, 12 Sep 2016 11:42:17 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/jinja2/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Jq</title>
+      <link>http://girigiribauer.com/tags/jq/</link>
+      <pubDate>Fri, 19 Aug 2016 11:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/jq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Jsperf</title>
+      <link>http://girigiribauer.com/tags/jsperf/</link>
+      <pubDate>Sun, 02 Feb 2014 15:00:10 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/jsperf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Lint</title>
+      <link>http://girigiribauer.com/tags/lint/</link>
+      <pubDate>Fri, 17 Feb 2017 00:16:01 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/lint/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>http://girigiribauer.com/tags/linux/</link>
+      <pubDate>Sat, 14 Jan 2017 17:57:40 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MVC</title>
+      <link>http://girigiribauer.com/tags/mvc/</link>
+      <pubDate>Fri, 01 Mar 2013 14:14:23 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/mvc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MediaQuery</title>
+      <link>http://girigiribauer.com/tags/mediaquery/</link>
+      <pubDate>Wed, 13 Nov 2013 09:29:57 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/mediaquery/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MongoDB</title>
+      <link>http://girigiribauer.com/tags/mongodb/</link>
+      <pubDate>Thu, 19 Apr 2018 20:42:30 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/mongodb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Namespace</title>
+      <link>http://girigiribauer.com/tags/namespace/</link>
+      <pubDate>Mon, 11 Mar 2013 00:08:58 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/namespace/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Naming</title>
+      <link>http://girigiribauer.com/tags/naming/</link>
+      <pubDate>Thu, 24 Aug 2017 15:35:39 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/naming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OldIE</title>
+      <link>http://girigiribauer.com/tags/oldie/</link>
+      <pubDate>Thu, 23 Oct 2014 09:56:36 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/oldie/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>OpenGraph</title>
+      <link>http://girigiribauer.com/tags/opengraph/</link>
+      <pubDate>Mon, 11 Mar 2013 00:08:58 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/opengraph/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Output</title>
+      <link>http://girigiribauer.com/tags/output/</link>
+      <pubDate>Sun, 24 Mar 2013 00:26:26 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/output/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>PHP</title>
+      <link>http://girigiribauer.com/tags/php/</link>
+      <pubDate>Tue, 22 Jan 2013 15:49:43 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/php/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Polyfills</title>
+      <link>http://girigiribauer.com/tags/polyfills/</link>
+      <pubDate>Thu, 23 Oct 2014 09:56:36 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/polyfills/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Preloader</title>
+      <link>http://girigiribauer.com/tags/preloader/</link>
+      <pubDate>Sun, 15 Apr 2012 23:54:19 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/preloader/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>http://girigiribauer.com/tags/python/</link>
+      <pubDate>Thu, 27 Jul 2017 17:45:52 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>RDFa</title>
+      <link>http://girigiribauer.com/tags/rdfa/</link>
+      <pubDate>Mon, 11 Mar 2013 00:08:58 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/rdfa/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rsync</title>
+      <link>http://girigiribauer.com/tags/rsync/</link>
+      <pubDate>Sat, 03 Sep 2016 17:29:24 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/rsync/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SSH</title>
+      <link>http://girigiribauer.com/tags/ssh/</link>
+      <pubDate>Wed, 01 Apr 2015 10:28:44 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/ssh/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SVG</title>
+      <link>http://girigiribauer.com/tags/svg/</link>
+      <pubDate>Sat, 02 Feb 2013 04:43:25 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/svg/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Scala</title>
+      <link>http://girigiribauer.com/tags/scala/</link>
+      <pubDate>Mon, 14 Jan 2013 07:17:05 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/scala/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ShellScript</title>
+      <link>http://girigiribauer.com/tags/shellscript/</link>
+      <pubDate>Wed, 08 Feb 2017 18:10:11 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/shellscript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Slack</title>
+      <link>http://girigiribauer.com/tags/slack/</link>
+      <pubDate>Wed, 31 Jan 2018 15:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/slack/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Smartphone</title>
+      <link>http://girigiribauer.com/tags/smartphone/</link>
+      <pubDate>Wed, 13 Nov 2013 09:29:57 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/smartphone/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Static Site Generator</title>
+      <link>http://girigiribauer.com/tags/static-site-generator/</link>
+      <pubDate>Fri, 06 Jan 2017 15:21:29 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/static-site-generator/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tmux</title>
+      <link>http://girigiribauer.com/tags/tmux/</link>
+      <pubDate>Sun, 22 Jan 2017 18:11:19 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/tmux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vagrant</title>
+      <link>http://girigiribauer.com/tags/vagrant/</link>
+      <pubDate>Tue, 29 Nov 2016 18:26:15 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/vagrant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Viewport</title>
+      <link>http://girigiribauer.com/tags/viewport/</link>
+      <pubDate>Thu, 25 Sep 2014 01:45:36 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/viewport/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vim</title>
+      <link>http://girigiribauer.com/tags/vim/</link>
+      <pubDate>Fri, 17 Feb 2017 00:16:01 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/vim/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Vimrc</title>
+      <link>http://girigiribauer.com/tags/vimrc/</link>
+      <pubDate>Mon, 27 Oct 2014 11:57:58 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/vimrc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>VirtualBox</title>
+      <link>http://girigiribauer.com/tags/virtualbox/</link>
+      <pubDate>Fri, 10 May 2013 03:11:38 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/virtualbox/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Virtualization</title>
+      <link>http://girigiribauer.com/tags/virtualization/</link>
+      <pubDate>Fri, 17 May 2013 08:05:27 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/virtualization/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Virtualization</title>
+      <link>http://girigiribauer.com/tags/virtualization/</link>
+      <pubDate>Thu, 29 Sep 2016 20:02:24 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/virtualization/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WebApp</title>
+      <link>http://girigiribauer.com/tags/webapp/</link>
+      <pubDate>Sun, 15 Apr 2012 23:54:19 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/webapp/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WebAudioAPI</title>
+      <link>http://girigiribauer.com/tags/webaudioapi/</link>
+      <pubDate>Sun, 24 Feb 2013 09:16:03 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/webaudioapi/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WebFont</title>
+      <link>http://girigiribauer.com/tags/webfont/</link>
+      <pubDate>Sat, 02 Feb 2013 04:43:25 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/webfont/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WebGL</title>
+      <link>http://girigiribauer.com/tags/webgl/</link>
+      <pubDate>Fri, 21 Dec 2012 14:50:51 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/webgl/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WebRTC</title>
+      <link>http://girigiribauer.com/tags/webrtc/</link>
+      <pubDate>Sun, 24 Feb 2013 09:16:03 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/webrtc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>WebServer</title>
+      <link>http://girigiribauer.com/tags/webserver/</link>
+      <pubDate>Wed, 25 Mar 2015 08:43:58 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/webserver/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Wget</title>
+      <link>http://girigiribauer.com/tags/wget/</link>
+      <pubDate>Mon, 08 Apr 2013 00:20:54 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/wget/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Yeoman</title>
+      <link>http://girigiribauer.com/tags/yeoman/</link>
+      <pubDate>Sun, 07 Jul 2013 07:21:37 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/yeoman/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Zsh</title>
+      <link>http://girigiribauer.com/tags/zsh/</link>
+      <pubDate>Mon, 27 Oct 2014 11:57:58 +0000</pubDate>
+      
+      <guid>http://girigiribauer.com/tags/zsh/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>
