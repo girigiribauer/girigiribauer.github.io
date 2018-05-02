@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ばうあーろぐ</title>
+    <title>Anyenv on ばうあーろぐ</title>
     <link>http://girigiribauer.com/tags/anyenv/</link>
-    <atom:link rel="self" href="http://girigiribauer.com/tags/anyenv/index.xml" type="application/rss+xml" />
-    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com" />
+    <description>Recent content in Anyenv on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <description>Webテクノロジーに関するメモ、あるいはTwentyFour</description>
-
+    <lastBuildDate>Thu, 27 Jul 2017 17:45:52 +0900</lastBuildDate>
     
+	<atom:link href="http://girigiribauer.com/tags/anyenv/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>pyenv で python2 と python3 の両バージョンを指定できるのを最近まで知らなかった</title>
+      <link>http://girigiribauer.com/archives/20170727/</link>
+      <pubDate>Thu, 27 Jul 2017 17:45:52 +0900</pubDate>
       
-        <item>
-          <title>pyenv で python2 と python3 の両バージョンを指定できるのを最近まで知らなかった</title>
-          <link>http://girigiribauer.com/archives/20170727/</link>
-          <pubDate>Thu, 27 Jul 2017 17:45:52 +0900</pubDate>
-          <guid>http://girigiribauer.com/archives/20170727/</guid>
-          <description>なんで今まで知らなかったし、という感じです。 pyenv global 2.7.13 3.6.0 僕は anyenv を使って複数のバージョンを切り替えて使っているのですが、 pyenv であれば、 pyenv install --list でインス</description>
-        </item>
-      
+      <guid>http://girigiribauer.com/archives/20170727/</guid>
+      <description>なんで今まで知らなかったし、という感じです。 pyenv global 2.7.13 3.6.0 僕は anyenv を使って複数のバージョンを切り替えて使っているのですが、 pyenv であれば、 pyenv install --list でインス</description>
+    </item>
     
   </channel>
 </rss>
