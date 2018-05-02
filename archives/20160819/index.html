@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+    <title>vagrant global-status の代替方法、あるいは jq コマンドの使い方 - ばうあーろぐ</title>
+    <meta property="og:title" content="vagrant global-status の代替方法、あるいは jq コマンドの使い方 - ばうあーろぐ">
+    <meta property="og:type" content="article">
+    <meta name="description" content="VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。 tmux の set-option -g status-right で指定できるスクリプトは 一定間隔">
+    <meta property="og:description" content="VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。 tmux の set-option -g status-right で指定できるスクリプトは 一定間隔">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20160819/">
+    <meta property="fb:app_id" content="396423247105258">
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="generator" content="Hugo 0.20.7" />
+  </head>
+  <body>
+
+<div class="markdown-body">
+<header>
+<a href="/">ばうあーろぐ TOP へ戻る</a>
+</header>
+
+
+<div class="maincontents">
+
+<h1>vagrant global-status の代替方法、あるいは jq コマンドの使い方</h1>
+
+<div class="poststatus">
+  <p>  <time datetime="2016/08/19">2016/08/19</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/jq/">jq</a></li>
+  </ul>
+</div>
+
+
+
+
+<p>VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。</p>
+
+<p>tmux の <code>set-option -g status-right</code> で指定できるスクリプトは
+一定間隔で常に呼ばれるような仕組みなのですが、
+（更新間隔は set-option -g status-interval で設定可能）
+あまり間隔を空けすぎると確認しづらくなってしまうので 5 秒くらいに指定しています。</p>
+
+<p>このスクリプト内で Vagrant 経由で起動している VM 名と Docker サービスが立ち上がっているかどうかを
+集約して表示しているのですが、
+この中で <strong><code>vagrant global-status</code> を呼ぶコストが意外にも高い</strong> ことに今更ながらに気づきました。
+（たぶんディレクトリツリーを全走査とかしてるんですかね・・・？）</p>
+
+<p>top とか ps とかで詳しく調べてみるとすげー CPU を使ってたっぽかったので、
+（5 秒間隔で常に動作してるわけじゃなかったので気づかずにスルーしてました）
+これはなんとかしなくてはと思い、代替方法を検討しました。</p>
+
+<h2 id="vagrant-d-内の設定ファイル">~/vagrant.d 内の設定ファイル</h2>
+
+<p>後の Vagrant のバージョンアップで変わるかもしれませんが、
+以下の場所に仮想マシンの一覧情報がまとめられていて、
+Vagrant の仮想マシンのステータスが変更されるたびにこのファイルが更新されます。</p>
+
+<pre><code>~/.vagrant.d/data/machine-index/index
+</code></pre>
+
+<p>こちらはただのテキストファイルなので、
+5 秒間隔で tmux から重いコマンドを実行するよりは、
+こちらの設定ファイルを読みにいった方がはるかに軽いです。</p>
+
+<p>ただ、こちらのファイルは JSON ファイルを圧縮したようなファイルになっているので、
+こちらを（あまりコストかけずに）さくっとフィルタリングして
+必要な情報だけ抜き出したいですね。</p>
+
+<h2 id="jq-は-json-ファイルをフィルタリングするコマンド">jq は JSON ファイルをフィルタリングするコマンド</h2>
+
+<p><a href="https://stedolan.github.io/jq/" target="_blank">https://stedolan.github.io/jq/</a></p>
+
+<p>ずいぶん前から簡易的に利用してはいたのですが、
+JSON ファイルから必要な情報をフィルタリングなどするコマンドとして
+<strong>jq コマンド</strong> というのがあります。</p>
+
+<p>これは jq コマンドを使うところだ！と思い、
+この Vagrant の設定ファイルから必要な情報を jq コマンドを使って抜き出してみました。</p>
+
+<pre><code>{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}
+</code></pre>
+
+<p>ちょっと固有パス、ID などは修正してますが、だいたいこんな感じで入っています。</p>
+
+<p>ここから、machines オブジェクト内に入っているものを抜き出したいので、
+<code>jq &quot;.machines&quot;</code> でパイプをつなげてやることで、フィルタリングされた出力結果が出ます。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines&quot;
+{
+  &quot;aaabbbccc&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;alpha&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;poweroff&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;bento/centos-7.2&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;2.2.7&quot;
+      }
+    }
+  },
+  &quot;dddeeefff&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;bravo&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;running&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;0&quot;
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>さらに、1つずつのオブジェクトごとに分けつつ、name と state だけ配列形式にして引っこ抜きます。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines | .[] | [.name, .state]&quot;
+[
+  &quot;alpha&quot;,
+  &quot;poweroff&quot;
+]
+[
+  &quot;bravo&quot;,
+  &quot;running&quot;
+]
+</code></pre>
+
+<p>これを半角スペースでつないで1行ごとに出力したかったので、[] で囲んで join で繋ぎ直しました。</p>
+
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;[ .machines | .[] | [.name, .state] | join(\&quot; \&quot;) ] | join(\&quot;\n\&quot;)&quot;
+&quot;alpha poweroff\nbravo running&quot;
+</code></pre>
+
+<p>これで目的の文字列になったので、running がある行だけ簡易的に引っこ抜いて tmux に表示すれば OK です。</p>
+
+<p>jq のマニュアルページには色々な機能が載っていますが、
+実際に使うのはそこまで多くないんじゃないかなーという印象です。
+正直見ながらじゃないと使えないです・・・。</p>
+
+<p><a href="https://stedolan.github.io/jq/manual/" target="_blank">https://stedolan.github.io/jq/manual/</a></p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>そのまま <code>vagrant global-status</code> を使っていたころよりも圧倒的に軽くなり、
+排熱もほとんどなくなりました。
+（もしかして最近の排熱の主因はほぼこれだったんじゃあ・・・）</p>
+
+<p>jq コマンドは、こういった使い方以外にも外部の API を直接叩いてそのまま jq コマンドに通して使う、
+といった使い方も多いので、もう少しさらっと使いこなせるようになりたいですね。</p>
+
+
+<ul class="socialbuttons">
+  <li class="flow">
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li class="flow">
+    <div class="fb-like" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+  </li>
+  <li class="flow">
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p>  <time datetime="2016/08/19">2016/08/19</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li class="flow"><a href="/tags/vagrant/">Vagrant</a></li>
+    <li class="flow"><a href="/tags/jq/">jq</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
+
+
+</div>
+
+<footer>
+
+<h2>Tags</h2>
+
+<ul class="tags">
+  <li class="flow">
+    <a href="/tags/angular">Angular (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ansible">Ansible (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apache">Apache (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/apps">Apps (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cli">CLI (10)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css">CSS (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/css3">CSS3 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cssfilter">CSSfilter (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/canvas">Canvas (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/chef">Chef (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/cordova">Cordova (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/crawler">Crawler (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/dom">DOM (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/docker">Docker (9)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ecmascript">ECMAScript (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/english">English (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ftp">FTP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/firebase">Firebase (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/font">Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/functionallanguage">FunctionalLanguage (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/glsl">GLSL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/git">Git (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/golang">Golang (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/googleappengine">GoogleAppEngine (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html">HTML (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5">HTML5 (7)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/html5-outline">HTML5-outline (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/homebrew">Homebrew (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/hugo">Hugo (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/icon-font">Icon-Font (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/javascript">JavaScript (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/linux">Linux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mvc">MVC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mongodb">MongoDB (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/opengraph">OpenGraph (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/php">PHP (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/python">Python (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rdfa">RDFa (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ssh">SSH (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/svg">SVG (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/scala">Scala (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/shellscript">ShellScript (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/smartphone">Smartphone (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/static-site-generator">Static Site Generator (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vagrant">Vagrant (15)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vim">Vim (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualbox">VirtualBox (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">Virtualization (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webapp">WebApp (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webaudioapi">WebAudioAPI (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webfont">WebFont (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webgl">WebGL (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webrtc">WebRTC (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/webserver">WebServer (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/yeoman">Yeoman (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/zsh">Zsh (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ajax">ajax (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/anyenv">anyenv (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/auth">auth (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/automation">automation (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bot">bot (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/bugs">bugs (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/event-conference">event-conference (5)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/getusermedia">getUserMedia (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/gitconfig">gitconfig (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ios">iOS (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/iterm">iTerm (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/ionic">ionic (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jquery">jQuery (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jinja2">jinja2 (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jq">jq (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/jsperf">jsperf (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/lint">lint (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/mediaquery">mediaQuery (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/namespace">namespace (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/naming">naming (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/oldie">oldIE (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/output">output (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/polyfills">polyfills (4)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/preloader">preloader (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/rsync">rsync (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/slack">slack (1)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/tmux">tmux (3)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/viewport">viewport (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/vimrc">vimrc (2)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/virtualization">virtualization (6)</a>
+  </li>
+  <li class="flow">
+    <a href="/tags/wget">wget (1)</a>
+  </li>
+</ul>
+
+<h2>Categories</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/">Category / Tech</a>
+  </li>
+  <li>
+    <a href="/categories/twentyfour/">Category / TwentyFour</a>
+  </li>
+</ul>
+
+<h2>RSS</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/index.xml" target="_blank">RSS: Category / Tech</a>
+  </li>
+  <li>
+    <a href="/index.xml" target="_blank">RSS: All articles</a>
+  </li>
+</ul>
+
+<hr>
+
+<ul>
+  <li>このブログは個人の見解であり、所属する組織の公式見解ではありません</li>
+  <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+</ul>
+<p>&copy; ばうあーろぐ Generated by <a href="https://gohugo.io/" target="_blank">Hugo</a> and <a href="https://github.com/sindresorhus/github-markdown-css" target="_blank">github-markdown-css</a></p>
+
+</footer>
+
+</div>
+
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36767095-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.6&appId=396423247105258";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+  </body>
+</html>
+
