@@ -1,4 +1,4 @@
-  <time datetime="{{ .Date.Format "2006/01/02" | safeHTML }}">{{ .Date.Format "2006/01/02" | safeHTML }}</time>
-{{- if not (eq (.Lastmod.Format "200601") (.Date.Format "200601")) }}
-  / lastmod: <time datetime="{{ .Lastmod.Format "2006/01/02" | safeHTML }}">{{ .Lastmod.Format "2006/01/02" | safeHTML }}</time>
+  <time datetime="{{ dateFormat "2006-01-02 15:04:05" .Date.Local }}">{{ dateFormat "2006/01/02" .Date.Local }}</time>
+{{- if not (eq (.Lastmod.Local.Format "200601") (.Date.Local.Format "200601")) }}
+  / lastmod: <time datetime="{{ dateFormat "2006-01-02 15:04:05" .Lastmod.Local }}">{{ dateFormat "2006/01/02" .Lastmod.Local }}</time>
 {{- end }}
