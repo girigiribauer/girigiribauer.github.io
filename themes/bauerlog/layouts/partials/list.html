@@ -1,10 +1,14 @@
+<ul class="article-list">
 {{- range .Paginator.Pages }}
 {{- if eq .Type "archives" }}
-  <h2 class="archive-title">{{ partial "datetime.html" . }} - <a href="{{ .Permalink }}">{{ .Title }}</a></h2>
-  <ul class="tags">
+  <li>
+    <h2 class="heading-archive">{{ partial "datetime.html" . }} <br> <a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+    <ul class="tags">
 {{- range .Params.tags }}
-    <li class="flow"><a href="/tags/{{ . | urlize }}/">{{ . }}</a></li>
+      <li><a href="/tags/{{ . | urlize }}/"><i class="fas fa-tag"></i>{{ . }}</a></li>
 {{- end }}
-  </ul>
+    </ul>
+  </li>
 {{- end }}
 {{- end }}
+</ul>

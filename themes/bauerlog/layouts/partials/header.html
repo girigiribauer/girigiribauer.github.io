@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="/css/github-markdown.css" type="text/css" media="all">
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ .Site.BaseURL }}index.xml">
 {{- if eq .URL "/" }}
     <title>{{ .Title }}</title>
@@ -29,10 +29,10 @@
   </head>
   <body>
 
-<div class="markdown-body">
+<div class="container">
 
 {{- if not (eq .URL "/") }}
-<header>
+<header class="globalheader">
 <a href="/">{{ .Site.Title }} TOP へ戻る</a>
 </header>
 {{- end }}
