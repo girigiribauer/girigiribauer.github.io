@@ -27,7 +27,8 @@ body {
   margin: 0 0 3rem 0;
 }
 .maincontents {
-  max-width: 980px;
+  max-width: 70vw;
+  min-width: 300px;
   min-height: 200px;
   box-sizing: border-box;
   margin: 0 auto;
@@ -43,7 +44,8 @@ body {
   margin: 0 0 2rem 0;
 }
 .globalfooter {
-  max-width: 980px;
+  max-width: 70vw;
+  min-width: 300px;
   margin: 0 auto;
 }
 
@@ -73,17 +75,17 @@ h3 {
   font-size: 1.25rem;
 }
 h4 {
-  margin: 2rem 0 1.5rem 0;
-  font-size: 1rem;
+  margin: 2.5rem 0 1.25rem 0;
+  font-size: 1.125rem;
 }
 h5 {
   margin: 2rem 0 1.5rem 0;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 h6 {
   margin: 2rem 0 1.5rem 0;
   color: #777;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 .heading-single {
   margin: 0 0 1rem 0;
@@ -181,9 +183,6 @@ code {
   color: #e43232;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 1rem;
-  word-break: normal;
-  white-space: pre;
-  word-wrap: normal;
 }
 code::before,
 code::after {
@@ -194,6 +193,10 @@ pre > code {
   background: transparent;
   color: inherit;
   font-size: 0.75rem;
+  word-break: normal;
+  white-space: pre;
+  word-wrap: normal;
+  tab-size: 2;
 }
 pre {
   margin: 0 0 2rem 0;

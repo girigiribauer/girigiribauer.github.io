@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://girigiribauer.com/archives/20190212/</loc>
+    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/archives/20180503/</loc>
     <lastmod>2018-05-03T07:00:00+09:00</lastmod>
   </url>
@@ -580,7 +585,7 @@
   
   <url>
     <loc>http://girigiribauer.com/archives/</loc>
-    <lastmod>2018-05-03T07:00:00+09:00</lastmod>
+    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -610,7 +615,7 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/cli/</loc>
-    <lastmod>2017-02-08T18:10:11+09:00</lastmod>
+    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -987,19 +992,25 @@
   
   <url>
     <loc>http://girigiribauer.com/categories/tech/</loc>
-    <lastmod>2018-05-03T07:00:00+09:00</lastmod>
+    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://girigiribauer.com/tags/tmux/</loc>
-    <lastmod>2017-01-22T18:11:19+09:00</lastmod>
+    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://girigiribauer.com/categories/twentyfour/</loc>
     <lastmod>2012-12-24T15:08:58+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/vscode/</loc>
+    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -1017,7 +1028,7 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/vim/</loc>
-    <lastmod>2017-02-17T00:16:01+09:00</lastmod>
+    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -1101,7 +1112,7 @@
   
   <url>
     <loc>http://girigiribauer.com/</loc>
-    <lastmod>2018-05-03T07:00:00+09:00</lastmod>
+    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   

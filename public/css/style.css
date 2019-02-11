@@ -27,7 +27,8 @@ body {
   margin: 0 0 3rem 0;
 }
 .maincontents {
-  max-width: 980px;
+  max-width: 70vw;
+  min-width: 300px;
   min-height: 200px;
   box-sizing: border-box;
   margin: 0 auto;
@@ -43,7 +44,8 @@ body {
   margin: 0 0 2rem 0;
 }
 .globalfooter {
-  max-width: 980px;
+  max-width: 70vw;
+  min-width: 300px;
   margin: 0 auto;
 }
 
@@ -73,17 +75,17 @@ h3 {
   font-size: 1.25rem;
 }
 h4 {
-  margin: 2rem 0 1.5rem 0;
-  font-size: 1rem;
+  margin: 2.5rem 0 1.25rem 0;
+  font-size: 1.125rem;
 }
 h5 {
   margin: 2rem 0 1.5rem 0;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 h6 {
   margin: 2rem 0 1.5rem 0;
   color: #777;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 .heading-single {
   margin: 0 0 1rem 0;
@@ -102,9 +104,8 @@ h6 {
  */
 ul,
 ol {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  padding-left: 2rem;
+  margin: 0 0 2rem 0;
+  padding-left: 2.5rem;
 }
 ol ol,
 ul ol {
@@ -122,7 +123,7 @@ li {
   margin-bottom: 0.5rem;
 }
 dl {
-  margin: 0 0 1.25rem 0;
+  margin: 0 0 1.5rem 0;
   padding: 0;
 }
 dt {
@@ -135,7 +136,7 @@ dt {
 dd {
   margin-left: 0;
   padding: 0;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 /**
@@ -182,9 +183,6 @@ code {
   color: #e43232;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 1rem;
-  word-break: normal;
-  white-space: pre;
-  word-wrap: normal;
 }
 code::before,
 code::after {
@@ -195,6 +193,10 @@ pre > code {
   background: transparent;
   color: inherit;
   font-size: 0.75rem;
+  word-break: normal;
+  white-space: pre;
+  word-wrap: normal;
+  tab-size: 2;
 }
 pre {
   margin: 0 0 2rem 0;
@@ -222,7 +224,7 @@ kbd {
  * blockquote
  */
 blockquote {
-  margin: 0 0 1.25rem 0;
+  margin: 0 0 2rem 0;
   padding: 0.5rem 1rem;
   background-color: #f9f9f9;
   border-left: 0.25em solid #c9c9c9;
@@ -293,8 +295,7 @@ table {
   width: 100%;
   display: block;
   overflow: auto;
-  margin-top: 0;
-  margin-bottom: 2rem;
+  margin: 0 0 2rem 0;
   border-spacing: 0;
   border-collapse: collapse;
 }
