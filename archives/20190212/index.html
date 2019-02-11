@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://girigiribauer.com/index.xml">
+    <title>Vim から VS Code へ覚悟を持って移行する - ばうあーろぐ</title>
+    <meta property="og:title" content="Vim から VS Code へ覚悟を持って移行する - ばうあーろぐ">
+    <meta property="og:type" content="article">
+    <meta name="description" content="Vim から VS Code へ覚悟を持って移行する・・・！ 前提 Vim と言いつつも、非 Vimmer が読んでも最低限分かる配慮はする 普段から Vim を使っているが、 そろそろちゃんとし">
+    <meta property="og:description" content="Vim から VS Code へ覚悟を持って移行する・・・！ 前提 Vim と言いつつも、非 Vimmer が読んでも最低限分かる配慮はする 普段から Vim を使っているが、 そろそろちゃんとし">
+    <meta property="og:url" content="http://girigiribauer.com/archives/20190212/">
+    <meta property="fb:app_id" content="396423247105258">
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="generator" content="Hugo 0.46" />
+  </head>
+  <body>
+
+<div class="container">
+<header class="globalheader">
+<a href="/">ばうあーろぐ TOP へ戻る</a>
+</header>
+
+
+<div class="maincontents">
+    <h1 class="heading-single">Vim から VS Code へ覚悟を持って移行する</h1>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2019-02-12 08:00:00">2019/02/12</time>
+</p>
+
+  <ul class="tags">
+    <li><a href="/tags/vim/"><i class="fas fa-tag"></i>Vim</a></li>
+    <li><a href="/tags/vscode/"><i class="fas fa-tag"></i>VSCode</a></li>
+    <li><a href="/tags/tmux/"><i class="fas fa-tag"></i>tmux</a></li>
+    <li><a href="/tags/cli/"><i class="fas fa-tag"></i>CLI</a></li>
+  </ul>
+</div>
+
+<div class="article">
+
+
+<p><strong>Vim から VS Code へ覚悟を持って移行する・・・！</strong></p>
+
+<h2 id="前提">前提</h2>
+
+<ul>
+<li>Vim と言いつつも、非 Vimmer が読んでも最低限分かる配慮はする</li>
+<li>普段から Vim を使っているが、 <strong>そろそろちゃんとしたレールに乗らねば</strong> と思っている</li>
+<li><strong>プラグインのアップデートに自分が追いつけなくなりつつある</strong></li>
+<li>mouse / trackpad を使ったら負け</li>
+</ul>
+
+<h2 id="移行前に知るべきこと">移行前に知るべきこと</h2>
+
+<p>そもそも VS Code をもっと知らないといけない。
+VS Code の基本的な知識が足りないので以下を押さえます。</p>
+
+<ul>
+<li><strong>公式はとりあえず全部読む</strong>
+
+<ul>
+<li><a href="https://code.visualstudio.com/docs" target="_blank">https://code.visualstudio.com/docs</a></li>
+</ul></li>
+<li>左上 <strong>Explorer, Search, VCS/Git, Debug, Extensions</strong> の5つがメイン機能</li>
+<li>それ以外の便利機能、エラー表示、ターミナル表示、コマンドパレット（vscode 上のコマンド）がある</li>
+<li>コマンドパレットから <code>shell command</code> で探すと、 <code>code</code> コマンドのインストールができる
+
+<ul>
+<li>CLI からは <code>code .</code> という立ち上げ方が一般的</li>
+</ul></li>
+<li>プロジェクトごとの設定は、 <code>.vscode</code> ディレクトリが生成されて、その中に設定ファイルが置かれる</li>
+</ul>
+
+<h3 id="explorer">Explorer</h3>
+
+<p>Explorer は今のディレクトリ配下のファイルをツリー形式で表示してくれます。
+<code>Shift + Command + E</code> で開くことができます。</p>
+
+<ul>
+<li>別で Quick Open の仕組みが用意されている、 <code>Command + P</code> でファイル名入力
+
+<ul>
+<li><a href="https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation" target="_blank">https://code.visualstudio.com/docs/editor/editingevolved#_quick-file-navigation</a></li>
+</ul></li>
+</ul>
+
+<h3 id="search">Search</h3>
+
+<p>Search は現在のディレクトリ配下を基準にして、横断的にファイル検索をしてくれます。
+<code>Shift + Command + F</code> で開くことができます。</p>
+
+<ul>
+<li>検索に引っかかったファイル、場所をそれぞれ出してくれる</li>
+</ul>
+
+<h3 id="vcs-git">VCS/Git</h3>
+
+<p>VS Code 上では SCM (Source Control Manager?) となっているようですが、
+VCS/Git (Version Control System / Git) は Git を始めとしたバージョン管理ツールが利用できます。
+<code>Shift + Control + G</code> で開くことができます。</p>
+
+<ul>
+<li>変更されたファイルのリストが表示され、コミットメッセージを書いてそのまま <code>commit</code> できる</li>
+<li><code>Shift + Command + G</code> ではない、 <code>find/grep</code> に割り当てられている模様</li>
+<li>これとは別に、コマンドパレットに Git コマンドが統合されており、左メニューから add, commit などが可能</li>
+</ul>
+
+<h3 id="debug">Debug</h3>
+
+<p>Debug はエディタ上でデバッグ実行したり、外部のデバッグツールと連携して実行してくれたりします。
+<code>Shift + Command + D</code> で開くことができます。</p>
+
+<ul>
+<li>ステップ実行やブレークポイントを設定できたりする</li>
+<li><code>.vscode/launch.json</code> を編集することで Debug のカスタマイズが可能
+-</li>
+</ul>
+
+<h3 id="extensions">Extensions</h3>
+
+<p>Extensions は VS Code が提供している拡張機能をインストールなどすることができます。
+<code>Shift + Command + X</code> で開くことができますが、そんなに頻繁にやる行為じゃないので覚えなくてもいいかも。</p>
+
+<h3 id="problems-panel">PROBLEMS Panel</h3>
+
+<p>PROBLEMS Panel はエラー表示や警告表示をしてくれます。
+<code>Shift + Command + M</code> で開くことができます。</p>
+
+<ul>
+<li>PROBLEMS や TERMINAL を始めとした Panel は、同じショートカットを2回入力すると、再び閉じた状態となる</li>
+<li><a href="https://code.visualstudio.com/docs/editor/editingevolved#_errors-warnings" target="_blank">https://code.visualstudio.com/docs/editor/editingevolved#_errors-warnings</a></li>
+</ul>
+
+<h3 id="output-panel">OUTPUT Panel</h3>
+
+<p>実行時の出力などの表示をしてくれます。
+<code>Shift + Command + U</code> で開くことができます。</p>
+
+<h3 id="debug-console-panel">DEBUG CONSOLE Panel</h3>
+
+<p>デバッグ用のコンソール表示をしてくれます。
+<code>Shift + Command + Y</code> で開くことができますが、自分で開かなくても良いかもしれません。</p>
+
+<h3 id="terminal-panel">TERMINAL Panel</h3>
+
+<p>ターミナル表示をしてくれます。
+<code>Control + `</code> で開くことができます。</p>
+
+<ul>
+<li>既存のターミナルウィンドウと統合されている</li>
+<li><code>code [filename]</code> で VS Code でファイル開いてみたら、見事に別ウィンドウで VS Code が立ち上がった</li>
+</ul>
+
+<h3 id="command-palette">Command Palette</h3>
+
+<p>コマンドパレット を開いて、 VS Code 上の様々な機能を呼び出せます。かなりよく使いそうです。
+<code>Shift + Command + P</code> で開くことができます。</p>
+
+<ul>
+<li>コマンドパレットから色々設定可能
+
+<ul>
+<li>ショートカットキーの設定 (Open Keyboard Shortcuts)</li>
+<li>個人設定 (Open User Settings)</li>
+<li>言語ごとの設定 (Configure language specific settings)</li>
+</ul></li>
+</ul>
+
+<h3 id="その他補完など">その他補完など</h3>
+
+<ul>
+<li>Emmet: HTML を展開できるやつ
+
+<ul>
+<li><code>Tab</code></li>
+</ul></li>
+<li>IntelliSense: 賢く補完してくれる、 Vim でいう Omni 補完的なやつ
+
+<ul>
+<li><code>Control + Space</code></li>
+</ul></li>
+<li>Rename Refactoring: まとめて名前を置き換えてくれるやつ
+
+<ul>
+<li><code>F2</code></li>
+<li><a href="https://code.visualstudio.com/docs/editor/refactoring#_rename-symbol" target="_blank">https://code.visualstudio.com/docs/editor/refactoring#_rename-symbol</a></li>
+</ul></li>
+</ul>
+
+<h2 id="移行リスト">移行リスト</h2>
+
+<p>ようやく目次。</p>
+
+<ul>
+<li>全体的に Vim にする</li>
+<li>コロン (<code>:</code>) とセミコロン (<code>;</code>) 入れ替える</li>
+<li>yank (copy), paste でシームレスにコピペ</li>
+<li>relativenumber</li>
+<li>ノーマルモードで <code>enter</code> を押すと改行される</li>
+<li>行末、行頭の間をスムーズに移動できる</li>
+<li>行末の余分な space なんとかする</li>
+<li>tab / space の適切な表示</li>
+<li>単語単位の移動に対する適切な区切り</li>
+<li>mouse / trackpad を触らない移動</li>
+</ul>
+
+<p>ここから先は、各項目でそれぞれ設定ができるように見ていきます。</p>
+
+<h3 id="全体的に-vim-にする">全体的に Vim にする</h3>
+
+<p>一通り知ったところで、以下の拡張機能をインストールしていきます。
+<strong>これがないと息ができない</strong> ので入れます。</p>
+
+<ul>
+<li>Vim emulator for Visual Studio Code
+
+<ul>
+<li><a href="https://github.com/VSCodeVim/Vim" target="_blank">https://github.com/VSCodeVim/Vim</a></li>
+</ul></li>
+</ul>
+
+<p>インストールすると以下がすでに使えるらしいです。 <strong>すごい。</strong></p>
+
+<ul>
+<li>vim-airline
+
+<ul>
+<li>入力モードでステータスバーの色を変えられるやつ</li>
+<li><a href="https://github.com/vim-airline/vim-airline" target="_blank">https://github.com/vim-airline/vim-airline</a></li>
+</ul></li>
+<li>vim-easymotion
+
+<ul>
+<li>画面内の特定箇所に瞬時にジャンプするやつ</li>
+<li>キーの移動先にインデックスをつけてくれるので、それが表示されたらそのキーを押す仕組み</li>
+<li><a href="https://github.com/easymotion/vim-easymotion" target="_blank">https://github.com/easymotion/vim-easymotion</a></li>
+</ul></li>
+<li>vim-surround
+
+<ul>
+<li>囲む部分をさっと入力したり囲んでる部分だけを削除したり</li>
+<li>超使ってるのでありがたい</li>
+<li><a href="https://github.com/tpope/vim-surround" target="_blank">https://github.com/tpope/vim-surround</a></li>
+</ul></li>
+<li>vim-commentary
+
+<ul>
+<li>コメントがさっと指定できるやつ</li>
+<li><a href="https://github.com/tpope/vim-commentary" target="_blank">https://github.com/tpope/vim-commentary</a></li>
+</ul></li>
+<li>vim-indent-object
+
+<ul>
+<li>vim-surround で囲みづらい Python や Markdown のリストインデントなどで役立つ</li>
+<li>1段下のインデント上で <code>vai</code> を押すと、1〜2段目のリストが選択できる</li>
+<li><a href="https://github.com/michaeljsmith/vim-indent-object" target="_blank">https://github.com/michaeljsmith/vim-indent-object</a></li>
+</ul></li>
+<li>vim-sneak
+
+<ul>
+<li>easymotion に近いが、 prefix の後に続けて2文字を指定して <code>;</code> や <code>,</code> で次々に探していくやつ</li>
+<li><a href="https://github.com/justinmk/vim-sneak" target="_blank">https://github.com/justinmk/vim-sneak</a></li>
+</ul></li>
+</ul>
+
+<h2 id="コロン-とセミコロン-入れ替える">コロン (<code>:</code>) とセミコロン (<code>;</code>) 入れ替える</h2>
+
+<p>まずこれは、 US キーボード配列の Vimmer だったら分かると思うのですが、
+US キーボード配列だと、コロン (<code>:</code>) とセミコロン (<code>;</code>) は同じ位置にあって、
+保存など Vim のコマンドを入力するときは <code>:wq</code> という形で高頻度でコロンを入力します。</p>
+
+<p><code>Command + S</code> も使える環境ではあるのですが、 Vim にも VS Code にも両方ある機能は、
+Vim のキーバインドでさくっと呼び出せるように設定していきたいです。</p>
+
+<p>長くなりましたが以下。</p>
+
+<ul>
+<li>エディタ上常に入れ替えたいわけではない、 VS Code の責務ではなく、 VSCodeVim の責務</li>
+<li>入力モードのときはコロンのまま、それ以外のコマンド入力するときはコロン・セミコロンを入れ替える</li>
+<li>vim-sneak などでコマンドモード時に <code>;</code> を入力するものは、代わりに <code>:</code> を入力できる</li>
+</ul>
+
+<h3 id="解決法-個人設定ファイルである-settings-json-に設定追記する">解決法: 個人設定ファイルである <code>settings.json</code> に設定追記する</h3>
+
+<p>Extension の設定ではあるものの、追記すべきなのは個人設定ファイルに対してでした。</p>
+
+<p><code>Shift + Command + P</code> で Command Palette を開き、
+<code>open settings</code> と入力して <code>Preferences: Open Settings (JSON)</code> と表示されている項目を選ぶと、
+勝手に <code>settings.json</code> ファイルが開かれます。</p>
+
+<p>ちなみに手動だと MacOS では <code>$HOME/Library/Application Support/Code/User/settings.json</code> にあるようです。</p>
+
+<pre><code>&quot;vim.normalModeKeyBindingsNonRecursive&quot;: [
+	{
+		&quot;before&quot;: [
+			&quot;;&quot;
+		],
+		&quot;after&quot;: [
+			&quot;:&quot;
+		]
+	},
+	{
+		&quot;before&quot;: [
+			&quot;:&quot;
+		],
+		&quot;after&quot;: [
+			&quot;;&quot;
+		]
+	}
+],
+&quot;vim.visualModeKeyBindingsNonRecursive&quot;: [
+	{
+		&quot;before&quot;: [
+			&quot;;&quot;
+		],
+		&quot;after&quot;: [
+			&quot;:&quot;
+		]
+	},
+	{
+		&quot;before&quot;: [
+			&quot;:&quot;
+		],
+		&quot;after&quot;: [
+			&quot;;&quot;
+		]
+	}
+	],
+</code></pre>
+
+<p><code>&quot;vim.normalModeKeyBindingsNonRecursive&quot;</code> とあるように、
+<code>vim.</code> という prefix をつけることで、 VSCodeVim の拡張機能から読み取って使うようです。</p>
+
+<p>上記のようにコロン、セミコロンを入れ替える設定を追記していきます。</p>
+
+<p>ちなみに <code>&quot;vim.normalModeKeyBindings&quot;</code>, <code>&quot;vim.visualModeKeyBindings&quot;</code> という設定も別にあって、
+こちらは上書きしてつぶしてしまうので、セミコロンをコロンにしたあと、コロンをセミコロンにすると、
+片方が潰れて使えなくなります。ご注意ください。</p>
+
+<h2 id="yank-copy-paste-でシームレスにコピペ">yank (copy), paste でシームレスにコピペ</h2>
+
+<p>厳密に言えば Vim ではないので、もう yank とは言わないのですが、
+<strong>copy のアクションが y に割り振ってあって yank と呼ぶ</strong> というのは、
+Vim 界隈では超有名な話です。</p>
+
+<p>この yank / paste とは別に、 <code>Command + C</code>, <code>Command + V</code> の通常のコピペも存在しており、
+これらは最初の状態では別物扱いされてます。
+これを解消します。</p>
+
+<ul>
+<li>yank して別アプリケーションにペーストできる</li>
+<li>別アプリケーションでコピーしたものを paste できる</li>
+</ul>
+
+<h3 id="解決法-個人設定ファイルである-settings-json-に設定追記する-1">解決法: 個人設定ファイルである <code>settings.json</code> に設定追記する</h3>
+
+<p>これも Extension の設定ではあるものの、追記すべきなのは個人設定ファイルです。</p>
+
+<p>これも <code>Shift + Command + P</code> で Command Palette を開き、
+<code>open settings</code> と入力して <code>Preferences: Open Settings (JSON)</code> を選ぶか、
+あるいは <code>Preferences: Open User Settings</code> を選んで GUI で設定するかのどちらかです。</p>
+
+<p><code>settings.json</code> を直接編集する場合は以下を追記します。</p>
+
+<pre><code>&quot;vim.useSystemClipboard&quot;: true
+</code></pre>
+
+<p>GUI からやりたい場合は、 <code>Vim: Use System Clipboard</code> という項目を探してチェックを入れます。
+上にインクリメンタルサーチ用のテキストボックスがあるので、適当に vim とか clipboard とか入れると良いです。</p>
+
+<h2 id="relativenumber">relativenumber</h2>
+
+<p>Vim には <code>set number</code> という設定項目があって、行番号を表示するかしないかが設定できるのですが、
+さらに <code>set relativenumber</code> という設定項目だと、行番号を相対的に表示してくれます。</p>
+
+<p>相対的に表示すると何が良いかというと、
+<strong>何行上に移動したいかが瞬時に数値として分かるので、行きたい行に一瞬で移動できる</strong> ことが大きなメリットです！</p>
+
+<p><a href="https://girigiribauer.com/archives/631/" target="_blank">Vimのset relativenumberで、あの子のハートを狙い撃ち！ - ばうあーろぐ</a></p>
+
+<p>これは欲しい！というか慣れていて使えなくなるとストレスでしかないので、正しく設定しておきたいところ！</p>
+
+<h3 id="解決法-vs-code-の設定を変更する">解決法: VS Code の設定を変更する</h3>
+
+<p>これはもうすでに VSCodeVim の拡張機能レベルの話ではなく、大元のエディタの VS Code が用意してくれてました。</p>
+
+<p>以下のいずれかです。</p>
+
+<ul>
+<li><code>settings.json</code> を開き、 <code>&quot;editor.lineNumbers&quot;: &quot;relative&quot;</code> を追記する</li>
+<li>GUI の <code>Preferences: Open User Settings</code> を開き、 <code>Editor: Line Numbers</code> の項目を <code>relative</code> にする</li>
+</ul>
+
+<h2 id="ノーマルモードで-enter-を押すと改行される">ノーマルモードで <code>enter</code> を押すと改行される</h2>
+
+<p>Vim では、ノーマルモードでも改行だけしたいときに、
+<code>enter</code> キーを押すだけで改行だけ挿入できるようにしていました。</p>
+
+<p>Vim の設定でいうとこんな感じです。</p>
+
+<pre><code>nnoremap &lt;CR&gt; o&lt;ESC&gt;
+</code></pre>
+
+<p>もしかすると、ノーマルモードの <code>enter</code> に別の意味を持たせる可能性も今後あるのですが、
+一旦前のままノーマルモードでそのまま改行が入るようにしてみます。</p>
+
+<h3 id="解決法-個人設定ファイルである-settings-json-に設定追記する-2">解決法: 個人設定ファイルである <code>settings.json</code> に設定追記する</h3>
+
+<p>コロン、セミコロンの入れ替えと同様の解決法なのですが、
+<code>after</code> の代わりに <code>command</code> 実行が行えるので、それを活用して改行を挿入してみます。</p>
+
+<pre><code>&quot;vim.normalModeKeyBindingsNonRecursive&quot;: [
+	{
+		&quot;before&quot;: [
+			&quot;&lt;Enter&gt;&quot;
+		],
+		&quot;commands&quot;: [
+			&quot;editor.action.insertLineAfter&quot;
+		]
+	}
+],
+</code></pre>
+
+<p><code>&quot;editor.action.insertLineAfter&quot;</code> で改行追加できるなら、他にどんなアクションがあるか気になりますよね。
+それが以下の URL にまとめてみるので、独自にカスタマイズしたいときはこの辺参考にしてみると良いかもです。</p>
+
+<p><a href="https://code.visualstudio.com/docs/getstarted/keybindings" target="_blank">https://code.visualstudio.com/docs/getstarted/keybindings</a></p>
+
+<h2 id="行末-行頭の間をスムーズに移動できる">行末、行頭の間をスムーズに移動できる</h2>
+
+<p>Vim では、初期設定を正しくしないと以下のことができなかったりします。</p>
+
+<ul>
+<li>行末からさらに右に移動すると、次の行の先頭に移動する</li>
+<li>行頭からさらに左に移動すると、前の行の末尾に移動する</li>
+</ul>
+
+<pre><code>set whichwrap=h,l,&lt;,&gt;,[,]
+</code></pre>
+
+<p>普通のエディタでは当たり前に出来ていることなので、
+あまり意識はしないのですが、 VSCodeVim においても、ノーマルモードでは同様のことが起こります。</p>
+
+<p>なんとかしたいですね。</p>
+
+<h3 id="解決法-個人設定ファイルである-settings-json-に設定追記する-3">解決法: 個人設定ファイルである <code>settings.json</code> に設定追記する</h3>
+
+<ul>
+<li><code>settings.json</code> を開き、 <code>&quot;vim.whichwrap&quot;: &quot;h,l,&lt;,&gt;,[,]&quot;</code> などを追記する</li>
+<li>GUI の <code>Preferences: Open User Settings</code> を開き、 <code>Vim: Whichwrap</code> の項目を <code>h,l,&lt;,&gt;,[,]</code> などにする</li>
+</ul>
+
+<h2 id="行末の余分な-space-なんとかする">行末の余分な space なんとかする</h2>
+
+<p>これ、意外と無頓着な人が多くて、エディタでちゃんと表示して見えるようにするなり、自動で削除されるようにするなりして、
+自分が意図してない行末の余分な space が入らないように心がけないといけないと思うのですが、
+この辺の設定をしてみます。</p>
+
+<p>ちなみに Vim だとこんな感じにやってました。</p>
+
+<pre><code class="language-vim">&quot; highlight end of line spaces
+function! s:EOLSpaceHighlights()
+  syntax match EOLSpace &quot;\s\+$&quot; display containedin=ALL
+  highlight EOLSpace ctermfg=15 ctermbg=167 guifg=#ffffff guibg=#e74c3c
+endf
+</code></pre>
+
+<p>ちなみに markdown などは、行末の2つの空白を入れることで <code>&lt;br /&gt;</code> タグを挿入するという仕様があって、
+無条件に行末の space を消しに行ってしまうと問題が起きると思って、
+Vim 上ではハイライトするだけにしておき、自己判断で消すかどうか考える、みたいな落とし所にしてました。</p>
+
+<p><a href="https://markdown-guide.readthedocs.io/en/latest/basics.html#line-return" target="_blank">https://markdown-guide.readthedocs.io/en/latest/basics.html#line-return</a></p>
+
+<p>ちなみに上の vimrc は、末尾の space を赤っぽくハイライトするだけの設定です。</p>
+
+<h3 id="解決法-容赦無く-vs-code-で設定して削除してしまう">解決法: 容赦無く VS Code で設定して削除してしまう</h3>
+
+<p>もう Code Formatting の時代だし、エディタ側が一定フォーマットを保つっていう考え方はやって良いと思います。</p>
+
+<p>そもそも markdown の末尾に 2 spaces 入れるっていう仕様がちょっとどうかと思うし、
+表示側で markdown 読み取って文章的に改行されてたら改行入れるみたいな考え方もあるし、
+この辺はもう妥協していこうと思います。</p>
+
+<ul>
+<li><code>settings.json</code> を開いて <code>&quot;files.trimTrailingWhitespace&quot;: true</code> を追記する</li>
+<li>GUI の <code>Preferences: Open User Settings</code> から <code>Files: Trim Trailing Whitespace</code> を探してチェックいれる</li>
+</ul>
+
+<p>このどちらかをやります。</p>
+
+<p>ってことで、自動で削除されるなら、そもそもハイライトする意味もないので、 vimrc の設定はお役御免です。
+今までありがとう！</p>
+
+<h2 id="tab-space-の適切な表示">tab / space の適切な表示</h2>
+
+<p>これも無頓着な人がいるんだよなあ・・・。</p>
+
+<p>現状では、インデント表示されている部分に tab が入っているのか、 space が入っているのかが見た目で判断できません。
+この辺りの話はハードタブ（tab キー入力したら実際に tab が入力される）・ソフトタブ（tab キー入力したら space が設定された数入ってくる）みたいな話も絡んでくるのですが、
+<strong>そもそも混ざっているのにそれが表示上で認識出来ないのはダメだと思います。</strong></p>
+
+<h3 id="解決法-vs-code-の設定を変更する-1">解決法: VS Code の設定を変更する</h3>
+
+<p>これは Vim レベルの話ではなく、エディタレベルの設定の話なので、当然 VS Code 上に設定項目があります。</p>
+
+<ul>
+<li><code>settings.json</code> を開いて <code>&quot;editor.renderWhitespace&quot;: &quot;all&quot;</code> を追記する</li>
+<li>GUI の <code>Preferences: Open User Settings</code> から <code>Editor: Render Whitespace</code> を探して <code>all</code> を選ぶ</li>
+</ul>
+
+<p>これはほぼ必須の項目だと思うんだけど、なぜ default になってないんだろう。</p>
+
+<p>1文字違ったら別ファイルなのでちゃんと設定しておきます。</p>
+
+<h2 id="単語単位の移動に対する適切な区切り">単語単位の移動に対する適切な区切り</h2>
+
+<p>使ってて気づきましたが、 Vim だと <code>w</code>, <code>e</code>, <code>b</code> などの単語間の移動で漢字だけ、ひらがなだけ、全角カッコなど、
+日本語の区切りになってるところで適切に単語として移動できるのですが、
+VSCodeVim を導入しただけではそれが出来ません。</p>
+
+<p>ちなみに Vim においてはこんな意味です。</p>
+
+<ul>
+<li><code>w</code>: 次の単語の先頭にカーソル位置を移動する</li>
+<li><code>e</code>: 今の単語の最後にカーソル位置を移動する、今の位置が最後なら、次の単語</li>
+<li><code>b</code>: 前の単語の先頭にカーソル位置を移動する</li>
+</ul>
+
+<p>そもそも普通のエディタには word という概念がないので、当然っちゃあ当然なのですが、
+普通に Vim 感覚で触っていると、行きすぎてしまったりするケースが度々起こり、それなりにストレスになります。</p>
+
+<h3 id="解決法-extensions-japanese-word-handler-を入れて個人設定ファイルに追記する-ただし課題あり">解決法: Extensions: Japanese Word Handler を入れて個人設定ファイルに追記する（ただし課題あり）</h3>
+
+<p>色々試してみたけど、完全な解決は現状難しそうでした。</p>
+
+<p>まず日本語の単語単位での移動に対応した Extension が公開されていたので、
+これを入れて <code>w</code>, <code>e</code>, <code>b</code> にそれぞれ紐づければ良さそうです。</p>
+
+<p><a href="https://marketplace.visualstudio.com/items?itemName=sgryjp.japanese-word-handler" target="_blank">https://marketplace.visualstudio.com/items?itemName=sgryjp.japanese-word-handler</a></p>
+
+<p>これをインストールするだけで、以下のショートカットが有効になるようです。（すべて MacOS ）</p>
+
+<ul>
+<li><code>Option + Right</code>: 次の単語へ移動</li>
+<li><code>Option + Left</code>: 前の単語へ移動</li>
+<li><code>Shift + Option + Right</code>: 次の単語まで選択</li>
+<li><code>Shift + Option + Left</code>: 前の単語まで選択</li>
+</ul>
+
+<p>これを、 <code>w</code>, <code>b</code> と組み合わせますが、 <code>e</code> については割り当てがないようなので、擬似的に <code>w</code> と同じにしておきます。</p>
+
+<p>なお、 Extension の外から見えるコマンドについては、
+実際にソースコードを見てみると分かるのですが、
+<code>vscode.commands.registerCommand</code> の第一引数に指定してある名前がそのまま使えるようなので、
+今回で言うと <code>extension.cursorNextWordEndJa</code>, <code>extension.cursorPrevWordStartJa</code> の2つが使えそうです。</p>
+
+<p><a href="https://github.com/sgryjp/japanese-word-handler/blob/master/src/extension.ts" target="_blank">https://github.com/sgryjp/japanese-word-handler/blob/master/src/extension.ts</a></p>
+
+<p>個人設定ファイルへの割り当て方はだいたいこんな感じです。</p>
+
+<pre><code>&quot;vim.normalModeKeyBindingsNonRecursive&quot;: [
+	{
+		&quot;before&quot;: [
+			&quot;w&quot;
+		],
+		&quot;commands&quot;: [
+			&quot;extension.cursorNextWordEndJa&quot;
+		]
+	},
+	{
+		&quot;before&quot;: [
+			&quot;e&quot;
+		],
+		&quot;commands&quot;: [
+			&quot;extension.cursorNextWordEndJa&quot;
+		]
+	},
+	{
+		&quot;before&quot;: [
+			&quot;b&quot;
+		],
+		&quot;commands&quot;: [
+			&quot;extension.cursorPrevWordStartJa&quot;
+		]
+	}
+]
+</code></pre>
+
+<p>とまあ、ここまでのカスタマイズが一旦の限界っぽい感じです。</p>
+
+<p>移動に関してはこれで良いのですが、 <strong>選択に関してはもう少しカスタマイズが必要</strong> で、少し課題が残ります。</p>
+
+<h2 id="mouse-trackpad-を触らない移動">mouse / trackpad を触らない移動</h2>
+
+<p>これ、実は1つじゃなくて複数あります。</p>
+
+<ul>
+<li><strong>Editor 内移動、 Editor 間移動</strong>
+
+<ul>
+<li>VS Code 上では Tabs 、 Vim 上では tabpage とそれぞれ呼ばれている</li>
+<li><a href="https://code.visualstudio.com/docs/getstarted/userinterface#_tabs" target="_blank">https://code.visualstudio.com/docs/getstarted/userinterface#_tabs</a></li>
+<li><a href="https://code.visualstudio.com/docs/getstarted/userinterface#_editor-groups" target="_blank">https://code.visualstudio.com/docs/getstarted/userinterface#_editor-groups</a></li>
+</ul></li>
+<li><strong>Side Bar と Editor 間の移動</strong>
+
+<ul>
+<li>Explorer は Quick Open (<code>Command + P</code>) で代用できるのでいらないかもしれない・・・</li>
+<li>Git 周りは commit 以外に何ができるのかが不明、 Terminal でやっちゃえばいいのかも・・・</li>
+<li>そう考えると Search, Debug 以外ではほとんど使わない？</li>
+</ul></li>
+<li><strong>Panel と Editor 間の移動</strong>
+
+<ul>
+<li>特に Terminal との移動はスムーズにやりたい</li>
+<li>本来の責務は tmux で pane 移動がそれにあたる</li>
+</ul></li>
+</ul>
+
+<p>それぞれで移動方法を細かく設定していきます。</p>
+
+<h2 id="editor-内移動-editor-間移動">Editor 内移動、 Editor 間移動</h2>
+
+<p>まずここだけは他の人とキーバインドが異なるだろうと思って、理解した上で使っているのですが、
+Vim 上での tabpage の移動は <code>Ctrl + H</code>, <code>Ctrl + L</code> を使っていました。</p>
+
+<p><code>Ctrl + L</code> に関しては Terminal の <code>clear</code> コマンドをかぶるところはありますが、
+tabpage の左右移動はものすごくよく使うので、あえてそこは潰して使っています。
+実際 iTerm2 上で Vim が立ち上がっている状態なので、 <code>clear</code> コマンドは実質使わないんですけども。</p>
+
+<p>ちなみになぜ <code>H</code>, <code>L</code> に割り振ってあるかというと、
+Vim において <code>hjkl</code> がそれぞれ左、下、上、右を指し、左右移動は <code>hl</code> を使うのが直感的だからです。</p>
+
+<h3 id="解決法-キーマッピングの個人設定ファイルである-keybindings-json-に設定追記する">解決法: キーマッピングの個人設定ファイルである <code>keybindings.json</code> に設定追記する</h3>
+
+<p>設定の追記の話をする前に、そもそもキーマッピングの設定がどのようにされているかに触れたいと思います。</p>
+
+<pre><code>{
+	&quot;key&quot;: &quot;down&quot;,
+	&quot;command&quot;: &quot;cursorDown&quot;,
+	&quot;when&quot;: &quot;textInputFocus&quot;
+},
+</code></pre>
+
+<p>これは <code>Default Keybindings</code> の設定から抜粋したものです。</p>
+
+<ul>
+<li><code>key</code>: キーマッピングの指定</li>
+<li><code>command</code>: そのキーを押したときに何を行うか、用意されているコマンドを指定する</li>
+<li><code>when</code>: （オプション）そのキーマッピングが有効になるときの条件</li>
+</ul>
+
+<p><code>key</code> に対応する <code>command</code> を指定することで、個人のキーマッピングが追加できます。</p>
+
+<p>追加先は他のファイルと同様に CLI, GUI の2種類のやり方があります。</p>
+
+<ul>
+<li>Command Pelette から <code>Preferences: Open Keyboard Shortcuts (JSON)</code> を選び、 <code>keybindings.json</code> を開いて編集する</li>
+<li>Command Pelette から <code>Preferences: Open Keyboard Shortcuts</code> を選び、対応する項目を探し、編集する</li>
+</ul>
+
+<p>どちらでも良いのですが、キーマッピングに関して言えば、 CLI の方が若干設定しやすい感はあるのかもしれないですね。</p>
+
+<p>仮に CLI で <code>keybindings.json</code> を開いたとして、以下を追記していきます。</p>
+
+<pre><code>// Editor 内移動
+{
+	&quot;key&quot;: &quot;ctrl+h&quot;,
+	&quot;command&quot;: &quot;workbench.action.previousEditor&quot;
+},
+{
+	&quot;key&quot;: &quot;ctrl+l&quot;,
+	&quot;command&quot;: &quot;workbench.action.nextEditor&quot;
+},
+</code></pre>
+
+<p>今回は入力モードに限らず左右移動してほしいので、 VS Code のレベルで <code>keybindings.json</code> に追記しています。</p>
+
+<ul>
+<li><code>&quot;workbench.action.previousEditor&quot;</code>: 複数ある Editor の前のものを開く</li>
+<li><code>&quot;workbench.action.nextEditor&quot;</code>: 複数ある Editor の次のものを開く</li>
+</ul>
+
+<p>これ追記するだけでだいぶ違ってきますねー。
+分割してあるエディタであっても、前後の定義がされているらしく、
+<code>Ctrl + H</code>, <code>Ctrl + L</code> で貫通して前後に移動が出来ます。 <strong>素晴らしい。</strong></p>
+
+<h2 id="side-bar-と-editor-間の移動">Side Bar と Editor 間の移動</h2>
+
+<p>正直なところ、 Side Bar をどう上手く活用していったらいいのかがまだ掴めていないです・・・。</p>
+
+<ul>
+<li>File Open は <code>Command + P</code> で済みそう</li>
+<li>Git 系コマンドは TERMINAL Panel でそのまま入力すれば事足りそう</li>
+<li>Explorer 内にもいくつか他に機能があって、まだ全貌が掴めない・・・</li>
+</ul>
+
+<h3 id="一旦保留">一旦保留・・・</h3>
+
+<p>もう少し使い方慣れてからかなー？</p>
+
+<h2 id="panel-と-editor-間の移動">Panel と Editor 間の移動</h2>
+
+<p>この辺りは tmux にだいぶ近くなってくると思います。</p>
+
+<p>tmux だと、自分の好きなように window, pane 分割して、
+どれかの pane で Vim を立ち上げつつ、別の pane でビルド環境を動かしたり、
+あるいはまた別の pane で git commit したりと、それらのレイアウトを自由に変更できていました。</p>
+
+<ul>
+<li>tmux 上で Vim を大部分使っていたとしても、すぐに pane 分割して Terminal が使えるようになる</li>
+<li>要らなくなったらすぐに pane 閉じられる</li>
+</ul>
+
+<p>tmux + Vim の良いところはこの辺りだと思います。
+出来るだけこの辺りの良さを残しつつ、 VS Code のレールに乗っていければと思います。</p>
+
+<h3 id="解決法-キーマッピングの個人設定ファイルである-keybindings-json-に設定追記する-1">解決法: キーマッピングの個人設定ファイルである <code>keybindings.json</code> に設定追記する</h3>
+
+<p><code>keybindings.json</code> に以下を追加します。</p>
+
+<pre><code>// Panel と Editor 間の移動
+{
+	&quot;key&quot;: &quot;ctrl+k&quot;,
+	&quot;command&quot;: &quot;workbench.action.terminal.toggleTerminal&quot;,
+	&quot;when&quot;: &quot;editorTextFocus&quot;
+},
+{
+	&quot;key&quot;: &quot;ctrl+k&quot;,
+	&quot;command&quot;: &quot;workbench.action.focusActiveEditorGroup&quot;,
+	&quot;when&quot;: &quot;terminalFocus&quot;
+}
+</code></pre>
+
+<p>本当は tmux の prefix と同じものが割り当てられると良かったのですが、
+（個人設定で tmux の prefix key を <code>Ctrl + B</code> から <code>Ctrl + J</code> に割り当て直してある）
+どうも全く同じにするのは難しいため、気軽に上下移動しやすいであろう <code>Ctrl + K</code> を連続回押すことで、
+交互に上下移動が出来るような設定にしてみました。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>長くなったんで、一旦基本的なところはこの辺で締めたいと思います。</p>
+
+<p>このブログ記事も VS Code でだいたい書けたので、やりたいことは概ね出来ている感じですが、
+もしこの先さらに設定など溜まっていくようでしたら、別にブログ記事を書きたいと思います。</p>
+
+<h3 id="出来たこと">出来たこと</h3>
+
+<ul>
+<li>細かな Vim の操作感は再現出来た！</li>
+<li>概ねキーボードでの移動が出来た！</li>
+<li><strong>移行できた！</strong></li>
+</ul>
+
+<h3 id="これから頑張る">これから頑張る</h3>
+
+<ul>
+<li>VS Code で使えるようになった機能（主に Side Bar）の掘り下げた使い方</li>
+<li>Side Bar の中のキーマッピングが分からない問題</li>
+</ul>
+
+<h2 id="参考-url">参考 URL</h2>
+
+<ul>
+<li><a href="https://code.visualstudio.com/docs" target="_blank">https://code.visualstudio.com/docs</a></li>
+<li><a href="https://github.com/VSCodeVim/Vim" target="_blank">https://github.com/VSCodeVim/Vim</a></li>
+<li><a href="https://qiita.com/y-mattun/items/45776b7e1942edb2f727" target="_blank">https://qiita.com/y-mattun/items/45776b7e1942edb2f727</a></li>
+<li><a href="https://blog.mamansoft.net/2018/09/17/vscode-satisfies-vimmer/" target="_blank">https://blog.mamansoft.net/2018/09/17/vscode-satisfies-vimmer/</a></li>
+<li><a href="https://blog.mamansoft.net/2019/02/01/review-vscode-vim-setting/" target="_blank">https://blog.mamansoft.net/2019/02/01/review-vscode-vim-setting/</a></li>
+<li><a href="https://swfz.hatenablog.com/entry/2018/12/09/023651" target="_blank">https://swfz.hatenablog.com/entry/2018/12/09/023651</a></li>
+</ul>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2019-02-12 08:00:00">2019/02/12</time>
+</p>
+
+  <ul class="tags">
+    <li><a href="/tags/vim/"><i class="fas fa-tag"></i>Vim</a></li>
+    <li><a href="/tags/vscode/"><i class="fas fa-tag"></i>VSCode</a></li>
+    <li><a href="/tags/tmux/"><i class="fas fa-tag"></i>tmux</a></li>
+    <li><a href="/tags/cli/"><i class="fas fa-tag"></i>CLI</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
+
+</div>
+
+<footer class="globalfooter">
+
+<h2>Tags</h2>
+
+<ul class="tags">
+  <li>
+    <a href="/tags/angular"><i class="fa fa-tag"></i>Angular (1)</a>
+  </li>
+  <li>
+    <a href="/tags/ansible"><i class="fa fa-tag"></i>Ansible (5)</a>
+  </li>
+  <li>
+    <a href="/tags/apache"><i class="fa fa-tag"></i>Apache (1)</a>
+  </li>
+  <li>
+    <a href="/tags/apps"><i class="fa fa-tag"></i>Apps (1)</a>
+  </li>
+  <li>
+    <a href="/tags/cli"><i class="fa fa-tag"></i>CLI (11)</a>
+  </li>
+  <li>
+    <a href="/tags/css"><i class="fa fa-tag"></i>CSS (4)</a>
+  </li>
+  <li>
+    <a href="/tags/css3"><i class="fa fa-tag"></i>CSS3 (1)</a>
+  </li>
+  <li>
+    <a href="/tags/cssfilter"><i class="fa fa-tag"></i>CSSfilter (1)</a>
+  </li>
+  <li>
+    <a href="/tags/canvas"><i class="fa fa-tag"></i>Canvas (1)</a>
+  </li>
+  <li>
+    <a href="/tags/chef"><i class="fa fa-tag"></i>Chef (9)</a>
+  </li>
+  <li>
+    <a href="/tags/cordova"><i class="fa fa-tag"></i>Cordova (1)</a>
+  </li>
+  <li>
+    <a href="/tags/crawler"><i class="fa fa-tag"></i>Crawler (1)</a>
+  </li>
+  <li>
+    <a href="/tags/dom"><i class="fa fa-tag"></i>DOM (1)</a>
+  </li>
+  <li>
+    <a href="/tags/docker"><i class="fa fa-tag"></i>Docker (9)</a>
+  </li>
+  <li>
+    <a href="/tags/ecmascript"><i class="fa fa-tag"></i>ECMAScript (1)</a>
+  </li>
+  <li>
+    <a href="/tags/english"><i class="fa fa-tag"></i>English (1)</a>
+  </li>
+  <li>
+    <a href="/tags/ftp"><i class="fa fa-tag"></i>FTP (1)</a>
+  </li>
+  <li>
+    <a href="/tags/firebase"><i class="fa fa-tag"></i>Firebase (1)</a>
+  </li>
+  <li>
+    <a href="/tags/font"><i class="fa fa-tag"></i>Font (1)</a>
+  </li>
+  <li>
+    <a href="/tags/functionallanguage"><i class="fa fa-tag"></i>FunctionalLanguage (2)</a>
+  </li>
+  <li>
+    <a href="/tags/glsl"><i class="fa fa-tag"></i>GLSL (1)</a>
+  </li>
+  <li>
+    <a href="/tags/git"><i class="fa fa-tag"></i>Git (3)</a>
+  </li>
+  <li>
+    <a href="/tags/golang"><i class="fa fa-tag"></i>Golang (4)</a>
+  </li>
+  <li>
+    <a href="/tags/googleappengine"><i class="fa fa-tag"></i>GoogleAppEngine (1)</a>
+  </li>
+  <li>
+    <a href="/tags/html"><i class="fa fa-tag"></i>HTML (1)</a>
+  </li>
+  <li>
+    <a href="/tags/html5"><i class="fa fa-tag"></i>HTML5 (7)</a>
+  </li>
+  <li>
+    <a href="/tags/html5-outline"><i class="fa fa-tag"></i>HTML5-outline (1)</a>
+  </li>
+  <li>
+    <a href="/tags/https"><i class="fa fa-tag"></i>HTTPS (1)</a>
+  </li>
+  <li>
+    <a href="/tags/homebrew"><i class="fa fa-tag"></i>Homebrew (1)</a>
+  </li>
+  <li>
+    <a href="/tags/hugo"><i class="fa fa-tag"></i>Hugo (4)</a>
+  </li>
+  <li>
+    <a href="/tags/icon-font"><i class="fa fa-tag"></i>Icon-Font (1)</a>
+  </li>
+  <li>
+    <a href="/tags/javascript"><i class="fa fa-tag"></i>JavaScript (6)</a>
+  </li>
+  <li>
+    <a href="/tags/linux"><i class="fa fa-tag"></i>Linux (3)</a>
+  </li>
+  <li>
+    <a href="/tags/mvc"><i class="fa fa-tag"></i>MVC (1)</a>
+  </li>
+  <li>
+    <a href="/tags/mongodb"><i class="fa fa-tag"></i>MongoDB (1)</a>
+  </li>
+  <li>
+    <a href="/tags/opengraph"><i class="fa fa-tag"></i>OpenGraph (1)</a>
+  </li>
+  <li>
+    <a href="/tags/php"><i class="fa fa-tag"></i>PHP (1)</a>
+  </li>
+  <li>
+    <a href="/tags/python"><i class="fa fa-tag"></i>Python (1)</a>
+  </li>
+  <li>
+    <a href="/tags/rdfa"><i class="fa fa-tag"></i>RDFa (1)</a>
+  </li>
+  <li>
+    <a href="/tags/ssh"><i class="fa fa-tag"></i>SSH (4)</a>
+  </li>
+  <li>
+    <a href="/tags/svg"><i class="fa fa-tag"></i>SVG (1)</a>
+  </li>
+  <li>
+    <a href="/tags/scala"><i class="fa fa-tag"></i>Scala (2)</a>
+  </li>
+  <li>
+    <a href="/tags/shellscript"><i class="fa fa-tag"></i>ShellScript (3)</a>
+  </li>
+  <li>
+    <a href="/tags/smartphone"><i class="fa fa-tag"></i>Smartphone (2)</a>
+  </li>
+  <li>
+    <a href="/tags/static-site-generator"><i class="fa fa-tag"></i>Static Site Generator (2)</a>
+  </li>
+  <li>
+    <a href="/tags/vscode"><i class="fa fa-tag"></i>VSCode (1)</a>
+  </li>
+  <li>
+    <a href="/tags/vagrant"><i class="fa fa-tag"></i>Vagrant (15)</a>
+  </li>
+  <li>
+    <a href="/tags/vim"><i class="fa fa-tag"></i>Vim (5)</a>
+  </li>
+  <li>
+    <a href="/tags/virtualbox"><i class="fa fa-tag"></i>VirtualBox (3)</a>
+  </li>
+  <li>
+    <a href="/tags/virtualization"><i class="fa fa-tag"></i>Virtualization (1)</a>
+  </li>
+  <li>
+    <a href="/tags/webapp"><i class="fa fa-tag"></i>WebApp (1)</a>
+  </li>
+  <li>
+    <a href="/tags/webaudioapi"><i class="fa fa-tag"></i>WebAudioAPI (1)</a>
+  </li>
+  <li>
+    <a href="/tags/webfont"><i class="fa fa-tag"></i>WebFont (1)</a>
+  </li>
+  <li>
+    <a href="/tags/webgl"><i class="fa fa-tag"></i>WebGL (1)</a>
+  </li>
+  <li>
+    <a href="/tags/webrtc"><i class="fa fa-tag"></i>WebRTC (1)</a>
+  </li>
+  <li>
+    <a href="/tags/webserver"><i class="fa fa-tag"></i>WebServer (1)</a>
+  </li>
+  <li>
+    <a href="/tags/yeoman"><i class="fa fa-tag"></i>Yeoman (1)</a>
+  </li>
+  <li>
+    <a href="/tags/zsh"><i class="fa fa-tag"></i>Zsh (2)</a>
+  </li>
+  <li>
+    <a href="/tags/ajax"><i class="fa fa-tag"></i>ajax (1)</a>
+  </li>
+  <li>
+    <a href="/tags/anyenv"><i class="fa fa-tag"></i>anyenv (1)</a>
+  </li>
+  <li>
+    <a href="/tags/auth"><i class="fa fa-tag"></i>auth (1)</a>
+  </li>
+  <li>
+    <a href="/tags/automation"><i class="fa fa-tag"></i>automation (3)</a>
+  </li>
+  <li>
+    <a href="/tags/bot"><i class="fa fa-tag"></i>bot (1)</a>
+  </li>
+  <li>
+    <a href="/tags/bugs"><i class="fa fa-tag"></i>bugs (1)</a>
+  </li>
+  <li>
+    <a href="/tags/event-conference"><i class="fa fa-tag"></i>event-conference (5)</a>
+  </li>
+  <li>
+    <a href="/tags/getusermedia"><i class="fa fa-tag"></i>getUserMedia (1)</a>
+  </li>
+  <li>
+    <a href="/tags/gitconfig"><i class="fa fa-tag"></i>gitconfig (1)</a>
+  </li>
+  <li>
+    <a href="/tags/ios"><i class="fa fa-tag"></i>iOS (1)</a>
+  </li>
+  <li>
+    <a href="/tags/iterm"><i class="fa fa-tag"></i>iTerm (1)</a>
+  </li>
+  <li>
+    <a href="/tags/ionic"><i class="fa fa-tag"></i>ionic (1)</a>
+  </li>
+  <li>
+    <a href="/tags/jquery"><i class="fa fa-tag"></i>jQuery (3)</a>
+  </li>
+  <li>
+    <a href="/tags/jinja2"><i class="fa fa-tag"></i>jinja2 (1)</a>
+  </li>
+  <li>
+    <a href="/tags/jq"><i class="fa fa-tag"></i>jq (1)</a>
+  </li>
+  <li>
+    <a href="/tags/jsperf"><i class="fa fa-tag"></i>jsperf (1)</a>
+  </li>
+  <li>
+    <a href="/tags/lint"><i class="fa fa-tag"></i>lint (1)</a>
+  </li>
+  <li>
+    <a href="/tags/mediaquery"><i class="fa fa-tag"></i>mediaQuery (1)</a>
+  </li>
+  <li>
+    <a href="/tags/namespace"><i class="fa fa-tag"></i>namespace (1)</a>
+  </li>
+  <li>
+    <a href="/tags/naming"><i class="fa fa-tag"></i>naming (1)</a>
+  </li>
+  <li>
+    <a href="/tags/oldie"><i class="fa fa-tag"></i>oldIE (3)</a>
+  </li>
+  <li>
+    <a href="/tags/output"><i class="fa fa-tag"></i>output (3)</a>
+  </li>
+  <li>
+    <a href="/tags/polyfills"><i class="fa fa-tag"></i>polyfills (4)</a>
+  </li>
+  <li>
+    <a href="/tags/preloader"><i class="fa fa-tag"></i>preloader (1)</a>
+  </li>
+  <li>
+    <a href="/tags/rsync"><i class="fa fa-tag"></i>rsync (1)</a>
+  </li>
+  <li>
+    <a href="/tags/slack"><i class="fa fa-tag"></i>slack (1)</a>
+  </li>
+  <li>
+    <a href="/tags/tmux"><i class="fa fa-tag"></i>tmux (4)</a>
+  </li>
+  <li>
+    <a href="/tags/viewport"><i class="fa fa-tag"></i>viewport (2)</a>
+  </li>
+  <li>
+    <a href="/tags/vimrc"><i class="fa fa-tag"></i>vimrc (2)</a>
+  </li>
+  <li>
+    <a href="/tags/virtualization"><i class="fa fa-tag"></i>virtualization (6)</a>
+  </li>
+  <li>
+    <a href="/tags/wget"><i class="fa fa-tag"></i>wget (1)</a>
+  </li>
+</ul>
+
+<h2>Categories</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/">Category / Tech</a>
+  </li>
+  <li>
+    <a href="/categories/twentyfour/">Category / TwentyFour</a>
+  </li>
+</ul>
+
+<h2>RSS</h2>
+
+<ul>
+  <li>
+    <a href="/categories/tech/index.xml" target="_blank">RSS: Category / Tech</a>
+  </li>
+  <li>
+    <a href="/index.xml" target="_blank">RSS: All articles</a>
+  </li>
+</ul>
+
+<hr>
+
+<ul>
+  <li>このブログは個人の見解であり、所属する組織の公式見解ではありません</li>
+  <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+</ul>
+<p class="copyright">&copy; ばうあーろぐ</p>
+
+</footer>
+
+</div>
+
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-36767095-1']);
+_gaq.push(['_trackPageview']);
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+  </body>
+</html>
+
