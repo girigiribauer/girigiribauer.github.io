@@ -11,6 +11,16 @@
     
       
         <item>
+          <title>OpenAPI (Swagger) の基本的なあれこれ</title>
+          <link>http://girigiribauer.com/archives/20190318/</link>
+          <pubDate>Mon, 18 Mar 2019 08:45:00 +0900</pubDate>
+          <guid>http://girigiribauer.com/archives/20190318/</guid>
+          <description>現時点での OpenAPI に関する知識の棚卸しをした方がいいかなと思ったので書きます。 前提 使い方が 100% 定まっているわけではありません 少なくとも OpenAPI を使っていく</description>
+        </item>
+      
+    
+      
+        <item>
           <title>Vim から VS Code へ覚悟を持って移行する</title>
           <link>http://girigiribauer.com/archives/20190212/</link>
           <pubDate>Tue, 12 Feb 2019 08:00:00 +0900</pubDate>
