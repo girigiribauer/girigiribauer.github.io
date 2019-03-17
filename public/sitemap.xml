@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://girigiribauer.com/archives/20190318/</loc>
+    <lastmod>2019-03-18T08:45:00+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/archives/20190212/</loc>
     <lastmod>2019-02-12T08:00:00+09:00</lastmod>
   </url>
@@ -548,6 +553,12 @@
   </url>
   
   <url>
+    <loc>http://girigiribauer.com/tags/api/</loc>
+    <lastmod>2019-03-18T08:45:00+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/tags/ajax/</loc>
     <lastmod>2017-09-12T15:00:00+09:00</lastmod>
     <priority>0</priority>
@@ -585,7 +596,7 @@
   
   <url>
     <loc>http://girigiribauer.com/archives/</loc>
-    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
+    <lastmod>2019-03-18T08:45:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -895,6 +906,12 @@
   </url>
   
   <url>
+    <loc>http://girigiribauer.com/tags/openapi/</loc>
+    <lastmod>2019-03-18T08:45:00+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/tags/opengraph/</loc>
     <lastmod>2013-03-11T00:08:58+00:00</lastmod>
     <priority>0</priority>
@@ -986,13 +1003,13 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/</loc>
-    <lastmod>2017-09-12T15:00:00+09:00</lastmod>
+    <lastmod>2019-03-18T08:45:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>http://girigiribauer.com/categories/tech/</loc>
-    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
+    <lastmod>2019-03-18T08:45:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -1112,7 +1129,7 @@
   
   <url>
     <loc>http://girigiribauer.com/</loc>
-    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
+    <lastmod>2019-03-18T08:45:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   
