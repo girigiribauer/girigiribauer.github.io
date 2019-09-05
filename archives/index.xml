@@ -6,10 +6,19 @@
     <description>Recent content in Archives on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Mon, 18 Mar 2019 08:45:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 05 Sep 2019 23:30:00 +0900</lastBuildDate>
     
 	<atom:link href="http://girigiribauer.com/archives/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Electron と Web フロントエンドフレームワークを疎結合で使う</title>
+      <link>http://girigiribauer.com/archives/20190905/</link>
+      <pubDate>Thu, 05 Sep 2019 23:30:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/archives/20190905/</guid>
+      <description>Electron は単体で使ったことがあるのですが、 個人的には、どうも独特というか癖があるなあと思ってまして、 なんというか、どうしても Electron 中心に考えないといけ</description>
+    </item>
     
     <item>
       <title>OpenAPI (Swagger) の基本的なあれこれ</title>
