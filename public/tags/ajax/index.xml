@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ajax on ばうあーろぐ</title>
+    <title>ajax on ばうあーろぐ</title>
     <link>http://girigiribauer.com/tags/ajax/</link>
-    <description>Recent content in Ajax on ばうあーろぐ</description>
+    <description>Recent content in ajax on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Sun, 02 Feb 2014 15:00:10 +0000</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その2</title>
-      <link>http://girigiribauer.com/archives/1254/</link>
+      <link>http://girigiribauer.com/tech/20140203/</link>
       <pubDate>Sun, 02 Feb 2014 15:00:10 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/1254/</guid>
+      <guid>http://girigiribauer.com/tech/20140203/</guid>
       <description>前回からの続きです。 jQuery から卒業するための第1歩を polyfills から学ぼう https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込ま</description>
     </item>
     

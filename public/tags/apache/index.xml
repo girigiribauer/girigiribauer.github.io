@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Apache on ばうあーろぐ</title>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Vagrant を開発用 Web サーバとして利用するときの注意点</title>
-      <link>http://girigiribauer.com/archives/1742/</link>
+      <link>http://girigiribauer.com/tech/20150325/</link>
       <pubDate>Wed, 25 Mar 2015 08:43:58 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/1742/</guid>
+      <guid>http://girigiribauer.com/tech/20150325/</guid>
       <description>罠があるのでまとめておきます。（体験談） なお、box ファイルは CentOS6 ベースのもの、Web サーバは apache です。（本番環境を想定した開発環境なので、ng</description>
     </item>
     

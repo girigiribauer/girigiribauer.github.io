@@ -1,41 +1,13 @@
-{{ partial "header.html" . }}
-
-<div class="maincontents">
-
-<h1>{{ .Site.Title }}</h1>
-
-<h2>Blog (written by Japanese)</h2>
+{{ define "main" }}
+<h1 class="sitetitle">{{ .Site.Title }}</h1>
 
 <ul class="article-list">
-{{- range first 3 .Paginator.Pages }}
-{{- if eq .Type "archives" }}
-  <li>
-    <h2 class="heading-archive">{{ partial "datetime.html" . }} <br> <a href="{{ .Permalink }}">{{ .Title }}</a></h2>
-    <ul class="tags">
-{{- range .Params.tags }}
-      <li><a href="/tags/{{ . | urlize }}/"><i class="fas fa-tag"></i>{{ . }}</a></li>
-{{- end }}
-    </ul>
-  </li>
-{{- end }}
+{{ range first 3 .Paginator.Pages }}{{ partial "listitem.html" . }}{{ end }}
+</ul>
+<ul class="tags">
+{{- range.Site.Sections }}
+  <li><a href="{{ .RelPermalink }}"><i class="fa fa-book"></i>{{ .Title }} 系のアーカイブはこちら</a></li>
 {{- end }}
 </ul>
-<p><a href="/archives/">More articles</a></p>
 
-<h2>Profile</h2>
-<dl>
-  <dt>Name</dt>
-  <dd>girigiribauer</dd>
-</dl>
-<dl>
-  <dt>Twitter</dt>
-  <dd><a href="https://twitter.com/girigiribauer">https://twitter.com/girigiribauer</a></dd>
-</dl>
-<dl>
-  <dt>Github</dt>
-  <dd><a href="https://github.com/girigiribauer">https://github.com/girigiribauer</a></dd>
-</dl>
-
-</div>
-
-{{ partial "footer.html" . }}
+{{ end }}

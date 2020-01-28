@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>OpenAPI on ばうあーろぐ</title>
@@ -13,10 +13,10 @@
     
     <item>
       <title>OpenAPI (Swagger) の基本的なあれこれ</title>
-      <link>http://girigiribauer.com/archives/20190318/</link>
+      <link>http://girigiribauer.com/tech/20190318/</link>
       <pubDate>Mon, 18 Mar 2019 08:45:00 +0900</pubDate>
       
-      <guid>http://girigiribauer.com/archives/20190318/</guid>
+      <guid>http://girigiribauer.com/tech/20190318/</guid>
       <description>現時点での OpenAPI に関する知識の棚卸しをした方がいいかなと思ったので書きます。 前提 使い方が 100% 定まっているわけではありません 少なくとも OpenAPI を使っていく</description>
     </item>
     

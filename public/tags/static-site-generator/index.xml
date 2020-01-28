@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Static Site Generator on ばうあーろぐ</title>
@@ -6,26 +6,35 @@
     <description>Recent content in Static Site Generator on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Fri, 06 Jan 2017 15:21:29 +0900</lastBuildDate>
+    <lastBuildDate>Tue, 28 Jan 2020 17:00:00 +0900</lastBuildDate>
     
 	<atom:link href="http://girigiribauer.com/tags/static-site-generator/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Hugo をしばらく触ってなかったので、わかりやすくまとめ直した</title>
+      <link>http://girigiribauer.com/tech/20200128/</link>
+      <pubDate>Tue, 28 Jan 2020 17:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tech/20200128/</guid>
+      <description>タイトルの通りです。 インプット・アウトプットを色々見直そうと思った一環なのですが、 しばらく触っていなかった Hugo (Static Site Generator) のテンプレートをあれこれ見</description>
+    </item>
+    
+    <item>
       <title>github-markdown-css を導入してみた</title>
-      <link>http://girigiribauer.com/archives/20170106/</link>
+      <link>http://girigiribauer.com/tech/20170106/</link>
       <pubDate>Fri, 06 Jan 2017 15:21:29 +0900</pubDate>
       
-      <guid>http://girigiribauer.com/archives/20170106/</guid>
+      <guid>http://girigiribauer.com/tech/20170106/</guid>
       <description>Github から生成されるページって、バランスとかが良くてなんだかんだですごく読みやすいんですよ。 一方で自分のブログは、中身を WordPress から Hugo に変えて データベ</description>
     </item>
     
     <item>
       <title>WordPress を捨てて Hugo に移行した</title>
-      <link>http://girigiribauer.com/archives/20160705/</link>
+      <link>http://girigiribauer.com/tech/20160705/</link>
       <pubDate>Tue, 05 Jul 2016 11:10:37 +0900</pubDate>
       
-      <guid>http://girigiribauer.com/archives/20160705/</guid>
+      <guid>http://girigiribauer.com/tech/20160705/</guid>
       <description>RSS の URL が変わってしまったので、一時的に元の URL に静的な RSS の XML ファイルをおいてますが、 =&amp;gt; 置いたけどダメでした・・・ この記事以降の更新は反映されな</description>
     </item>
     

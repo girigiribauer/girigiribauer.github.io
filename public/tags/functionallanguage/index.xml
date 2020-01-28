@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>FunctionalLanguage on ばうあーろぐ</title>
@@ -13,19 +13,19 @@
     
     <item>
       <title>大なごやJS vol.5 に行ってきたまとめ</title>
-      <link>http://girigiribauer.com/archives/846/</link>
+      <link>http://girigiribauer.com/tech/20130301/</link>
       <pubDate>Fri, 01 Mar 2013 14:14:23 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/846/</guid>
+      <guid>http://girigiribauer.com/tech/20130301/</guid>
       <description>大なごやJS(#daiNagoyaJS) 数か月に1回、みんながやりたくなったタイミングで行い、主催がころころ入れ替わっていくという謎の勉強会</description>
     </item>
     
     <item>
       <title>関数脳の考え方の重要性（なごやかScala勉強会に参加してみた）</title>
-      <link>http://girigiribauer.com/archives/279/</link>
+      <link>http://girigiribauer.com/tech/20120916/</link>
       <pubDate>Sun, 16 Sep 2012 09:14:15 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/279/</guid>
+      <guid>http://girigiribauer.com/tech/20120916/</guid>
       <description>そもそもScalaとは何か？ まだまだ素人レベルなので、あんまり下手なことを言うとここちがうよーと言われてしまうのでちゃんとしたことは言えない</description>
     </item>
     

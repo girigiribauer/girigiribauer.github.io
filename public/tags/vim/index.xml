@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Vim on ばうあーろぐ</title>
@@ -13,46 +13,46 @@
     
     <item>
       <title>Vim から VS Code へ覚悟を持って移行する</title>
-      <link>http://girigiribauer.com/archives/20190212/</link>
+      <link>http://girigiribauer.com/tech/20190212/</link>
       <pubDate>Tue, 12 Feb 2019 08:00:00 +0900</pubDate>
       
-      <guid>http://girigiribauer.com/archives/20190212/</guid>
+      <guid>http://girigiribauer.com/tech/20190212/</guid>
       <description>Vim から VS Code へ覚悟を持って移行する・・・！ 前提 Vim と言いつつも、非 Vimmer が読んでも最低限分かる配慮はする 普段から Vim を使っているが、 そろそろちゃんとし</description>
     </item>
     
     <item>
       <title>Vim の Syntastic で sass-lint が上手く動かないときの debug の話</title>
-      <link>http://girigiribauer.com/archives/20170217/</link>
+      <link>http://girigiribauer.com/tech/20170217/</link>
       <pubDate>Fri, 17 Feb 2017 00:16:01 +0900</pubDate>
       
-      <guid>http://girigiribauer.com/archives/20170217/</guid>
+      <guid>http://girigiribauer.com/tech/20170217/</guid>
       <description>一瞬はまったのでメモしておきます。 ~/.sass-lint.yml はホームディレクトリ外では無効でした まず問題の発端はここからです。 僕は今のところ Vim 上で scss ファイルを編集す</description>
     </item>
     
     <item>
       <title>Vim の tabpage のカスタマイズ</title>
-      <link>http://girigiribauer.com/archives/20161012/</link>
+      <link>http://girigiribauer.com/tech/20161012/</link>
       <pubDate>Wed, 12 Oct 2016 12:00:58 +0900</pubDate>
       
-      <guid>http://girigiribauer.com/archives/20161012/</guid>
+      <guid>http://girigiribauer.com/tech/20161012/</guid>
       <description>だいぶ前から tabpage の前後移動において、 自分と同じ設定をしている人をみかけないので、 アウトプットしておこうと思います。 ちなみに僕はもう この設定がな</description>
     </item>
     
     <item>
       <title>ようやくdotfilesをアップしました</title>
-      <link>http://girigiribauer.com/archives/1698/</link>
+      <link>http://girigiribauer.com/tech/20141027/</link>
       <pubDate>Mon, 27 Oct 2014 11:57:58 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/1698/</guid>
+      <guid>http://girigiribauer.com/tech/20141027/</guid>
       <description>https://github.com/girigiribauer/dotfiles ようやく dotfiles 一式をアップできました・・・。一応メモ。 相当いろいろと削りまくったため、これから必要なものは順次追加していく必要がありますが、ま</description>
     </item>
     
     <item>
       <title>Vimのset relativenumberで、あの子のハートを狙い撃ち！</title>
-      <link>http://girigiribauer.com/archives/631/</link>
+      <link>http://girigiribauer.com/tech/20130109/</link>
       <pubDate>Wed, 09 Jan 2013 13:01:19 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/631/</guid>
+      <guid>http://girigiribauer.com/tech/20130109/</guid>
       <description>今日、Vimでとてもいい設定項目を知って、とても嬉しかったのでブログに残しておきます。 set relativenumberやばい！ set relativ</description>
     </item>
     

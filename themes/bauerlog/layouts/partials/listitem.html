@@ -1,0 +1,11 @@
+<li>
+  <h2 class="heading-listitem">{{ partial "datetime.html" . }} <br> <a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+  <ul class="tags">
+{{- with .CurrentSection }}
+    <li class="section"><a href="{{ .RelPermalink }}"><i class="fas fa-book"></i>{{ .Title }}</a></li>
+{{- end }}
+{{- range .Params.tags }}
+    <li><a href="/tags/{{ . | urlize }}/"><i class="fas fa-tag"></i>{{ . }}</a></li>
+{{- end }}
+  </ul>
+</li>

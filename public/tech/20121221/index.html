@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>3Dグラフィックスのド素人がGLSLについて調べてみた - ばうあーろぐ</title>
+    <meta name="viewport" content="width=device-width">
+<meta itemprop="name" content="3Dグラフィックスのド素人がGLSLについて調べてみた">
+<meta itemprop="description" content="こちらの記事は、LL/ML Advent Calendarの21日目の記事です。 #LLAdventJPとは？ 僕も知りません。なごやって素敵ですね！ （※時間">
+<meta itemprop="datePublished" content="2012-12-21T14:50:51&#43;00:00" />
+<meta itemprop="dateModified" content="2012-12-21T14:50:51&#43;00:00" />
+<meta itemprop="wordCount" content="3318">
+
+
+
+<meta itemprop="keywords" content="CSSfilter,GLSL,WebGL," />
+<meta property="og:title" content="3Dグラフィックスのド素人がGLSLについて調べてみた" />
+<meta property="og:description" content="こちらの記事は、LL/ML Advent Calendarの21日目の記事です。 #LLAdventJPとは？ 僕も知りません。なごやって素敵ですね！ （※時間" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://girigiribauer.com/tech/20121221/" />
+<meta property="article:published_time" content="2012-12-21T14:50:51+00:00" />
+<meta property="article:modified_time" content="2012-12-21T14:50:51+00:00" />
+
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="3Dグラフィックスのド素人がGLSLについて調べてみた"/>
+<meta name="twitter:description" content="こちらの記事は、LL/ML Advent Calendarの21日目の記事です。 #LLAdventJPとは？ 僕も知りません。なごやって素敵ですね！ （※時間"/>
+
+<link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<meta name="generator" content="Hugo 0.62.2" />
+  </head>
+  <body>
+    <div class="container">
+<header class="globalheader"><a href="/">TOP</a></header>
+      <main class="maincontents" role="main">
+
+<h1 class="heading">3Dグラフィックスのド素人がGLSLについて調べてみた</h1>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2012-12-21 23:50:51">2012/12/21</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/cssfilter/"><i class="fas fa-tag"></i>CSSfilter</a></li>
+    <li><a href="/tags/glsl/"><i class="fas fa-tag"></i>GLSL</a></li>
+    <li><a href="/tags/webgl/"><i class="fas fa-tag"></i>WebGL</a></li>
+  </ul>
+</div>
+<div class="article">
+<p>こちらの記事は、<a href="http://partake.in/events/9658f376-6ce3-4217-b392-b05d3de60021">LL/ML Advent Calendar</a>の21日目の記事です。</p>
+<h2 id="lladventjpとは">#LLAdventJPとは？</h2>
+<p>僕も知りません。<strong>なごやって素敵</strong>ですね！</p>
+<p>（※時間がどうしてもなくて、紹介記事止まりでごめんなさい！）</p>
+<h2 id="この記事を書こうと思ったわけ">この記事を書こうと思ったわけ</h2>
+<p>“L”と”L”、もしくは”M”と”L”がつけばなんでもOKとのことだったので、最悪HT<strong>ML</strong>のことなんか書けばいいかーと思いつつ、悶々としていたのですが、CSS3 custom filterのデモを見ていて、</p>
+<pre><code>-webkit-filter: custom(
+  url(shaders/vertex/page-curl.vs) mix(url(shaders/fragment/page-curl.fs) normal source-atop),
+  50 50 border-box,
+  transform perspective(1000) scale(1) rotateX(0deg) rotateY(0deg) rotateZ(0deg),
+  curlPosition 0 0,
+  curlDirection 135,
+  curlRadius 0.2,
+  bleedThrough 0.59
+);
+</code></pre>
+<p><img src="/img/2012/12/glsl012.png" alt=""></p>
+<p>この <strong>page-curl.vs とか page-curl.fs ってなんぞ？<strong>と思ったのがきっかけで、いろいろ調べてみたらG</strong>L</strong>S<strong>L</strong>というキーワードにぶち当たったので、なんだろうと思って軽めに調べてみました。</p>
+<p>以下、こんな感じで話が進みます。</p>
+<ul>
+<li><a href="#css-filter">CSS filter、CSS custom filterについて</a></li>
+<li><a href="#about-glsl">GLSLとは？そもそもシェーダーとは？</a></li>
+<li><a href="#glsl-helloworld">GLSLのHelloWorld</a></li>
+<li><a href="#conclusion">まとめ</a></li>
+</ul>
+<p>ちなみにタイトルにもあるように、3Dグラフィックスの周りはド素人であるため、専門でやられている方にはつまらなく感じるかもしれません。もし間違いとかありましたら、叩かれるのはこわいのでやさしく指摘してくだされば幸いです。</p>
+<hr>
+<h2 id="css-filter">CSS filter、CSS custom filterについて</h2>
+<h3 id="css-filter-1">CSS filter</h3>
+<p>昨今のモダンブラウザの高速リリースによって、ビジュアル面でもFlashと同等レベルのことが出来るようになってきました。</p>
+<p>特にJavaScriptではなく、<strong>CSSで出来ること</strong>の幅がぐんと広がってきており、CSSで様々なエフェクトがかけられるCSS filterは、その最たる例と言ってもいいのかもしれません。</p>
+<p>CSS filterに関しては、こちらのページが分かりやすいです。</p>
+<p><a href="http://www.html5rocks.com/en/tutorials/filters/understanding-css/">Understanding CSS Filter Effects – HTML5 Rocks</a></p>
+<p>グレースケール（灰色っぽくする）とか、コントラスト比をいじるとか、Flashで普通に出来たことが、同じようにHTMLに出来るようになっただけでしょ？と思われる方もいるかもしれません。</p>
+<p>ただ、僕はそうは思っていなくて、<strong>任意のDOM要素に対して使える</strong>というのがかなりのメリットではないかと考えています。</p>
+<h3 id="試してみましょう">試してみましょう！</h3>
+<p>試しにお使いのブラウザ（Chromeなど）の開発者ツールで、このページの下にあるであろう『いいね！』ボタンのiframeを選択し、以下のようなスタイルをあててみてください。</p>
+<pre><code>-webkit-filter: grayscale(100%);
+</code></pre>
+<p><img src="/img/2012/12/glsl022.png" alt=""></p>
+<p>どうですか？いいねボタンが白黒になりましたか？<strong>まるでF</strong><em>B</em><strong>のお葬式のようですね！</strong></p>
+<p>これってかなりすごいことで、例えばbodyに対してブラーエフェクト（blur、ぼかしのエフェクトのこと）を先にかけておいて、ちょっと間を置いてエフェクトを消してやれば、<strong>ぼやけていたWebコンテンツがしゅっと見えるような表現</strong>が出来たりしますよね！</p>
+<p>こういった今までつまんない感じだったWebコンテンツを、少しのCSSの記述だけでとても簡単にカッコイイ感じに変身させることができちゃうのです。</p>
+<p>※もちろん、色んな要素にエフェクトかけまくっちゃうとレンダリング負荷は高まりますので、それだけあれば何でも解決するかというとそんなことはありません。</p>
+<p>公式の仕様は以下に載ってます。僕もまだこれからちゃんと読まないといけないレベルですが、一応紹介までに。</p>
+<p><a href="http://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html">Filter Effects 1.0(仕様)</a></p>
+<h3 id="css-filter-の-custom-filter">CSS filter の custom filter</h3>
+<p>この css filter の種類の1つに、<strong>custom</strong>というのがあります。エフェクトのかけ方を、こちらで自由に制御できちゃうみたいなんですねー。これはすごい。</p>
+<p>とりあえずデモを見て、「おー、すげー！」でもしてみましょうか。</p>
+<p><a href="http://www.adobe.com/devnet/html5/articles/css-shaders.html">CSS shaders: Cinematic effects for the web | Adobe Developer Connection</a></p>
+<p><strong>「おー、すげー！」</strong></p>
+<p>css custom filter も、css filter の1つであるため、任意のDOM要素に対してエフェクトがかけられるわけですね。</p>
+<p>見る限り、以下のようなことが出来そうです。</p>
+<ol>
+<li>色の塗り分け</li>
+<li>影の付け方をいじる</li>
+<li>3Dを2Dに対応付けして、3Dっぽく見せる</li>
+</ol>
+<p>・・・と、ここまで調べてみると、3Dグラフィックスの専門用語がそれなりにわんさか出てきます。GLSLに触れるとともに一通り調べてみました。</p>
+<h2 id="about-glsl">GLSLとは？そもそもシェーダーとは？</h2>
+<p>まずGLSLについて。</p>
+<blockquote>
+<p>GLSL (OpenGL Shading Language) はGLslangとしても知られ、C言語をベースとした高レベルシェーディング言語である。これはアセンブリ言語やハードウェアに依存した言語を使わないで、開発者がグラフィックスパイプラインを直接制御できるようにOpenGL ARBで策定された。最新版は、GLSL 4.10（米国時間2010年7月28日）である。</p>
+</blockquote>
+<p><a href="http://ja.wikipedia.org/wiki/GLSL">wikipedia: GLSL</a>より引用</p>
+<p>はい、<strong>OpenGL</strong>の<strong>シェーディング言語</strong>なわけですね。わかりません。</p>
+<p>GLはGraphics Libraryの略なので、2D, 3Dのグラフィックスが扱えるとしても、<strong>シェーディング</strong>、<strong>シェーダー</strong>とはなんでしょうか？</p>
+<blockquote>
+<p>シェーディング（英: shading）は、3次元コンピュータグラフィックスやイラストレーションなどで明暗のコントラストで立体感を与える技法である。絵画では陰影画法と呼ぶ。</p>
+</blockquote>
+<p><a href="http://ja.wikipedia.org/wiki/%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0">wikipedia: シェーディング</a>より引用</p>
+<p>ほほう、これはデモで見て予想した通りのことが出来る技法ですね。</p>
+<blockquote>
+<p>コンピュータグラフィックスのシェーダ（英: shader）は、主にライティング（光源計算）・シェーディング（陰影処理）とレンダリング（ピクセル化）を実行するためにグラフィック リソースに対して使用するソフトウェア命令の組み合わせである。</p>
+</blockquote>
+<p><a href="http://ja.wikipedia.org/wiki/%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80">wikipedia: シェーダ</a>より引用</p>
+<p>シェーディング（光や影、ピクセルの色や位置などの変化）をシェーダーが担当してくれているのですね。</p>
+<p>・・・なるほど。</p>
+<p>ということは、一番最初に見たCSSの記述は、シェーダーのことを表しているようです。もう一度見てみます。</p>
+<pre><code>-webkit-filter: custom(
+  url(shaders/vertex/page-curl.vs) mix(url(shaders/fragment/page-curl.fs) normal source-atop),
+  50 50 border-box,
+  transform perspective(1000) scale(1) rotateX(0deg) rotateY(0deg) rotateZ(0deg),
+  curlPosition 0 0,
+  curlDirection 135,
+  curlRadius 0.2,
+  bleedThrough 0.59
+);
+</code></pre>
+<p>このpage-curl.vs の <strong>vs</strong> は、<strong>vertex shader</strong> の略のようです。また page-curl.fs の <strong>fs</strong> は、<strong>fragment shader</strong> の略のようです。</p>
+<ul>
+<li>バーテックスシェーダー（バーテックスは頂点の意味、頂点シェーダーとも呼ばれる）</li>
+<li>フラグメントシェーダー（フラグメントは断片の意味、ピクセルシェーダーとも呼ばれる）</li>
+</ul>
+<p>点と面のシェーダーがあるよ、と考えておけばいいのかもしれません。</p>
+<h3 id="つまり">つまり・・・</h3>
+<ul>
+<li>GLSLはOpenGLのシェーディングのための言語</li>
+<li>.vs .fsといったシェーダーの種類がある</li>
+</ul>
+<p>あとおまけで、</p>
+<ul>
+<li>WebGL（Webで3Dグラフィックスが扱える）でもGLSLを使ってた</li>
+</ul>
+<p>あたりが分かりました。</p>
+<h2 id="glsl-helloworld">GLSLのHelloWorld</h2>
+<p>さて、WebGLはクロノス・グループという団体が標準化を行っています。</p>
+<p>そちらにGLSL 1.0の仕様がありましたので、紹介しつつ少しだけ読んでみようと思います。</p>
+<p><a href="http://www.khronos.org/registry/gles/specs/2.0/GLSL_ES_Specification_1.0.17.pdf">The OpenGL ® ES Shading Language</a> ※PDFです</p>
+<p>・・・。</p>
+<p>・・・・・・。</p>
+<p><strong>やばい、予想以上にC言語っぽい。</strong></p>
+<p>しっかり読んで紹介していると21日目のブログ記事が間に合わなくなってしまうので、ちょっと<strong>落としどころを探りたい</strong>と思いますw</p>
+<p>WikipediaのGLSLの項目に、一番シンプルであろう fragment shader の例が載っていたので、それについてだけ調べてみます。</p>
+<pre><code>void main(void)
+{
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+}
+</code></pre>
+<p>gl_FragColor や gl_FragData に代入することで、フラグメントシェーダーとして書き出しますよーということを表します。</p>
+<p>ちなみにとても良いサイト見つけました。 そのまま<strong>GLSLを書いて試せる</strong>っぽいです。（<a href="http://glsl.heroku.com/">GLSL Sandbox</a>）上記コードは1〜3までの引数でカラー指定をしているようですね！（第4引数はなんだろう、透明度なのかな・・・？）</p>
+<p><img src="/img/2012/12/glsl032.png" alt=""></p>
+<p><strong>「おー、すげー！」</strong></p>
+<h2 id="conclusion">まとめ</h2>
+<p>って感じで、とりあえずHelloWorldまで行くだけでもだいぶ長くなってしまいましたが、ここまで調べられればこの後の導入が比較的スピーディーに行けるのでは？と思っています。</p>
+<ul>
+<li>シェーダーは光や影をつけたりピクセルの色や位置をいじったりできる</li>
+<li>GLSLはCSSのcustom filterやWebGLで使われてる</li>
+<li>とりあえずHelloWorldに相当するやつ書いてみた</li>
+</ul>
+<p>これで色んなGLSLを書いて、オリジナルのエフェクトとか作れたらかなり表現の幅が広がりそうです！</p>
+<h2 id="おまけ">おまけ</h2>
+<p>僕は余力がなくて参加できてないのですが、 <a href="http://www.adventar.org/calendars/10">GraphicalWeb (CSS, SVG, WebGL etc) Advent Calendar 2012</a> の中のyomotsuさんが書かれたCSS shaderに関する一連の記事はかなり勉強になります。時間作ってしっかり読みたいなーと思いました。</p>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2012-12-21 23:50:51">2012/12/21</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/cssfilter/"><i class="fas fa-tag"></i>CSSfilter</a></li>
+    <li><a href="/tags/glsl/"><i class="fas fa-tag"></i>GLSL</a></li>
+    <li><a href="/tags/webgl/"><i class="fas fa-tag"></i>WebGL</a></li>
+  </ul>
+</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+      </main>
+<footer class="globalfooter">
+  <h2>Tags</h2>
+  <ul class="tags">
+    <li><a href="http://girigiribauer.com/tags/ajax/"><i class="fa fa-tag"></i>ajax (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/angular/"><i class="fa fa-tag"></i>Angular (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ansible/"><i class="fa fa-tag"></i>Ansible (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/anyenv/"><i class="fa fa-tag"></i>anyenv (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apache/"><i class="fa fa-tag"></i>Apache (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/api/"><i class="fa fa-tag"></i>API (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apps/"><i class="fa fa-tag"></i>Apps (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/auth/"><i class="fa fa-tag"></i>auth (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/automation/"><i class="fa fa-tag"></i>automation (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bot/"><i class="fa fa-tag"></i>bot (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bugs/"><i class="fa fa-tag"></i>bugs (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/canvas/"><i class="fa fa-tag"></i>Canvas (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/chef/"><i class="fa fa-tag"></i>Chef (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cli/"><i class="fa fa-tag"></i>CLI (11)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cordova/"><i class="fa fa-tag"></i>Cordova (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/crawler/"><i class="fa fa-tag"></i>Crawler (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css/"><i class="fa fa-tag"></i>CSS (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css3/"><i class="fa fa-tag"></i>CSS3 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cssfilter/"><i class="fa fa-tag"></i>CSSfilter (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/docker/"><i class="fa fa-tag"></i>Docker (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/dom/"><i class="fa fa-tag"></i>DOM (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ecmascript/"><i class="fa fa-tag"></i>ECMAScript (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/electron/"><i class="fa fa-tag"></i>Electron (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/english/"><i class="fa fa-tag"></i>English (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/event-conference/"><i class="fa fa-tag"></i>event-conference (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/firebase/"><i class="fa fa-tag"></i>Firebase (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/font/"><i class="fa fa-tag"></i>Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ftp/"><i class="fa fa-tag"></i>FTP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/functionallanguage/"><i class="fa fa-tag"></i>FunctionalLanguage (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/getusermedia/"><i class="fa fa-tag"></i>getUserMedia (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/git/"><i class="fa fa-tag"></i>Git (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/gitconfig/"><i class="fa fa-tag"></i>gitconfig (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/glsl/"><i class="fa fa-tag"></i>GLSL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/golang/"><i class="fa fa-tag"></i>Golang (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/googleappengine/"><i class="fa fa-tag"></i>GoogleAppEngine (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/homebrew/"><i class="fa fa-tag"></i>Homebrew (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html/"><i class="fa fa-tag"></i>HTML (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5/"><i class="fa fa-tag"></i>HTML5 (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5-outline/"><i class="fa fa-tag"></i>HTML5-outline (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/https/"><i class="fa fa-tag"></i>HTTPS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/hugo/"><i class="fa fa-tag"></i>Hugo (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/icon-font/"><i class="fa fa-tag"></i>Icon-Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ionic/"><i class="fa fa-tag"></i>ionic (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ios/"><i class="fa fa-tag"></i>iOS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/iterm/"><i class="fa fa-tag"></i>iTerm (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/javascript/"><i class="fa fa-tag"></i>JavaScript (6)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jinja2/"><i class="fa fa-tag"></i>jinja2 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jq/"><i class="fa fa-tag"></i>jq (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jquery/"><i class="fa fa-tag"></i>jQuery (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jsperf/"><i class="fa fa-tag"></i>jsperf (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/lint/"><i class="fa fa-tag"></i>lint (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/linux/"><i class="fa fa-tag"></i>Linux (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mediaquery/"><i class="fa fa-tag"></i>mediaQuery (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mongodb/"><i class="fa fa-tag"></i>MongoDB (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mvc/"><i class="fa fa-tag"></i>MVC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/namespace/"><i class="fa fa-tag"></i>namespace (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/naming/"><i class="fa fa-tag"></i>naming (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/oldie/"><i class="fa fa-tag"></i>oldIE (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/openapi/"><i class="fa fa-tag"></i>OpenAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/opengraph/"><i class="fa fa-tag"></i>OpenGraph (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/output/"><i class="fa fa-tag"></i>output (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/php/"><i class="fa fa-tag"></i>PHP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/polyfills/"><i class="fa fa-tag"></i>polyfills (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/preloader/"><i class="fa fa-tag"></i>preloader (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/python/"><i class="fa fa-tag"></i>Python (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rdfa/"><i class="fa fa-tag"></i>RDFa (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rsync/"><i class="fa fa-tag"></i>rsync (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/scala/"><i class="fa fa-tag"></i>Scala (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/shellscript/"><i class="fa fa-tag"></i>ShellScript (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/slack/"><i class="fa fa-tag"></i>slack (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/smartphone/"><i class="fa fa-tag"></i>Smartphone (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ssh/"><i class="fa fa-tag"></i>SSH (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/static-site-generator/"><i class="fa fa-tag"></i>Static Site Generator (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/svg/"><i class="fa fa-tag"></i>SVG (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/tmux/"><i class="fa fa-tag"></i>tmux (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vagrant/"><i class="fa fa-tag"></i>Vagrant (15)</a></li>
+    <li><a href="http://girigiribauer.com/tags/viewport/"><i class="fa fa-tag"></i>viewport (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vim/"><i class="fa fa-tag"></i>Vim (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vimrc/"><i class="fa fa-tag"></i>vimrc (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualbox/"><i class="fa fa-tag"></i>VirtualBox (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualization/"><i class="fa fa-tag"></i>virtualization (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vscode/"><i class="fa fa-tag"></i>VSCode (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webapp/"><i class="fa fa-tag"></i>WebApp (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webaudioapi/"><i class="fa fa-tag"></i>WebAudioAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webfont/"><i class="fa fa-tag"></i>WebFont (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webgl/"><i class="fa fa-tag"></i>WebGL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webrtc/"><i class="fa fa-tag"></i>WebRTC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webserver/"><i class="fa fa-tag"></i>WebServer (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/wget/"><i class="fa fa-tag"></i>wget (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/yeoman/"><i class="fa fa-tag"></i>Yeoman (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/zsh/"><i class="fa fa-tag"></i>Zsh (2)</a></li>
+  </ul>
+
+  <h2>Categories (Sections)</h2>
+  <ul class="tags">
+    <li><a href="/tech/"><i class="fa fa-book"></i>Tech (87)</a></li>
+    <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
+  </ul>
+
+  <h2>RSS</h2>
+  <ul class="tags">
+    <li><a href="/tech/index.xml"><i class="fa fa-rss"></i>Tech Articles</a></li>
+    <li><a href="/index.xml"><i class="fa fa-rss"></i>All Articles</a></li>
+  </ul>
+
+  <hr>
+
+  <ul>
+    <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+    <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+    <li>このサイトでは cookie および Google Analytics を利用しています、詳しくは<a href="https://www.google.com/intl/ja/policies/privacy/partners/" target="_blank">こちら</a></li>
+  </ul>
+  <p class="copyright">&copy; ばうあーろぐ</p>
+</footer>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    </div>
+  </body>
+</html>

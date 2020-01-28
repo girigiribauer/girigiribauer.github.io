@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Crawler on ばうあーろぐ</title>
@@ -13,10 +13,10 @@
     
     <item>
       <title>wgetが超絶便利なwebクローラー、クローリングツールだとは知らなかった・・・！</title>
-      <link>http://girigiribauer.com/archives/925/</link>
+      <link>http://girigiribauer.com/tech/20130408/</link>
       <pubDate>Mon, 08 Apr 2013 00:20:54 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/925/</guid>
+      <guid>http://girigiribauer.com/tech/20130408/</guid>
       <description>ええ、知りませんでした。無知もいいところです・・・。 webコンテンツをざっくりローカルで見られるようにしたいなー。と思って、いろいろぐぐって</description>
     </item>
     

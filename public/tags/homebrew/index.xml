@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Homebrew on ばうあーろぐ</title>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Homebrew で Golang のバイナリを公開してみた</title>
-      <link>http://girigiribauer.com/archives/20161004/</link>
+      <link>http://girigiribauer.com/tech/20161004/</link>
       <pubDate>Tue, 04 Oct 2016 13:11:17 +0900</pubDate>
       
-      <guid>http://girigiribauer.com/archives/20161004/</guid>
+      <guid>http://girigiribauer.com/tech/20161004/</guid>
       <description>超楽だったのでメモっておきます。 こちらにドキュメントあります。（Golang のバイナリの場合ではないので少し異なりますが） https://github.com/Homebrew/brew/blob/master/docs/Formula-Cookbook.md Homebrew 対応 自作コマン</description>
     </item>
     

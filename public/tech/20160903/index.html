@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>FTP でも rsync みたいにコマンドからファイル転送したい - ばうあーろぐ</title>
+    <meta name="viewport" content="width=device-width">
+<meta itemprop="name" content="FTP でも rsync みたいにコマンドからファイル転送したい">
+<meta itemprop="description" content="ターミナルで何でも行う人にとって、FTP の GUI クライアントはもう辛すぎるのです。 コマンド1つで rsync のようにアップロードしたいのです。 同じように考">
+<meta itemprop="datePublished" content="2016-09-03T17:29:24&#43;09:00" />
+<meta itemprop="dateModified" content="2016-09-03T17:29:24&#43;09:00" />
+<meta itemprop="wordCount" content="1396">
+
+
+
+<meta itemprop="keywords" content="FTP,rsync,automation,CLI," />
+<meta property="og:title" content="FTP でも rsync みたいにコマンドからファイル転送したい" />
+<meta property="og:description" content="ターミナルで何でも行う人にとって、FTP の GUI クライアントはもう辛すぎるのです。 コマンド1つで rsync のようにアップロードしたいのです。 同じように考" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://girigiribauer.com/tech/20160903/" />
+<meta property="article:published_time" content="2016-09-03T17:29:24+09:00" />
+<meta property="article:modified_time" content="2016-09-03T17:29:24+09:00" />
+
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="FTP でも rsync みたいにコマンドからファイル転送したい"/>
+<meta name="twitter:description" content="ターミナルで何でも行う人にとって、FTP の GUI クライアントはもう辛すぎるのです。 コマンド1つで rsync のようにアップロードしたいのです。 同じように考"/>
+
+<link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<meta name="generator" content="Hugo 0.62.2" />
+  </head>
+  <body>
+    <div class="container">
+<header class="globalheader"><a href="/">TOP</a></header>
+      <main class="maincontents" role="main">
+
+<h1 class="heading">FTP でも rsync みたいにコマンドからファイル転送したい</h1>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2016-09-03 17:29:24">2016/09/03</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/ftp/"><i class="fas fa-tag"></i>FTP</a></li>
+    <li><a href="/tags/rsync/"><i class="fas fa-tag"></i>rsync</a></li>
+    <li><a href="/tags/automation/"><i class="fas fa-tag"></i>automation</a></li>
+    <li><a href="/tags/cli/"><i class="fas fa-tag"></i>CLI</a></li>
+  </ul>
+</div>
+<div class="article">
+<p>ターミナルで何でも行う人にとって、FTP の GUI クライアントはもう辛すぎるのです。
+コマンド1つで rsync のようにアップロードしたいのです。</p>
+<p>同じように考える人は多いらしく、
+&ldquo;rsync&rdquo;, &ldquo;FTP&rdquo; でググると &ldquo;rsync over FTP&rdquo; がどうのこうのと書かれた記事は散見するものの、
+そんなものないけど、代わりに <strong>lftp</strong> 使うといいよ。みたいな記事が多くあります。</p>
+<p>なので、（過去に1度使った記憶あるものの、改めて）試しに使ってみました。</p>
+<p>なお、MacBook Pro の El Capitan です。Homebrew でインストールします。</p>
+<pre><code>brew install lftp
+man lftp
+</code></pre>
+<p>lftp コマンドは、基本的に ftp コマンドと同じく対話形式のコマンドなのですが、
+オプションで -e や -c とともに対話形式の内容のコマンド（サブコマンド？）をつけてやると
+そのまま実行できます。</p>
+<p>また、対話形式をテキストファイルにまとめておき、 -f オプションで利用することも可能です。
+以下は lftp コマンド自体のシンタックスとオプションです。（man lftp より抜粋）</p>
+<pre><code>SYNTAX
+       lftp [-d] [-e cmd] [-p port] [-u user[,pass]] [site]
+       lftp -f script_file
+       lftp -c commands
+       lftp --version
+       lftp --help
+
+OPTIONS
+       -d     Switch on debugging mode.
+
+       -e commands
+              Execute given commands and don't exit.
+
+       -p port
+              Use the given port to connect.
+
+       -u user[,pass]
+              Use the given username and  password  to  connect.  Remember  to
+              quote  the  password properly in the shell. Also note that it is
+              not secure to specify the password on command line, use ~/.netrc
+              file   or   LFTP_PASSWORD  environment  variable  together  with
+              --env-password option. Alternatively you can use ssh-based  pro-
+              tocols  with authorized keys, so you don't have to enter a pass-
+              word.
+
+
+       --norc Don't execute rc files from the home directory.
+
+       -f script_file
+              Execute commands in the file and exit.  This option must be used
+              alone without other arguments (except --norc).
+
+       -c commands
+              Execute  the  given commands and exit. Commands can be separated
+              with a semicolon, `&amp;&amp;' or `||'. Remember to quote  the  commands
+              argument  properly in the shell.  This option must be used alone
+              without other arguments (except --norc).
+</code></pre>
+<p>上記から、接続情報は lftp のオプションとして渡しつつ、
+それとは別に対話形式内のコマンドにて実際のファイルアップロードを行います。</p>
+<p>今回はその中の mirror コマンドを利用し、 rsync に近いことを行ったのを
+シェルスクリプトにまとめてみました。（接続情報はダミー）</p>
+<pre><code>#!/bin/sh
+
+HOSTNAME=192.0.2.24
+USERNAME=girigiribauer
+PASSWORD=passwordhere
+SOURCE=&quot;path/to/source_dir&quot;
+DIST=&quot;/path/to/target_dir&quot;
+
+lftp -d -u $USERNAME,$PASSWORD $HOSTNAME -e &quot;\
+  mirror \
+  --reverse \
+  --delete \
+  --only-newer \
+  --verbose \
+  -X .DS_Store \
+  $SOURCE \
+  $DIST; \
+  exit&quot;
+</code></pre>
+<p>後半が mirror コマンドのオプションですが、
+reverse はアップロードを意味します。</p>
+<p>色々オプションあるので詳しくはヘルプを見た方が良いのですが、
+lftp の方のヘルプにはあまり詳しく載ってませんので
+lftp コマンドをそのまま実行して対話形式にしてから
+<code>help mirror</code> とすることで mirror コマンドの help を開くことができます。</p>
+<pre><code>% lftp
+lftp :~&gt; help mirror
+Usage: mirror [OPTS] [remote [local]]
+
+Mirror specified remote directory to local directory
+
+ -c, --continue         continue a mirror job if possible
+ -e, --delete           delete files not present at remote site
+     --delete-first     delete old files before transferring new ones
+ -s, --allow-suid       set suid/sgid bits according to remote site
+     --allow-chown      try to set owner and group on files
+     --ignore-time      ignore time when deciding whether to download
+ -n, --only-newer       download only newer files (-c won't work)
+ -r, --no-recursion     don't go to subdirectories
+ -p, --no-perms         don't set file permissions
+     --no-umask         don't apply umask to file modes
+ -R, --reverse          reverse mirror (put files)
+ -L, --dereference      download symbolic links as files
+ -N, --newer-than=SPEC  download only files newer than specified time
+ -P, --parallel[=N]     download N files in parallel
+ -i RX, --include RX    include matching files
+ -x RX, --exclude RX    exclude matching files
+                        RX is extended regular expression
+ -v, --verbose[=N]      verbose operation
+     --log=FILE         write lftp commands being executed to FILE
+     --script=FILE      write lftp commands to FILE, but don't execute them
+     --just-print, --dry-run    same as --script=-
+
+When using -R, the first directory is local and the second is remote.
+If the second directory is omitted, basename of first directory is used.
+If both directories are omitted, current local and remote directories are used.
+</code></pre>
+<p>今回は、手元のファイルのが新しい場合に動作し、
+なおかつ手元で削除したファイルも同期を取りたいので、
+&ndash;delete と &ndash;only-newer オプションをつけました。</p>
+<h2 id="まとめ">まとめ</h2>
+<p>FTP だけでも rsync にある程度近いことは出来ました。</p>
+<p>ただ、 dry-run 相当のオプションが探した限りなかったので、
+実際に試しながら正しく動作しているか確認することになるので、
+そこはちょっと怖いところではありますね・・・。</p>
+<p><strong>2016/09/30追記</strong></p>
+<p>さーせん、dry-run オプションありました・・・</p>
+<p>&ndash;just-print, &ndash;dry-run    same as &ndash;script=- って上にあるじゃん、自分の目はフシ穴か・・・</p>
+<p><strong>2016/09/30追記ここまで</strong></p>
+<p>FTP のみという縛りがあったとしても、コマンド1つで転送できるようにしておけば、
+バージョン管理などと連携してフックさせることも可能となり、
+精神衛生的にも良いかと思います。</p>
+<h2 id="ref">参考URL</h2>
+<ul>
+<li><a href="https://lftp.yar.ru/">https://lftp.yar.ru/</a></li>
+<li><a href="http://www.itmedia.co.jp/enterprise/articles/0804/25/news014.html">http://www.itmedia.co.jp/enterprise/articles/0804/25/news014.html</a></li>
+</ul>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2016-09-03 17:29:24">2016/09/03</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/ftp/"><i class="fas fa-tag"></i>FTP</a></li>
+    <li><a href="/tags/rsync/"><i class="fas fa-tag"></i>rsync</a></li>
+    <li><a href="/tags/automation/"><i class="fas fa-tag"></i>automation</a></li>
+    <li><a href="/tags/cli/"><i class="fas fa-tag"></i>CLI</a></li>
+  </ul>
+</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+      </main>
+<footer class="globalfooter">
+  <h2>Tags</h2>
+  <ul class="tags">
+    <li><a href="http://girigiribauer.com/tags/ajax/"><i class="fa fa-tag"></i>ajax (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/angular/"><i class="fa fa-tag"></i>Angular (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ansible/"><i class="fa fa-tag"></i>Ansible (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/anyenv/"><i class="fa fa-tag"></i>anyenv (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apache/"><i class="fa fa-tag"></i>Apache (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/api/"><i class="fa fa-tag"></i>API (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apps/"><i class="fa fa-tag"></i>Apps (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/auth/"><i class="fa fa-tag"></i>auth (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/automation/"><i class="fa fa-tag"></i>automation (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bot/"><i class="fa fa-tag"></i>bot (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bugs/"><i class="fa fa-tag"></i>bugs (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/canvas/"><i class="fa fa-tag"></i>Canvas (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/chef/"><i class="fa fa-tag"></i>Chef (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cli/"><i class="fa fa-tag"></i>CLI (11)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cordova/"><i class="fa fa-tag"></i>Cordova (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/crawler/"><i class="fa fa-tag"></i>Crawler (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css/"><i class="fa fa-tag"></i>CSS (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css3/"><i class="fa fa-tag"></i>CSS3 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cssfilter/"><i class="fa fa-tag"></i>CSSfilter (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/docker/"><i class="fa fa-tag"></i>Docker (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/dom/"><i class="fa fa-tag"></i>DOM (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ecmascript/"><i class="fa fa-tag"></i>ECMAScript (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/electron/"><i class="fa fa-tag"></i>Electron (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/english/"><i class="fa fa-tag"></i>English (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/event-conference/"><i class="fa fa-tag"></i>event-conference (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/firebase/"><i class="fa fa-tag"></i>Firebase (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/font/"><i class="fa fa-tag"></i>Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ftp/"><i class="fa fa-tag"></i>FTP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/functionallanguage/"><i class="fa fa-tag"></i>FunctionalLanguage (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/getusermedia/"><i class="fa fa-tag"></i>getUserMedia (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/git/"><i class="fa fa-tag"></i>Git (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/gitconfig/"><i class="fa fa-tag"></i>gitconfig (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/glsl/"><i class="fa fa-tag"></i>GLSL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/golang/"><i class="fa fa-tag"></i>Golang (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/googleappengine/"><i class="fa fa-tag"></i>GoogleAppEngine (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/homebrew/"><i class="fa fa-tag"></i>Homebrew (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html/"><i class="fa fa-tag"></i>HTML (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5/"><i class="fa fa-tag"></i>HTML5 (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5-outline/"><i class="fa fa-tag"></i>HTML5-outline (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/https/"><i class="fa fa-tag"></i>HTTPS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/hugo/"><i class="fa fa-tag"></i>Hugo (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/icon-font/"><i class="fa fa-tag"></i>Icon-Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ionic/"><i class="fa fa-tag"></i>ionic (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ios/"><i class="fa fa-tag"></i>iOS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/iterm/"><i class="fa fa-tag"></i>iTerm (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/javascript/"><i class="fa fa-tag"></i>JavaScript (6)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jinja2/"><i class="fa fa-tag"></i>jinja2 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jq/"><i class="fa fa-tag"></i>jq (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jquery/"><i class="fa fa-tag"></i>jQuery (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jsperf/"><i class="fa fa-tag"></i>jsperf (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/lint/"><i class="fa fa-tag"></i>lint (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/linux/"><i class="fa fa-tag"></i>Linux (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mediaquery/"><i class="fa fa-tag"></i>mediaQuery (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mongodb/"><i class="fa fa-tag"></i>MongoDB (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mvc/"><i class="fa fa-tag"></i>MVC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/namespace/"><i class="fa fa-tag"></i>namespace (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/naming/"><i class="fa fa-tag"></i>naming (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/oldie/"><i class="fa fa-tag"></i>oldIE (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/openapi/"><i class="fa fa-tag"></i>OpenAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/opengraph/"><i class="fa fa-tag"></i>OpenGraph (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/output/"><i class="fa fa-tag"></i>output (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/php/"><i class="fa fa-tag"></i>PHP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/polyfills/"><i class="fa fa-tag"></i>polyfills (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/preloader/"><i class="fa fa-tag"></i>preloader (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/python/"><i class="fa fa-tag"></i>Python (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rdfa/"><i class="fa fa-tag"></i>RDFa (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rsync/"><i class="fa fa-tag"></i>rsync (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/scala/"><i class="fa fa-tag"></i>Scala (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/shellscript/"><i class="fa fa-tag"></i>ShellScript (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/slack/"><i class="fa fa-tag"></i>slack (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/smartphone/"><i class="fa fa-tag"></i>Smartphone (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ssh/"><i class="fa fa-tag"></i>SSH (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/static-site-generator/"><i class="fa fa-tag"></i>Static Site Generator (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/svg/"><i class="fa fa-tag"></i>SVG (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/tmux/"><i class="fa fa-tag"></i>tmux (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vagrant/"><i class="fa fa-tag"></i>Vagrant (15)</a></li>
+    <li><a href="http://girigiribauer.com/tags/viewport/"><i class="fa fa-tag"></i>viewport (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vim/"><i class="fa fa-tag"></i>Vim (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vimrc/"><i class="fa fa-tag"></i>vimrc (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualbox/"><i class="fa fa-tag"></i>VirtualBox (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualization/"><i class="fa fa-tag"></i>virtualization (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vscode/"><i class="fa fa-tag"></i>VSCode (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webapp/"><i class="fa fa-tag"></i>WebApp (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webaudioapi/"><i class="fa fa-tag"></i>WebAudioAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webfont/"><i class="fa fa-tag"></i>WebFont (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webgl/"><i class="fa fa-tag"></i>WebGL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webrtc/"><i class="fa fa-tag"></i>WebRTC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webserver/"><i class="fa fa-tag"></i>WebServer (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/wget/"><i class="fa fa-tag"></i>wget (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/yeoman/"><i class="fa fa-tag"></i>Yeoman (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/zsh/"><i class="fa fa-tag"></i>Zsh (2)</a></li>
+  </ul>
+
+  <h2>Categories (Sections)</h2>
+  <ul class="tags">
+    <li><a href="/tech/"><i class="fa fa-book"></i>Tech (87)</a></li>
+    <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
+  </ul>
+
+  <h2>RSS</h2>
+  <ul class="tags">
+    <li><a href="/tech/index.xml"><i class="fa fa-rss"></i>Tech Articles</a></li>
+    <li><a href="/index.xml"><i class="fa fa-rss"></i>All Articles</a></li>
+  </ul>
+
+  <hr>
+
+  <ul>
+    <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+    <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+    <li>このサイトでは cookie および Google Analytics を利用しています、詳しくは<a href="https://www.google.com/intl/ja/policies/privacy/partners/" target="_blank">こちら</a></li>
+  </ul>
+  <p class="copyright">&copy; ばうあーろぐ</p>
+</footer>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    </div>
+  </body>
+</html>

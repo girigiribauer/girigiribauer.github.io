@@ -61,7 +61,6 @@ h6 {
   font-weight: bold;
 }
 h1 {
-  margin: 5rem 0 2.5rem 0;
   font-size: 2rem;
 }
 h2 {
@@ -87,16 +86,23 @@ h6 {
   color: #777;
   font-size: 0.875rem;
 }
-.heading-single {
-  margin: 0 0 1rem 0;
+.sitetitle {
+  margin: 5rem 0;
+}
+.heading {
+  margin: 0 0 2rem 0;
   padding: 0;
   line-height: 1.3;
 }
-.heading-archive {
+.heading-listitem {
   margin: 0 0 0.5rem 0;
   padding: 0;
   border-bottom: 0;
   font-size: 1.25rem;
+}
+.heading i,
+.heading-listitem i {
+  margin-right: 0.25rem;
 }
 
 /**
@@ -325,6 +331,12 @@ th {
   display: inline-block;
   margin: 0 0.5rem 0.125rem 0;
 }
+.tags > li.section + li:before {
+  content: '|';
+  margin: 0 0.75rem 0.125rem 0;
+  color: #eee;
+  font-weight: bold;
+}
 .tags i {
   margin-right: 0.25rem;
 }
@@ -390,3 +402,34 @@ th {
    font-size: 0.75rem;
    text-align: right;
  }
+
+ /**
+  * pagination (Hugo preset)
+  */
+.pagination {
+  padding: 0;
+  list-style: none;
+}
+.pagination .page-item {
+  display: inline-block;
+  margin: 0 0.5rem 0 0;
+  font-size: 1.25rem;
+}
+.pagination .page-item.disabled {
+  display: none;
+}
+.pagination .page-link {
+  min-width: 2.5rem;
+  display: inline-block;
+  padding: 0.25rem;
+  background: #4078c0;
+  border-radius: 0.25rem;
+  color: #fff;
+  text-align: center;
+}
+.pagination .page-item.active .page-link {
+  background: #ffefef;
+  color: #e43232;
+  cursor: default;
+  text-decoration: none;
+}

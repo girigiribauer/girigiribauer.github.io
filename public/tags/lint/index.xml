@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Lint on ばうあーろぐ</title>
+    <title>lint on ばうあーろぐ</title>
     <link>http://girigiribauer.com/tags/lint/</link>
-    <description>Recent content in Lint on ばうあーろぐ</description>
+    <description>Recent content in lint on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Fri, 17 Feb 2017 00:16:01 +0900</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>Vim の Syntastic で sass-lint が上手く動かないときの debug の話</title>
-      <link>http://girigiribauer.com/archives/20170217/</link>
+      <link>http://girigiribauer.com/tech/20170217/</link>
       <pubDate>Fri, 17 Feb 2017 00:16:01 +0900</pubDate>
       
-      <guid>http://girigiribauer.com/archives/20170217/</guid>
+      <guid>http://girigiribauer.com/tech/20170217/</guid>
       <description>一瞬はまったのでメモしておきます。 ~/.sass-lint.yml はホームディレクトリ外では無効でした まず問題の発端はここからです。 僕は今のところ Vim 上で scss ファイルを編集す</description>
     </item>
     

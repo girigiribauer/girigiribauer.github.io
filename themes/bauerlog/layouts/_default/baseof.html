@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ block "title" . }}{{ with .Params.Title }}{{ . }}{{ end }} - {{ .Site.Title }}{{ end }}</title>
+    <meta name="viewport" content="width=device-width">
+{{ template "_internal/schema.html" . }}
+{{ template "_internal/opengraph.html" . }}
+    <meta property="og:image" content="{{ block "ogimage" . }}{{ .Site.BaseURL }}img/ogimage.png{{ end }}">
+{{ template "_internal/twitter_cards.html" . }}
+{{ with .OutputFormats.Get "rss" -}}
+    {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+{{ end -}}
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+{{ hugo.Generator }}
+  </head>
+  <body>
+    <div class="container">
+{{ block "header" . }}{{ partialCached "site-header.html" . }}{{ end }}
+      <main class="maincontents" role="main">
+{{ block "main" . }}{{ end }}
+      </main>
+{{ block "footer" . }}{{ partialCached "site-footer.html" . }}{{ end }}
+    </div>
+  </body>
+</html>

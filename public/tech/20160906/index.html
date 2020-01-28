@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Ansible で再起動後にも playbook を継続する方法 - ばうあーろぐ</title>
+    <meta name="viewport" content="width=device-width">
+<meta itemprop="name" content="Ansible で再起動後にも playbook を継続する方法">
+<meta itemprop="description" content="タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。 Chef では少なくともそういった機能は無かったように思えますが（僕">
+<meta itemprop="datePublished" content="2016-09-06T09:14:39&#43;09:00" />
+<meta itemprop="dateModified" content="2016-09-06T09:14:39&#43;09:00" />
+<meta itemprop="wordCount" content="2428">
+
+
+
+<meta itemprop="keywords" content="Ansible,automation," />
+<meta property="og:title" content="Ansible で再起動後にも playbook を継続する方法" />
+<meta property="og:description" content="タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。 Chef では少なくともそういった機能は無かったように思えますが（僕" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://girigiribauer.com/tech/20160906/" />
+<meta property="article:published_time" content="2016-09-06T09:14:39+09:00" />
+<meta property="article:modified_time" content="2016-09-06T09:14:39+09:00" />
+
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ansible で再起動後にも playbook を継続する方法"/>
+<meta name="twitter:description" content="タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。 Chef では少なくともそういった機能は無かったように思えますが（僕"/>
+
+<link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<meta name="generator" content="Hugo 0.62.2" />
+  </head>
+  <body>
+    <div class="container">
+<header class="globalheader"><a href="/">TOP</a></header>
+      <main class="maincontents" role="main">
+
+<h1 class="heading">Ansible で再起動後にも playbook を継続する方法</h1>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2016-09-06 09:14:39">2016/09/06</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/ansible/"><i class="fas fa-tag"></i>Ansible</a></li>
+    <li><a href="/tags/automation/"><i class="fas fa-tag"></i>automation</a></li>
+  </ul>
+</div>
+<div class="article">
+<p>タイトルの通りですが、正直これ出来ないと思っていたので、出来てすごく嬉しいです。</p>
+<p>Chef では少なくともそういった機能は無かったように思えますが（僕が知らないだけかもしれない）、
+<strong>Ansible はプッシュベース</strong> だからでしょうか。
+実行する主体がいつもローカル側にあるからこそ、
+一旦接続を切ってまた繋げるといったことがやりやすいのかもしれません。</p>
+<h2 id="そもそもなぜ再接続したいのか">そもそもなぜ再接続したいのか？</h2>
+<p>ほとんどの playbook では問題ないのですが、
+SELinux の設定の反映（一時的な設定だけなら問題なし）などの一部のセットアップにて、
+<strong>再起動が必要になるものが存在しています。</strong></p>
+<p>他にもあるかもしれませんが、
+例えば SELinux の設定をいじる場合は以下のような手順を踏みます。</p>
+<pre><code>$ getenforce #=&gt; 今の設定確認
+Enforcing
+$ sudo vi /etc/sysconfig/selinux #=&gt; SELINUX=disabled を設定
+$ sudo reboot #=&gt; 再起動
+</code></pre>
+<p>Ansible では playbook 上で reboot すると、
+<strong>playbook のステータスが unreachable になってそのまま終了</strong> してしまいます。</p>
+<pre><code>fatal: [machine_name]: UNREACHABLE! =&gt; {&quot;changed&quot;: false, &quot;msg&quot;: &quot;Failed to connect to the host via ssh.&quot;, &quot;unreachable&quot;: true}
+</code></pre>
+<p>繋がらなくなるのでまあ当然ですよね。</p>
+<p>これを一連の playbook で再起動をはさんで実行できると、
+playbook を書くときにトリッキーなことをせずに済むこともあるかもしれません。
+（SELinux だけみると、最後にまとめて再起動すれば事足りるっちゃあそうですが・・・。）</p>
+<p>ちょっと話が逸れますが、 reboot するのが通常の task ではなく handler だった場合、
+（handler は変化があった場合のみ、最後にまとめて実行するタスクのこと）
+単に再起動だけ実行させて、あとはほったらかしで問題ないケースも出てきます。
+その場合は playbook の実行完了を待たない poll の値を設定することで、handler で再起動をさせて終了させることは可能です。</p>
+<p><a href="http://docs.ansible.com/ansible/playbooks_async.html">http://docs.ansible.com/ansible/playbooks_async.html</a></p>
+<h2 id="再接続を可能にする-ansible-のモジュール">再接続を可能にする Ansible のモジュール</h2>
+<p>Ansible で再接続を行うために必要な関連モジュールをメモっておきます。
+最初のやつは正確にはモジュールではないかもしれません。キーワード？</p>
+<h3 id="local_action">local_action</h3>
+<p><a href="http://docs.ansible.com/ansible/playbooks_delegation.html">http://docs.ansible.com/ansible/playbooks_delegation.html</a></p>
+<p>この local_action は他のモジュールと同じように使うことが出来るのですが、
+モジュールのさらに頭につけることで
+<strong>ローカルに処理を委譲することができます。</strong></p>
+<p>ちなみに <code>delegate_to</code> というキーワードも存在していて、以下は同じ意味を指すようです。
+（先ほどのリンク内から抜粋）</p>
+<pre><code>- name: add back to load balancer pool
+command: /usr/bin/add_back_to_pool {{ inventory_hostname }}
+delegate_to: 127.0.0.1
+
+- name: take out of load balancer pool
+local_action: command /usr/bin/take_out_of_pool {{ inventory_hostname }}
+</code></pre>
+<h3 id="wait_for-モジュール">wait_for モジュール</h3>
+<p><a href="http://docs.ansible.com/ansible/wait_for_module.html">http://docs.ansible.com/ansible/wait_for_module.html</a></p>
+<p>wait_for モジュールは、 <strong>指定したホスト名・ポートを監視し、有効になるまで待機します。</strong></p>
+<p>先に非同期で再起動するような playbook を用意しておき、
+その後 local_action をはさんだ wait_for モジュールを利用して、
+再起動で処理が戻るまで待機するような playbook を書くことが可能です。</p>
+<h3 id="set_fact-モジュール">set_fact モジュール</h3>
+<p><a href="http://docs.ansible.com/ansible/set_fact_module.html">http://docs.ansible.com/ansible/set_fact_module.html</a></p>
+<p>set_fact モジュールは、ansible-playbook の <strong>実行時の変数を途中で上書きできるモジュール</strong> です。</p>
+<p>今回は結局使わなかったのですが、
+例えばポート番号を変えたり、パスワード認証から公開鍵認証に変えたりした場合に、
+接続するための情報を途中で変更する際に用いました。</p>
+<p>あくまで僕のケースですが、個人的には接続方法が大きく変わった時には無理をせず、
+強制的に fail などのメッセージを出して（鍵認証に変えたから接続し直してね的なやつ）、
+変更後の接続方法で改めて playbook を実行するようにしています。
+（この辺の話はまた長くなるので、余裕があれば改めて取りまとめたいですね・・・）</p>
+<h2 id="selinux-の-playbook">SELinux の playbook</h2>
+<p>他 playbook も参考にしながら、冪等性も踏まえて書いてみたのがこれです。
+（抜粋＆本筋じゃないところは省略）</p>
+<pre><code>- name: SELinux のステータス取得
+  shell: getenforce
+  register: selinux_status
+  changed_when: False
+  tags: selinux
+  become: True
+
+- name: SELinux をコントロールするためのパッケージ導入
+  yum: name=libselinux-python state=installed
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: True
+
+- name: SELinux の無効化
+  selinux: state=disabled
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: True
+
+- name: SELinux 設定後の再起動
+  shell: &quot;sleep 2 &amp;&amp; reboot&quot;
+  async: 1
+  poll: 0
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: True
+
+- name: SELinux 設定後の再起動完了まで待機
+  local_action: wait_for host={{ inventory_hostname }} port={{ ssh_port }} delay=30
+  when: selinux_status.stdout == 'Enforcing'
+  tags: selinux
+  become: False
+</code></pre>
+<p>inventory_hostname は <a href="http://docs.ansible.com/ansible/playbooks_variables.html">http://docs.ansible.com/ansible/playbooks_variables.html</a> にあるように
+Ansible のインベントリファイルがあるローカルを指しています。予め用意されている変数です。</p>
+<p>register については
+<a href="http://docs.ansible.com/ansible/playbooks_conditionals.html#register-variables">http://docs.ansible.com/ansible/playbooks_conditionals.html#register-variables</a> にありますが、
+実行結果などを後で参照するために一時保存してくれる機能です。</p>
+<p>SELinux の設定を取得して、有効になっていた場合のみ無効となるような playbook を実行しています（冪等性）。
+逆に <strong>2回目以降の playbook の実行ですでに無効になっていた場合は、
+when と書いてあるところが False になるので playbook の実行がスキップされます。</strong>
+毎回再起動をはさんでいては時間がかかってしまいますので、
+時間短縮のため register や when などを用いて変更する必要があるときだけ処理をするようにしています。</p>
+<p>ちなみに、再起動自体の playbook ですが、
+sleep 2 や async: 1 がないと一番最初の例と同じく unreachable でストップしてしまいます。
+shell モジュール内で sleep 2 などを頭につけて実行直後に再起動が実行されないようにしつつ、
+async でこの playbook の終了タイミング自体も直後ではなく後ろにずらす必要がありました。</p>
+<p>様々な環境で試したところ、両方ずらす必要があるようです。
+最初は単にタイミングをずらすだけで良いかと思って sleep 1 になってたんですが、
+Vagrant 上は問題がなくとも VPS 上では sleep 2 にしないと unreachable になってしまったりと、
+再起動周りは多少経験則が必要なようです・・・。</p>
+<p>ここに関しては内部の処理を見たわけではないのですが、
+タイミングをずらすことで、再起動の処理の前に
+次の local_action &amp; wait_for モジュールに処理を渡してから再起動を行う必要があるようです。</p>
+<h2 id="まとめ">まとめ</h2>
+<p>Ansible のプッシュベースであるメリットが出てて便利だなーと思います。</p>
+<p>再起動の playbook については、今まで問題があったわけではないのですが、
+selinux の部分だけで設定完了することになるので、
+playbook の依存関係が少しすっきりした気がします。
+ただ、再起動タスクが多ければ多いほど、
+最後にまとめて handler として実行した方が playbook 全体の処理時間は短くなると思います。</p>
+<p>あと playbook の書き順によっては接続ポートの変更とかぶった場合、
+<strong>再起動後に SSH のポートが変わっちゃって接続できなくなっちゃった、</strong> みたいなケースもありうるので
+そこは注意が必要かと思います。（今回使っていないset_fact モジュールである程度いけるかと思います）</p>
+<p>ちなみに再起動に関してはこの記事の通りなのですが、
+再ログインに関してはまだまとめきれてないので、
+改めて記事にメモっておこうと思います。</p>
+<h2 id="ref">参考URL</h2>
+<ul>
+<li><a href="http://qiita.com/volanja/items/d38fe0678848bae6902f">http://qiita.com/volanja/items/d38fe0678848bae6902f</a></li>
+<li><a href="https://gyagya1111.blogspot.jp/2015/02/ansibleselinux.html">https://gyagya1111.blogspot.jp/2015/02/ansibleselinux.html</a></li>
+<li><a href="http://jinja.pocoo.org/docs/dev/templates/">http://jinja.pocoo.org/docs/dev/templates/</a></li>
+<li><a href="http://stackoverflow.com/questions/23877781/how-to-wait-for-server-restart-using-ansible">http://stackoverflow.com/questions/23877781/how-to-wait-for-server-restart-using-ansible</a></li>
+</ul>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2016-09-06 09:14:39">2016/09/06</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/ansible/"><i class="fas fa-tag"></i>Ansible</a></li>
+    <li><a href="/tags/automation/"><i class="fas fa-tag"></i>automation</a></li>
+  </ul>
+</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+      </main>
+<footer class="globalfooter">
+  <h2>Tags</h2>
+  <ul class="tags">
+    <li><a href="http://girigiribauer.com/tags/ajax/"><i class="fa fa-tag"></i>ajax (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/angular/"><i class="fa fa-tag"></i>Angular (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ansible/"><i class="fa fa-tag"></i>Ansible (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/anyenv/"><i class="fa fa-tag"></i>anyenv (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apache/"><i class="fa fa-tag"></i>Apache (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/api/"><i class="fa fa-tag"></i>API (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apps/"><i class="fa fa-tag"></i>Apps (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/auth/"><i class="fa fa-tag"></i>auth (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/automation/"><i class="fa fa-tag"></i>automation (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bot/"><i class="fa fa-tag"></i>bot (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bugs/"><i class="fa fa-tag"></i>bugs (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/canvas/"><i class="fa fa-tag"></i>Canvas (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/chef/"><i class="fa fa-tag"></i>Chef (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cli/"><i class="fa fa-tag"></i>CLI (11)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cordova/"><i class="fa fa-tag"></i>Cordova (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/crawler/"><i class="fa fa-tag"></i>Crawler (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css/"><i class="fa fa-tag"></i>CSS (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css3/"><i class="fa fa-tag"></i>CSS3 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cssfilter/"><i class="fa fa-tag"></i>CSSfilter (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/docker/"><i class="fa fa-tag"></i>Docker (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/dom/"><i class="fa fa-tag"></i>DOM (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ecmascript/"><i class="fa fa-tag"></i>ECMAScript (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/electron/"><i class="fa fa-tag"></i>Electron (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/english/"><i class="fa fa-tag"></i>English (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/event-conference/"><i class="fa fa-tag"></i>event-conference (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/firebase/"><i class="fa fa-tag"></i>Firebase (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/font/"><i class="fa fa-tag"></i>Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ftp/"><i class="fa fa-tag"></i>FTP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/functionallanguage/"><i class="fa fa-tag"></i>FunctionalLanguage (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/getusermedia/"><i class="fa fa-tag"></i>getUserMedia (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/git/"><i class="fa fa-tag"></i>Git (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/gitconfig/"><i class="fa fa-tag"></i>gitconfig (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/glsl/"><i class="fa fa-tag"></i>GLSL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/golang/"><i class="fa fa-tag"></i>Golang (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/googleappengine/"><i class="fa fa-tag"></i>GoogleAppEngine (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/homebrew/"><i class="fa fa-tag"></i>Homebrew (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html/"><i class="fa fa-tag"></i>HTML (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5/"><i class="fa fa-tag"></i>HTML5 (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5-outline/"><i class="fa fa-tag"></i>HTML5-outline (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/https/"><i class="fa fa-tag"></i>HTTPS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/hugo/"><i class="fa fa-tag"></i>Hugo (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/icon-font/"><i class="fa fa-tag"></i>Icon-Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ionic/"><i class="fa fa-tag"></i>ionic (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ios/"><i class="fa fa-tag"></i>iOS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/iterm/"><i class="fa fa-tag"></i>iTerm (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/javascript/"><i class="fa fa-tag"></i>JavaScript (6)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jinja2/"><i class="fa fa-tag"></i>jinja2 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jq/"><i class="fa fa-tag"></i>jq (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jquery/"><i class="fa fa-tag"></i>jQuery (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jsperf/"><i class="fa fa-tag"></i>jsperf (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/lint/"><i class="fa fa-tag"></i>lint (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/linux/"><i class="fa fa-tag"></i>Linux (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mediaquery/"><i class="fa fa-tag"></i>mediaQuery (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mongodb/"><i class="fa fa-tag"></i>MongoDB (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mvc/"><i class="fa fa-tag"></i>MVC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/namespace/"><i class="fa fa-tag"></i>namespace (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/naming/"><i class="fa fa-tag"></i>naming (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/oldie/"><i class="fa fa-tag"></i>oldIE (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/openapi/"><i class="fa fa-tag"></i>OpenAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/opengraph/"><i class="fa fa-tag"></i>OpenGraph (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/output/"><i class="fa fa-tag"></i>output (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/php/"><i class="fa fa-tag"></i>PHP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/polyfills/"><i class="fa fa-tag"></i>polyfills (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/preloader/"><i class="fa fa-tag"></i>preloader (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/python/"><i class="fa fa-tag"></i>Python (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rdfa/"><i class="fa fa-tag"></i>RDFa (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rsync/"><i class="fa fa-tag"></i>rsync (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/scala/"><i class="fa fa-tag"></i>Scala (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/shellscript/"><i class="fa fa-tag"></i>ShellScript (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/slack/"><i class="fa fa-tag"></i>slack (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/smartphone/"><i class="fa fa-tag"></i>Smartphone (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ssh/"><i class="fa fa-tag"></i>SSH (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/static-site-generator/"><i class="fa fa-tag"></i>Static Site Generator (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/svg/"><i class="fa fa-tag"></i>SVG (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/tmux/"><i class="fa fa-tag"></i>tmux (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vagrant/"><i class="fa fa-tag"></i>Vagrant (15)</a></li>
+    <li><a href="http://girigiribauer.com/tags/viewport/"><i class="fa fa-tag"></i>viewport (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vim/"><i class="fa fa-tag"></i>Vim (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vimrc/"><i class="fa fa-tag"></i>vimrc (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualbox/"><i class="fa fa-tag"></i>VirtualBox (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualization/"><i class="fa fa-tag"></i>virtualization (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vscode/"><i class="fa fa-tag"></i>VSCode (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webapp/"><i class="fa fa-tag"></i>WebApp (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webaudioapi/"><i class="fa fa-tag"></i>WebAudioAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webfont/"><i class="fa fa-tag"></i>WebFont (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webgl/"><i class="fa fa-tag"></i>WebGL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webrtc/"><i class="fa fa-tag"></i>WebRTC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webserver/"><i class="fa fa-tag"></i>WebServer (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/wget/"><i class="fa fa-tag"></i>wget (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/yeoman/"><i class="fa fa-tag"></i>Yeoman (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/zsh/"><i class="fa fa-tag"></i>Zsh (2)</a></li>
+  </ul>
+
+  <h2>Categories (Sections)</h2>
+  <ul class="tags">
+    <li><a href="/tech/"><i class="fa fa-book"></i>Tech (87)</a></li>
+    <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
+  </ul>
+
+  <h2>RSS</h2>
+  <ul class="tags">
+    <li><a href="/tech/index.xml"><i class="fa fa-rss"></i>Tech Articles</a></li>
+    <li><a href="/index.xml"><i class="fa fa-rss"></i>All Articles</a></li>
+  </ul>
+
+  <hr>
+
+  <ul>
+    <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+    <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+    <li>このサイトでは cookie および Google Analytics を利用しています、詳しくは<a href="https://www.google.com/intl/ja/policies/privacy/partners/" target="_blank">こちら</a></li>
+  </ul>
+  <p class="copyright">&copy; ばうあーろぐ</p>
+</footer>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    </div>
+  </body>
+</html>

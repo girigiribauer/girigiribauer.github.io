@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Viewport on ばうあーろぐ</title>
+    <title>viewport on ばうあーろぐ</title>
     <link>http://girigiribauer.com/tags/viewport/</link>
-    <description>Recent content in Viewport on ばうあーろぐ</description>
+    <description>Recent content in viewport on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Thu, 25 Sep 2014 01:45:36 +0000</lastBuildDate>
@@ -13,19 +13,19 @@
     
     <item>
       <title>iOS8 on iPhone6 で設定によって viewport の値が変わる件</title>
-      <link>http://girigiribauer.com/archives/1665/</link>
+      <link>http://girigiribauer.com/tech/20140925/</link>
       <pubDate>Thu, 25 Sep 2014 01:45:36 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/1665/</guid>
+      <guid>http://girigiribauer.com/tech/20140925/</guid>
       <description>これはさすがに書いておいた方がよいかと思ったので書いておきます。 結論だけ先に言うと、設定によって viewport の値が変わるので注意です。 設定によって viewport の</description>
     </item>
     
     <item>
       <title>mediaQuery における max-width, max-device-width の違い</title>
-      <link>http://girigiribauer.com/archives/1179/</link>
+      <link>http://girigiribauer.com/tech/20131113/</link>
       <pubDate>Wed, 13 Nov 2013 09:29:57 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/1179/</guid>
+      <guid>http://girigiribauer.com/tech/20131113/</guid>
       <description>最近改めて使い分けないとなーと実感したので、その実感を忘れないうちにメモしておこうと思います。 デバイスの幅(width)と device-width の違いについて そ</description>
     </item>
     

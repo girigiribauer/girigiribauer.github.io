@@ -1,0 +1,7 @@
+{{ define "main" }}
+<h1 class="heading"><i class="fa fa-book"></i>{{ .Title }}{{ if not (eq .Paginator.PageNumber 1) }} / {{ .Paginator.PageNumber }} of {{ .Paginator.TotalPages }}{{ end }}</h1>
+<ul class="article-list">
+{{ range .Paginator.Pages }}{{ partial "listitem.html" . }}{{ end }}
+</ul>
+{{ template "_internal/pagination.html" . }}
+{{ end }}
