@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Wget on ばうあーろぐ</title>
+    <title>wget on ばうあーろぐ</title>
     <link>http://girigiribauer.com/tags/wget/</link>
-    <description>Recent content in Wget on ばうあーろぐ</description>
+    <description>Recent content in wget on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Mon, 08 Apr 2013 00:20:54 +0000</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>wgetが超絶便利なwebクローラー、クローリングツールだとは知らなかった・・・！</title>
-      <link>http://girigiribauer.com/archives/925/</link>
+      <link>http://girigiribauer.com/tech/20130408/</link>
       <pubDate>Mon, 08 Apr 2013 00:20:54 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/925/</guid>
+      <guid>http://girigiribauer.com/tech/20130408/</guid>
       <description>ええ、知りませんでした。無知もいいところです・・・。 webコンテンツをざっくりローカルで見られるようにしたいなー。と思って、いろいろぐぐって</description>
     </item>
     

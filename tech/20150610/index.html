@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Chef を本番投入してみた - ばうあーろぐ</title>
+    <meta name="viewport" content="width=device-width">
+<meta itemprop="name" content="Chef を本番投入してみた">
+<meta itemprop="description" content="メモレベルでごめんなさい。 サーバを移設してみました。 せっかくなので、移設ついでにブログのリニューアル（簡素化）と Chef cookbook を利用したプロビジョニン">
+<meta itemprop="datePublished" content="2015-06-09T23:39:55&#43;00:00" />
+<meta itemprop="dateModified" content="2015-06-09T23:39:55&#43;00:00" />
+<meta itemprop="wordCount" content="1360">
+
+
+
+<meta itemprop="keywords" content="Chef,Vagrant," />
+<meta property="og:title" content="Chef を本番投入してみた" />
+<meta property="og:description" content="メモレベルでごめんなさい。 サーバを移設してみました。 せっかくなので、移設ついでにブログのリニューアル（簡素化）と Chef cookbook を利用したプロビジョニン" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://girigiribauer.com/tech/20150610/" />
+<meta property="article:published_time" content="2015-06-09T23:39:55+00:00" />
+<meta property="article:modified_time" content="2015-06-09T23:39:55+00:00" />
+
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Chef を本番投入してみた"/>
+<meta name="twitter:description" content="メモレベルでごめんなさい。 サーバを移設してみました。 せっかくなので、移設ついでにブログのリニューアル（簡素化）と Chef cookbook を利用したプロビジョニン"/>
+
+<link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<meta name="generator" content="Hugo 0.62.2" />
+  </head>
+  <body>
+    <div class="container">
+<header class="globalheader"><a href="/">TOP</a></header>
+      <main class="maincontents" role="main">
+
+<h1 class="heading">Chef を本番投入してみた</h1>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2015-06-10 08:39:55">2015/06/10</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/chef/"><i class="fas fa-tag"></i>Chef</a></li>
+    <li><a href="/tags/vagrant/"><i class="fas fa-tag"></i>Vagrant</a></li>
+  </ul>
+</div>
+<div class="article">
+<p>メモレベルでごめんなさい。</p>
+<p>サーバを移設してみました。 せっかくなので、移設ついでにブログのリニューアル（簡素化）と <strong>Chef cookbook を利用したプロビジョニング</strong>にも挑戦してみたよ、という記録です。</p>
+<h2 id="やったこと概要">やったこと概要</h2>
+<ol>
+<li>Vagrant を利用してローカルに同じ環境を作る（空のVM）</li>
+<li>レシピを書きつつ、ローカルと本番環境との差異などを attributes に括り出す</li>
+<li>ローカル環境へのプロビジョニングが問題なければ、同じレシピを本番にも適用</li>
+</ol>
+<p>本当は Serverspec なども試していきたいですが、そちらは今後やっていければと思います・・・。</p>
+<p>多くのサードパーティ製レシピは、<a href="https://supermarket.chef.io/">Chef Supermarket</a> に登録してあるのですが、読み方や使い方が分かっていないと意味をなさないケースも多かったです。</p>
+<p>レシピは大きく分けて2種類あり、<strong>attributes として json ファイルに値を書いていくスタイル</strong>のものと、もともと Chef に用意されている file, template のような、<strong>レシピ内に Chef の resources として記述するスタイル</strong>のものがあります。以下の記事にもわかりやすく紹介されてます。</p>
+<p><a href="http://tsuchikazu.net/vps_chef_solo/">http://tsuchikazu.net/vps_chef_solo/</a></p>
+<p>例えば、今回レシピを適用したいマシンを仮に alpha としておいて、<code>nodes/alphalocal.json</code> と <code>nodes/alphaproduction.json</code> の2ファイル用意し、それぞれ設定を括り出しておきたいところを記述しておきます。 以下は nodes/alphalocal.json のサンプルです。（実際はもうちょい複雑ですが）</p>
+<pre><code>{
+  &quot;name&quot;: &quot;alphalocal&quot;,
+  &quot;automatic&quot;: {
+    &quot;ipaddress&quot;: &quot;192.168.0.10&quot;
+  },
+
+  &quot;fqdn&quot;:             &quot;alphalocal&quot;,
+  &quot;platform_family&quot;:  &quot;rhel&quot;,
+  &quot;platform&quot;:         &quot;centos&quot;,
+  &quot;platform_version&quot;: &quot;6.6&quot;,
+
+  &quot;run_list&quot;: [
+    &quot;recipe[selinux::disabled]&quot;,
+
+    &quot;recipe[yum]&quot;,
+    &quot;recipe[yum-epel]&quot;,
+    &quot;recipe[yum-remi]&quot;,
+
+    &quot;recipe[ntp]&quot;,
+    &quot;recipe[locale]&quot;,
+    &quot;recipe[timezone-ii]&quot;
+  ],
+
+  &quot;locale&quot;: {
+    &quot;lang&quot;: &quot;ja_JP.utf8&quot;,
+    &quot;lc_all&quot;: &quot;ja_JP.utf8&quot;
+  },
+  &quot;ntp&quot;: {
+    &quot;servers&quot;: [
+      &quot;ntp.nict.jp&quot;,
+      &quot;ntp1.jst.mfeed.ad.jp&quot;,
+      &quot;ntp2.jst.mfeed.ad.jp&quot;,
+      &quot;ntp3.jst.mfeed.ad.jp&quot;
+    ]
+  },
+  &quot;tz&quot;: &quot;Asia/Tokyo&quot;
+}
+</code></pre>
+<p>これは前者の <strong>attributes として json ファイルに値を書いていくスタイル</strong>ですね。後者の場合は、独自にレシピを書いていきつつも、レシピ内で独自の resources を使って書いていく感じです。</p>
+<p>以下は apache2 のレシピで用意されている <strong>web_app</strong> resource を用いて、自ら用意したレシピ内でバーチャルホストの設定をするサンプルです。（この通り動いているわけではありません）</p>
+<pre><code>  web_app host[&quot;id&quot;] do
+    server_name         host[&quot;server_name&quot;]
+    server_aliases      host[&quot;server_alias&quot;]
+    docroot             host[&quot;docroot&quot;]
+    enable              host[&quot;enable&quot;]
+  end
+</code></pre>
+<p>ちょっと話が逸れましたが、attributes として設定を括り出しておくことで、本番環境で動作させるためのレシピを、あらかじめローカル環境で検証することができるようになりました。</p>
+<h2 id="やってみて気づいたこと思ったこと">やってみて気づいたこと、思ったこと</h2>
+<p>だいたいこんなところです。</p>
+<ul>
+<li>どこまでレシピで書くべきか？</li>
+<li>データベースのバックアップ大事</li>
+<li>レシピのテストしなきゃ</li>
+</ul>
+<p>どこまでレシピで書くべきか？についてですが、全部レシピで書いて自動化すればいいってもんでもないんですよねえ。特にデプロイ対象のものについては、レシピで書かずに別のツールやシェルスクリプトなどで、いつでもマシン内から呼び出せるようにしておいた方が良さそうです。</p>
+<p>Web コンテンツなら、vhosts の設定をして、そこにファイルを置けば表示はされるけど、入れ物だけは用意してあるよー、というあたりが落とし所かなと思いました。（あとは capistrano とかですかね・・・？）</p>
+<h2 id="ついでにリニューアルを">ついでにリニューアルを</h2>
+<p>読みづらい部分がまだあったので、読みやすさを重視して見直してみました。</p>
+<p>あと一つ気づいたことがあるんですよ。ブログタイトルに丸々ドメイン名とか入れちゃうと、twitter とかその他外部サービスにタイトル付きで貼り付けたときに、<strong>タイトル内に含まれるサイト名にリンクが貼られてしまうんですよねえ・・・。</strong></p>
+<p>これは正直運用するまで盲点でした。今後 gTLD が増えていくのは間違いないので、リンクが意図せず貼られてしまうリスクも併せて考えていった方がいいかもしれませんね。</p>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2015-06-10 08:39:55">2015/06/10</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/chef/"><i class="fas fa-tag"></i>Chef</a></li>
+    <li><a href="/tags/vagrant/"><i class="fas fa-tag"></i>Vagrant</a></li>
+  </ul>
+</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+      </main>
+<footer class="globalfooter">
+  <h2>Tags</h2>
+  <ul class="tags">
+    <li><a href="http://girigiribauer.com/tags/ajax/"><i class="fa fa-tag"></i>ajax (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/angular/"><i class="fa fa-tag"></i>Angular (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ansible/"><i class="fa fa-tag"></i>Ansible (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/anyenv/"><i class="fa fa-tag"></i>anyenv (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apache/"><i class="fa fa-tag"></i>Apache (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/api/"><i class="fa fa-tag"></i>API (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apps/"><i class="fa fa-tag"></i>Apps (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/auth/"><i class="fa fa-tag"></i>auth (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/automation/"><i class="fa fa-tag"></i>automation (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bot/"><i class="fa fa-tag"></i>bot (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bugs/"><i class="fa fa-tag"></i>bugs (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/canvas/"><i class="fa fa-tag"></i>Canvas (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/chef/"><i class="fa fa-tag"></i>Chef (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cli/"><i class="fa fa-tag"></i>CLI (11)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cordova/"><i class="fa fa-tag"></i>Cordova (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/crawler/"><i class="fa fa-tag"></i>Crawler (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css/"><i class="fa fa-tag"></i>CSS (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css3/"><i class="fa fa-tag"></i>CSS3 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cssfilter/"><i class="fa fa-tag"></i>CSSfilter (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/docker/"><i class="fa fa-tag"></i>Docker (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/dom/"><i class="fa fa-tag"></i>DOM (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ecmascript/"><i class="fa fa-tag"></i>ECMAScript (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/electron/"><i class="fa fa-tag"></i>Electron (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/english/"><i class="fa fa-tag"></i>English (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/event-conference/"><i class="fa fa-tag"></i>event-conference (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/firebase/"><i class="fa fa-tag"></i>Firebase (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/font/"><i class="fa fa-tag"></i>Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ftp/"><i class="fa fa-tag"></i>FTP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/functionallanguage/"><i class="fa fa-tag"></i>FunctionalLanguage (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/getusermedia/"><i class="fa fa-tag"></i>getUserMedia (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/git/"><i class="fa fa-tag"></i>Git (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/gitconfig/"><i class="fa fa-tag"></i>gitconfig (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/glsl/"><i class="fa fa-tag"></i>GLSL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/golang/"><i class="fa fa-tag"></i>Golang (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/googleappengine/"><i class="fa fa-tag"></i>GoogleAppEngine (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/homebrew/"><i class="fa fa-tag"></i>Homebrew (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html/"><i class="fa fa-tag"></i>HTML (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5/"><i class="fa fa-tag"></i>HTML5 (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5-outline/"><i class="fa fa-tag"></i>HTML5-outline (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/https/"><i class="fa fa-tag"></i>HTTPS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/hugo/"><i class="fa fa-tag"></i>Hugo (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/icon-font/"><i class="fa fa-tag"></i>Icon-Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ionic/"><i class="fa fa-tag"></i>ionic (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ios/"><i class="fa fa-tag"></i>iOS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/iterm/"><i class="fa fa-tag"></i>iTerm (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/javascript/"><i class="fa fa-tag"></i>JavaScript (6)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jinja2/"><i class="fa fa-tag"></i>jinja2 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jq/"><i class="fa fa-tag"></i>jq (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jquery/"><i class="fa fa-tag"></i>jQuery (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jsperf/"><i class="fa fa-tag"></i>jsperf (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/lint/"><i class="fa fa-tag"></i>lint (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/linux/"><i class="fa fa-tag"></i>Linux (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mediaquery/"><i class="fa fa-tag"></i>mediaQuery (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mongodb/"><i class="fa fa-tag"></i>MongoDB (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mvc/"><i class="fa fa-tag"></i>MVC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/namespace/"><i class="fa fa-tag"></i>namespace (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/naming/"><i class="fa fa-tag"></i>naming (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/oldie/"><i class="fa fa-tag"></i>oldIE (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/openapi/"><i class="fa fa-tag"></i>OpenAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/opengraph/"><i class="fa fa-tag"></i>OpenGraph (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/output/"><i class="fa fa-tag"></i>output (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/php/"><i class="fa fa-tag"></i>PHP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/polyfills/"><i class="fa fa-tag"></i>polyfills (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/preloader/"><i class="fa fa-tag"></i>preloader (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/python/"><i class="fa fa-tag"></i>Python (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rdfa/"><i class="fa fa-tag"></i>RDFa (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rsync/"><i class="fa fa-tag"></i>rsync (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/scala/"><i class="fa fa-tag"></i>Scala (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/shellscript/"><i class="fa fa-tag"></i>ShellScript (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/slack/"><i class="fa fa-tag"></i>slack (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/smartphone/"><i class="fa fa-tag"></i>Smartphone (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ssh/"><i class="fa fa-tag"></i>SSH (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/static-site-generator/"><i class="fa fa-tag"></i>Static Site Generator (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/svg/"><i class="fa fa-tag"></i>SVG (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/tmux/"><i class="fa fa-tag"></i>tmux (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vagrant/"><i class="fa fa-tag"></i>Vagrant (15)</a></li>
+    <li><a href="http://girigiribauer.com/tags/viewport/"><i class="fa fa-tag"></i>viewport (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vim/"><i class="fa fa-tag"></i>Vim (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vimrc/"><i class="fa fa-tag"></i>vimrc (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualbox/"><i class="fa fa-tag"></i>VirtualBox (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualization/"><i class="fa fa-tag"></i>virtualization (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vscode/"><i class="fa fa-tag"></i>VSCode (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webapp/"><i class="fa fa-tag"></i>WebApp (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webaudioapi/"><i class="fa fa-tag"></i>WebAudioAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webfont/"><i class="fa fa-tag"></i>WebFont (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webgl/"><i class="fa fa-tag"></i>WebGL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webrtc/"><i class="fa fa-tag"></i>WebRTC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webserver/"><i class="fa fa-tag"></i>WebServer (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/wget/"><i class="fa fa-tag"></i>wget (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/yeoman/"><i class="fa fa-tag"></i>Yeoman (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/zsh/"><i class="fa fa-tag"></i>Zsh (2)</a></li>
+  </ul>
+
+  <h2>Categories (Sections)</h2>
+  <ul class="tags">
+    <li><a href="/tech/"><i class="fa fa-book"></i>Tech (87)</a></li>
+    <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
+  </ul>
+
+  <h2>RSS</h2>
+  <ul class="tags">
+    <li><a href="/tech/index.xml"><i class="fa fa-rss"></i>Tech Articles</a></li>
+    <li><a href="/index.xml"><i class="fa fa-rss"></i>All Articles</a></li>
+  </ul>
+
+  <hr>
+
+  <ul>
+    <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+    <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+    <li>このサイトでは cookie および Google Analytics を利用しています、詳しくは<a href="https://www.google.com/intl/ja/policies/privacy/partners/" target="_blank">こちら</a></li>
+  </ul>
+  <p class="copyright">&copy; ばうあーろぐ</p>
+</footer>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    </div>
+  </body>
+</html>

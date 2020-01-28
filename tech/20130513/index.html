@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>Vagrant と Chef でユーザー作成の自動化をしてみる - ばうあーろぐ</title>
+    <meta name="viewport" content="width=device-width">
+<meta itemprop="name" content="Vagrant と Chef でユーザー作成の自動化をしてみる">
+<meta itemprop="description" content="だんだんと Chef いじりが楽しくなってきた girigiribauer です、こんにちは。 この前**『入門 Chef Solo』**というKindle本（電子書籍）を購入して、休憩時な">
+<meta itemprop="datePublished" content="2013-05-13T00:24:37&#43;00:00" />
+<meta itemprop="dateModified" content="2013-05-13T00:24:37&#43;00:00" />
+<meta itemprop="wordCount" content="3832">
+
+
+
+<meta itemprop="keywords" content="Chef,Vagrant,virtualization," />
+<meta property="og:title" content="Vagrant と Chef でユーザー作成の自動化をしてみる" />
+<meta property="og:description" content="だんだんと Chef いじりが楽しくなってきた girigiribauer です、こんにちは。 この前**『入門 Chef Solo』**というKindle本（電子書籍）を購入して、休憩時な" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://girigiribauer.com/tech/20130513/" />
+<meta property="article:published_time" content="2013-05-13T00:24:37+00:00" />
+<meta property="article:modified_time" content="2013-05-13T00:24:37+00:00" />
+
+    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Vagrant と Chef でユーザー作成の自動化をしてみる"/>
+<meta name="twitter:description" content="だんだんと Chef いじりが楽しくなってきた girigiribauer です、こんにちは。 この前**『入門 Chef Solo』**というKindle本（電子書籍）を購入して、休憩時な"/>
+
+<link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<meta name="generator" content="Hugo 0.62.2" />
+  </head>
+  <body>
+    <div class="container">
+<header class="globalheader"><a href="/">TOP</a></header>
+      <main class="maincontents" role="main">
+
+<h1 class="heading">Vagrant と Chef でユーザー作成の自動化をしてみる</h1>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2013-05-13 09:24:37">2013/05/13</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/chef/"><i class="fas fa-tag"></i>Chef</a></li>
+    <li><a href="/tags/vagrant/"><i class="fas fa-tag"></i>Vagrant</a></li>
+    <li><a href="/tags/virtualization/"><i class="fas fa-tag"></i>virtualization</a></li>
+  </ul>
+</div>
+<div class="article">
+<p>だんだんと Chef いじりが楽しくなってきた girigiribauer です、こんにちは。</p>
+<p>この前**『入門 Chef Solo』**というKindle本（電子書籍）を購入して、休憩時などに少しずつ読み進めていたのですが、 ようやくざっと一通り目を通すことができました。</p>
+<p>今回以降、この辺も見ながらいろいろ試してみようと思います。</p>
+<h2 id="レシピを書くとどんなことが設定できるの">レシピを書くとどんなことが設定できるの？</h2>
+<p><a href="/archives/1013/">前回</a>までで、Vagrant と Chef を連携させて、 超シンプルなレシピを書いてみたわけですが、 今回はレシピを書くことで他にどんなことが出来ちゃうのかを、もう少し試してみようと思います！</p>
+<p>『入門 Chef Solo』に、この Cookbook はユーザーの設定やらグループの設定やらが一通り載っていて、 最初に全体像を見るのにいいよ！と書かれていたので、まずはこちらの <a href="https://github.com/treasure-data/chef-td-agent">https://github.com/treasure-data/chef-td-agent</a> を参考にしてみます。</p>
+<p><img src="/img/2013/05/chef-user01.png" alt=""></p>
+<p>ログデータの収集に使うツールと、それ専用のユーザーなりを設定してくれる Cookbook のようですね。</p>
+<p>recipes/default.rb を早速見てみます。</p>
+<pre><code>#
+# Cookbook Name:: td-agent
+# Recipe:: default
+#
+# Copyright 2011, Treasure Data, Inc.
+#
+
+group 'td-agent' do
+  group_name 'td-agent'
+  gid        403
+  action     [:create]
+end
+
+user 'td-agent' do
+  comment  'td-agent'
+  uid      403
+  group    'td-agent'
+  home     '/var/run/td-agent'
+  shell    '/bin/false'
+  password nil
+  supports :manage_home =&gt; true
+  action   [:create, :manage]
+end
+
+directory '/etc/td-agent/' do
+  owner  'td-agent'
+  group  'td-agent'
+  mode   '0755'
+  action :create
+end
+（以下略）
+</code></pre>
+<p>中身は Ruby のコードとはいえ、見ると何をやっているのかは何となく分かりそうな感じです。</p>
+<ul>
+<li>一番上のブロックで ‘td-agent’ という名前のグループを作る</li>
+<li>gid（Linux などでグループに割り振られるID）は 403 にする</li>
+</ul>
+<p>続けて、</p>
+<ul>
+<li>‘td-agent’ という名前のユーザーを作る</li>
+<li>uid（Linux などでユーザーに割り振られるID）は 403 にする</li>
+<li>ホームディレクトリは ‘/var/run/td-agent’ にする</li>
+<li>シェルは指定せず、パスワードもなし</li>
+<li><code>supports :manage_home =&gt; true</code> が何を意味しているのかは後で調べます</li>
+</ul>
+<p>最後に、</p>
+<ul>
+<li>‘/etc/td-agent/’ という名前のディレクトリを作る</li>
+<li>所有者は、’td-agent’、グループは ‘td-agent’ になるようにする</li>
+<li>権限は ‘0755’（つまり所有者が読み書き実行、同一グループが読み＆実行、それ以外のユーザーも読み＆実行）</li>
+</ul>
+<p>というレシピのようです。</p>
+<h3 id="これlinux-とかに詳しくないと出来ないの">これ、Linux とかに詳しくないと出来ないの？</h3>
+<p>個人的には逆だと思っていて、 <strong>設定すべき項目が明らかになっている分、どういうポイントを調べればいいのかが明確になっています。</strong> そもそも知らなきゃ調べようもなかった設定に対して、ググるチャンスをもらえたと思って、 分からないところはどんどんググるべきだなーと思います。</p>
+<p>例えば、シェルの指定が ‘/bin/false’ になっている箇所なんかは、 適当に <strong>linux /bin/false</strong> とかでググれば、ログインできないユーザーを作る方法であることが分かるので、 このレシピでは、ログインできないユーザーを作ろうとしていることが分かり、 ググったついでに実際の設定方法なども分かって勉強にもなりますね。</p>
+<p>ってことで、分からないところはどんどんググって覚えていこうと思います。</p>
+<h2 id="ユーザーの設定項目について">ユーザーの設定項目について</h2>
+<p>これは公式を見た方が良さそうなので見てみます。 <a href="http://docs.opscode.com/resource_user.html">http://docs.opscode.com/resource_user.html</a></p>
+<p>設定項目は、大きく分けて Actions と Attributes の2種類あるようなので、まず先に Attributes の方を見てみます。</p>
+<p><img src="/img/2013/05/chef-user02.png" alt=""></p>
+<p>あれ、読んでも何のことだかさっぱりだなーと思ったら、そのすぐ下に詳しく説明載ってました。</p>
+<p><img src="/img/2013/05/chef-user03.png" alt=""></p>
+<p>要するに、 key, value の対になるものを設定できて、設定できるのが <strong>:manage_home</strong>, <strong>:non_unique</strong> の2つ、 :manage_home は<strong>ホームディレクトリの作成有無</strong>、:non_unique は <strong>UID の重複を許すかどうか</strong>のようです。</p>
+<p>なるほどなるほどー。</p>
+<p>お次は、Actions の方を見てみます。</p>
+<p><img src="/img/2013/05/chef-user04.png" alt=""></p>
+<p><code>action   [:create, :manage]</code> とあるので、該当ユーザーがなければユーザーを作り、 Attributes の通りに設定を合わせてくれるようです。 読む限りだと、create だけでも既存ユーザーに対しては設定を合わせてくれるみたいなんですが、 manage も必要なんでしょうかね？後で試してみましょうか。</p>
+<h2 id="グループの設定項目について">グループの設定項目について</h2>
+<p>グループはこちらですね。<a href="http://docs.opscode.com/resource_group.html">http://docs.opscode.com/resource_group.html</a></p>
+<p>こちらも Actions, Attributes を引用します。</p>
+<p><img src="/img/2013/05/chef-user05.png" alt=""></p>
+<p>レシピに書かれた内容だけだと、単に create で作って GID を設定しているだけですね。</p>
+<p>ユーザーとグループの関係でちょっと気になるところが出て来たのですが、 ユーザーは複数のグループに属することが出来るはずなので、ユーザーの設定項目の group で、配列として指定してやればいいんでしょうか？</p>
+<h2 id="ユーザーとグループのレシピを書く">ユーザーとグループのレシピを書く！</h2>
+<p>この前 2台構成にしてましたが、一旦1台に戻してレシピを書きましょう。（インストールとか時間かかるので）</p>
+<pre><code>group 'samplegroup' do
+  group_name 'samplegroup'
+  members    ['alice', 'bob', 'carol']
+  action     [:create]
+end
+
+user 'alice' do
+  shell    '/bin/zsh'
+  password 'alice'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'bob' do
+  shell    '/bin/zsh'
+  password 'bob'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'carol' do
+  shell    '/bin/zsh'
+  password 'carol'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+</code></pre>
+<p>ささっと書いて試してみます！</p>
+<h3 id="vagrant-up">vagrant up!!</h3>
+<pre><code>$ vagrant up
+
+Expected process to exit with [0], but received '3'
+---- Begin output of gpasswd -M alice,bob,carol samplegroup ----
+STDOUT:
+STDERR: gpasswd: user 'alice' does not exist
+gpasswd: user 'bob' does not exist
+gpasswd: user 'carol' does not exist
+---- End output of gpasswd -M alice,bob,carol samplegroup ----
+Ran gpasswd -M alice,bob,carol samplegroup returned 3[0m
+</code></pre>
+<p>なんかエラー出てますね。グループを作るときにそのユーザーがないと言われているようですね。</p>
+<p>ちょっとユーザーとグループの作成の順番を変えてやってみます。</p>
+<pre><code>[vmclient1] Running provisioner: chef_solo...
+Generating chef JSON and uploading...
+Running chef-solo...
+[2013-05-10T21:02:02+00:00] INFO: *** Chef 11.4.0 ***
+[2013-05-10T21:02:02+00:00] INFO: Setting the run_list to &quot;recipe[vmclient1]&quot; from JSON
+[2013-05-10T21:02:02+00:00] INFO: Run List is [recipe[vmclient1]]
+[2013-05-10T21:02:02+00:00] INFO: Run List expands to [vmclient1]
+[2013-05-10T21:02:02+00:00] INFO: Starting Chef Run for vmclient1
+[2013-05-10T21:02:02+00:00] INFO: Running start handlers
+[2013-05-10T21:02:02+00:00] INFO: Start handlers complete.
+[2013-05-10T21:02:02+00:00] INFO: Processing user[alice] action create (vmclient1::default line 3)
+[2013-05-10T21:02:02+00:00] INFO: user[alice] created
+[2013-05-10T21:02:02+00:00] INFO: Processing user[bob] action create (vmclient1::default line 10)
+[2013-05-10T21:02:02+00:00] INFO: user[bob] created
+[2013-05-10T21:02:02+00:00] INFO: Processing user[carol] action create (vmclient1::default line 17)
+[2013-05-10T21:02:02+00:00] INFO: user[carol] created
+[2013-05-10T21:02:02+00:00] INFO: Processing group[samplegroup] action create (vmclient1::default line 24)
+[2013-05-10T21:02:02+00:00] INFO: group[samplegroup] altered
+[2013-05-10T21:02:02+00:00] INFO: Chef Run complete in 0.145912047 seconds
+[2013-05-10T21:02:02+00:00] INFO: Running report handlers
+[2013-05-10T21:02:02+00:00] INFO: Report handlers complete
+</code></pre>
+<p>お、<code>user[alice] created</code> と表示されているので、今度は上手く行ったようですかね？</p>
+<p>早速 vagrant ssh で中を確認してみます。</p>
+<pre><code>$ vagrant ssh vmclient1
+Welcome to your Vagrant-built virtual machine.
+[vagrant@vmclient1 ~]$
+</code></pre>
+<p>んで、それぞれのユーザーに成り代わります。</p>
+<pre><code>[vagrant@vmclient1 ~]$ su alice
+パスワード: (ここで alice っていれた)
+su: パスワードが違います
+[vagrant@vmclient1 ~]$ su bob
+パスワード: (ここで bob っていれた)
+su: パスワードが違います
+[vagrant@vmclient1 ~]$ su carol
+パスワード: (ここで carol っていれた)
+su: パスワードが違います
+[vagrant@vmclient1 ~]$
+</code></pre>
+<p>むむむ・・・。パスワードが有効でない？？</p>
+<p>ついでに /etc/group もみてみます。</p>
+<pre><code>samplegroup:x:503:alice,bob,carol
+</code></pre>
+<p>グループを新規で作って、そこにユーザーを追加するのは出来ているようです。</p>
+<h2 id="ユーザーの作成の見直し">ユーザーの作成の見直し</h2>
+<p>どうやらパスワードが上手く登録できてないようなので、その辺りを見直してみます。</p>
+<p><img src="/img/2013/05/chef-user02.png" alt=""></p>
+<p>さっきのユーザーの Attributes を見直してみると、どうやら<strong>パスワードはハッシュ化</strong>されたものをここに入れる必要があるみたいです。</p>
+<pre><code># Cookbook ユーザーとグループのテスト
+
+user 'alice' do
+  shell    '/bin/zsh'
+  password 'megckhCt3LluU'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'bob' do
+  shell    '/bin/zsh'
+  password '8Q14e7OP5wroc'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'carol' do
+  shell    '/bin/zsh'
+  password 'fcv1NMIRSDH/Y'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+group 'samplegroup' do
+  group_name 'samplegroup'
+  members    ['alice', 'bob', 'carol']
+  action     [:create]
+end
+</code></pre>
+<p>一応まだテストなので、 <code>openssl passwd</code> でハッシュ化してみましたが、 この方法で安全かどうかまでは保証できないので、実戦配備するタイミングで同様の機会があれば、この辺見直したいと思います。 （＆安全な方法知ってたら教えてください・・・）</p>
+<p>さて、<code>vagrant reload</code> で再起動です。</p>
+<pre><code>[2013-05-11T15:54:57+00:00] INFO: *** Chef 11.4.0 ***
+[2013-05-11T15:54:58+00:00] INFO: Setting the run_list to &quot;recipe[vmclient1]&quot; from JSON
+[2013-05-11T15:54:58+00:00] INFO: Run List is [recipe[vmclient1]]
+[2013-05-11T15:54:58+00:00] INFO: Run List expands to [vmclient1]
+[2013-05-11T15:54:58+00:00] INFO: Starting Chef Run for vmclient1
+[2013-05-11T15:54:58+00:00] INFO: Running start handlers
+[2013-05-11T15:54:58+00:00] INFO: Start handlers complete.
+[2013-05-11T15:54:58+00:00] INFO: Processing user[alice] action create (vmclient1::default line 3)
+[2013-05-11T15:54:58+00:00] INFO: user[alice] altered
+[2013-05-11T15:54:58+00:00] INFO: Processing user[bob] action create (vmclient1::default line 10)
+[2013-05-11T15:54:58+00:00] INFO: user[bob] altered
+[2013-05-11T15:54:58+00:00] INFO: Processing user[carol] action create (vmclient1::default line 17)
+[2013-05-11T15:54:58+00:00] INFO: user[carol] altered
+[2013-05-11T15:54:58+00:00] INFO: Processing group[samplegroup] action create (vmclient1::default line 24)
+[2013-05-11T15:54:58+00:00] INFO: Chef Run complete in 0.099637811 seconds
+[2013-05-11T15:54:58+00:00] INFO: Running report handlers
+[2013-05-11T15:54:58+00:00] INFO: Report handlers complete
+</code></pre>
+<p>さっきと違って、created じゃなくて altered になってますね。置き換えてくれたっぽいです。 （ちなみに sandbox は使ってないので、さっきの状態から再起動しただけです）</p>
+<p>さて、ログインして見てみます。</p>
+<pre><code>[vagrant@vmclient1 ~]$ su alice
+パスワード: (ここで alice っていれた)
+su: /bin/zsh: そのようなファイルやディレクトリはありません
+[vagrant@vmclient1 ~]$ which zsh
+/usr/bin/which: no zsh in (/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/vagrant/bin)
+[vagrant@vmclient1 ~]$ which bash
+/bin/bash
+</code></pre>
+<p>おおーっと、<strong>zsh がないですねww</strong> 寝ぼけてましたゴメンナサイゴメンナサイ。</p>
+<p>シェルの設定は後回しにして、とりあえず存在してる bash に設定変更して、 もう一度 <code>vagrant relaod</code>, <code>vagrant ssh vmclient1</code> でログインして見てみます。</p>
+<pre><code>[vagrant@vmclient1 ~]$ su - alice
+パスワード: (ここで alice っていれた)
+[alice@vmclient1 ~]$ pwd
+/home/alice
+</code></pre>
+<p><strong>きたーーーーー！！！</strong></p>
+<pre><code>[alice@vmclient1 ~]$ su - bob
+Password: (ここで bob っていれた)
+[bob@vmclient1 ~]$ pwd
+/home/bob
+[bob@vmclient1 ~]$ su - carol
+Password: (ここで carol っていれた)
+[carol@vmclient1 ~]$ pwd
+/home/carol
+</code></pre>
+<p><strong>きたきたきたーー！！ ユーザー3人分出来ておりました！！</strong></p>
+<h2 id="ユーザーの変更があったときどうなるの">ユーザーの変更があったときどうなるの？</h2>
+<p>さらに、<strong>ユーザーが居なくなったらどうなるのか気になった</strong>ので、試しに Cookbook の中から carol を消して実行してみます。</p>
+<pre><code>[vagrant@vmclient1 ~]$ su - carol
+パスワード:
+[carol@vmclient1 ~]$ pwd
+/home/carol
+</code></pre>
+<p>うーむなるほど、Cookbook の記述を削除するだけでは、ユーザーは無くならないようですね。ここまでは予想通りです。</p>
+<p>さて、さっきの Chef の公式の user のページ中に、<strong>:remove</strong> というアクションがあったので、 おそらく :create のところを、:remove にしてやれば、ユーザーが削除された状態に Chef が合わせてくれることでしょう。</p>
+<p>やってみます。</p>
+<pre><code># Cookbook ユーザーとグループのテスト
+
+user 'alice' do
+  shell    '/bin/bash'
+  password 'megckhCt3LluU'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'bob' do
+  shell    '/bin/bash'
+  password '8Q14e7OP5wroc'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:create]
+end
+
+user 'carol' do
+  shell    '/bin/bash'
+  password 'fcv1NMIRSDH/Y'
+  supports :manage_home =&gt; true, :non_unique =&gt; false
+  action   [:remove]
+end
+
+group 'samplegroup' do
+  group_name 'samplegroup'
+  members    ['alice', 'bob']
+  action     [:create]
+end
+</code></pre>
+<p>設定などは一旦そのままで、action のところだけ :remove に変更してみました。</p>
+<p>さて、どうなるでしょう。</p>
+<pre><code>[2013-05-11T16:21:53+00:00] INFO: Processing user[carol] action remove (vmclient1::default line 17)
+[2013-05-11T16:21:53+00:00] INFO: user[carol] removed
+</code></pre>
+<p>おお？ Chef のログからは削除がされているように見えますね。</p>
+<pre><code>[vagrant@vmclient1 ~]$ su - carol
+su: carol というユーザは存在しません
+</code></pre>
+<p><strong>carol さん消えたーーー！</strong></p>
+<p>なるほどなるほど、ということは Chef の Cookbook 内で、削除されたユーザーも含めて、こちらにまとめておいた方がいいんでしょうかね。</p>
+<h2 id="まとめ">まとめ</h2>
+<p>ちょっと長くなってきちゃったので、一旦ここでまとめたいと思います。</p>
+<ul>
+<li><strong>Cookbook に記述することで、ユーザー作成、グループ作成が可能</strong></li>
+<li><strong>パスワードはハッシュ化されたものを Cookbook 内に記述しておく</strong></li>
+<li><strong>ユーザーの削除も可能</strong></li>
+</ul>
+<p>まだまだユーザー周りについては、試したいこと色々ありますよね。鍵認証にするとか、sudo 出来るようにするとか、この辺も追々試してみようと思います！</p>
+<h2 id="ref">参考URL</h2>
+<ul>
+<li><a href="https://github.com/treasure-data/chef-td-agent">https://github.com/treasure-data/chef-td-agent</a></li>
+<li><a href="http://docs.opscode.com/resource_user.html">http://docs.opscode.com/resource_user.html</a></li>
+<li><a href="http://docs.opscode.com/resource_group.html">http://docs.opscode.com/resource_group.html</a></li>
+</ul>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+  <time datetime="2013-05-13 09:24:37">2013/05/13</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li><a href="/tags/chef/"><i class="fas fa-tag"></i>Chef</a></li>
+    <li><a href="/tags/vagrant/"><i class="fas fa-tag"></i>Vagrant</a></li>
+    <li><a href="/tags/virtualization/"><i class="fas fa-tag"></i>virtualization</a></li>
+  </ul>
+</div>
+<small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+      </main>
+<footer class="globalfooter">
+  <h2>Tags</h2>
+  <ul class="tags">
+    <li><a href="http://girigiribauer.com/tags/ajax/"><i class="fa fa-tag"></i>ajax (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/angular/"><i class="fa fa-tag"></i>Angular (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ansible/"><i class="fa fa-tag"></i>Ansible (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/anyenv/"><i class="fa fa-tag"></i>anyenv (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apache/"><i class="fa fa-tag"></i>Apache (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/api/"><i class="fa fa-tag"></i>API (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apps/"><i class="fa fa-tag"></i>Apps (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/auth/"><i class="fa fa-tag"></i>auth (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/automation/"><i class="fa fa-tag"></i>automation (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bot/"><i class="fa fa-tag"></i>bot (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bugs/"><i class="fa fa-tag"></i>bugs (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/canvas/"><i class="fa fa-tag"></i>Canvas (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/chef/"><i class="fa fa-tag"></i>Chef (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cli/"><i class="fa fa-tag"></i>CLI (11)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cordova/"><i class="fa fa-tag"></i>Cordova (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/crawler/"><i class="fa fa-tag"></i>Crawler (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css/"><i class="fa fa-tag"></i>CSS (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css3/"><i class="fa fa-tag"></i>CSS3 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cssfilter/"><i class="fa fa-tag"></i>CSSfilter (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/docker/"><i class="fa fa-tag"></i>Docker (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/dom/"><i class="fa fa-tag"></i>DOM (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ecmascript/"><i class="fa fa-tag"></i>ECMAScript (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/electron/"><i class="fa fa-tag"></i>Electron (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/english/"><i class="fa fa-tag"></i>English (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/event-conference/"><i class="fa fa-tag"></i>event-conference (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/firebase/"><i class="fa fa-tag"></i>Firebase (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/font/"><i class="fa fa-tag"></i>Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ftp/"><i class="fa fa-tag"></i>FTP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/functionallanguage/"><i class="fa fa-tag"></i>FunctionalLanguage (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/getusermedia/"><i class="fa fa-tag"></i>getUserMedia (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/git/"><i class="fa fa-tag"></i>Git (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/gitconfig/"><i class="fa fa-tag"></i>gitconfig (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/glsl/"><i class="fa fa-tag"></i>GLSL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/golang/"><i class="fa fa-tag"></i>Golang (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/googleappengine/"><i class="fa fa-tag"></i>GoogleAppEngine (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/homebrew/"><i class="fa fa-tag"></i>Homebrew (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html/"><i class="fa fa-tag"></i>HTML (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5/"><i class="fa fa-tag"></i>HTML5 (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5-outline/"><i class="fa fa-tag"></i>HTML5-outline (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/https/"><i class="fa fa-tag"></i>HTTPS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/hugo/"><i class="fa fa-tag"></i>Hugo (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/icon-font/"><i class="fa fa-tag"></i>Icon-Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ionic/"><i class="fa fa-tag"></i>ionic (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ios/"><i class="fa fa-tag"></i>iOS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/iterm/"><i class="fa fa-tag"></i>iTerm (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/javascript/"><i class="fa fa-tag"></i>JavaScript (6)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jinja2/"><i class="fa fa-tag"></i>jinja2 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jq/"><i class="fa fa-tag"></i>jq (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jquery/"><i class="fa fa-tag"></i>jQuery (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jsperf/"><i class="fa fa-tag"></i>jsperf (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/lint/"><i class="fa fa-tag"></i>lint (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/linux/"><i class="fa fa-tag"></i>Linux (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mediaquery/"><i class="fa fa-tag"></i>mediaQuery (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mongodb/"><i class="fa fa-tag"></i>MongoDB (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mvc/"><i class="fa fa-tag"></i>MVC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/namespace/"><i class="fa fa-tag"></i>namespace (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/naming/"><i class="fa fa-tag"></i>naming (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/oldie/"><i class="fa fa-tag"></i>oldIE (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/openapi/"><i class="fa fa-tag"></i>OpenAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/opengraph/"><i class="fa fa-tag"></i>OpenGraph (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/output/"><i class="fa fa-tag"></i>output (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/php/"><i class="fa fa-tag"></i>PHP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/polyfills/"><i class="fa fa-tag"></i>polyfills (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/preloader/"><i class="fa fa-tag"></i>preloader (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/python/"><i class="fa fa-tag"></i>Python (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rdfa/"><i class="fa fa-tag"></i>RDFa (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rsync/"><i class="fa fa-tag"></i>rsync (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/scala/"><i class="fa fa-tag"></i>Scala (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/shellscript/"><i class="fa fa-tag"></i>ShellScript (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/slack/"><i class="fa fa-tag"></i>slack (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/smartphone/"><i class="fa fa-tag"></i>Smartphone (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ssh/"><i class="fa fa-tag"></i>SSH (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/static-site-generator/"><i class="fa fa-tag"></i>Static Site Generator (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/svg/"><i class="fa fa-tag"></i>SVG (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/tmux/"><i class="fa fa-tag"></i>tmux (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vagrant/"><i class="fa fa-tag"></i>Vagrant (15)</a></li>
+    <li><a href="http://girigiribauer.com/tags/viewport/"><i class="fa fa-tag"></i>viewport (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vim/"><i class="fa fa-tag"></i>Vim (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vimrc/"><i class="fa fa-tag"></i>vimrc (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualbox/"><i class="fa fa-tag"></i>VirtualBox (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualization/"><i class="fa fa-tag"></i>virtualization (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vscode/"><i class="fa fa-tag"></i>VSCode (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webapp/"><i class="fa fa-tag"></i>WebApp (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webaudioapi/"><i class="fa fa-tag"></i>WebAudioAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webfont/"><i class="fa fa-tag"></i>WebFont (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webgl/"><i class="fa fa-tag"></i>WebGL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webrtc/"><i class="fa fa-tag"></i>WebRTC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webserver/"><i class="fa fa-tag"></i>WebServer (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/wget/"><i class="fa fa-tag"></i>wget (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/yeoman/"><i class="fa fa-tag"></i>Yeoman (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/zsh/"><i class="fa fa-tag"></i>Zsh (2)</a></li>
+  </ul>
+
+  <h2>Categories (Sections)</h2>
+  <ul class="tags">
+    <li><a href="/tech/"><i class="fa fa-book"></i>Tech (87)</a></li>
+    <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
+  </ul>
+
+  <h2>RSS</h2>
+  <ul class="tags">
+    <li><a href="/tech/index.xml"><i class="fa fa-rss"></i>Tech Articles</a></li>
+    <li><a href="/index.xml"><i class="fa fa-rss"></i>All Articles</a></li>
+  </ul>
+
+  <hr>
+
+  <ul>
+    <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+    <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+    <li>このサイトでは cookie および Google Analytics を利用しています、詳しくは<a href="https://www.google.com/intl/ja/policies/privacy/partners/" target="_blank">こちら</a></li>
+  </ul>
+  <p class="copyright">&copy; ばうあーろぐ</p>
+</footer>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+    </div>
+  </body>
+</html>

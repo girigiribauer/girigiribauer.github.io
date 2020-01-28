@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>PHP on ばうあーろぐ</title>
@@ -13,10 +13,10 @@
     
     <item>
       <title>LinuxサーバとPHPの初心者向け勉強会に参加してみた</title>
-      <link>http://girigiribauer.com/archives/673/</link>
+      <link>http://girigiribauer.com/tech/20130123/</link>
       <pubDate>Tue, 22 Jan 2013 15:49:43 +0000</pubDate>
       
-      <guid>http://girigiribauer.com/archives/673/</guid>
+      <guid>http://girigiribauer.com/tech/20130123/</guid>
       <description>先週末の 1/19（土）に、株式会社 音生（ねお）さんにお邪魔してきました。 その時の勉強会のレポートなどを軽くまとめてみようと思います。 概要 勉強</description>
     </item>
     
