@@ -8,7 +8,7 @@
 <meta itemprop="description" content="タイトルの通りです。 インプット・アウトプットを色々見直そうと思った一環なのですが、 しばらく触っていなかった Hugo (Static Site Generator) のテンプレートをあれこれ見">
 <meta itemprop="datePublished" content="2020-01-28T17:00:00&#43;09:00" />
 <meta itemprop="dateModified" content="2020-01-28T17:00:00&#43;09:00" />
-<meta itemprop="wordCount" content="2801">
+<meta itemprop="wordCount" content="2937">
 
 
 
@@ -50,6 +50,7 @@
 <p>インプット・アウトプットを色々見直そうと思った一環なのですが、
 しばらく触っていなかった Hugo (Static Site Generator) のテンプレートをあれこれ見直していたら、
 なんだかよく分からない機能があれこれ増えていて、あるいはすっかり忘れてしまった機能もあったりしたので、改めて調べてみた記録です。</p>
+<p><img src="/img/2020/01/hugo01.png" alt="Hugo"></p>
 <p>Hugo めっちゃ軽くて、 markdown や黒い画面とか触る人にはめっちゃおすすめな Static Site Generator なので、
 使いたいけどよく分からない人は、こちらをさくっと読んでどんどん使っていったらいいと思います。</p>
 <h2 id="ページにどのような種類kindがあるか">ページにどのような種類（Kind）があるか？</h2>
@@ -182,11 +183,14 @@ Base テンプレート以外のテンプレート階層のファイルで必要
 <p>上記テンプレート階層のルールを把握しておけば、あとは既存のテーマを参考にしながら作ると非常にスムーズだと思います。</p>
 <p><a href="https://gohugo.io/getting-started/quick-start/">https://gohugo.io/getting-started/quick-start/</a></p>
 <p>Quick Start でも紹介されている Ananke というテーマが都合が良いかもしれません。</p>
+<p><img src="/img/2020/01/hugo02.png" alt="Hugo"></p>
 <p><a href="https://themes.gohugo.io/gohugo-theme-ananke/">https://themes.gohugo.io/gohugo-theme-ananke/</a></p>
+<p>こちらのテーマは機能がすべて入っているため、公式の Quick Start でも紹介されていて、テーマの勉強ついでに触ってみるのも良いですね。</p>
 <p>あるいは僕が今やっている方法なのですが、 <code>layouts/_default/baseof.html</code> だけをまず先に作って、
 必要なページをすべて表示した状態で徐々にテンプレートを追加していくのもありだと思います。
 （それで階層構造を把握しつつ公式ドキュメントを読んでたりしてました）</p>
-<p>あとおまけ知識。</p>
+<h3 id="おまけ知識">おまけ知識</h3>
+<p>あとはおまけ知識です。</p>
 <ul>
 <li>日付のフォーマットは Golang なので、 <strong>日付は必ず2006年01月02日</strong> を使う必要があります
 <ul>
@@ -207,9 +211,10 @@ Base テンプレート以外のテンプレート階層のファイルで必要
 </li>
 <li><code>{{- xxx -}}</code> のように、前後に <code>-</code> を入れることで、 HTML 出力時に改行やインデントをカットできる</li>
 </ul>
-<p>あとは実際に触ってみた方が早いです！ <strong>Let's try!</strong></p>
+<p>これ以上は実際に触ってみた方が早いです！ <strong>Let's try!</strong></p>
 <h2 id="まとめ">まとめ</h2>
 <p>恒例の締めなんですが、公式ドキュメントをちゃんと読みましょうってことですね。</p>
+<p>分からないことの9割以上は公式のドキュメントに書いてあるはずなので、それをじっくり読みながら試しながらでやっていくといいと思います。</p>
 <h2 id="参考-url">参考 URL</h2>
 <ul>
 <li><a href="https://gohugo.io/">https://gohugo.io/</a></li>
