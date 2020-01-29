@@ -15,13 +15,13 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 {{ hugo.Generator }}
   </head>
-  <body>
+  <body{{ if eq .FirstSection.Title "Misc" }} class="misc"{{ end }}{{ if eq .FirstSection.Title "Biz" }} class="biz"{{ end }}>
     <div class="container">
-{{ block "header" . }}{{ partialCached "site-header.html" . }}{{ end }}
+{{ block "header" . }}{{ partial "site-header.html" . }}{{ end }}
       <main class="maincontents" role="main">
 {{ block "main" . }}{{ end }}
       </main>
-{{ block "footer" . }}{{ partialCached "site-footer.html" . }}{{ end }}
+{{ block "footer" . }}{{ partial "site-footer.html" . }}{{ end }}
     </div>
   </body>
 </html>

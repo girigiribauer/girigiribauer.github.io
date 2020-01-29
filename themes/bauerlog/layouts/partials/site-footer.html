@@ -1,15 +1,19 @@
 <footer class="globalfooter">
+{{- if eq .FirstSection.Title "Tech" }}
   <h2>Tags</h2>
   <ul class="tags">
 {{- range .Site.Taxonomies.tags }}
     <li><a href="{{ .Page.Permalink }}"><i class="fa fa-tag"></i>{{ .Page.Title }} ({{ .Count }})</a></li>
 {{- end }}
   </ul>
+{{- end }}
 
   <h2>Categories (Sections)</h2>
   <ul class="tags">
-{{- range.Site.Sections }}
+{{- range slice "tech" "misc" "biz" }}
+{{ with $.Site.GetPage "section" . }}
     <li><a href="{{ .RelPermalink }}"><i class="fa fa-book"></i>{{ .Title }} ({{ len .Pages }})</a></li>
+{{- end }}
 {{- end }}
   </ul>
 

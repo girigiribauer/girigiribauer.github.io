@@ -1,3 +1,5 @@
+{{ define "title" }}{{ .Site.Title }}{{ end }}
+
 {{ define "main" }}
 <h1 class="sitetitle">{{ .Site.Title }}</h1>
 
@@ -5,8 +7,10 @@
 {{ range first 3 .Paginator.Pages }}{{ partial "listitem.html" . }}{{ end }}
 </ul>
 <ul class="tags">
-{{- range.Site.Sections }}
+{{- range slice "tech" "misc" "biz" }}
+{{ with $.Site.GetPage "section" . }}
   <li><a href="{{ .RelPermalink }}"><i class="fa fa-book"></i>{{ .Title }} 系のアーカイブはこちら</a></li>
+{{- end }}
 {{- end }}
 </ul>
 
