@@ -1,7 +1,7 @@
 {{ define "title" }}{{ .Site.Title }}{{ end }}
 
 {{ define "main" }}
-<h1 class="sitetitle">{{ .Site.Title }}</h1>
+<h1 class="sitetitle">{{ .Site.Title }} <span class="description">{{ .Site.Params.Description }}</span></h1>
 
 <ul class="article-list">
 {{ range first 3 .Paginator.Pages }}{{ partial "listitem.html" . }}{{ end }}

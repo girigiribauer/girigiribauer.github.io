@@ -15,7 +15,7 @@ tag = "tags"
 
 [params]
 author = "girigiribauer"
-description = "IT / Web に関するメモ、あるいは Twentyfour あるいは旅"
+description = "IT / Web に関するメモ、あるいは Twentyfour あるいは人生の diff"
 
 [permalinks]
 tech = "/tech/:filename/"

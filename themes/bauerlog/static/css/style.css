@@ -29,7 +29,7 @@ body {
 }
 .maincontents {
   max-width: 74vw;
-  min-width: 300px;
+  min-width: calc(320px - 4rem);
   min-height: 200px;
   box-sizing: border-box;
   margin: 0 auto;
@@ -48,7 +48,7 @@ body {
 }
 .globalfooter {
   max-width: 74vw;
-  min-width: 300px;
+  min-width: calc(320px - 4rem);
   margin: 0 auto;
   margin-top: 2rem;
   padding: 2rem;
@@ -96,7 +96,13 @@ h6 {
   font-size: 0.875rem;
 }
 .sitetitle {
-  margin: 4rem 0 5rem 0;
+  width: 100%;
+  margin: 4rem 1rem 5rem 0;
+  letter-spacing: 1px;
+}
+.sitetitle > .description {
+  display: inline-block;
+  font-size: 50%;
 }
 .heading {
   margin: 0 0 2rem 0;
