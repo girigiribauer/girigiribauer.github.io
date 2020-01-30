@@ -6,10 +6,19 @@
     <description>Recent content on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Tue, 28 Jan 2020 17:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Thu, 30 Jan 2020 02:57:31 +0900</lastBuildDate>
     
 	<atom:link href="http://girigiribauer.com/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>読書メモ: 世界標準の経営理論 - 第1章 SCP理論</title>
+      <link>http://girigiribauer.com/biz/20200130/</link>
+      <pubDate>Thu, 30 Jan 2020 02:57:31 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/biz/20200130/</guid>
+      <description>最近、技術系以外の書籍を多く読むようになって、一応業務日誌的なものをメモったりする中に、非技術系の書籍の読書メモなどを書いてはいるのですが、</description>
+    </item>
     
     <item>
       <title>Hugo をしばらく触ってなかったので、わかりやすくまとめ直した</title>

@@ -3,6 +3,21 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://girigiribauer.com/biz/</loc>
+    <lastmod>2020-01-30T02:57:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/</loc>
+    <lastmod>2020-01-30T02:57:31+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/biz/20200130/</loc>
+    <lastmod>2020-01-30T02:57:31+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/tags/hugo/</loc>
     <lastmod>2020-01-28T17:00:00+09:00</lastmod>
   </url>
@@ -19,11 +34,6 @@
   
   <url>
     <loc>http://girigiribauer.com/tech/</loc>
-    <lastmod>2020-01-28T17:00:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://girigiribauer.com/</loc>
     <lastmod>2020-01-28T17:00:00+09:00</lastmod>
   </url>
   
