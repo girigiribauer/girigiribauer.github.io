@@ -6,11 +6,12 @@
   <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
 {{- end }}
 
-{{- if gt .Params.tags 0 }}
   <ul class="tags">
+{{- with .CurrentSection }}
+    <li class="section"><a href="{{ .RelPermalink }}"><i class="fas fa-book"></i>{{ .Title }}</a></li>
+{{- end }}
 {{- range .Params.tags }}
     <li><a href="/tags/{{ . | urlize }}/"><i class="fas fa-tag"></i>{{ . }}</a></li>
 {{- end }}
   </ul>
-{{- end }}
 </div>
