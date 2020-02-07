@@ -1,5 +1,5 @@
 <footer class="globalfooter">
-{{- if eq .FirstSection.Title "Tech" }}
+{{- if or (eq .FirstSection.Title "Tech") (eq .Kind "404") }}
   <h2>Tags</h2>
   <ul class="tags">
 {{- range .Site.Taxonomies.tags }}
@@ -19,7 +19,14 @@
 
   <h2>RSS</h2>
   <ul class="tags">
-    <li><a href="/tech/index.xml"><i class="fa fa-rss"></i>Tech Articles</a></li>
+{{- range slice "tech" "misc" "biz" }}
+{{- with $.Site.GetPage "section" . }}
+{{- $sectionTitle := .Title }}
+{{- with .OutputFormats.Get "rss" -}}
+    <li><a href="{{ .Permalink }}"><i class="fa fa-rss"></i>{{ $sectionTitle }}</a></li>
+{{- end }}
+{{- end }}
+{{- end }}
     <li><a href="/index.xml"><i class="fa fa-rss"></i>All Articles</a></li>
   </ul>
 
