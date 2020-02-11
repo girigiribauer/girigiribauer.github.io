@@ -8,7 +8,7 @@
 <meta itemprop="description" content="HTML5のタグで書いてはいけないレアケース にて、『html5shiv.jsを読み込んで・・・』みたいな記事を書いたのですが、そもそも html5shiv.js とは">
 <meta itemprop="datePublished" content="2013-02-04T14:00:12&#43;00:00" />
 <meta itemprop="dateModified" content="2013-02-04T14:00:12&#43;00:00" />
-<meta itemprop="wordCount" content="817">
+<meta itemprop="wordCount" content="1339">
 
 
 
@@ -77,23 +77,62 @@
 <p>また、未知の要素であるため、デフォルトのスタイルもあたっていません。 こちらに関しては、IE9も含めてデフォルトのスタイルがあたってない場合がありますので、header, sectionなどの未知の要素に <code>display: block</code> をあてて、他にスタイルがあたってない状態でも、崩れがおきないようにしてくれます。</p>
 <p>ついでに html5shiv.js を適用した後でDOMツリーがどうなっているかも見ておきます。</p>
 <p><img src="/img/2013/02/html5shiv02.png" alt=""></p>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
+<!-- doctype html -->
+<head>
+  </p> <header class="block1"> 文字列 &#8211; block1</p> <section class="block2"> 文字列 &#8211; block2</p> <footer class="block3"> 文字列 &#8211; block3</p>
+  <p>
+    きちんとDOMツリーが正しく構築され、描画も意図通りに行われています。
+  </p>
+  <h2>
+    html5.js と html5shiv.js の違い
+  </h2>
+  <p>
+    一言でいうと、html5shiv.js のが新しいのでこちらを使うべきです。
+  </p>
+  <p>
+    詳しい話は、 <a href="http://www.skyward-design.net/blog/archives/000134.html">IE対応でよく利用するhtml5shivの使用方法変更について</a> に、もうそのまんま掲載されているので、こちらとこちらの記事内で紹介されているリンク先を参考にされると良いかと思います。
+  </p>
+  <p>
+    こちらが、そのさらに参照先ですね。<a href="http://zoompf.com/2012/05/html5shiv-and-serving-content-from-code-repositories">html5shiv and Serving Content From Code Repositories</a>
+  </p>
+  <p>
+    最新じゃないし、キャッシュもされないし、圧縮もされてないし・・・などの点がもろもろまとめられています。
+  </p>
+  <h2>
+    html5shiv と html5shim の違い
+  </h2>
+  <p>
+    shiv と shim の違いは v と m の違いでしかないですよー、それ以外は全部一緒ですよーと言われています。
+  </p>
+  <p>
+    <a href="http://code.google.com/p/html5shiv/#shiv_or_shim?">html5shiv &#8211; shiv or shim?</a>
+  </p>
+  <p>
+    ただ、<strong>shiv のがかっこいい</strong>らしいです。
+  </p>
+  <h2>
+    まとめ
+  </h2>
+  <p>
+    仮に上記の話が難しくて良く分からなかったとしても、結局のところ <strong>html5.js よりは html5shiv.js のが新しくて素敵なので、こっちを使ってね</strong>、ということですね。
+  </p>
+  <p>
+    IE6-8では基本読み込むだけで利用できますし、IE9でもベースのスタイルがあたるので読み込んでおくと良いかもしれません。
+  </p>
+  <h2 id="ref">
+    参考URL
+  </h2>
+  <ul>
+    <li>
+      <a href="https://github.com/aFarkas/html5shiv">html5shiv</a>
+    </li>
+    <li>
+      <a href="http://www.skyward-design.net/blog/archives/000134.html">IE対応でよく利用するhtml5shivの使用方法変更について</a>
+    </li>
+    <li>
+      <a href="http://zoompf.com/2012/05/html5shiv-and-serving-content-from-code-repositories">html5shiv and Serving Content From Code Repositories</a>
+    </li>
+  </ul>
 
 </div>
 <ul class="socialbuttons">
@@ -222,7 +261,7 @@
 
     <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
 
-    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (7)</a></li>
+    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (8)</a></li>
   </ul>
 
   <h2>RSS</h2>
