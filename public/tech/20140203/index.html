@@ -8,7 +8,7 @@
 <meta itemprop="description" content="前回からの続きです。 jQuery から卒業するための第1歩を polyfills から学ぼう https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込ま">
 <meta itemprop="datePublished" content="2014-02-02T15:00:10&#43;00:00" />
 <meta itemprop="dateModified" content="2017-09-12T15:00:00&#43;09:00" />
-<meta itemprop="wordCount" content="4947">
+<meta itemprop="wordCount" content="5037">
 
 
 
@@ -211,7 +211,8 @@ a === b; // =&gt; ?
 </code></pre>
 <p>と入力してみると、実際 <strong>false</strong> になります。 そういうときは、例えば <strong>console.dir</strong> などを使ってオブジェクトの中身を詳しく見てみると違いが分かると思います。</p>
 <p><strong>+++2017/09/12 追記ここから+++</strong></p>
-<!-- raw HTML omitted -->
+<blockquote class="twitter-tweet" data-lang="ja"><p lang="ja" dir="ltr">&gt;例えば、今開発者ツールを開いて、<br>&gt;var a = Object.create(null);<br>&gt;var b = {};<br>&gt;a === b; // =&gt; ?<br>&gt;と入力してみると、実際 false になります。<br>これでは参照値の比較になってしまうので</p>&mdash; こひな (@37coHiNa) <a href="https://twitter.com/37coHiNa/status/907378036965699585">2017年9月11日</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 <p>でご指摘を受けておっしゃる通りでございます・・・。</p>
 <pre><code>var a = {};
 var b = {};
@@ -417,7 +418,7 @@ for (var name in buz) {
 
     <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
 
-    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (7)</a></li>
+    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (8)</a></li>
   </ul>
 
   <h2>RSS</h2>
