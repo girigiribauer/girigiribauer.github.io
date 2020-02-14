@@ -7,8 +7,8 @@
 <meta itemprop="name" content="Hugo をしばらく触ってなかったので、わかりやすくまとめ直した">
 <meta itemprop="description" content="タイトルの通りです。 インプット・アウトプットを色々見直そうと思った一環なのですが、 しばらく触っていなかった Hugo (Static Site Generator) のテンプレートをあれこれ見">
 <meta itemprop="datePublished" content="2020-01-28T17:00:00&#43;09:00" />
-<meta itemprop="dateModified" content="2020-01-28T17:00:00&#43;09:00" />
-<meta itemprop="wordCount" content="2937">
+<meta itemprop="dateModified" content="2020-02-13T00:00:00&#43;09:00" />
+<meta itemprop="wordCount" content="2997">
 
 
 
@@ -18,7 +18,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://girigiribauer.com/tech/20200128/" />
 <meta property="article:published_time" content="2020-01-28T17:00:00+09:00" />
-<meta property="article:modified_time" content="2020-01-28T17:00:00+09:00" />
+<meta property="article:modified_time" content="2020-02-13T00:00:00+09:00" />
 
     <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
 <meta name="twitter:card" content="summary"/>
@@ -37,7 +37,10 @@
 <h1 class="heading">Hugo をしばらく触ってなかったので、わかりやすくまとめ直した</h1>
 <div class="poststatus">
   <p class="time">
+  <span class="prefix">created: </span>
   <time datetime="2020-01-28 17:00:00">2020/01/28</time>
+  <span class="prefix">, modified: </span>
+  <time datetime="2020-02-13 00:00:00">2020/02/13</time>
 </p>
 
   <ul class="tags">
@@ -79,19 +82,20 @@
 </li>
 <li><strong>Taxonomy Terms Pages</strong>
 <ul>
-<li>タクソノミーに属する記事一覧ページ</li>
-<li>いわゆるタグに属する記事一覧、カテゴリーに属する記事一覧がそれに相当する</li>
-<li>ちなみに <code>categories</code>, <code>tags</code> のタクソノミーは最初からある</li>
-</ul>
-</li>
-<li><strong>Taxonomy List Pages</strong>
-<ul>
-<li>タクソノミー一覧ページ</li>
+<li>タクソノミー一覧ページ <del>タクソノミーに属する記事一覧ページ</del></li>
 <li>いわゆるタグ一覧ページ、カテゴリー一覧ページ</li>
 <li>リストの対象が記事ではなく、タクソノミー自体の一覧</li>
 </ul>
 </li>
+<li><strong>Taxonomy List Pages</strong>
+<ul>
+<li>タクソノミーに属する記事一覧ページ <del>タクソノミー一覧ページ</del></li>
+<li>いわゆるタグに属する記事一覧、カテゴリーに属する記事一覧がそれに相当する</li>
+<li>ちなみに <code>categories</code>, <code>tags</code> のタクソノミーは最初からある</li>
 </ul>
+</li>
+</ul>
+<p><strong>2/13 追記: taxonomy と taxonomyTerm の説明が逆になっていたので修正（すみません・・・）</strong></p>
 <p>ああ、この辺過去に理解したつもりだったけどすっかり忘れてました・・・。</p>
 <p>特に <strong>セクションとカテゴリーを混同しやすい</strong> ので注意が必要かもしれません。
 カテゴリーもタグと同じく複数のカテゴリーに属することができるので、どこか必ず一つにのみ属するものが必要なのであれば、セクションを活用すべきですね。</p>
@@ -233,7 +237,10 @@ Base テンプレート以外のテンプレート階層のファイルで必要
 </ul>
 <div class="poststatus">
   <p class="time">
+  <span class="prefix">created: </span>
   <time datetime="2020-01-28 17:00:00">2020/01/28</time>
+  <span class="prefix">, modified: </span>
+  <time datetime="2020-02-13 00:00:00">2020/02/13</time>
 </p>
 
   <ul class="tags">
@@ -347,7 +354,7 @@ Base テンプレート以外のテンプレート階層のファイルで必要
 
     <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
 
-    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (10)</a></li>
+    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (11)</a></li>
   </ul>
 
   <h2>RSS</h2>
