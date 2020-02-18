@@ -27,7 +27,7 @@
 
 <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<meta name="generator" content="Hugo 0.62.2" />
+<meta name="generator" content="Hugo 0.64.1" />
   </head>
   <body>
     <div class="container">
@@ -237,55 +237,55 @@ DockerHub でも、 5.7 が提供されているようですので、そちら�
 <code>public</code> としておきます。</p>
 <p>一番最初にも書きましたが、やったことない人は <strong>読むだけじゃなく手を動かしましょうね。</strong></p>
 <h3 id="docker-composeyml">docker-compose.yml</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">version: <span style="color:#e6db74">&#34;3&#34;</span>
-services:
-  app:
-    build:
-      context: <span style="color:#e6db74">&#34;docker/app/&#34;</span>
-    ports:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">version</span>: <span style="color:#e6db74">&#34;3&#34;</span>
+<span style="color:#66d9ef">services</span>:
+  <span style="color:#66d9ef">app</span>:
+    <span style="color:#66d9ef">build</span>:
+      <span style="color:#66d9ef">context</span>: <span style="color:#e6db74">&#34;docker/app/&#34;</span>
+    <span style="color:#66d9ef">ports</span>:
       - <span style="color:#ae81ff">8093</span>:<span style="color:#ae81ff">80</span>
-    volumes:
+    <span style="color:#66d9ef">volumes</span>:
       - <span style="color:#e6db74">&#34;./public/:/var/www/html&#34;</span>
-    depends_on:
+    <span style="color:#66d9ef">depends_on</span>:
       - mysql
-  mysql:
-    build:
-      context: <span style="color:#e6db74">&#34;docker/mysql/&#34;</span>
-    environment:
+  <span style="color:#66d9ef">mysql</span>:
+    <span style="color:#66d9ef">build</span>:
+      <span style="color:#66d9ef">context</span>: <span style="color:#e6db74">&#34;docker/mysql/&#34;</span>
+    <span style="color:#66d9ef">environment</span>:
       - MYSQL_DATABASE=sampledb
       - MYSQL_HOST=localhost
       - MYSQL_USER=root
       - MYSQL_ROOT_PASSWORD=mypassword
-    volumes:
+    <span style="color:#66d9ef">volumes</span>:
       - <span style="color:#e6db74">&#34;storage:/var/lib/mysql&#34;</span>
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    ports:
+  <span style="color:#66d9ef">phpmyadmin</span>:
+    <span style="color:#66d9ef">image</span>: phpmyadmin/phpmyadmin:latest
+    <span style="color:#66d9ef">ports</span>:
       - <span style="color:#ae81ff">8094</span>:<span style="color:#ae81ff">80</span>
-    environment:
+    <span style="color:#66d9ef">environment</span>:
       - PMA_HOST=mysql
       - PMA_USER=root
       - PMA_PASSWORD=mypassword
-    depends_on:
+    <span style="color:#66d9ef">depends_on</span>:
       - mysql
-volumes:
-  storage:
+<span style="color:#66d9ef">volumes</span>:
+  <span style="color:#66d9ef">storage</span>:
 </code></pre></div><p>通常イメージを指定するところを、今回は Dockerfile を元にイメージをビルドするので、
 <code>image</code> の代わりに <code>build</code> となっています。</p>
 <p>抜粋します。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">app:
-  build:
-    context: <span style="color:#e6db74">&#34;docker/app/&#34;</span>
-mysql:
-  build:
-    context: <span style="color:#e6db74">&#34;docker/mysql/&#34;</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">app</span>:
+  <span style="color:#66d9ef">build</span>:
+    <span style="color:#66d9ef">context</span>: <span style="color:#e6db74">&#34;docker/app/&#34;</span>
+<span style="color:#66d9ef">mysql</span>:
+  <span style="color:#66d9ef">build</span>:
+    <span style="color:#66d9ef">context</span>: <span style="color:#e6db74">&#34;docker/mysql/&#34;</span>
 </code></pre></div><p>公式にあるイメージを見に行く代わりに、手元の <code>docker/app/</code> 以下にある Dockerfile をベースにして、
 Docker イメージを作ります。</p>
 <p>phpmyadmin については特にカスタマイズする必要がないので、
 そのまま phpmyadmin が提供しているイメージを引っ張って来て利用します。
 (<a href="https://github.com/phpmyadmin/docker">https://github.com/phpmyadmin/docker</a>)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">phpmyadmin:
-  image: phpmyadmin/phpmyadmin:latest
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">phpmyadmin</span>:
+  <span style="color:#66d9ef">image</span>: phpmyadmin/phpmyadmin:latest
 </code></pre></div><p>もう詳しく説明はしませんが、 <a href="https://hub.docker.com/r/phpmyadmin/phpmyadmin/">https://hub.docker.com/r/phpmyadmin/phpmyadmin/</a> に書いてある、
 環境変数を適切に設定することでカスタマイズすることが可能です。</p>
 <p>なお、ポート番号はそれぞれ 8093, 8094 としていますが、
@@ -459,15 +459,15 @@ default-character-set=utf8mb4
 </span></code></pre></div><p><code>docker/mysql/initdb/</code> というディレクトリを新たに作り、
 <code>docker-compose.yml</code> の方に <code>/docker-entrypoint-initdb.d</code> との穴を繋ぐための設定を書きます。</p>
 <p>MySQL のところだけ抜粋するとこんな感じですね。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">mysql:
-  build:
-    context: <span style="color:#e6db74">&#34;docker/mysql/&#34;</span>
-  environment:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">mysql</span>:
+  <span style="color:#66d9ef">build</span>:
+    <span style="color:#66d9ef">context</span>: <span style="color:#e6db74">&#34;docker/mysql/&#34;</span>
+  <span style="color:#66d9ef">environment</span>:
     - MYSQL_DATABASE=sampledb
     - MYSQL_HOST=localhost
     - MYSQL_USER=root
     - MYSQL_ROOT_PASSWORD=mypassword
-  volumes:
+  <span style="color:#66d9ef">volumes</span>:
     - <span style="color:#e6db74">&#34;storage:/var/lib/mysql&#34;</span>
     - <span style="color:#e6db74">&#34;./docker/mysql/initdb/:/docker-entrypoint-initdb.d&#34;</span>
 </code></pre></div><p>MySQL の方はここまでで OK ですね。</p>
@@ -748,7 +748,7 @@ Docker Compose 使って起動したいときは <code>dcom up -d</code> だけ�
 
     <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
 
-    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (11)</a></li>
+    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (12)</a></li>
   </ul>
 
   <h2>RSS</h2>

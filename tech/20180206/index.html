@@ -27,7 +27,7 @@
 
 <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<meta name="generator" content="Hugo 0.62.2" />
+<meta name="generator" content="Hugo 0.64.1" />
   </head>
   <body>
     <div class="container">
@@ -222,33 +222,33 @@ JSON 形式でコンテナ周りに関するあらゆる情報を確認するこ
 <p>手元に適当な作業用ディレクトリを作り、そこで <code>docker-compose.yml</code> というファイルを作ります。</p>
 <p>この作業用ディレクトリがコンテナ名のプレフィックスになりますので、
 今回の作業ディレクトリ名は、例えば <code>my_wordpress</code> とでもしておきます。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">version: <span style="color:#e6db74">&#39;3&#39;</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">version</span>: <span style="color:#e6db74">&#39;3&#39;</span>
 
-services:
-  db:
-    image: mysql:<span style="color:#ae81ff">5.7</span>
-    volumes:
+<span style="color:#66d9ef">services</span>:
+  <span style="color:#66d9ef">db</span>:
+    <span style="color:#66d9ef">image</span>: mysql:<span style="color:#ae81ff">5.7</span>
+    <span style="color:#66d9ef">volumes</span>:
       - db_data:/var/lib/mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: somewordpress
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
+    <span style="color:#66d9ef">restart</span>: always
+    <span style="color:#66d9ef">environment</span>:
+      <span style="color:#66d9ef">MYSQL_ROOT_PASSWORD</span>: somewordpress
+      <span style="color:#66d9ef">MYSQL_DATABASE</span>: wordpress
+      <span style="color:#66d9ef">MYSQL_USER</span>: wordpress
+      <span style="color:#66d9ef">MYSQL_PASSWORD</span>: wordpress
 
-  wordpress:
-    depends_on:
+  <span style="color:#66d9ef">wordpress</span>:
+    <span style="color:#66d9ef">depends_on</span>:
       - db
-    image: wordpress:latest
-    ports:
+    <span style="color:#66d9ef">image</span>: wordpress:latest
+    <span style="color:#66d9ef">ports</span>:
       - <span style="color:#e6db74">&#34;8000:80&#34;</span>
-    restart: always
-    environment:
-      WORDPRESS_DB_HOST: db:<span style="color:#ae81ff">3306</span>
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-volumes:
-  db_data:
+    <span style="color:#66d9ef">restart</span>: always
+    <span style="color:#66d9ef">environment</span>:
+      <span style="color:#66d9ef">WORDPRESS_DB_HOST</span>: db:<span style="color:#ae81ff">3306</span>
+      <span style="color:#66d9ef">WORDPRESS_DB_USER</span>: wordpress
+      <span style="color:#66d9ef">WORDPRESS_DB_PASSWORD</span>: wordpress
+<span style="color:#66d9ef">volumes</span>:
+  <span style="color:#66d9ef">db_data</span>:
 </code></pre></div><p>この YAML ファイルの読み方を簡単に説明したいと思います。</p>
 <p>なお、こちらのファイルの書き方については、
 公式ドキュメントの <a href="https://docs.docker.com/compose/compose-file/">https://docs.docker.com/compose/compose-file/</a> を見ると早いと思います。</p>
@@ -259,11 +259,11 @@ volumes:
 <h3 id="docker-イメージから-docker-コンテナを作るところ">Docker イメージから Docker コンテナを作るところ</h3>
 <p>イメージからコンテナを作るところにフォーカスしてみます。
 つまり services の中だけです。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">db:
-  image: mysql:<span style="color:#ae81ff">5.7</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">db</span>:
+  <span style="color:#66d9ef">image</span>: mysql:<span style="color:#ae81ff">5.7</span>
 
-wordpress:
-  image: wordpress:latest
+<span style="color:#66d9ef">wordpress</span>:
+  <span style="color:#66d9ef">image</span>: wordpress:latest
 </code></pre></div><p>これはそれぞれ、</p>
 <pre><code>docker run mysql:5.7
 docker run wordpress:latest
@@ -301,18 +301,18 @@ docker run wordpress:latest
 MySQL というデータベースを提供するコンテナを、
 <strong>それぞれコンテナ同士を連携させて全体としてのサービスを提供するようになっています。</strong></p>
 <p>また連携周りだけフォーカスしてみます。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">services:
-  db:
-    image: mysql:<span style="color:#ae81ff">5.7</span>
-    volumes:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">services</span>:
+  <span style="color:#66d9ef">db</span>:
+    <span style="color:#66d9ef">image</span>: mysql:<span style="color:#ae81ff">5.7</span>
+    <span style="color:#66d9ef">volumes</span>:
       - db_data:/var/lib/mysql
 
-  wordpress:
-    depends_on:
+  <span style="color:#66d9ef">wordpress</span>:
+    <span style="color:#66d9ef">depends_on</span>:
       - db
-    image: wordpress:latest
-volumes:
-  db_data:
+    <span style="color:#66d9ef">image</span>: wordpress:latest
+<span style="color:#66d9ef">volumes</span>:
+  <span style="color:#66d9ef">db_data</span>:
 </code></pre></div><p>ここから以下のことが分かります。</p>
 <ol>
 <li>db コンテナと wordpress コンテナが存在している</li>
@@ -324,8 +324,8 @@ volumes:
 <p>ポート番号だけ、何か他に動かしているものとかぶってないか注意してください。
 もし 8000 番と被っていたら、適当に 8091 などと変更します。
 うーん、ここでは 8091 に変えておきましょうか。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">wordpress:
-  ports:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">wordpress</span>:
+  <span style="color:#66d9ef">ports</span>:
     - <span style="color:#e6db74">&#34;8091:80&#34;</span>
 </code></pre></div><p>変更したらいよいよ起動してみます。</p>
 <pre><code>docker-compose up -d
@@ -601,7 +601,7 @@ Docker で具体的にどういうことが出来るのかが見えてくると�
 
     <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
 
-    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (11)</a></li>
+    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (12)</a></li>
   </ul>
 
   <h2>RSS</h2>
