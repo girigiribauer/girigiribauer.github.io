@@ -22,11 +22,6 @@ tech = "/tech/:filename/"
 biz = "/biz/:filename/"
 misc = "/misc/:filename/"
 
-[blackfriday]
-fractions = false
-hrefTargetBlank = true
-plainIDAnchors  = true
-
 [imaging]
 resampleFilter = "box" # https://github.com/disintegration/imaging
 quality = 75
