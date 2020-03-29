@@ -9,6 +9,7 @@ EnableGitInfo = false
 pluralizelisttitles = false
 googleAnalytics = "UA-36767095-1"
 disableKinds = ["taxonomyTerm"]
+enableEmoji = true
 
 [taxonomies]
 tag = "tags"
