@@ -6,10 +6,19 @@
     <description>Recent content in Zsh on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Mon, 27 Oct 2014 11:57:58 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 20 Apr 2020 08:00:00 +0900</lastBuildDate>
     
 	<atom:link href="http://girigiribauer.com/tags/zsh/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>シェルで alias を設定するときは abbr の方が良い、という思想を学んだ話</title>
+      <link>http://girigiribauer.com/tech/20200420/</link>
+      <pubDate>Mon, 20 Apr 2020 08:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tech/20200420/</guid>
+      <description>つい最近、長らく使っていた fish から、再び zsh への改宗を果たしました。 Bye bye, fish! 🐟 こんな感じの遍歴です。 bash tcsh zsh fish zsh &amp;lt;= いまここ 前半の方（bash とか tcsh と</description>
+    </item>
     
     <item>
       <title>ようやくdotfilesをアップしました</title>
