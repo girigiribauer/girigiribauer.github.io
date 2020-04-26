@@ -6,10 +6,19 @@
     <description>Recent content in CLI on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Tue, 12 Feb 2019 08:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 27 Apr 2020 08:00:00 +0900</lastBuildDate>
     
 	<atom:link href="http://girigiribauer.com/tags/cli/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ターミナル（黒い画面）を分割して使う tmux 超入門</title>
+      <link>http://girigiribauer.com/tech/20200427/</link>
+      <pubDate>Mon, 27 Apr 2020 08:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tech/20200427/</guid>
+      <description>tmux に関する記事はちょくちょく書くものの、 tmux 導入そのものに関する記事はそういえば書いてなかったなーと。 というのも、ちょうど直近で tmux を含む環境構</description>
+    </item>
     
     <item>
       <title>Vim から VS Code へ覚悟を持って移行する</title>
