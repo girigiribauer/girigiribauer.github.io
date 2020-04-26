@@ -6,10 +6,19 @@
     <description>Recent content in ShellScript on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Mon, 20 Apr 2020 08:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 27 Apr 2020 08:00:00 +0900</lastBuildDate>
     
 	<atom:link href="http://girigiribauer.com/tags/shellscript/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ターミナル（黒い画面）を分割して使う tmux 超入門</title>
+      <link>http://girigiribauer.com/tech/20200427/</link>
+      <pubDate>Mon, 27 Apr 2020 08:00:00 +0900</pubDate>
+      
+      <guid>http://girigiribauer.com/tech/20200427/</guid>
+      <description>tmux に関する記事はちょくちょく書くものの、 tmux 導入そのものに関する記事はそういえば書いてなかったなーと。 というのも、ちょうど直近で tmux を含む環境構</description>
+    </item>
     
     <item>
       <title>シェルで alias を設定するときは abbr の方が良い、という思想を学んだ話</title>

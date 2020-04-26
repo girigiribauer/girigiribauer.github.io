@@ -3,27 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://girigiribauer.com/tags/cli/</loc>
+    <lastmod>2020-04-27T08:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/shellscript/</loc>
+    <lastmod>2020-04-27T08:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tech/</loc>
+    <lastmod>2020-04-27T08:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tags/tmux/</loc>
+    <lastmod>2020-04-27T08:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/</loc>
+    <lastmod>2020-04-27T08:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tech/20200427/</loc>
+    <lastmod>2020-04-27T08:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/tags/fish/</loc>
     <lastmod>2020-04-20T08:00:00+09:00</lastmod>
   </url>
   
   <url>
-    <loc>http://girigiribauer.com/tags/shellscript/</loc>
-    <lastmod>2020-04-20T08:00:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://girigiribauer.com/tech/</loc>
-    <lastmod>2020-04-20T08:00:00+09:00</lastmod>
-  </url>
-  
-  <url>
     <loc>http://girigiribauer.com/tags/zsh/</loc>
-    <lastmod>2020-04-20T08:00:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://girigiribauer.com/</loc>
     <lastmod>2020-04-20T08:00:00+09:00</lastmod>
   </url>
   
@@ -295,16 +310,6 @@
   <url>
     <loc>http://girigiribauer.com/tech/20190318/</loc>
     <lastmod>2019-03-18T08:45:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://girigiribauer.com/tags/cli/</loc>
-    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://girigiribauer.com/tags/tmux/</loc>
-    <lastmod>2019-02-12T08:00:00+09:00</lastmod>
   </url>
   
   <url>
