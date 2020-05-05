@@ -27,7 +27,7 @@
 
 <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<meta name="generator" content="Hugo 0.64.1" />
+<meta name="generator" content="Hugo 0.69.2" />
   </head>
   <body>
     <div class="container">
@@ -291,14 +291,14 @@ Docker イメージを作ります。</p>
 使っていたりすれば他のものに変えてください。</p>
 <h3 id="dockerappdockerfile">docker/app/Dockerfile</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> centos:7</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># 各パッケージのアップデート</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> yum -y update<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># remi リポジトリの追加（remi を入れるには epel も必要）</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> yum -y install epel-release<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># Apache(httpd), PHP のインストール</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> yum -y --enablerepo<span style="color:#f92672">=</span>remi,remi-php72 install <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    httpd <span style="color:#ae81ff">\
@@ -313,14 +313,14 @@ Docker イメージを作ります。</p>
 </span><span style="color:#ae81ff"></span>    php-pecl-apcu <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    php-xml <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    php-xmlrpc<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># httpd.conf のログを stdout, stderr に繋ぐ</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> ln -sf /dev/stdout /var/log/httpd/access_log <span style="color:#f92672">&amp;&amp;</span> <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    ln -sf /dev/stderr /var/log/httpd/error_log<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># mime タイプのファイル追加</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> ln -sf /etc/mime.types /etc/httpd/conf/mime.types<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># httpd をフォアグラウンドで動かす（コンテナ内で処理が終わらない）</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;/usr/sbin/httpd&#34;</span>,<span style="color:#e6db74">&#34;-D&#34;</span>,<span style="color:#e6db74">&#34;FOREGROUND&#34;</span>]<span style="color:#960050;background-color:#1e0010">
 </span></code></pre></div><p>一旦正しく動作するところまでやって、後から若干のカスタマイズをします。</p>
@@ -453,7 +453,7 @@ character-set-server=utf8mb4
 default-character-set=utf8mb4
 </code></pre></div><p>さらに、Dockerfile に COPY 行を追記します。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Dockerfile" data-lang="Dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mysql:5.7</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> my.cnf /etc/my.cnf<span style="color:#960050;background-color:#1e0010">
 </span></code></pre></div><p><code>docker/mysql/initdb/</code> というディレクトリを新たに作り、
 <code>docker-compose.yml</code> の方に <code>/docker-entrypoint-initdb.d</code> との穴を繋ぐための設定を書きます。</p>

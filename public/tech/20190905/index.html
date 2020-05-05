@@ -8,7 +8,7 @@
 <meta itemprop="description" content="Electron は単体で使ったことがあるのですが、 個人的には、どうも独特というか癖があるなあと思ってまして、 なんというか、どうしても Electron 中心に考えないといけ">
 <meta itemprop="datePublished" content="2019-09-05T23:30:00&#43;09:00" />
 <meta itemprop="dateModified" content="2019-09-05T23:30:00&#43;09:00" />
-<meta itemprop="wordCount" content="4056">
+<meta itemprop="wordCount" content="4057">
 
 
 
@@ -27,7 +27,7 @@
 
 <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<meta name="generator" content="Hugo 0.64.1" />
+<meta name="generator" content="Hugo 0.69.2" />
   </head>
   <body>
     <div class="container">
@@ -85,7 +85,7 @@ Electron 単体を最小+αの範囲で動かすサンプルです。</p>
     Chromium &lt;<span style="color:#f92672">span</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;chrome-version&#34;</span>&gt;&lt;/<span style="color:#f92672">span</span>&gt;,
     and Electron &lt;<span style="color:#f92672">span</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;electron-version&#34;</span>&gt;&lt;/<span style="color:#f92672">span</span>&gt;.
 
-    <span style="color:#75715e">&lt;!--</span><span style="color:#75715e"> You can also require other files to run in this process </span><span style="color:#75715e">--&gt;</span>
+    <span style="color:#75715e">&lt;!-- You can also require other files to run in this process --&gt;</span>
     &lt;<span style="color:#f92672">script</span> <span style="color:#a6e22e">src</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;./renderer.js&#34;</span>&gt;&lt;/<span style="color:#f92672">script</span>&gt;
   &lt;/<span style="color:#f92672">body</span>&gt;
 &lt;/<span style="color:#f92672">html</span>&gt;
@@ -203,7 +203,7 @@ Electron アプリで実行中のとき、環境変数がそれぞれ渡され�
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">app</span>, <span style="color:#a6e22e">BrowserWindow</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;electron&#39;</span>)
 
 <span style="color:#75715e">// Keep a global reference of the window object, if you don&#39;t, the window will
-</span><span style="color:#75715e"></span><span style="color:#75715e">// be closed automatically when the JavaScript object is garbage collected.
+</span><span style="color:#75715e">// be closed automatically when the JavaScript object is garbage collected.
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">win</span>
 
 <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">createWindow</span> () {
@@ -232,8 +232,8 @@ Electron アプリで実行中のとき、環境変数がそれぞれ渡され�
 }
 
 <span style="color:#75715e">// This method will be called when Electron has finished
-</span><span style="color:#75715e"></span><span style="color:#75715e">// initialization and is ready to create browser windows.
-</span><span style="color:#75715e"></span><span style="color:#75715e">// Some APIs can only be used after this event occurs.
+</span><span style="color:#75715e">// initialization and is ready to create browser windows.
+</span><span style="color:#75715e">// Some APIs can only be used after this event occurs.
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">app</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;ready&#39;</span>, <span style="color:#a6e22e">createWindow</span>)
 
 <span style="color:#75715e">// Quit when all windows are closed.
@@ -254,7 +254,7 @@ Electron アプリで実行中のとき、環境変数がそれぞれ渡され�
 })
 
 <span style="color:#75715e">// In this file you can include the rest of your app&#39;s specific main process
-</span><span style="color:#75715e"></span><span style="color:#75715e">// code. You can also put them in separate files and require them here.
+</span><span style="color:#75715e">// code. You can also put them in separate files and require them here.
 </span></code></pre></div><p>やっていることとしてはものすごくシンプルで・・・</p>
 <ol>
 <li>Electron のパッケージを require</li>
