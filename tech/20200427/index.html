@@ -7,8 +7,8 @@
 <meta itemprop="name" content="ターミナル（黒い画面）を分割して使う tmux 超入門">
 <meta itemprop="description" content="tmux に関する記事はちょくちょく書くものの、 tmux 導入そのものに関する記事はそういえば書いてなかったなーと。 というのも、ちょうど直近で tmux を含む環境構">
 <meta itemprop="datePublished" content="2020-04-27T08:00:00&#43;09:00" />
-<meta itemprop="dateModified" content="2020-04-27T08:00:00&#43;09:00" />
-<meta itemprop="wordCount" content="5265">
+<meta itemprop="dateModified" content="2020-05-05T17:00:00&#43;09:00" />
+<meta itemprop="wordCount" content="5436">
 
 
 
@@ -18,7 +18,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://girigiribauer.com/tech/20200427/" />
 <meta property="article:published_time" content="2020-04-27T08:00:00+09:00" />
-<meta property="article:modified_time" content="2020-04-27T08:00:00+09:00" />
+<meta property="article:modified_time" content="2020-05-05T17:00:00+09:00" />
 
     <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
 <meta name="twitter:card" content="summary"/>
@@ -27,7 +27,7 @@
 
 <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<meta name="generator" content="Hugo 0.64.1" />
+<meta name="generator" content="Hugo 0.69.2" />
   </head>
   <body>
     <div class="container">
@@ -37,6 +37,9 @@
 <h1 class="heading">ターミナル（黒い画面）を分割して使う tmux 超入門</h1>
 <div class="poststatus">
   <p class="time"><time datetime="2020-04-27 08:00:00">2020/04/27</time>
+<span class="separator"> | </span>
+<time
+  datetime="2020-05-05 17:00:00">2020/05/05</time>
 </p>
 
   <ul class="tags">
@@ -200,6 +203,10 @@ set-option -g pane-base-index 1
 # これだけはあった方が良いぞ！
 # from http://d.hatena.ne.jp/kiririmode/20120321/p1
 bind-key r source-file ~/.tmux.conf\; display-message &quot;$HOME/.tmux.conf reloaded!&quot;
+
+# tmux-yank でコピーの選択開始が動かなくなってた？みたいなので、
+# 手動で bind-key の設定しちゃう（後述）
+bind-key -T copy-mode-vi 'v' send-keys -X  begin-selection
 </code></pre><h4 id="plugins-プラグイン読み込み">plugins プラグイン読み込み</h4>
 <p>ちょっと多めです。</p>
 <p>上にも書きましたが、 tpm だけは手動で入れなきゃ動かないです。
@@ -356,7 +363,13 @@ q // コピーモードの終了
 v // 今のカーソル位置から選択開始
 hjkl // hjkl で移動
 y // コピー！
-</code></pre><p>ちょっとここだけ分かりづらいので、またまた動画で。</p>
+</code></pre><p><strong>ここから追記（2020/05/05）</strong>
+アップデート前後でなぜか <code>v</code> キーにてコピーの選択開始が動かなくなってたので、
+独自に bind-key 設定して追加してます！</p>
+<p>上の mapping あたりの設定にも出てきてますが、改めてメモ。</p>
+<pre><code>bind-key -T copy-mode-vi 'v' send-keys -X  begin-selection
+</code></pre><p><strong>ここまで追記（2020/05/05）</strong></p>
+<p>ちょっとここだけ分かりづらいので、またまた動画で。</p>
 <a href="/img/2020/04/tmux04.mp4" target="_blank">
     <video width="811" height="467" autoplay muted loop controls>
         <source src="/img/2020/04/tmux04.mp4" type="video/mp4">
@@ -423,6 +436,9 @@ y // コピー！
 </ul>
 <div class="poststatus">
   <p class="time"><time datetime="2020-04-27 08:00:00">2020/04/27</time>
+<span class="separator"> | </span>
+<time
+  datetime="2020-05-05 17:00:00">2020/05/05</time>
 </p>
 
   <ul class="tags">
