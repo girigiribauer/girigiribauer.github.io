@@ -1,32 +1,45 @@
 <footer class="globalfooter">
-{{- if or (eq .FirstSection.Title "Tech") (eq .Kind "404") }}
+  {{- if or (eq .FirstSection.Title "Tech") (eq .Kind "404") }}
   <h2>Tags</h2>
   <ul class="tags">
-{{- range .Site.Taxonomies.tags }}
+    {{- range .Site.Taxonomies.tags }}
     <li><a href="{{ .Page.Permalink }}"><i class="fa fa-tag"></i>{{ .Page.Title }} ({{ .Count }})</a></li>
-{{- end }}
+    {{- end }}
   </ul>
-{{- end }}
+  {{- end }}
 
   <h2>Categories (Sections)</h2>
   <ul class="tags">
-{{- range slice "tech" "misc" "biz" }}
-{{ with $.Site.GetPage "section" . }}
+    {{- range slice "tech" "misc" "biz" }}
+    {{ with $.Site.GetPage "section" . }}
     <li><a href="{{ .RelPermalink }}"><i class="fa fa-book"></i>{{ .Title }} ({{ len .Pages }})</a></li>
-{{- end }}
-{{- end }}
+    {{- end }}
+    {{- end }}
   </ul>
+
+  <div class="curry-block">
+    <h3>カレーブログはじめました！</h3>
+    <a href="https://curry.girigiribauer.com" target="_blank">
+      <figure>
+        <img src="/img/banner-curry.jpg" alt="お昼に何食べるか考えるのつらい ご当地カレーが食べたい！" width="300">
+        <figcaption>お昼に何食べるか考えるのつらい ご当地カレーが食べたい！</figcaption>
+      </figure>
+    </a>
+    <p>最近、 <strong>身の回りの変化が激しすぎて、なんだか疲れちゃった・・・</strong>って人に届けたい！<br>
+      妄想・フィクションたっぷりの<strong>ご当地カレーブログ</strong>です！<br>
+      これでも読んで脳の回転数をぐっと下げて、<strong>「あっこんな適当でもいいんだ・・・」</strong>って思ってくれたら嬉しいです！</p>
+  </div>
 
   <h2>RSS</h2>
   <ul class="tags">
-{{- range slice "tech" "misc" "biz" }}
-{{- with $.Site.GetPage "section" . }}
-{{- $sectionTitle := .Title }}
-{{- with .OutputFormats.Get "rss" -}}
+    {{- range slice "tech" "misc" "biz" }}
+    {{- with $.Site.GetPage "section" . }}
+    {{- $sectionTitle := .Title }}
+    {{- with .OutputFormats.Get "rss" -}}
     <li><a href="{{ .Permalink }}"><i class="fa fa-rss"></i>{{ $sectionTitle }}</a></li>
-{{- end }}
-{{- end }}
-{{- end }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
     <li><a href="/index.xml"><i class="fa fa-rss"></i>All Articles</a></li>
   </ul>
 

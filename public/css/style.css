@@ -57,6 +57,19 @@ body {
 .globalfooter > h2:first-child {
   margin-top: 0;
 }
+.globalfooter .curry-block {
+  margin: 0 0 2rem 0;
+  padding: 1rem;
+  background: #fff3dd;
+  border: 0.5rem solid #ffc055;
+  color: #805000;
+}
+.globalfooter .curry-block h3 {
+  margin-top: 1rem;
+}
+.globalfooter .curry-block a {
+  color: #805000;
+}
 
 /**
  * headings
@@ -347,6 +360,26 @@ video {
   max-width: 100%;
   height: auto;
   margin-bottom: 1.5rem;
+}
+
+/**
+ * figure
+*/
+figure {
+  max-width: 300px;
+  margin: 0 0 2rem 0;
+  padding: 0.5rem;
+  display: inline-block;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+}
+figure img {
+  margin: 0 0 0.5rem 0;
+}
+figcaption {
+  font-size: 0.875rem;
+  line-height: 1.6;
 }
 
 /**
