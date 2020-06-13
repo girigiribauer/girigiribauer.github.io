@@ -48,7 +48,7 @@
   </ul>
 </div>
 <div class="article">
-<p>Vagrant, Chef 周りの知見が溜まってきたのでそろそろまとめていきたいと思っているのですが、 まだまだ自分の中で分からない部分も多く、 かつ自分はインフラエンジニアではないので、 正直どこまで書いたらいいのか迷っています。</p>
+  <p>Vagrant, Chef 周りの知見が溜まってきたのでそろそろまとめていきたいと思っているのですが、 まだまだ自分の中で分からない部分も多く、 かつ自分はインフラエンジニアではないので、 正直どこまで書いたらいいのか迷っています。</p>
 <p>また、chef-solo はなくなるから、これからは chef-zero だ、なんて言われても、 インフラに関する前提知識が薄いので、なかなかついていくことができません・・・。</p>
 <p>とはいえ、少なくとも使っていく中で<strong>自分なりの思想</strong>みたいなものははっきりしてきたので、 まずはそこから書いてみようと思います。</p>
 <h2 id="vagrant-の用途を考える">Vagrant の用途を考える</h2>
@@ -126,10 +126,11 @@ end
 <ul class="socialbuttons">
   <li>
     <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = "https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
   </li>
   <li>
-    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
   </li>
 </ul>
 <div class="poststatus">
@@ -145,6 +146,47 @@ end
   </ul>
 </div>
 <small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
+
+
+
+<h2>Related articles</h2>
+<ul class="article-list">
+  
+  <li>
+  <h2 class="heading-listitem"><time datetime="2013-07-26 20:35:52">2013/07/26</time>
+ <br> <a href="http://girigiribauer.com/tech/20130726/">Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="fas fa-book"></i>Tech</a></li>
+    <li><a href="/tags/chef/"><i class="fas fa-tag"></i>Chef</a></li>
+    <li><a href="/tags/ssh/"><i class="fas fa-tag"></i>SSH</a></li>
+    <li><a href="/tags/vagrant/"><i class="fas fa-tag"></i>Vagrant</a></li>
+  </ul>
+</li>
+  
+  <li>
+  <h2 class="heading-listitem"><time datetime="2013-05-17 17:05:27">2013/05/17</time>
+ <br> <a href="http://girigiribauer.com/tech/20130517/">Chef の サードパーティ Cookbook を利用して、yum のリポジトリを追加してみる</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="fas fa-book"></i>Tech</a></li>
+    <li><a href="/tags/chef/"><i class="fas fa-tag"></i>Chef</a></li>
+    <li><a href="/tags/vagrant/"><i class="fas fa-tag"></i>Vagrant</a></li>
+    <li><a href="/tags/virtualization/"><i class="fas fa-tag"></i>virtualization</a></li>
+  </ul>
+</li>
+  
+  <li>
+  <h2 class="heading-listitem"><time datetime="2013-05-14 20:00:29">2013/05/14</time>
+ <br> <a href="http://girigiribauer.com/tech/20130514/">Chef の Data Bag を使ってユーザー作成の自動化をしてみる</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="fas fa-book"></i>Tech</a></li>
+    <li><a href="/tags/chef/"><i class="fas fa-tag"></i>Chef</a></li>
+    <li><a href="/tags/vagrant/"><i class="fas fa-tag"></i>Vagrant</a></li>
+    <li><a href="/tags/virtualization/"><i class="fas fa-tag"></i>virtualization</a></li>
+  </ul>
+</li>
+  
+</ul>
+
       </main>
 <footer class="globalfooter">
   <h2>Tags</h2>
@@ -254,16 +296,14 @@ end
   </ul>
 
   <div class="curry-block">
-    <h3>カレーブログはじめました！</h3>
+    <h3><i class="fas fa-utensils"></i> カレーブログはじめました <i class="fas fa-utensils"></i></h3>
     <a href="https://curry.girigiribauer.com" target="_blank">
       <figure>
         <img src="/img/banner-curry.jpg" alt="お昼に何食べるか考えるのつらい ご当地カレーが食べたい！" width="300">
         <figcaption>お昼に何食べるか考えるのつらい ご当地カレーが食べたい！</figcaption>
       </figure>
     </a>
-    <p>最近、 <strong>身の回りの変化が激しすぎて、なんだか疲れちゃった・・・</strong>って人に届けたい！<br>
-      妄想・フィクションたっぷりの<strong>ご当地カレーブログ</strong>です！<br>
-      これでも読んで脳の回転数をぐっと下げて、<strong>「あっこんな適当でもいいんだ・・・」</strong>って思ってくれたら嬉しいです！</p>
+    <p><strong>カレーはそこそこに</strong>、ご当地の妄想旅をしつつ現地の旨いもんを探しまくる、<strong>ご当地カレーブログ</strong>です！</p>
   </div>
 
   <h2>RSS</h2>
