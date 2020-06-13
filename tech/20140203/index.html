@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="utf-8">
-    <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その2 - ばうあーろぐ</title>
-    <meta name="viewport" content="width=device-width">
-<meta itemprop="name" content="jQuery から卒業するための第1歩を polyfills から学ぼう – その2">
+
+<head>
+  <meta charset="utf-8">
+  <title>jQuery から卒業するための第1歩を polyfills から学ぼう – その2 - ばうあーろぐ</title>
+  <meta name="viewport" content="width=device-width">
+  <meta itemprop="name" content="jQuery から卒業するための第1歩を polyfills から学ぼう – その2">
 <meta itemprop="description" content="前回からの続きです。 jQuery から卒業するための第1歩を polyfills から学ぼう https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込ま">
 <meta itemprop="datePublished" content="2014-02-02T15:00:10&#43;00:00" />
 <meta itemprop="dateModified" content="2017-09-12T15:00:00&#43;09:00" />
@@ -13,27 +14,26 @@
 
 
 <meta itemprop="keywords" content="ajax,JavaScript,jQuery,jsperf,polyfills," />
-<meta property="og:title" content="jQuery から卒業するための第1歩を polyfills から学ぼう – その2" />
+  <meta property="og:title" content="jQuery から卒業するための第1歩を polyfills から学ぼう – その2" />
 <meta property="og:description" content="前回からの続きです。 jQuery から卒業するための第1歩を polyfills から学ぼう https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込ま" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://girigiribauer.com/tech/20140203/" />
 <meta property="article:published_time" content="2014-02-02T15:00:10+00:00" />
 <meta property="article:modified_time" content="2017-09-12T15:00:00+09:00" />
 
-    <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
-<meta name="twitter:card" content="summary"/>
+  <meta property="og:image" content="http://girigiribauer.com/img/ogimage.png">
+  <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="jQuery から卒業するための第1歩を polyfills から学ぼう – その2"/>
 <meta name="twitter:description" content="前回からの続きです。 jQuery から卒業するための第1歩を polyfills から学ぼう https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込ま"/>
 
-<link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<meta name="generator" content="Hugo 0.69.2" />
-  </head>
-  <body>
-    <div class="container">
-<header class="globalheader"><a href="/">TOP</a></header>
-      <main class="maincontents" role="main">
-
+  <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+  <meta name="generator" content="Hugo 0.69.2" />
+</head>
+<body>
+  <div class="container">
+    <header class="globalheader"><a href="/">TOP</a></header>
+    <main class="maincontents" role="main">
+      
 <h1 class="heading">jQuery から卒業するための第1歩を polyfills から学ぼう – その2</h1>
 <div class="poststatus">
   <p class="time"><time datetime="2014-02-03 00:00:10">2014/02/03</time>
@@ -44,14 +44,15 @@
   <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
 
   <ul class="tags">
-    <li class="section"><a href="/tech/"><i class="fas fa-book"></i>Tech</a></li>
-    <li><a href="/tags/ajax/"><i class="fas fa-tag"></i>ajax</a></li>
-    <li><a href="/tags/javascript/"><i class="fas fa-tag"></i>JavaScript</a></li>
-    <li><a href="/tags/jquery/"><i class="fas fa-tag"></i>jQuery</a></li>
-    <li><a href="/tags/jsperf/"><i class="fas fa-tag"></i>jsperf</a></li>
-    <li><a href="/tags/polyfills/"><i class="fas fa-tag"></i>polyfills</a></li>
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>Tech</a></li>
+    <li><a href="/tags/ajax/"><i class="icon-tag"></i>ajax</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/jquery/"><i class="icon-tag"></i>jQuery</a></li>
+    <li><a href="/tags/jsperf/"><i class="icon-tag"></i>jsperf</a></li>
+    <li><a href="/tags/polyfills/"><i class="icon-tag"></i>polyfills</a></li>
   </ul>
 </div>
+
 <div class="article">
   <p>前回からの続きです。 <a href="/archives/1233/">jQuery から卒業するための第1歩を polyfills から学ぼう</a></p>
 <p><a href="https://github.com/inexorabletash/polyfill">https://github.com/inexorabletash/polyfill</a> にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込まれている前提となります。</p>
@@ -304,14 +305,15 @@ for (var name in buz) {
   <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
 
   <ul class="tags">
-    <li class="section"><a href="/tech/"><i class="fas fa-book"></i>Tech</a></li>
-    <li><a href="/tags/ajax/"><i class="fas fa-tag"></i>ajax</a></li>
-    <li><a href="/tags/javascript/"><i class="fas fa-tag"></i>JavaScript</a></li>
-    <li><a href="/tags/jquery/"><i class="fas fa-tag"></i>jQuery</a></li>
-    <li><a href="/tags/jsperf/"><i class="fas fa-tag"></i>jsperf</a></li>
-    <li><a href="/tags/polyfills/"><i class="fas fa-tag"></i>polyfills</a></li>
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>Tech</a></li>
+    <li><a href="/tags/ajax/"><i class="icon-tag"></i>ajax</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/jquery/"><i class="icon-tag"></i>jQuery</a></li>
+    <li><a href="/tags/jsperf/"><i class="icon-tag"></i>jsperf</a></li>
+    <li><a href="/tags/polyfills/"><i class="icon-tag"></i>polyfills</a></li>
   </ul>
 </div>
+
 <small>もし記事内に誤りなどございましたら、 <a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a> までご一報いただけると助かります。</small>
 
 
@@ -323,149 +325,152 @@ for (var name in buz) {
   <h2 class="heading-listitem"><time datetime="2014-01-31 00:00:53">2014/01/31</time>
  <br> <a href="http://girigiribauer.com/tech/20140131/">jQuery から卒業するための第1歩を polyfills から学ぼう</a></h2>
   <ul class="tags">
-    <li class="section"><a href="/tech/"><i class="fas fa-book"></i>Tech</a></li>
-    <li><a href="/tags/javascript/"><i class="fas fa-tag"></i>JavaScript</a></li>
-    <li><a href="/tags/jquery/"><i class="fas fa-tag"></i>jQuery</a></li>
-    <li><a href="/tags/polyfills/"><i class="fas fa-tag"></i>polyfills</a></li>
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>Tech</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/jquery/"><i class="icon-tag"></i>jQuery</a></li>
+    <li><a href="/tags/polyfills/"><i class="icon-tag"></i>polyfills</a></li>
   </ul>
 </li>
+
   
   <li>
   <h2 class="heading-listitem"><time datetime="2013-03-01 23:14:23">2013/03/01</time>
  <br> <a href="http://girigiribauer.com/tech/20130301/">大なごやJS vol.5 に行ってきたまとめ</a></h2>
   <ul class="tags">
-    <li class="section"><a href="/tech/"><i class="fas fa-book"></i>Tech</a></li>
-    <li><a href="/tags/javascript/"><i class="fas fa-tag"></i>JavaScript</a></li>
-    <li><a href="/tags/mvc/"><i class="fas fa-tag"></i>MVC</a></li>
-    <li><a href="/tags/output/"><i class="fas fa-tag"></i>output</a></li>
-    <li><a href="/tags/functionallanguage/"><i class="fas fa-tag"></i>FunctionalLanguage</a></li>
-    <li><a href="/tags/event-conference/"><i class="fas fa-tag"></i>event-conference</a></li>
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>Tech</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/mvc/"><i class="icon-tag"></i>MVC</a></li>
+    <li><a href="/tags/output/"><i class="icon-tag"></i>output</a></li>
+    <li><a href="/tags/functionallanguage/"><i class="icon-tag"></i>FunctionalLanguage</a></li>
+    <li><a href="/tags/event-conference/"><i class="icon-tag"></i>event-conference</a></li>
   </ul>
 </li>
+
   
   <li>
   <h2 class="heading-listitem"><time datetime="2013-02-11 20:16:14">2013/02/11</time>
  <br> <a href="http://girigiribauer.com/tech/20130211/">スマートフォンサイト構築に役立ちそうな本を読んでみた</a></h2>
   <ul class="tags">
-    <li class="section"><a href="/tech/"><i class="fas fa-book"></i>Tech</a></li>
-    <li><a href="/tags/html5/"><i class="fas fa-tag"></i>HTML5</a></li>
-    <li><a href="/tags/javascript/"><i class="fas fa-tag"></i>JavaScript</a></li>
-    <li><a href="/tags/smartphone/"><i class="fas fa-tag"></i>Smartphone</a></li>
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>Tech</a></li>
+    <li><a href="/tags/html5/"><i class="icon-tag"></i>HTML5</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/smartphone/"><i class="icon-tag"></i>Smartphone</a></li>
   </ul>
 </li>
+
   
 </ul>
 
-      </main>
-<footer class="globalfooter">
+    </main>
+    <footer class="globalfooter">
   <h2>Tags</h2>
   <ul class="tags">
-    <li><a href="http://girigiribauer.com/tags/ajax/"><i class="fa fa-tag"></i>ajax (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/angular/"><i class="fa fa-tag"></i>Angular (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/ansible/"><i class="fa fa-tag"></i>Ansible (5)</a></li>
-    <li><a href="http://girigiribauer.com/tags/anyenv/"><i class="fa fa-tag"></i>anyenv (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/apache/"><i class="fa fa-tag"></i>Apache (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/api/"><i class="fa fa-tag"></i>API (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/apps/"><i class="fa fa-tag"></i>Apps (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/auth/"><i class="fa fa-tag"></i>auth (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/automation/"><i class="fa fa-tag"></i>automation (3)</a></li>
-    <li><a href="http://girigiribauer.com/tags/bot/"><i class="fa fa-tag"></i>bot (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/bugs/"><i class="fa fa-tag"></i>bugs (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/canvas/"><i class="fa fa-tag"></i>Canvas (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/chef/"><i class="fa fa-tag"></i>Chef (9)</a></li>
-    <li><a href="http://girigiribauer.com/tags/cli/"><i class="fa fa-tag"></i>CLI (12)</a></li>
-    <li><a href="http://girigiribauer.com/tags/cordova/"><i class="fa fa-tag"></i>Cordova (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/crawler/"><i class="fa fa-tag"></i>Crawler (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/css/"><i class="fa fa-tag"></i>CSS (4)</a></li>
-    <li><a href="http://girigiribauer.com/tags/css3/"><i class="fa fa-tag"></i>CSS3 (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/cssfilter/"><i class="fa fa-tag"></i>CSSfilter (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/docker/"><i class="fa fa-tag"></i>Docker (9)</a></li>
-    <li><a href="http://girigiribauer.com/tags/dom/"><i class="fa fa-tag"></i>DOM (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/ecmascript/"><i class="fa fa-tag"></i>ECMAScript (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/electron/"><i class="fa fa-tag"></i>Electron (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/english/"><i class="fa fa-tag"></i>English (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/event-conference/"><i class="fa fa-tag"></i>event-conference (5)</a></li>
-    <li><a href="http://girigiribauer.com/tags/firebase/"><i class="fa fa-tag"></i>Firebase (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/fish/"><i class="fa fa-tag"></i>fish (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/font/"><i class="fa fa-tag"></i>Font (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/ftp/"><i class="fa fa-tag"></i>FTP (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/functionallanguage/"><i class="fa fa-tag"></i>FunctionalLanguage (2)</a></li>
-    <li><a href="http://girigiribauer.com/tags/getusermedia/"><i class="fa fa-tag"></i>getUserMedia (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/git/"><i class="fa fa-tag"></i>Git (3)</a></li>
-    <li><a href="http://girigiribauer.com/tags/gitconfig/"><i class="fa fa-tag"></i>gitconfig (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/glsl/"><i class="fa fa-tag"></i>GLSL (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/golang/"><i class="fa fa-tag"></i>Golang (4)</a></li>
-    <li><a href="http://girigiribauer.com/tags/googleappengine/"><i class="fa fa-tag"></i>GoogleAppEngine (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/homebrew/"><i class="fa fa-tag"></i>Homebrew (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/html/"><i class="fa fa-tag"></i>HTML (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/html5/"><i class="fa fa-tag"></i>HTML5 (7)</a></li>
-    <li><a href="http://girigiribauer.com/tags/html5-outline/"><i class="fa fa-tag"></i>HTML5-outline (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/https/"><i class="fa fa-tag"></i>HTTPS (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/hugo/"><i class="fa fa-tag"></i>Hugo (5)</a></li>
-    <li><a href="http://girigiribauer.com/tags/icon-font/"><i class="fa fa-tag"></i>Icon-Font (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/ionic/"><i class="fa fa-tag"></i>ionic (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/ios/"><i class="fa fa-tag"></i>iOS (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/iterm/"><i class="fa fa-tag"></i>iTerm (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/javascript/"><i class="fa fa-tag"></i>JavaScript (6)</a></li>
-    <li><a href="http://girigiribauer.com/tags/jinja2/"><i class="fa fa-tag"></i>jinja2 (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/jq/"><i class="fa fa-tag"></i>jq (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/jquery/"><i class="fa fa-tag"></i>jQuery (3)</a></li>
-    <li><a href="http://girigiribauer.com/tags/jsperf/"><i class="fa fa-tag"></i>jsperf (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/lint/"><i class="fa fa-tag"></i>lint (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/linux/"><i class="fa fa-tag"></i>Linux (3)</a></li>
-    <li><a href="http://girigiribauer.com/tags/mediaquery/"><i class="fa fa-tag"></i>mediaQuery (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/mongodb/"><i class="fa fa-tag"></i>MongoDB (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/mvc/"><i class="fa fa-tag"></i>MVC (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/namespace/"><i class="fa fa-tag"></i>namespace (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/naming/"><i class="fa fa-tag"></i>naming (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/oldie/"><i class="fa fa-tag"></i>oldIE (3)</a></li>
-    <li><a href="http://girigiribauer.com/tags/openapi/"><i class="fa fa-tag"></i>OpenAPI (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/opengraph/"><i class="fa fa-tag"></i>OpenGraph (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/output/"><i class="fa fa-tag"></i>output (3)</a></li>
-    <li><a href="http://girigiribauer.com/tags/php/"><i class="fa fa-tag"></i>PHP (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/polyfills/"><i class="fa fa-tag"></i>polyfills (4)</a></li>
-    <li><a href="http://girigiribauer.com/tags/preloader/"><i class="fa fa-tag"></i>preloader (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/python/"><i class="fa fa-tag"></i>Python (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/rdfa/"><i class="fa fa-tag"></i>RDFa (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/rsync/"><i class="fa fa-tag"></i>rsync (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/scala/"><i class="fa fa-tag"></i>Scala (2)</a></li>
-    <li><a href="http://girigiribauer.com/tags/shellscript/"><i class="fa fa-tag"></i>ShellScript (5)</a></li>
-    <li><a href="http://girigiribauer.com/tags/slack/"><i class="fa fa-tag"></i>slack (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/smartphone/"><i class="fa fa-tag"></i>Smartphone (2)</a></li>
-    <li><a href="http://girigiribauer.com/tags/ssh/"><i class="fa fa-tag"></i>SSH (4)</a></li>
-    <li><a href="http://girigiribauer.com/tags/static-site-generator/"><i class="fa fa-tag"></i>Static Site Generator (3)</a></li>
-    <li><a href="http://girigiribauer.com/tags/svg/"><i class="fa fa-tag"></i>SVG (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/tmux/"><i class="fa fa-tag"></i>tmux (5)</a></li>
-    <li><a href="http://girigiribauer.com/tags/vagrant/"><i class="fa fa-tag"></i>Vagrant (15)</a></li>
-    <li><a href="http://girigiribauer.com/tags/viewport/"><i class="fa fa-tag"></i>viewport (2)</a></li>
-    <li><a href="http://girigiribauer.com/tags/vim/"><i class="fa fa-tag"></i>Vim (5)</a></li>
-    <li><a href="http://girigiribauer.com/tags/vimrc/"><i class="fa fa-tag"></i>vimrc (2)</a></li>
-    <li><a href="http://girigiribauer.com/tags/virtualbox/"><i class="fa fa-tag"></i>VirtualBox (3)</a></li>
-    <li><a href="http://girigiribauer.com/tags/virtualization/"><i class="fa fa-tag"></i>virtualization (7)</a></li>
-    <li><a href="http://girigiribauer.com/tags/vscode/"><i class="fa fa-tag"></i>VSCode (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/webapp/"><i class="fa fa-tag"></i>WebApp (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/webaudioapi/"><i class="fa fa-tag"></i>WebAudioAPI (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/webfont/"><i class="fa fa-tag"></i>WebFont (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/webgl/"><i class="fa fa-tag"></i>WebGL (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/webrtc/"><i class="fa fa-tag"></i>WebRTC (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/webserver/"><i class="fa fa-tag"></i>WebServer (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/wget/"><i class="fa fa-tag"></i>wget (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/yeoman/"><i class="fa fa-tag"></i>Yeoman (1)</a></li>
-    <li><a href="http://girigiribauer.com/tags/zsh/"><i class="fa fa-tag"></i>Zsh (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ajax/"><i class="icon-tag"></i>ajax (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/angular/"><i class="icon-tag"></i>Angular (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ansible/"><i class="icon-tag"></i>Ansible (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/anyenv/"><i class="icon-tag"></i>anyenv (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apache/"><i class="icon-tag"></i>Apache (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/api/"><i class="icon-tag"></i>API (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/apps/"><i class="icon-tag"></i>Apps (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/auth/"><i class="icon-tag"></i>auth (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/automation/"><i class="icon-tag"></i>automation (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bot/"><i class="icon-tag"></i>bot (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/bugs/"><i class="icon-tag"></i>bugs (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/canvas/"><i class="icon-tag"></i>Canvas (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/chef/"><i class="icon-tag"></i>Chef (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cli/"><i class="icon-tag"></i>CLI (12)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cordova/"><i class="icon-tag"></i>Cordova (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/crawler/"><i class="icon-tag"></i>Crawler (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css/"><i class="icon-tag"></i>CSS (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/css3/"><i class="icon-tag"></i>CSS3 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/cssfilter/"><i class="icon-tag"></i>CSSfilter (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/docker/"><i class="icon-tag"></i>Docker (9)</a></li>
+    <li><a href="http://girigiribauer.com/tags/dom/"><i class="icon-tag"></i>DOM (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ecmascript/"><i class="icon-tag"></i>ECMAScript (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/electron/"><i class="icon-tag"></i>Electron (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/english/"><i class="icon-tag"></i>English (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/event-conference/"><i class="icon-tag"></i>event-conference (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/firebase/"><i class="icon-tag"></i>Firebase (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/fish/"><i class="icon-tag"></i>fish (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/font/"><i class="icon-tag"></i>Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ftp/"><i class="icon-tag"></i>FTP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/functionallanguage/"><i class="icon-tag"></i>FunctionalLanguage (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/getusermedia/"><i class="icon-tag"></i>getUserMedia (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/git/"><i class="icon-tag"></i>Git (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/gitconfig/"><i class="icon-tag"></i>gitconfig (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/glsl/"><i class="icon-tag"></i>GLSL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/golang/"><i class="icon-tag"></i>Golang (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/googleappengine/"><i class="icon-tag"></i>GoogleAppEngine (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/homebrew/"><i class="icon-tag"></i>Homebrew (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html/"><i class="icon-tag"></i>HTML (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5/"><i class="icon-tag"></i>HTML5 (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/html5-outline/"><i class="icon-tag"></i>HTML5-outline (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/https/"><i class="icon-tag"></i>HTTPS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/hugo/"><i class="icon-tag"></i>Hugo (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/icon-font/"><i class="icon-tag"></i>Icon-Font (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ionic/"><i class="icon-tag"></i>ionic (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ios/"><i class="icon-tag"></i>iOS (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/iterm/"><i class="icon-tag"></i>iTerm (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/javascript/"><i class="icon-tag"></i>JavaScript (6)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jinja2/"><i class="icon-tag"></i>jinja2 (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jq/"><i class="icon-tag"></i>jq (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jquery/"><i class="icon-tag"></i>jQuery (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/jsperf/"><i class="icon-tag"></i>jsperf (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/lint/"><i class="icon-tag"></i>lint (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/linux/"><i class="icon-tag"></i>Linux (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mediaquery/"><i class="icon-tag"></i>mediaQuery (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mongodb/"><i class="icon-tag"></i>MongoDB (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/mvc/"><i class="icon-tag"></i>MVC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/namespace/"><i class="icon-tag"></i>namespace (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/naming/"><i class="icon-tag"></i>naming (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/oldie/"><i class="icon-tag"></i>oldIE (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/openapi/"><i class="icon-tag"></i>OpenAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/opengraph/"><i class="icon-tag"></i>OpenGraph (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/output/"><i class="icon-tag"></i>output (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/php/"><i class="icon-tag"></i>PHP (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/polyfills/"><i class="icon-tag"></i>polyfills (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/preloader/"><i class="icon-tag"></i>preloader (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/python/"><i class="icon-tag"></i>Python (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rdfa/"><i class="icon-tag"></i>RDFa (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/rsync/"><i class="icon-tag"></i>rsync (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/scala/"><i class="icon-tag"></i>Scala (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/shellscript/"><i class="icon-tag"></i>ShellScript (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/slack/"><i class="icon-tag"></i>slack (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/smartphone/"><i class="icon-tag"></i>Smartphone (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/ssh/"><i class="icon-tag"></i>SSH (4)</a></li>
+    <li><a href="http://girigiribauer.com/tags/static-site-generator/"><i class="icon-tag"></i>Static Site Generator (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/svg/"><i class="icon-tag"></i>SVG (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/tmux/"><i class="icon-tag"></i>tmux (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vagrant/"><i class="icon-tag"></i>Vagrant (15)</a></li>
+    <li><a href="http://girigiribauer.com/tags/viewport/"><i class="icon-tag"></i>viewport (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vim/"><i class="icon-tag"></i>Vim (5)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vimrc/"><i class="icon-tag"></i>vimrc (2)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualbox/"><i class="icon-tag"></i>VirtualBox (3)</a></li>
+    <li><a href="http://girigiribauer.com/tags/virtualization/"><i class="icon-tag"></i>virtualization (7)</a></li>
+    <li><a href="http://girigiribauer.com/tags/vscode/"><i class="icon-tag"></i>VSCode (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webapp/"><i class="icon-tag"></i>WebApp (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webaudioapi/"><i class="icon-tag"></i>WebAudioAPI (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webfont/"><i class="icon-tag"></i>WebFont (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webgl/"><i class="icon-tag"></i>WebGL (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webrtc/"><i class="icon-tag"></i>WebRTC (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/webserver/"><i class="icon-tag"></i>WebServer (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/wget/"><i class="icon-tag"></i>wget (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/yeoman/"><i class="icon-tag"></i>Yeoman (1)</a></li>
+    <li><a href="http://girigiribauer.com/tags/zsh/"><i class="icon-tag"></i>Zsh (3)</a></li>
   </ul>
 
   <h2>Categories (Sections)</h2>
   <ul class="tags">
     
-    <li><a href="/tech/"><i class="fa fa-book"></i>Tech (89)</a></li>
+    <li><a href="/tech/"><i class="icon-book"></i>Tech (89)</a></li>
     
-    <li><a href="/misc/"><i class="fa fa-book"></i>Misc (26)</a></li>
+    <li><a href="/misc/"><i class="icon-book"></i>Misc (26)</a></li>
     
-    <li><a href="/biz/"><i class="fa fa-book"></i>Biz (42)</a></li>
+    <li><a href="/biz/"><i class="icon-book"></i>Biz (42)</a></li>
   </ul>
 
   <div class="curry-block">
-    <h3><i class="fas fa-utensils"></i> カレーブログはじめました <i class="fas fa-utensils"></i></h3>
+    <h3><i class="icon-spoon-knife"></i> カレーブログはじめました <i class="icon-spoon-knife"></i></h3>
     <a href="https://curry.girigiribauer.com" target="_blank">
       <figure>
         <img src="/img/banner-curry.jpg" alt="お昼に何食べるか考えるのつらい ご当地カレーが食べたい！" width="300">
@@ -476,8 +481,8 @@ for (var name in buz) {
   </div>
 
   <h2>RSS</h2>
-  <ul class="tags"><li><a href="http://girigiribauer.com/tech/index.xml"><i class="fa fa-rss"></i>Tech</a></li><li><a href="http://girigiribauer.com/misc/index.xml"><i class="fa fa-rss"></i>Misc</a></li><li><a href="http://girigiribauer.com/biz/index.xml"><i class="fa fa-rss"></i>Biz</a></li>
-    <li><a href="/index.xml"><i class="fa fa-rss"></i>All Articles</a></li>
+  <ul class="tags"><li><a href="http://girigiribauer.com/tech/index.xml"><i class="icon-rss"></i>Tech</a></li><li><a href="http://girigiribauer.com/misc/index.xml"><i class="icon-rss"></i>Misc</a></li><li><a href="http://girigiribauer.com/biz/index.xml"><i class="icon-rss"></i>Biz</a></li>
+    <li><a href="/index.xml"><i class="icon-rss"></i>All Articles</a></li>
   </ul>
 
   <hr>
@@ -502,6 +507,6 @@ if (!doNotTrack) {
 <script async src='https://www.google-analytics.com/analytics.js'></script>
 
 
-    </div>
+  </div>
   </body>
 </html>
