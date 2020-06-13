@@ -4,14 +4,14 @@
 <h1 class="sitetitle">{{ .Site.Title }} <span class="description">{{ .Site.Params.Description }}</span></h1>
 
 <ul class="article-list">
-{{ range first 5 .Paginator.Pages }}{{ partial "listitem.html" . }}{{ end }}
+  {{ range first 5 .Paginator.Pages }}{{ partial "listitem.html" . }}{{ end }}
 </ul>
 <ul class="tags">
-{{- range slice "tech" "misc" "biz" }}
-{{ with $.Site.GetPage "section" . }}
-  <li><a href="{{ .RelPermalink }}"><i class="fa fa-book"></i>{{ .Title }} 系のアーカイブはこちら</a></li>
-{{- end }}
-{{- end }}
+  {{- range slice "tech" "misc" "biz" }}
+  {{ with $.Site.GetPage "section" . }}
+  <li><a href="{{ .RelPermalink }}"><i class="icon-book"></i>{{ .Title }} 系のアーカイブはこちら</a></li>
+  {{- end }}
+  {{- end }}
 </ul>
 
 {{ end }}

@@ -1,8 +1,8 @@
 {{ define "title" }}Tags: {{ .Title }} - {{ .Site.Title }}{{ end }}
 {{ define "main" }}
-<h1 class="heading"><i class="fa fa-tag"></i>{{ .Title }}{{ if not (eq .Paginator.PageNumber 1) }} / {{ .Paginator.PageNumber }} of {{ .Paginator.TotalPages }}{{ end }}</h1>
+<h1 class="heading"><i class="icon-tag"></i>{{ .Title }}{{ if not (eq .Paginator.PageNumber 1) }} / {{ .Paginator.PageNumber }} of {{ .Paginator.TotalPages }}{{ end }}</h1>
 <ul class="article-list">
-{{ range .Paginator.Pages }}{{ partial "listitem.html" . }}{{ end }}
+    {{ range .Paginator.Pages }}{{ partial "listitem.html" . }}{{ end }}
 </ul>
 {{ template "_internal/pagination.html" . }}
 {{ end }}
