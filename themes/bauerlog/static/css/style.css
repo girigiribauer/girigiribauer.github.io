@@ -58,11 +58,16 @@ body {
   margin-top: 0;
 }
 .globalfooter .curry-block {
+  width: 540px;
   margin: 0 0 2rem 0;
   padding: 1rem;
   background: #fff3dd;
   border: 0.5rem solid #ffc055;
   color: #805000;
+}
+.globalfooter .curry-block .fas {
+  color: #ffc054;
+  font-size: 1.5rem;
 }
 .globalfooter .curry-block h3 {
   margin-top: 1rem;
