@@ -57,24 +57,6 @@ body {
 .globalfooter > h2:first-child {
   margin-top: 0;
 }
-.globalfooter .curry-block {
-  max-width: 540px;
-  margin: 0 0 2rem 0;
-  padding: 1rem;
-  background: #fff3dd;
-  border: 0.5rem solid #ffc055;
-  color: #805000;
-}
-.globalfooter .curry-block .icon-fork {
-  color: #ffc054;
-  font-size: 1.5rem;
-}
-.globalfooter .curry-block h3 {
-  margin-top: 1rem;
-}
-.globalfooter .curry-block a {
-  color: #805000;
-}
 
 /**
  * headings
@@ -462,6 +444,40 @@ figcaption {
 .footertags li {
   display: inline;
   padding: 0.25rem;
+}
+
+/**
+ * curry-block
+ */
+.curry-block {
+  max-width: 74vw;
+  min-width: calc(320px - 4rem);
+  margin: 2rem auto;
+  background: #fff3dd url('/img/bg-curry.jpg') 50% 50% / cover;
+  border: 0.5rem solid #ffc055;
+  color: #805000;
+}
+.curry-block a {
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  color: #fff;
+  text-shadow: 0.125rem 0.125rem 0.25rem #ffc055;
+  text-decoration: none;
+}
+.curry-block .icon-fork {
+  color: #ffc054;
+  font-size: 1.5rem;
+}
+.curry-block h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.75rem;
+}
+.curry-block p {
+  margin: 0;
+  font-size: 1.25rem;
 }
 
 /**
