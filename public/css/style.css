@@ -449,7 +449,9 @@ figcaption {
 /**
  * curry-block
  */
-.curry-block {
+body.tech .curry-block,
+body.biz .curry-block,
+body.misc .curry-block {
   max-width: 74vw;
   min-width: calc(320px - 4rem);
   margin: 2rem auto;
@@ -457,7 +459,9 @@ figcaption {
   border: 0.5rem solid #ffc055;
   color: #805000;
 }
-.curry-block a {
+body.tech .curry-block a,
+body.biz .curry-block a,
+body.misc .curry-block a {
   min-height: 30vh;
   display: flex;
   flex-direction: column;
@@ -467,15 +471,21 @@ figcaption {
   text-shadow: 0.125rem 0.125rem 0.25rem #ffc055;
   text-decoration: none;
 }
-.curry-block .icon-fork {
+body.tech .curry-block .icon-fork,
+body.biz .curry-block .icon-fork,
+body.misc .curry-block .icon-fork {
   color: #ffc054;
   font-size: 1.5rem;
 }
-.curry-block h3 {
+body.tech .curry-block h3,
+body.biz .curry-block h3,
+body.misc .curry-block h3 {
   margin: 0 0 1rem 0;
   font-size: 1.75rem;
 }
-.curry-block p {
+body.tech .curry-block p,
+body.biz .curry-block p,
+body.misc .curry-block p {
   margin: 0;
   font-size: 1.25rem;
 }
