@@ -3,6 +3,26 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>http://girigiribauer.com/tags/study/</loc>
+    <lastmod>2020-12-08T19:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tech/</loc>
+    <lastmod>2020-12-08T19:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/</loc>
+    <lastmod>2020-12-08T19:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://girigiribauer.com/tech/20201208/</loc>
+    <lastmod>2020-12-08T19:00:00+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>http://girigiribauer.com/tags/cli/</loc>
     <lastmod>2020-07-13T11:00:00+09:00</lastmod>
   </url>
@@ -24,16 +44,6 @@
   
   <url>
     <loc>http://girigiribauer.com/tags/postgresql/</loc>
-    <lastmod>2020-07-13T11:00:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://girigiribauer.com/tech/</loc>
-    <lastmod>2020-07-13T11:00:00+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://girigiribauer.com/</loc>
     <lastmod>2020-07-13T11:00:00+09:00</lastmod>
   </url>
   
