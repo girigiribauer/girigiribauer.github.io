@@ -1,3 +1,3 @@
 content/archives/_*.md
 static/**/_*
-public/**/_*
+.hugo_build.lock
