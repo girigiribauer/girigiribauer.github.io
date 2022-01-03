@@ -7,12 +7,18 @@
   <meta name="viewport" content="width=device-width">
   {{ template "_internal/schema.html" . }}
   {{ template "_internal/opengraph.html" . }}
-  {{ block "ogimage" . }}
-  {{ if .Params.Ogimage }}
-  <meta property="og:image" content="{{ .Params.Ogimage }}">
-  {{ else }}
+  {{- block "ogimage" . }}
+  {{- if .Params.Ogimage }}
+  {{- $featureImage := (.Resources.ByType "image").GetMatch .Params.Ogimage }}
+  {{- with $featureImage }}
+  {{- $resizedFeatureImage := $featureImage.Fit "1200x630" }}
+  <meta property="og:image" content="{{ $resizedFeatureImage.Permalink }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{ $resizedFeatureImage.Permalink }}">
+  {{- end }}
+  {{- else }}
   <meta property="og:image" content="{{ .Site.BaseURL }}img/ogimage.png">
-  {{ end }}
+  {{- end }}
   {{ end }}
   {{ template "_internal/twitter_cards.html" . }}
   {{ with .OutputFormats.Get "rss" -}}

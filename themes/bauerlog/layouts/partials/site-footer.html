@@ -1,10 +1,3 @@
-<div class="curry-block">
-  <a href="https://curry.girigiribauer.com" target="_blank">
-    <h3><i class="icon-spoon-knife"></i> カレーブログはじめました <i class="icon-spoon-knife"></i></h3>
-    <p><strong>カレーはそこそこに</strong>、ご当地の妄想旅をしつつ現地の旨いもんを探しまくる、<strong>ご当地カレーブログ</strong>です！</p>
-  </a>
-</div>
-
 <footer class="globalfooter">
   {{- if or (eq .FirstSection.Title "Tech") (eq .Kind "404") }}
   <h2>Tags</h2>
@@ -22,6 +15,7 @@
     <li><a href="{{ .RelPermalink }}"><i class="icon-book"></i>{{ .Title }} ({{ len .Pages }})</a></li>
     {{- end }}
     {{- end }}
+    <li><a href="https://curry.girigiribauer.com" target="_blank" rel="noreferer"><i class="icon-book"></i>カレー（駄文）</a></li>
   </ul>
 
   <h2>RSS</h2>

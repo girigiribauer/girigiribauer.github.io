@@ -1,3 +1,4 @@
 content/archives/_*.md
 static/**/_*
 .hugo_build.lock
+resources/
