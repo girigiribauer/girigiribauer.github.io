@@ -2,15 +2,15 @@
 title = "年始セットアップメモ（2022年）"
 description = "2022年の年始セットアップメモです。 MacBook Pro 2021 14インチ購入時、特にデータの移行をせずにクリーンインストールの状態から行なっています。"
 date = "2022-01-03T21:00:00+0900"
-lastmod = ""
+lastmod = "2022-01-04T21:00:00+0900"
 draft = false
 tags = ["Setup", "Install"]
-ogimage = "photo03.jpg"
+ogimage = "resource03.jpg"
 +++
 
 もしかすると、 **毎年新年にセットアップするといいかも？** と思いはじめてきました。
 
-![MacBook Pro 2021 14インチ](photo01.jpg)
+![MacBook Pro 2021 14インチ](resource01.jpg)
 
 じゃじゃーん :tada:
 
@@ -42,7 +42,7 @@ M1Mac を年末に購入したため、
 
 ### 最低限ブラウジングできるまで
 
-![MacBook Pro 2021 14インチ](photo02.jpg)
+![MacBook Pro 2021 14インチ](resource02.jpg)
 
 ここではパスワードマネージャをインストールして、
 **ブラウザ経由でログインして使うサービスが使えるところまで** とします。
@@ -93,7 +93,7 @@ M1Mac を年末に購入したため、
 
 ### 最低限の仕事ができるまで（作業・コミュニケーションなど）
 
-![MacBook Pro 2021 14インチ](photo03.jpg)
+![MacBook Pro 2021 14インチ](resource03.jpg)
 
 最低限連絡ついたり仕事ができたりする状態に早めにしておくと安心ですよね。
 
@@ -115,14 +115,13 @@ M1Mac を年末に購入したため、
         - zsh 周り（シェル）
         - tmux 周り（ターミナルマルチプレクサ）
         - ssh 周り
-    - .ssh/ 内のパーミッション設定
+    - `.ssh/` 内のパーミッション設定
         - `id_rsa` は 0600 にしないと後で弾かれる
     - Homebrew インストール
         - （以下概要のみ）
         - oh-my-zsh
         - tmux
         - fzf
-        - hugo
         - tig
     - Alacritty の YAML 設定ファイルを最低限書く
 - 仕事用のリポジトリを手元にクローン
@@ -136,10 +135,53 @@ M1Mac を年末に購入したため、
 あとおまけでブログも書けるようにしておきつつ、 `brew install imagemagick` して、手元で `mogrify` コマンドを叩けるようにしておきました。
 画像の一括処理とかが手元のコマンドでできてすごく便利で、ここの記事の画像もこれで処理しちゃってます。
 
-### 仕事でパフォーマンス発揮できるまで
+（TODO: この前後編集中です）
+
+### ブログ投稿できるまで
+
+ブログ投稿を、 Go 製のスタティックサイトジェネレータである Hugo を利用して行なっています。
+
+- Homebrew 追加インストール
+    - hugo （スタティックサイトジェネレータ）
+        - https://gohugo.io/
+        - ただしブログのテンプレートはぐちゃぐちゃなので見直す
+    - imagemagick （ブログ作成時の画像変換用）
+        - https://imagemagick.org/
+        - 画像が多いときは `mogrify` コマンドを使う
+    - ffmpeg （ブログ作成時の動画変換用）
+        - https://www.ffmpeg.org/
+        - `ffmpeg -i src.mov dst.mp4` だけで変換できる
+- KeyCastr インストール
+    - https://github.com/keycastr/keycastr
+    - キー操作を可視化したい（画面共有時、動画化など）
+    - KeyCastr のキャプチャ ON/OFF のキーバインドを `Shift+Opt+Cmd+0` あたりに（滅多に入力しない）
+
+この辺まで入れれば、以下のように **動画キャプチャをブログに持ってくるまでの敷居がめちゃめちゃ低く** なります。
+
+<a href="resource.mp4" target="_blank">
+    <video width="710" height="467" autoplay muted loop controls>
+        <source src="resource04.mp4" type="video/mp4">
+    </video>
+</a>
+
+この辺は別記事にまとめてもいいかもしれませんね。
+
+### パフォーマンス発揮できるまで
 
 前項目まででは以前通り仕事ができるとは言い難いので、足りない項目を順次セットアップしていきます。
 
 ここから先はやりながらの方が抜け漏れ気付きやすいと思うので、仕事と平行してセットアップしていきます。
 
-（TODO: 以下続きます）
+- zsh で vi-mode indicator が表示されてない状態だったのを修正 **（今回のみ）**
+    - https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vi-mode
+    - 上記の環境変数追加
+- TripMode3 インストール
+    - https://tripmode.ch/
+    - 外のネット環境で Docker イメージとかダウンロードして死ぬ、などを避ける
+    - でも今はそれほど必要と感じてないかも
+- VSCode の拡張機能インストール
+    - （以下概要のみ）
+    - vscodevim
+    - その他仕事で使いそうなシンタックスハイライト系
+- Xcode インストール
+    - テザリングでやったら一撃死なので注意
