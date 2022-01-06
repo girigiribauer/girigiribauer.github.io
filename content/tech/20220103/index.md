@@ -183,5 +183,12 @@ M1Mac を年末に購入したため、
     - （以下概要のみ）
     - vscodevim
     - その他仕事で使いそうなシンタックスハイライト系
+- VSCode / vscodevim 設定
+    - https://github.com/VSCodeVim/Vim#mac
+    - 公式にあるようにキー押しっぱなし時の挙動を修正する必要あり
+    - `$ defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false         # For VS Code`
+- VSCode の設定 **（今回のみ）**
 - Xcode インストール
     - テザリングでやったら一撃死なので注意
+- Homebrew 追加インストール
+    - massren （CLI のファイル一括リネーム）
