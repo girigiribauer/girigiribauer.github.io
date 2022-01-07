@@ -2,7 +2,7 @@
 title = "年始セットアップメモ（2022年）"
 description = "2022年の年始セットアップメモです。 MacBook Pro 2021 14インチ購入時、特にデータの移行をせずにクリーンインストールの状態から行なっています。"
 date = "2022-01-03T21:00:00+0900"
-lastmod = "2022-01-04T21:00:00+0900"
+lastmod = "2022-01-06T21:00:00+0900"
 draft = false
 tags = ["Setup", "Install"]
 ogimage = "resource03.jpg"
@@ -40,7 +40,24 @@ M1Mac を年末に購入したため、
 
 そんなにしっかり書き込んで記事に残す必要もないので、あくまで自分向けに **『こんなこと設定しました』** というメモを残せればいいかなと思います。
 
-### 最低限ブラウジングできるまで
+- [セットアップ前チェック](#before)
+- [最低限ブラウジングできるまで](#browsing)
+- [PC でコミュニケーション取れるまで](#communication)
+- [ブログ投稿できるまで](#blog)
+- [各種作業への最適化](#optimization)
+
+
+
+## セットアップ前チェック {#before}
+
+今回は PC が2台あるから大丈夫だけど、次回以降でクリーンインストールする前にチェックすべきだなーと思うことを挙げておきます。
+
+- リポジトリ内でリポジトリに含まれないファイルのうち、 **消したらまずいもの** をチェック
+    - 例: `.env.sample` に対する `.env` など
+
+
+
+## 最低限ブラウジングできるまで {#browsing}
 
 ![MacBook Pro 2021 14インチ](resource02.jpg)
 
@@ -91,7 +108,9 @@ M1Mac を年末に購入したため、
     - DeepL Translate
         - UI を英語にしたり読む記事を英語にする分、日本語に翻訳しやすくしておく
 
-### 最低限の仕事ができるまで（作業・コミュニケーションなど）
+
+
+## PC でコミュニケーション取れるまで {#communication}
 
 ![MacBook Pro 2021 14インチ](resource03.jpg)
 
@@ -135,9 +154,9 @@ M1Mac を年末に購入したため、
 あとおまけでブログも書けるようにしておきつつ、 `brew install imagemagick` して、手元で `mogrify` コマンドを叩けるようにしておきました。
 画像の一括処理とかが手元のコマンドでできてすごく便利で、ここの記事の画像もこれで処理しちゃってます。
 
-（TODO: この前後編集中です）
 
-### ブログ投稿できるまで
+
+## ブログ投稿できるまで {#blog}
 
 ブログ投稿を、 Go 製のスタティックサイトジェネレータである Hugo を利用して行なっています。
 
@@ -147,10 +166,14 @@ M1Mac を年末に購入したため、
         - ただしブログのテンプレートはぐちゃぐちゃなので見直す
     - imagemagick （ブログ作成時の画像変換用）
         - https://imagemagick.org/
-        - 画像が多いときは `mogrify` コマンドを使う
+        - 単体なら `convert` コマンド、画像が多いときは `mogrify` コマンドを使う
     - ffmpeg （ブログ作成時の動画変換用）
         - https://www.ffmpeg.org/
         - `ffmpeg -i src.mov dst.mp4` だけで変換できる
+    - massren （CLI のファイル一括リネーム）
+        - https://github.com/laurent22/massren
+        - リネームしたいディレクトリで `massren` コマンドを実行
+        - ファイル名の一覧をテキストファイルに表示し、それを編集することでリネームする（発想が好き）
 - KeyCastr インストール
     - https://github.com/keycastr/keycastr
     - キー操作を可視化したい（画面共有時、動画化など）
@@ -166,29 +189,107 @@ M1Mac を年末に購入したため、
 
 この辺は別記事にまとめてもいいかもしれませんね。
 
-### パフォーマンス発揮できるまで
+
+
+## 各種作業への最適化 {#optimization}
 
 前項目まででは以前通り仕事ができるとは言い難いので、足りない項目を順次セットアップしていきます。
 
 ここから先はやりながらの方が抜け漏れ気付きやすいと思うので、仕事と平行してセットアップしていきます。
 
+### 共通、あるいはよく使うもの
+
 - zsh で vi-mode indicator が表示されてない状態だったのを修正 **（今回のみ）**
     - https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vi-mode
     - 上記の環境変数追加
-- TripMode3 インストール
-    - https://tripmode.ch/
-    - 外のネット環境で Docker イメージとかダウンロードして死ぬ、などを避ける
-    - でも今はそれほど必要と感じてないかも
-- VSCode の拡張機能インストール
+- VSCode の拡張機能インストール **（今回のみ）**
     - （以下概要のみ）
     - vscodevim
     - その他仕事で使いそうなシンタックスハイライト系
+    - 自動で同期取れるようになったら毎回やらなくて OK
 - VSCode / vscodevim 設定
     - https://github.com/VSCodeVim/Vim#mac
     - 公式にあるようにキー押しっぱなし時の挙動を修正する必要あり
     - `$ defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false         # For VS Code`
+    - 自動で同期取れるようになったら毎回やらなくて OK
 - VSCode の設定 **（今回のみ）**
-- Xcode インストール
-    - テザリングでやったら一撃死なので注意
+    - `settings.json` と `keybindings.json` をそれぞれ必要な分だけ追記
+    - ここに全部書ける気がしないので、別途記事にまとめた方が良いかも・・・？
+- VSCode の設定の同期機能を使う
+    - https://code.visualstudio.com/docs/editor/settings-sync
+    - Microsoft アカウントに紐づけておき、新しい環境でサインインと共に再び同期する
 - Homebrew 追加インストール
-    - massren （CLI のファイル一括リネーム）
+    - git-lfs （でかいバイナリ用）
+- Docker (Docker Desktop) インストール
+    - https://www.docker.com/products/docker-desktop
+    - 普通に使う分にはすぐインストールできるようになってた（以前はできなかった・・・）
+
+![](resource05.jpg)
+
+VSCode の設定の同期機能、いいっすね・・・ :+1:
+
+VSCode の設定項目については、ちょっと別のところに書きましょうか。
+
+### Go 環境
+
+2022/01 時点で 1.17 が最新です。
+
+![](resource06.jpg)
+
+- Go インストール
+    - https://go.dev/dl/
+    - M1Mac なら `go1.xx.x.darwin-amd64.pkg` ではなく `go1.xx.x.darwin-arm64.pkg` 、 ARM の方を選ぶ
+- PATH を通す
+    - $GOROOT が $GOPATH と同じ `$HOME/go` になっていると警告が出る
+    - $GOROOT のパスをチェックして `/usr/local/go` になるようにする
+    - それ以外の環境変数は不要
+    - `go version` でバージョンのみ出力されたら OK
+- VSCode の拡張機能インストール **（たぶん今回のみ）**
+    - Go
+    - インストール後に何らか Go プロジェクトを開くと右下で関連パッケージ入れる？と聞かれるので全部入れる
+    - 左下の方にバージョン表示されたら OK
+- VSCode の設定 **（たぶん今回のみ）**
+    - 保存時にフォーマッティングが動くようになってなかったら設定（全体で設定しておくが吉）
+    - `"editor.formatOnSave": true`
+    - 後は設定しなくても大丈夫そう・・・？（今のところ問題なし）
+
+![](resource07.jpg)
+
+以前は開発環境のパッケージ、どれ入れるか（ gofmt? goimports? goreturns? ）で若干迷ったりもしましたが、その辺も **自動で必要な分入れてくれる** ので、超楽になりました。 :raised_hands:
+
+### JavaScript / TypeScript 環境
+
+（TODO: ここから下、編集中です）
+
+VSCode と Node 周りがあればとりあえずは良さそう・・・？
+
+- Homebrew 追加インストール
+    - n （Node.js のバージョン管理ツール）
+        - 最初 nodenv や nvm を検討したが、さっと使えそうになかった（？）
+        - n ってインストール時に sudo 必要？
+    - yarn （Node.js のパッケージマネージャ）
+
+### Haxe 環境
+
+使うので。
+
+- Haxe インストール
+    - https://haxe.org/download/
+    - haxelib は一緒にインストールされるので `haxelib setup` でセットアップだけしておく
+- VSCode の拡張機能インストール **（今回のみ）**
+    - Haxe
+    - Haxe Checkstyle
+    - Haxe JSX （どうやら JSX をシンタックスハイライトしてくれるっぽい？お試しで）
+
+### ネイティブアプリ（iOS）
+
+- Xcode インストール
+    - AppStore から
+    - テザリングでやったら一撃死なので注意
+
+### その他
+
+- TripMode3 インストール
+    - https://tripmode.ch/
+    - 外のネット環境で Docker イメージとかダウンロードして死ぬ、などを避ける
+    - でも今はそれほど必要と感じてないかも
