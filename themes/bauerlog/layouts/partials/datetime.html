@@ -1,9 +1,7 @@
 {{- $dateStr := dateFormat "2006-01-02 15:04:05" .Date.Local}}
-<time datetime="{{ $dateStr }}">{{ dateFormat "2006/01/02" .Date.Local
-  }}</time>
+<time datetime="{{ $dateStr }}">{{ dateFormat "2006/01/02" .Date.Local }}</time>
 {{- if not (eq (.Lastmod.Local.Format "20060102") (.Date.Local.Format "20060102")) }}
 <span class="separator"> | lastmod: </span>
 {{- $lastmodStr := dateFormat "2006-01-02 15:04:05" .Lastmod.Local}}
-<time datetime="{{ $lastmodStr }}">{{ dateFormat "2006/01/02" .Lastmod.Local
-  }}</time>
+<time datetime="{{ $lastmodStr }}">{{ dateFormat "2006/01/02" .Lastmod.Local }}</time>
 {{- end }}
