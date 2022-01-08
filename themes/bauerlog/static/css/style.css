@@ -13,7 +13,7 @@ body {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  background: #d9d9d0 linear-gradient(#d9d9d0, #e9e9e0) fixed;
+  background: #d9d9d0;
   color: #333;
 }
 
@@ -25,7 +25,15 @@ body {
   padding: 1rem;
 }
 .globalheader {
-  margin: 0 0 1rem 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  margin: 0;
+}
+.globalheader > a {
+  display: inline-block;
+  padding: 1rem;
+  background: #d9d9d0;
 }
 .maincontents {
   max-width: 74vw;
@@ -450,55 +458,6 @@ figcaption {
 }
 
 /**
- * curry-block
- */
-body .curry-block,
-body.tech .curry-block,
-body.biz .curry-block,
-body.misc .curry-block {
-  max-width: 74vw;
-  min-width: calc(320px - 4rem);
-  margin: 2rem auto;
-  background: #fff3dd url('/img/bg-curry.jpg') 50% 50% / cover;
-  border: 0.5rem solid #ffc055;
-  color: #805000;
-}
-body .curry-block a,
-body.tech .curry-block a,
-body.biz .curry-block a,
-body.misc .curry-block a {
-  min-height: 30vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 1rem;
-  color: #fff;
-  text-shadow: 0.125rem 0.125rem 0.25rem #ffc055;
-  text-decoration: none;
-}
-body .curry-block .icon-fork,
-body.tech .curry-block .icon-fork,
-body.biz .curry-block .icon-fork,
-body.misc .curry-block .icon-fork {
-  color: #ffc054;
-  font-size: 1.5rem;
-}
-body .curry-block h3,
-body.tech .curry-block h3,
-body.biz .curry-block h3,
-body.misc .curry-block h3 {
-  margin: 0 0 1rem 0;
-  font-size: 1.75rem;
-}
-body .curry-block p,
-body.tech .curry-block p,
-body.biz .curry-block p,
-body.misc .curry-block p {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
-/**
  * copyright
  */
  .copyright {
@@ -527,14 +486,19 @@ body.misc .curry-block p {
   min-width: 2.5rem;
   display: inline-block;
   padding: 0.25rem;
-  background: #4078c0;
+  background-color: #4078c0;
   border-radius: 0.25rem;
   color: #fff;
   text-align: center;
 }
+.pagination .page-link:hover {
+  background-color: #91bbf1;
+  color: #4078c0;
+  text-decoration: none;
+}
 .pagination .page-item.active .page-link {
-  background: #ffefef;
-  color: #e43232;
+  background-color: #91bbf1;
+  color: #4078c0;
   cursor: default;
   text-decoration: none;
 }
@@ -542,25 +506,64 @@ body.misc .curry-block p {
 /**
  * override misc section
  */
-body.misc a {
+body.theme-misc a {
   color: #979a00;
 }
-body.misc blockquote {
-  background: #feffd4;
+body.theme-misc blockquote {
+  background-color: #feffd4;
   border-color: #979a00;
+  color: #979a00;
+}
+body.theme-misc .pagination .page-link {
+  background-color: #979a00;
+  color: #feffd4;
+}
+body.theme-misc .pagination .page-link:hover,
+body.theme-misc .pagination .page-item.active .page-link {
+  background-color: #dcdf3f;
   color: #979a00;
 }
 
 /**
  * override biz section
  */
-body.biz a {
+body.theme-biz a {
   color: #0d9449;
 }
-body.biz blockquote {
+body.theme-biz blockquote {
   background: #e9f9f0;
   border-color: #0d9449;
   color: #0d9449;
+}
+body.theme-biz .pagination .page-link {
+  background-color: #0d9449;
+  color: #feffd4;
+}
+body.theme-biz .pagination .page-link:hover,
+body.theme-biz .pagination .page-item.active .page-link {
+  background-color: #6fd79e;
+  color: #0d9449;
+}
+
+/**
+ * override journey section
+ */
+body.theme-journey a {
+  color: #0d8094;
+}
+body.theme-journey blockquote {
+  background: #edfcff;
+  border-color: #0d8094;
+  color: #0d8094;
+}
+body.theme-journey .pagination .page-link {
+  background-color: #0d8094;
+  color: #edfcff;
+}
+body.theme-journey .pagination .page-link:hover,
+body.theme-journey .pagination .page-item.active .page-link {
+  background-color: #8ecfdb;
+  color: #0d8094;
 }
 
 /**

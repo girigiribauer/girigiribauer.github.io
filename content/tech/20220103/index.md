@@ -5,7 +5,6 @@ date = "2022-01-03T21:00:00+0900"
 lastmod = "2022-01-06T21:00:00+0900"
 draft = false
 tags = ["Setup", "Install"]
-ogimage = "resource03.jpg"
 +++
 
 もしかすると、 **毎年新年にセットアップするといいかも？** と思いはじめてきました。
