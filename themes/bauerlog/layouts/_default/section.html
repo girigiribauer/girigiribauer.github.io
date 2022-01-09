@@ -1,7 +1,7 @@
 {{ define "title" }}Section: {{ .Title }} - {{ .Site.Title }}{{ end }}
 {{ define "main" }}
 <h1 class="heading">
-    <i class="icon-book" />
+    <i class="icon-book"></i>
     {{ .Title }}
     {{- if not (eq .Paginator.PageNumber 1) }}
     / {{ .Paginator.PageNumber }} of {{ .Paginator.TotalPages }}
