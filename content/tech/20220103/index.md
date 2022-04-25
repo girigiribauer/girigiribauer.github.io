@@ -15,7 +15,7 @@ tags = ["Setup", "Install"]
 
 **買いました！ :tada: :tada:**
 
-M1Mac を年末に購入したため、
+M1 Mac を年末に購入したため、
 どちらにしろセットアップはやらないといけなかったのですが、
 やっていくうちに **年始にセットアップすると思った以上にメリットがあるなあ** と思うようになりました。
 
@@ -79,10 +79,17 @@ M1Mac を年末に購入したため、
         - Spotlight と Input Sources のキー入れ替え
             - 本当はカスタマイズしたくないけど、ここは止むを得ない
             - 日本語圏なので Input Method の方が優先度高い
-    - スリープキーは `Ctrl-Cmd-Q` で代用
-        - 以前は Touch Bar でスリープキーを一番右に指定
-        - スリープキー自体の割り当てはないので、 **ロックをかけるショートカットを覚える**
+    - ~~スリープキーは `Ctrl-Cmd-Q` で代用~~
+        - ~~以前は Touch Bar でスリープキーを一番右に指定~~
+        - ~~スリープキー自体の割り当てはないので、 **ロックをかけるショートカットを覚える**~~
+    - スリープのショートカットを App Shortcuts からタイトルを `Sleep` にして作る
+        - F6 が三日月マークなので `Opt-Cmd-F6` あたりに割り当て
+    - 同一アプリ・別ウィンドウの切り替えは `Cmd-\`` で代用
+        - `Cmd-Tab` ではアプリ間の切り替えしかできない（ Windows と挙動が異なる）
     - firewall の設定
+    - Trackpad の設定
+        - `Force Click and haptic feedback` の項目を OFF に
+            - トラックパッド強く押して意図に反した操作になるのを防ぐ
 - 各種ブラウザインストール
     - Google Chrome
     - Firefox
@@ -219,9 +226,6 @@ M1Mac を年末に購入したため、
     - Microsoft アカウントに紐づけておき、新しい環境でサインインと共に再び同期する
 - Homebrew 追加インストール
     - git-lfs （でかいバイナリ用）
-- Docker (Docker Desktop) インストール
-    - https://www.docker.com/products/docker-desktop
-    - 普通に使う分にはすぐインストールできるようになってた（以前はできなかった・・・）
 
 ![](resource05.jpg)
 
@@ -237,7 +241,7 @@ VSCode の設定項目については、ちょっと別のところに書きま�
 
 - Go インストール
     - https://go.dev/dl/
-    - M1Mac なら `go1.xx.x.darwin-amd64.pkg` ではなく `go1.xx.x.darwin-arm64.pkg` 、 ARM の方を選ぶ
+    - M1 Mac なら `go1.xx.x.darwin-amd64.pkg` ではなく `go1.xx.x.darwin-arm64.pkg` 、 ARM の方を選ぶ
 - PATH を通す
     - $GOROOT が $GOPATH と同じ `$HOME/go` になっていると警告が出る
     - $GOROOT のパスをチェックして `/usr/local/go` になるようにする
@@ -256,17 +260,31 @@ VSCode の設定項目については、ちょっと別のところに書きま�
 
 以前は開発環境のパッケージ、どれ入れるか（ gofmt? goimports? goreturns? ）で若干迷ったりもしましたが、その辺も **自動で必要な分入れてくれる** ので、超楽になりました。 :raised_hands:
 
+### Docker 環境
+
+
+- Docker (Docker Desktop) インストール
+    - https://docs.docker.com/desktop/mac/apple-silicon/
+    - ちゃんと M1 Mac のものをインストール、アーキテクチャ変わったので他よりはトラブル多め
+
 ### JavaScript / TypeScript 環境
 
 （TODO: ここから下、編集中です）
 
 VSCode と Node 周りがあればとりあえずは良さそう・・・？
 
-- Homebrew 追加インストール
-    - n （Node.js のバージョン管理ツール）
-        - 最初 nodenv や nvm を検討したが、さっと使えそうになかった（？）
-        - n ってインストール時に sudo 必要？
-    - yarn （Node.js のパッケージマネージャ）
+- Volta の導入（ Node のバージョン管理ツール）
+    - https://volta.sh/
+    - 書いてある通り、インストールしてからパスを通す
+    - `volta` コマンドが通れば OK
+- 必要な Node のバージョンを必要なだけ入れておく
+    - 2022/01 時点では v16, v14, v12
+- ~~Homebrew 追加インストール~~
+    - ~~n （Node.js のバージョン管理ツール）~~
+        - ~~最初 nodenv や nvm を検討したが、さっと使えそうになかった（？）~~
+        - ~~n ってインストール時に sudo 必要？~~
+    - ~~yarn （Node.js のパッケージマネージャ）~~
+        - yarn も volta 経由でパス張ってくれるので不要
 
 ### Haxe 環境
 
@@ -284,7 +302,13 @@ VSCode と Node 周りがあればとりあえずは良さそう・・・？
 
 - Xcode インストール
     - AppStore から
-    - テザリングでやったら一撃死なので注意
+    - ギガ単位なのでテザリングでやったら一撃死注意
+- cocoapods インストール
+    - https://cocoapods.org/
+    - iOS パッケージ管理ツール
+    - 事前に Ruby のインストールが必要だが、標準で ruby も gem もインストール済みなので気にしなくて OK
+- Xcode からのアカウント登録
+    -
 
 ### その他
 
