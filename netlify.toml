@@ -1,2 +1,2 @@
 [build.environment]
-  TZ = "UTC+9:00"
+  TZ="Asia/Tokyo"
