@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>vagrant global-status の代替方法、あるいは jq コマンドの使い方 - ばうあーろぐ</title>
+  <meta name="description" content="IT / Web に関するメモ、あるいは Twentyfour あるいは人生の diff">
+  <meta itemprop="name" content="vagrant global-status の代替方法、あるいは jq コマンドの使い方">
+<meta itemprop="description" content="VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。 tmux の set-option -g status-right で指定できるスクリプトは 一定間隔"><meta itemprop="datePublished" content="2016-08-19T11:00:00+09:00" />
+<meta itemprop="dateModified" content="2016-08-19T11:00:00+09:00" />
+<meta itemprop="wordCount" content="1361"><meta itemprop="image" content="https://girigiribauer.com/img/ogimage.png"/>
+<meta itemprop="keywords" content="Vagrant,jq," />
+  <meta property="og:title" content="vagrant global-status の代替方法、あるいは jq コマンドの使い方" />
+<meta property="og:description" content="VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。 tmux の set-option -g status-right で指定できるスクリプトは 一定間隔" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://girigiribauer.com/tech/20160819/" /><meta property="og:image" content="https://girigiribauer.com/img/ogimage.png"/><meta property="article:section" content="tech" />
+<meta property="article:published_time" content="2016-08-19T11:00:00+09:00" />
+<meta property="article:modified_time" content="2016-08-19T11:00:00+09:00" />
+
+
+  <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://girigiribauer.com/img/ogimage.png"/>
+
+<meta name="twitter:title" content="vagrant global-status の代替方法、あるいは jq コマンドの使い方"/>
+<meta name="twitter:description" content="VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。 tmux の set-option -g status-right で指定できるスクリプトは 一定間隔"/>
+
+  <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+  <meta name="theme-color" content="#d9d9d0">
+  <meta name="generator" content="Hugo 0.91.2" />
+</head>
+
+<body class="theme-tech">
+  <div class="container">
+    <header class="globalheader"><a href="/" title="TOP へ戻る">TOP</a></header>
+
+    <main class="maincontents" role="main">
+      
+<h1 class="heading">vagrant global-status の代替方法、あるいは jq コマンドの使い方</h1>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2016-08-19 11:00:00">2016/08/19</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/vagrant/"><i class="icon-tag"></i>Vagrant</a></li>
+    <li><a href="/tags/jq/"><i class="icon-tag"></i>jq</a></li>
+  </ul>
+</div>
+
+<div class="article">
+  <p>VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。</p>
+<p>tmux の <code>set-option -g status-right</code> で指定できるスクリプトは
+一定間隔で常に呼ばれるような仕組みなのですが、
+（更新間隔は set-option -g status-interval で設定可能）
+あまり間隔を空けすぎると確認しづらくなってしまうので 5 秒くらいに指定しています。</p>
+<p>このスクリプト内で Vagrant 経由で起動している VM 名と Docker サービスが立ち上がっているかどうかを
+集約して表示しているのですが、
+この中で <strong><code>vagrant global-status</code> を呼ぶコストが意外にも高い</strong> ことに今更ながらに気づきました。
+（たぶんディレクトリツリーを全走査とかしてるんですかね・・・？）</p>
+<p>top とか ps とかで詳しく調べてみるとすげー CPU を使ってたっぽかったので、
+（5 秒間隔で常に動作してるわけじゃなかったので気づかずにスルーしてました）
+これはなんとかしなくてはと思い、代替方法を検討しました。</p>
+<h2 id="vagrantd-内の設定ファイル">~/vagrant.d 内の設定ファイル</h2>
+<p>後の Vagrant のバージョンアップで変わるかもしれませんが、
+以下の場所に仮想マシンの一覧情報がまとめられていて、
+Vagrant の仮想マシンのステータスが変更されるたびにこのファイルが更新されます。</p>
+<pre><code>~/.vagrant.d/data/machine-index/index
+</code></pre>
+<p>こちらはただのテキストファイルなので、
+5 秒間隔で tmux から重いコマンドを実行するよりは、
+こちらの設定ファイルを読みにいった方がはるかに軽いです。</p>
+<p>ただ、こちらのファイルは JSON ファイルを圧縮したようなファイルになっているので、
+こちらを（あまりコストかけずに）さくっとフィルタリングして
+必要な情報だけ抜き出したいですね。</p>
+<h2 id="jq-は-json-ファイルをフィルタリングするコマンド">jq は JSON ファイルをフィルタリングするコマンド</h2>
+<p><a href="https://stedolan.github.io/jq/">https://stedolan.github.io/jq/</a></p>
+<p>ずいぶん前から簡易的に利用してはいたのですが、
+JSON ファイルから必要な情報をフィルタリングなどするコマンドとして
+<strong>jq コマンド</strong> というのがあります。</p>
+<p>これは jq コマンドを使うところだ！と思い、
+この Vagrant の設定ファイルから必要な情報を jq コマンドを使って抜き出してみました。</p>
+<pre><code>{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}
+</code></pre>
+<p>ちょっと固有パス、ID などは修正してますが、だいたいこんな感じで入っています。</p>
+<p>ここから、machines オブジェクト内に入っているものを抜き出したいので、
+<code>jq &quot;.machines&quot;</code> でパイプをつなげてやることで、フィルタリングされた出力結果が出ます。</p>
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines&quot;
+{
+  &quot;aaabbbccc&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;alpha&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;poweroff&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;bento/centos-7.2&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;2.2.7&quot;
+      }
+    }
+  },
+  &quot;dddeeefff&quot;: {
+    &quot;local_data_path&quot;: &quot;/path/to/vagrant/.vagrant&quot;,
+    &quot;name&quot;: &quot;bravo&quot;,
+    &quot;provider&quot;: &quot;virtualbox&quot;,
+    &quot;state&quot;: &quot;running&quot;,
+    &quot;vagrantfile_name&quot;: null,
+    &quot;vagrantfile_path&quot;: &quot;/path/to/vagrant&quot;,
+    &quot;updated_at&quot;: null,
+    &quot;extra_data&quot;: {
+      &quot;box&quot;: {
+        &quot;name&quot;: &quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,
+        &quot;provider&quot;: &quot;virtualbox&quot;,
+        &quot;version&quot;: &quot;0&quot;
+      }
+    }
+  }
+}
+</code></pre>
+<p>さらに、1つずつのオブジェクトごとに分けつつ、name と state だけ配列形式にして引っこ抜きます。</p>
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;.machines | .[] | [.name, .state]&quot;
+[
+  &quot;alpha&quot;,
+  &quot;poweroff&quot;
+]
+[
+  &quot;bravo&quot;,
+  &quot;running&quot;
+]
+</code></pre>
+<p>これを半角スペースでつないで1行ごとに出力したかったので、[] で囲んで join で繋ぎ直しました。</p>
+<pre><code>% echo '{&quot;version&quot;:1,&quot;machines&quot;:{&quot;aaabbbccc&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;alpha&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;poweroff&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;bento/centos-7.2&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;2.2.7&quot;}}},&quot;dddeeefff&quot;:{&quot;local_data_path&quot;:&quot;/path/to/vagrant/.vagrant&quot;,&quot;name&quot;:&quot;bravo&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;state&quot;:&quot;running&quot;,&quot;vagrantfile_name&quot;:null,&quot;vagrantfile_path&quot;:&quot;/path/to/vagrant&quot;,&quot;updated_at&quot;:null,&quot;extra_data&quot;:{&quot;box&quot;:{&quot;name&quot;:&quot;http://cloud.centos.org/centos/7/vagrant/x86_64/images/CentOS-7-x86_64-Vagrant-1605_01.VirtualBox.box&quot;,&quot;provider&quot;:&quot;virtualbox&quot;,&quot;version&quot;:&quot;0&quot;}}}}}' | jq &quot;[ .machines | .[] | [.name, .state] | join(\&quot; \&quot;) ] | join(\&quot;\n\&quot;)&quot;
+&quot;alpha poweroff\nbravo running&quot;
+</code></pre>
+<p>これで目的の文字列になったので、running がある行だけ簡易的に引っこ抜いて tmux に表示すれば OK です。</p>
+<p>jq のマニュアルページには色々な機能が載っていますが、
+実際に使うのはそこまで多くないんじゃないかなーという印象です。
+正直見ながらじゃないと使えないです・・・。</p>
+<p><a href="https://stedolan.github.io/jq/manual/">https://stedolan.github.io/jq/manual/</a></p>
+<h2 id="まとめ">まとめ</h2>
+<p>そのまま <code>vagrant global-status</code> を使っていたころよりも圧倒的に軽くなり、
+排熱もほとんどなくなりました。
+（もしかして最近の排熱の主因はほぼこれだったんじゃあ・・・）</p>
+<p>jq コマンドは、こういった使い方以外にも外部の API を直接叩いてそのまま jq コマンドに通して使う、
+といった使い方も多いので、もう少しさらっと使いこなせるようになりたいですね。</p>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = "https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2016-08-19 11:00:00">2016/08/19</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/vagrant/"><i class="icon-tag"></i>Vagrant</a></li>
+    <li><a href="/tags/jq/"><i class="icon-tag"></i>jq</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <del><a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a></del> <a href="https://bsky.app/profile/girigiribauer.bsky.social" target="_blank">@girigiribauer.bsky.social</a> までご一報いただけると助かります。</small>
+
+
+
+<h2>Related articles</h2>
+<ul class="article-list">
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2015-08-06 13:22:20">2015/08/06</time>
+ <br> <a href="https://girigiribauer.com/tech/20150806/">Docker と Vagrant の明確な違い</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/docker/"><i class="icon-tag"></i>Docker</a></li>
+    <li><a href="/tags/vagrant/"><i class="icon-tag"></i>Vagrant</a></li>
+  </ul>
+</li>
+
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2015-06-10 08:39:55">2015/06/10</time>
+ <br> <a href="https://girigiribauer.com/tech/20150610/">Chef を本番投入してみた</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/chef/"><i class="icon-tag"></i>Chef</a></li>
+    <li><a href="/tags/vagrant/"><i class="icon-tag"></i>Vagrant</a></li>
+  </ul>
+</li>
+
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2015-04-01 19:28:44">2015/04/01</time>
+ <br> <a href="https://girigiribauer.com/tech/20150401/">Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/chef/"><i class="icon-tag"></i>Chef</a></li>
+    <li><a href="/tags/ssh/"><i class="icon-tag"></i>SSH</a></li>
+    <li><a href="/tags/vagrant/"><i class="icon-tag"></i>Vagrant</a></li>
+  </ul>
+</li>
+
+  
+</ul>
+
+    </main>
+
+    <footer class="globalfooter">
+      <h2>Tags</h2>
+      <ul class="tags">
+        <li><a href="https://girigiribauer.com/tags/ajax/"><i class="icon-tag"></i>ajax (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/angular/"><i class="icon-tag"></i>Angular (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ansible/"><i class="icon-tag"></i>Ansible (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/anyenv/"><i class="icon-tag"></i>anyenv (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apache/"><i class="icon-tag"></i>Apache (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/api/"><i class="icon-tag"></i>API (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apps/"><i class="icon-tag"></i>Apps (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/auth/"><i class="icon-tag"></i>auth (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/automation/"><i class="icon-tag"></i>automation (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bot/"><i class="icon-tag"></i>bot (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/browserextension/"><i class="icon-tag"></i>BrowserExtension (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bugs/"><i class="icon-tag"></i>bugs (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/canvas/"><i class="icon-tag"></i>Canvas (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/capacitor/"><i class="icon-tag"></i>Capacitor (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/chef/"><i class="icon-tag"></i>Chef (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cli/"><i class="icon-tag"></i>CLI (13)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cordova/"><i class="icon-tag"></i>Cordova (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/crawler/"><i class="icon-tag"></i>Crawler (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css/"><i class="icon-tag"></i>CSS (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css3/"><i class="icon-tag"></i>CSS3 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cssfilter/"><i class="icon-tag"></i>CSSfilter (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/database/"><i class="icon-tag"></i>Database (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/docker/"><i class="icon-tag"></i>Docker (10)</a></li>
+        <li><a href="https://girigiribauer.com/tags/dom/"><i class="icon-tag"></i>DOM (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ecmascript/"><i class="icon-tag"></i>ECMAScript (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/electron/"><i class="icon-tag"></i>Electron (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/english/"><i class="icon-tag"></i>English (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/event-conference/"><i class="icon-tag"></i>event-conference (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fab/"><i class="icon-tag"></i>Fab (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/firebase/"><i class="icon-tag"></i>Firebase (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fish/"><i class="icon-tag"></i>fish (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/flyfree/"><i class="icon-tag"></i>FlyFree (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/font/"><i class="icon-tag"></i>Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ftp/"><i class="icon-tag"></i>FTP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/functionallanguage/"><i class="icon-tag"></i>FunctionalLanguage (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fusion360/"><i class="icon-tag"></i>Fusion360 (8)</a></li>
+        <li><a href="https://girigiribauer.com/tags/getusermedia/"><i class="icon-tag"></i>getUserMedia (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/git/"><i class="icon-tag"></i>Git (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/gitconfig/"><i class="icon-tag"></i>gitconfig (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/glsl/"><i class="icon-tag"></i>GLSL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/golang/"><i class="icon-tag"></i>Golang (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/googleappengine/"><i class="icon-tag"></i>GoogleAppEngine (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/homebrew/"><i class="icon-tag"></i>Homebrew (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html/"><i class="icon-tag"></i>HTML (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5/"><i class="icon-tag"></i>HTML5 (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5-outline/"><i class="icon-tag"></i>HTML5-outline (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/https/"><i class="icon-tag"></i>HTTPS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/hugo/"><i class="icon-tag"></i>Hugo (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/icon-font/"><i class="icon-tag"></i>Icon-Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/install/"><i class="icon-tag"></i>Install (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ionic/"><i class="icon-tag"></i>ionic (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ios/"><i class="icon-tag"></i>iOS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/iterm/"><i class="icon-tag"></i>iTerm (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/javascript/"><i class="icon-tag"></i>JavaScript (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jinja2/"><i class="icon-tag"></i>jinja2 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jq/"><i class="icon-tag"></i>jq (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jquery/"><i class="icon-tag"></i>jQuery (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jsperf/"><i class="icon-tag"></i>jsperf (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/lint/"><i class="icon-tag"></i>lint (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/linux/"><i class="icon-tag"></i>Linux (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mediaquery/"><i class="icon-tag"></i>mediaQuery (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mongodb/"><i class="icon-tag"></i>MongoDB (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mvc/"><i class="icon-tag"></i>MVC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mysql/"><i class="icon-tag"></i>MySQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/namespace/"><i class="icon-tag"></i>namespace (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/naming/"><i class="icon-tag"></i>naming (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/nativeapp/"><i class="icon-tag"></i>NativeApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/oldie/"><i class="icon-tag"></i>oldIE (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/openapi/"><i class="icon-tag"></i>OpenAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/opengraph/"><i class="icon-tag"></i>OpenGraph (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/output/"><i class="icon-tag"></i>output (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/php/"><i class="icon-tag"></i>PHP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/plasmo/"><i class="icon-tag"></i>plasmo (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/polyfills/"><i class="icon-tag"></i>polyfills (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/postgresql/"><i class="icon-tag"></i>PostgreSQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/preloader/"><i class="icon-tag"></i>preloader (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/python/"><i class="icon-tag"></i>Python (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rdfa/"><i class="icon-tag"></i>RDFa (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rsync/"><i class="icon-tag"></i>rsync (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/scala/"><i class="icon-tag"></i>Scala (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/setup/"><i class="icon-tag"></i>Setup (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/shellscript/"><i class="icon-tag"></i>ShellScript (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/slack/"><i class="icon-tag"></i>slack (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/smartphone/"><i class="icon-tag"></i>Smartphone (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/sns/"><i class="icon-tag"></i>SNS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ssh/"><i class="icon-tag"></i>SSH (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/static-site-generator/"><i class="icon-tag"></i>Static Site Generator (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/study/"><i class="icon-tag"></i>study (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/svg/"><i class="icon-tag"></i>SVG (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/tmux/"><i class="icon-tag"></i>tmux (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vagrant/"><i class="icon-tag"></i>Vagrant (15)</a></li>
+        <li><a href="https://girigiribauer.com/tags/viewport/"><i class="icon-tag"></i>viewport (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vim/"><i class="icon-tag"></i>Vim (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vimrc/"><i class="icon-tag"></i>vimrc (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualbox/"><i class="icon-tag"></i>VirtualBox (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualization/"><i class="icon-tag"></i>virtualization (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vscode/"><i class="icon-tag"></i>VSCode (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webapp/"><i class="icon-tag"></i>WebApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webaudioapi/"><i class="icon-tag"></i>WebAudioAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webfont/"><i class="icon-tag"></i>WebFont (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webgl/"><i class="icon-tag"></i>WebGL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webrtc/"><i class="icon-tag"></i>WebRTC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webserver/"><i class="icon-tag"></i>WebServer (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/wget/"><i class="icon-tag"></i>wget (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/yeoman/"><i class="icon-tag"></i>Yeoman (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/zsh/"><i class="icon-tag"></i>Zsh (3)</a></li>
+      </ul>
+
+      <h2>Categories</h2>
+      <ul class="tags">
+        <li><a href="/tech/"><i class="icon-book"></i>tech (102)</a></li>
+        <li><a href="/misc/"><i class="icon-book"></i>misc (26)</a></li>
+        <li><a href="/biz/"><i class="icon-book"></i>biz (42)</a></li>
+        <li><a href="/journey/"><i class="icon-book"></i>journey (0)</a></li>
+        <li><a href="https://curry.girigiribauer.com" target="_blank" rel="noreferer"><i
+              class="icon-book"></i>カレー（駄文）</a></li>
+      </ul>
+
+      <h2>RSS</h2>
+      <ul class="tags"><li><a href="https://girigiribauer.com/tech/index.xml"><i class="icon-rss"></i>tech</a></li><li><a href="https://girigiribauer.com/misc/index.xml"><i class="icon-rss"></i>misc</a></li><li><a href="https://girigiribauer.com/biz/index.xml"><i class="icon-rss"></i>biz</a></li>
+        <li><a href="/index.xml"><i class="icon-rss"></i>All Articles</a></li>
+      </ul>
+
+      <hr>
+
+      <ul>
+        <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+        <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+        <li>このサイトでは cookie および <a href="https://www.google.com/intl/ja/policies/privacy/partners/"
+            target="_blank">Google Analytics を利用しています</a></li>
+      </ul>
+      <p class="copyright">&copy; ばうあーろぐ</p>
+    </footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </div>
+</body>
+
+</html>

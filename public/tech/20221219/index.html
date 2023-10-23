@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>DOM 要素の表示・非表示を雑に切り替える方法 - ばうあーろぐ</title>
+  <meta name="description" content="今年の疑問、今年のうちに・・・と思ってネットの海に解き放っておきます">
+  <meta itemprop="name" content="DOM 要素の表示・非表示を雑に切り替える方法">
+<meta itemprop="description" content="今年の疑問、今年のうちに・・・と思ってネットの海に解き放っておきます"><meta itemprop="datePublished" content="2022-12-19T08:00:00+09:00" />
+<meta itemprop="dateModified" content="2022-12-21T08:00:00+09:00" />
+<meta itemprop="wordCount" content="3541"><meta itemprop="image" content="https://girigiribauer.com/tech/20221219/feature.jpg">
+<meta itemprop="keywords" content="HTML,DOM,CSS,JavaScript," />
+  <meta property="og:title" content="DOM 要素の表示・非表示を雑に切り替える方法" />
+<meta property="og:description" content="今年の疑問、今年のうちに・・・と思ってネットの海に解き放っておきます" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://girigiribauer.com/tech/20221219/" /><meta property="og:image" content="https://girigiribauer.com/tech/20221219/feature.jpg"/><meta property="article:section" content="tech" />
+<meta property="article:published_time" content="2022-12-19T08:00:00+09:00" />
+<meta property="article:modified_time" content="2022-12-21T08:00:00+09:00" />
+
+
+  <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://girigiribauer.com/tech/20221219/feature.jpg"/>
+<meta name="twitter:title" content="DOM 要素の表示・非表示を雑に切り替える方法"/>
+<meta name="twitter:description" content="今年の疑問、今年のうちに・・・と思ってネットの海に解き放っておきます"/>
+
+  <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+  <meta name="theme-color" content="#d9d9d0">
+  <meta name="generator" content="Hugo 0.91.2" />
+</head>
+
+<body class="theme-tech">
+  <div class="container">
+    <header class="globalheader"><a href="/" title="TOP へ戻る">TOP</a></header>
+
+    <main class="maincontents" role="main">
+      
+<h1 class="heading">DOM 要素の表示・非表示を雑に切り替える方法</h1>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2022-12-19 08:00:00">2022/12/19</time>
+<span class="separator"> | lastmod: </span>
+<time datetime="2022-12-21 08:00:00">2022/12/21</time>
+</p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/html/"><i class="icon-tag"></i>HTML</a></li>
+    <li><a href="/tags/dom/"><i class="icon-tag"></i>DOM</a></li>
+    <li><a href="/tags/css/"><i class="icon-tag"></i>CSS</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+  </ul>
+</div>
+
+<div class="article">
+  <p>事前に注意書きとして残しておきますが、
+この記事は料理に例えるなら <strong>カップ麺を作るときにこうするとすげー簡単に美味くなる！</strong> 程度の、
+人によっては料理とすら言えないような内容です。</p>
+<p>ただ、お腹が減っていて雑に飯食べたいときは誰しもあるでしょうし、
+同様に <strong>雑に作ってて、手間をかけずに DOM 要素の表示・非表示をふわっと切り替えたい</strong> 、
+みたいなこともあると思います。</p>
+<p>そんなときに知っていると有用な記事です。</p>
+<p>興味ない方は読むのをやめて <strong>回らないお寿司</strong> でも食べててください。</p>
+<h2 id="きっかけ">きっかけ</h2>
+<p>きっかけは名古屋で行われている <strong>『フロントエンドもくもく会』</strong> に参加していたときのことです。</p>
+<p>ちなみに運用ルールこんな感じの会です。</p>
+<ul>
+<li><strong>スクリーンを活用</strong> して、誰かが必ず何かを写している状態をできるだけ保つ</li>
+<li>写したものに対してどんどん質問していいし、逆に写した人が聞いても OK</li>
+<li><strong>ただし、必ず解決するとは限らない 🤗</strong></li>
+</ul>
+<p>僕が写しているターンのときに、ふと疑問に思ったことを聞いたわけです。</p>
+<p>それが <strong>その場で解消されず</strong> に少し後になって自己解決したのですが、
+結局自己解決したあと、何もアクション取ることもなく、
+頭の片隅に残ったまま年を越そうとしていたので、
+今年の疑問、今年のうちに・・・と思ってネットの海に解き放っておこうと思った次第です。</p>
+<h2 id="dom-要素をふわっと出したり消したりするのは意外と面倒">DOM 要素をふわっと出したり消したりするのは意外と面倒</h2>
+<p>そう、面倒なんです。</p>
+<p>解決方法を書く前に、何が問題だと思っているのかを共有します。</p>
+<ul>
+<li><strong>アニメーションで</strong> 表示・非表示を <strong>気軽に切り替える方法</strong> がない？</li>
+<li><strong>一瞬で</strong> 表示・非表示を切り替えるだけなら <strong>簡単</strong>
+<ul>
+<li><code>display: none</code> をつけたり消したりすれば OK</li>
+<li>CSS だけでもやろうと思えばできる（起点は JavaScript 側で持ちたいが・・・）</li>
+</ul>
+</li>
+<li>ライブラリをガッツリ導入するような <strong>気軽じゃない方法</strong> ならば存在する
+<ul>
+<li>表示し始めのタイミングでクラス付与、表示し終わりのタイミングでクラス付与</li>
+<li>消え始めのタイミングでクラス付与、消え終わりのタイミングでクラス付与</li>
+<li>消え終わりに <code>display: none</code> をつけることができれば、まあできることはわかる</li>
+</ul>
+</li>
+<li>気軽にやるなら <strong>CSS Transitions</strong> を使いたい、 <strong>間の変化は勝手にやってほしい</strong>
+<ul>
+<li>例: <code>transition: opacity 1s ease-out</code></li>
+<li>ある意味 <strong>宣言的</strong> であるとも言える（変化のさせ方だけ記述して、変化中の数値は知らなくていい）</li>
+</ul>
+</li>
+<li><code>display: none</code> をつけた瞬間に <strong>DOM ツリーからいなくなる問題</strong>
+<ul>
+<li>これの時間差コントロールを無理やりやってるのが上記ライブラリ群</li>
+<li>CSS Transitions で変化時間を定義しつつ、終わるタイミングで JavaScript から <code>display: none</code> を与えるのは <strong>2重管理になる</strong> ？</li>
+<li><code>transitionend</code> イベントを監視すればできるのはわかるが複雑になる</li>
+</ul>
+</li>
+<li>CSS Animations で <code>display: none</code> を含めると話が複雑になる
+<ul>
+<li>アニメーションの向きとか考慮する必要が出てくる？</li>
+</ul>
+</li>
+</ul>
+<p>みたいな感じで表示・非表示を雑に切り替えたいという話を投げかけたのですが、
+その場では解消されず、もやもやしてたのでした。</p>
+<p>（その時はここまで言語化はできてなかったかもですが・・・）</p>
+<h2 id="イベントターゲットから消してしまえばいいじゃない">イベントターゲットから消してしまえばいいじゃない</h2>
+<p>ある時別件やってるときに <code>pointer-events: none</code> を使ってて気づいたんですよ。</p>
+<p>「ああ、 <strong>イベントターゲットから消してしまえばいいじゃない</strong> 」と。</p>
+<p>ここからは HTML/CSS/JavaScript のサンプルを見てもらった方が話が早いので、
+以下コードを貼り付けておきます。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;foo&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;foo&#34;</span>&gt;ふわっと出たり消えたりします&lt;/<span style="color:#f92672">div</span>&gt;
+&lt;<span style="color:#f92672">button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;button&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;button&#34;</span>&gt;切り替えボタン&lt;/<span style="color:#f92672">button</span>&gt;
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">.<span style="color:#a6e22e">foo</span> {
+    <span style="color:#66d9ef">width</span>: <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">height</span>: <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * 超どうでもいいけど僕がいつもダミー要素で使う色
+</span><span style="color:#75715e">     * 右からの連続数値で打ちやすく、かつ単体で使うとダミーとわかる色
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">background</span>: <span style="color:#ae81ff">#098</span>;
+    <span style="color:#66d9ef">transition</span>: <span style="color:#66d9ef">opacity</span> <span style="color:#ae81ff">1</span><span style="color:#66d9ef">s</span> <span style="color:#66d9ef">ease-out</span>;
+}
+.<span style="color:#a6e22e">invisible</span> {
+    <span style="color:#66d9ef">opacity</span>: <span style="color:#ae81ff">0</span>;
+    pointer-events: <span style="color:#66d9ef">none</span>; <span style="color:#75715e">/* &lt;= 今回の肝 */</span>
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">window.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;DOMContentLoaded&#39;</span>, (<span style="color:#a6e22e">event</span>) =&gt; {
+    document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;#button&#39;</span>).<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;click&#39;</span>, () =&gt; {
+        <span style="color:#75715e">// 外側はなんでもいい
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// とにかくクラス名の着脱ができてさえいれば OK
+</span><span style="color:#75715e"></span>        document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;#foo&#39;</span>).<span style="color:#a6e22e">classList</span>.<span style="color:#a6e22e">toggle</span>(<span style="color:#e6db74">&#39;invisible&#39;</span>);
+    });
+});
+</code></pre></div><p>といった感じで、 <strong>コードは超シンプル</strong> です。</p>
+<p>特徴としては</p>
+<ul>
+<li>事前に <code>transition</code> プロパティを指定しておく（CSS Transition ならばそう）</li>
+<li><code>.invisible</code> クラスの付与で <code>pointer-events: none</code> が付与される</li>
+</ul>
+<p>くらいでしょうか。</p>
+<p><img src="resource01.jpg" alt="ふわっと出てる"></p>
+<p>このふわっと出てる状態から・・・</p>
+<p><img src="resource02.jpg" alt="ふわっと消える"></p>
+<p>ボタンを押すたびにふわっと消えたり、またふわっと出たりします。</p>
+<p>以下キャプチャ動画。</p>
+<a href="resource03.mp4" target="_blank">
+    <video width="678" height="568" autoplay muted loop controls>
+        <source src="resource03.mp4" type="video/mp4">
+    </video>
+</a>
+<p>これの肝が <code>pointer-events: none</code> で、 <code>.invisible</code> クラスを付与された瞬間に、
+見た目上は見えてるけど、クリックとか一切できない、消えてるのと同じような状態になります。</p>
+<p>文字通り <strong>ポインターイベントの管理対象から外してしまう</strong> んですね。</p>
+<ul>
+<li>JavaScript からは、単にクラス付与を切り替えているだけ</li>
+<li>CSS からは、消え始めているときに <code>pointer-events: none</code> が指定されているので、完全に消えてるのと同じ扱いになる</li>
+<li>HTML からは、消えていても HTML 要素としては残り続けている
+<ul>
+<li>強いて言うならこれがデメリット</li>
+<li>細部の表示・非表示で使い、不要になったら DOM をすべて消しておく、くらいが良いかも</li>
+</ul>
+</li>
+<li><strong>消えているとき、下の要素は普通にクリックできる</strong></li>
+</ul>
+<p>本当に見えない要素の下がクリックできるかどうかは、 body 要素あたりにクリックイベントでも仕込んでみて、自分で試してみてください。</p>
+<h3 id="イベントターゲットとは">イベントターゲットとは</h3>
+<p><a href="https://www.w3.org/TR/DOM-Level-3-Events/#event-flow">https://www.w3.org/TR/DOM-Level-3-Events/#event-flow</a></p>
+<p>こっちの方が分かりやすい図になってるので、詳しくはそっち見てもらえれば良いんですけども。</p>
+<p><img src="resource04.jpg" alt="キャプチャリング・バブリング"></p>
+<p>ポインター（マウスとかのポインティングデバイス）のイベントは、
+このように <strong>DOM ツリーを上から下から行ったり来たり</strong> しています。</p>
+<p>この DOM ツリーから完全に存在を消してしまうのが <code>display: none</code> で、
+ここのツリーから見えなくしてしまうと、
+フォーカス当てたり表示コントロールしたりが難しくなっちゃうんですよね。</p>
+<p>今回の <code>pointer-events: none</code> は、ポインター関連のイベントだけスルーさせちゃおう、というやつです。</p>
+<p>そのため、 DOM ツリーとして存在はしてるけど、
+<code>opacity</code> を徐々に減らしていく最中でもその要素はクリックできませんし、
+下にクリックイベントのある要素があれば、すり抜けて下の要素が反応します。</p>
+<p>再び表示させたいときもクラス消して <code>pointer-events: none</code> の指定をなくすだけで再びクリックできるようになります。</p>
+<h3 id="pointer-events-の多用は危険かも">pointer-events の多用は危険、かも？</h3>
+<p>CSS で気軽に <code>pointer-events: none</code> が指定できちゃうので、
+多用すると JavaScript 側で見た時に一切問題ないのになぜかイベント発火しない→実は CSS 側に <code>pointer-events: none</code> が指定してあった・・・みたいなことが容易に起こりうるので注意が必要だと思います。</p>
+<p>（JavaScript しか知らなくて CSS のこと全然知りません、みたいな人だとここで詰む可能性もありますね。 <strong>ちゃんと HTML/CSS/JavaScript はセットで学びましょう。</strong> ）</p>
+<p>ただ、今回のように雑にふわっと表示・非表示を切り替えたい、みたいなときには、
+<strong>ものすごく簡単に指定できる</strong> ので、雑に飯食べたい、カップ麺食べたい人向けにはとてもいいんじゃないでしょうか？</p>
+<p>ちなみに僕は回らないお寿司もカップ麺も両方好きですよ。</p>
+<h2 id="追記-pointer-events-の代わりに-visibility-も使える">追記: pointer-events の代わりに visibility も使える</h2>
+<p><a href="https://twitter.com/_tsmd/status/1604633124343672832">https://twitter.com/_tsmd/status/1604633124343672832</a> より。</p>
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">要素のボックスがその場に残り続けてよいのなら、visibility: hidden で消すと良いですよー。opacity と同様、transition できるプロパティです</p>&mdash; そめ (@_tsmd) <a href="https://twitter.com/_tsmd/status/1604633124343672832?ref_src=twsrc%5Etfw">December 19, 2022</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p><code>pointer-events: none</code> の代わりに <code>visibility: hidden</code> も使えるよ、とのこと。
+早速試してみます。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;foo&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;foo&#34;</span>&gt;ふわっと出たり消えたりします&lt;/<span style="color:#f92672">div</span>&gt;
+&lt;<span style="color:#f92672">button</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;button&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;button&#34;</span>&gt;切り替えボタン&lt;/<span style="color:#f92672">button</span>&gt;
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">.<span style="color:#a6e22e">foo</span> {
+    <span style="color:#66d9ef">width</span>: <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">height</span>: <span style="color:#ae81ff">100</span><span style="color:#66d9ef">px</span>;
+    <span style="color:#66d9ef">background</span>: <span style="color:#ae81ff">#098</span>;
+    <span style="color:#66d9ef">transition</span>: <span style="color:#66d9ef">opacity</span> <span style="color:#ae81ff">1</span><span style="color:#66d9ef">s</span> <span style="color:#66d9ef">ease-out</span>;
+}
+.<span style="color:#a6e22e">invisible</span> {
+    <span style="color:#66d9ef">opacity</span>: <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">visibility</span>: <span style="color:#66d9ef">hidden</span>; <span style="color:#75715e">/* &lt;= これも使える？ */</span>
+}
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">window.<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;DOMContentLoaded&#39;</span>, (<span style="color:#a6e22e">event</span>) =&gt; {
+    document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;#button&#39;</span>).<span style="color:#a6e22e">addEventListener</span>(<span style="color:#e6db74">&#39;click&#39;</span>, () =&gt; {
+        <span style="color:#75715e">// 外側はなんでもいい
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// とにかくクラス名の着脱ができてさえいれば OK
+</span><span style="color:#75715e"></span>        document.<span style="color:#a6e22e">querySelector</span>(<span style="color:#e6db74">&#39;#foo&#39;</span>).<span style="color:#a6e22e">classList</span>.<span style="color:#a6e22e">toggle</span>(<span style="color:#e6db74">&#39;invisible&#39;</span>);
+    });
+});
+</code></pre></div><a href="resource06.mp4" target="_blank">
+    <video width="1160" height="888" autoplay muted loop controls>
+        <source src="resource06.mp4" type="video/mp4">
+    </video>
+</a>
+<p>おや、できない・・・？
+消えるときは一瞬で消えちゃいますね。 <code>visibility: hidden</code> が効いているといえばそうなのですが。</p>
+<p>transition に <code>visibility</code> も加えるのでしょうか？
+同時に指定してみます。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 差分のみ抜粋
+</span><span style="color:#75715e"> */</span>
+.<span style="color:#a6e22e">foo</span> {
+    <span style="color:#66d9ef">transition</span>: <span style="color:#66d9ef">opacity</span> <span style="color:#ae81ff">1</span><span style="color:#66d9ef">s</span> <span style="color:#66d9ef">ease-out</span>, <span style="color:#66d9ef">visibility</span> <span style="color:#ae81ff">1</span><span style="color:#66d9ef">s</span> <span style="color:#66d9ef">ease-out</span>;
+}
+</code></pre></div><a href="resource07.mp4" target="_blank">
+    <video width="1160" height="888" autoplay muted loop controls>
+        <source src="resource07.mp4" type="video/mp4">
+    </video>
+</a>
+<p>おっ今度はできた・・・？ 🤔</p>
+<p>ただ、なぜ <code>opacity</code> と <code>visibility</code> をセットで transition で指定するとこうなるのか？は謎ですね。</p>
+<h3 id="セットで-css-transition-を使う謎">セットで CSS Transition を使う謎</h3>
+<p>具体的に <code>opacity</code> と <code>visibility</code> を組み合わせるとこういう挙動になる、
+みたいなことが直接言及されている仕様のページは見つけられなかったのですが、
+（仕様に書いてあることを組み合わせるだけで自明なので、わざわざ具体的なこのケースは書いてないってことなんだろうか・・・？ 🤔 ）
+過去にいくつか言及されてる記事は見つけました。</p>
+<ul>
+<li><a href="https://www.taccgl.org/blog/css-transition-visibility.html">https://www.taccgl.org/blog/css-transition-visibility.html</a></li>
+<li><a href="https://greywyvern.com/?post=337">https://greywyvern.com/?post=337</a></li>
+</ul>
+<p>（2011年、2015年あたりの記事だけど、結局これらの記事内でも、組み合わせるとなぜオッケーなのかまでは書いてない気がする・・・。）</p>
+<p>ちなみに <code>visibility</code> を使う方法でも、雑に切り替えるという点では全然許容範囲かなと個人的には思います。</p>
+<p><code>visibility</code> を transition に加えることで、そんな劇的に行数が増えたわけでもないですし、
+意図も <code>visibility: hidden</code> の方が伝わりやすそうですし。</p>
+<p>ただ、なぜそうなるのか、だけがストンと落ちてない気持ち悪さだけは少し残っています・・・。なぜ・・・。</p>
+<p>（ 12/21 追記ここまでです。）</p>
+<h2 id="まとめ">まとめ</h2>
+<ul>
+<li><code>pointer-events: none</code> は便利なのでさっと使えると良いが、多用には気を付ける</li>
+<li>回らないお寿司もカップ麺もどっちも美味しい</li>
+</ul>
+<p><img src="resource05.jpg" alt="回らないお寿司"></p>
+<p>今年もお疲れさまでした。また来年もよろしくお願いします。</p>
+<h2 id="refs">参考 URL</h2>
+<ul>
+<li><a href="https://www.w3.org/TR/DOM-Level-3-Events/">https://www.w3.org/TR/DOM-Level-3-Events/</a></li>
+<li><a href="https://www.w3.org/TR/SVG2/interact.html#PointerEventsProp">https://www.w3.org/TR/SVG2/interact.html#PointerEventsProp</a></li>
+<li><a href="https://www.taccgl.org/blog/css-transition-visibility.html">https://www.taccgl.org/blog/css-transition-visibility.html</a></li>
+<li><a href="https://greywyvern.com/?post=337">https://greywyvern.com/?post=337</a></li>
+</ul>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = "https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2022-12-19 08:00:00">2022/12/19</time>
+<span class="separator"> | lastmod: </span>
+<time datetime="2022-12-21 08:00:00">2022/12/21</time>
+</p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/html/"><i class="icon-tag"></i>HTML</a></li>
+    <li><a href="/tags/dom/"><i class="icon-tag"></i>DOM</a></li>
+    <li><a href="/tags/css/"><i class="icon-tag"></i>CSS</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <del><a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a></del> <a href="https://bsky.app/profile/girigiribauer.bsky.social" target="_blank">@girigiribauer.bsky.social</a> までご一報いただけると助かります。</small>
+
+
+
+<h2>Related articles</h2>
+<ul class="article-list">
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2014-02-13 00:00:46">2014/02/13</time>
+ <br> <a href="https://girigiribauer.com/tech/20140213/">jQuery から卒業するための第1歩を polyfills から学ぼう – その3</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/dom/"><i class="icon-tag"></i>DOM</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/jquery/"><i class="icon-tag"></i>jQuery</a></li>
+    <li><a href="/tags/polyfills/"><i class="icon-tag"></i>polyfills</a></li>
+  </ul>
+</li>
+
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2017-08-24 15:35:39">2017/08/24</time>
+ <br> <a href="https://girigiribauer.com/tech/20170824/">最近の ECMAScript (JavaScript) に入ったやつをぐぐりたくても名前が分からないやつ</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/ecmascript/"><i class="icon-tag"></i>ECMAScript</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/naming/"><i class="icon-tag"></i>naming</a></li>
+    <li><a href="/tags/english/"><i class="icon-tag"></i>English</a></li>
+  </ul>
+</li>
+
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2017-02-17 00:16:01">2017/02/17</time>
+ <br> <a href="https://girigiribauer.com/tech/20170217/">Vim の Syntastic で sass-lint が上手く動かないときの debug の話</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/vim/"><i class="icon-tag"></i>Vim</a></li>
+    <li><a href="/tags/lint/"><i class="icon-tag"></i>lint</a></li>
+    <li><a href="/tags/css/"><i class="icon-tag"></i>CSS</a></li>
+  </ul>
+</li>
+
+  
+</ul>
+
+    </main>
+
+    <footer class="globalfooter">
+      <h2>Tags</h2>
+      <ul class="tags">
+        <li><a href="https://girigiribauer.com/tags/ajax/"><i class="icon-tag"></i>ajax (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/angular/"><i class="icon-tag"></i>Angular (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ansible/"><i class="icon-tag"></i>Ansible (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/anyenv/"><i class="icon-tag"></i>anyenv (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apache/"><i class="icon-tag"></i>Apache (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/api/"><i class="icon-tag"></i>API (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apps/"><i class="icon-tag"></i>Apps (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/auth/"><i class="icon-tag"></i>auth (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/automation/"><i class="icon-tag"></i>automation (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bot/"><i class="icon-tag"></i>bot (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/browserextension/"><i class="icon-tag"></i>BrowserExtension (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bugs/"><i class="icon-tag"></i>bugs (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/canvas/"><i class="icon-tag"></i>Canvas (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/capacitor/"><i class="icon-tag"></i>Capacitor (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/chef/"><i class="icon-tag"></i>Chef (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cli/"><i class="icon-tag"></i>CLI (13)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cordova/"><i class="icon-tag"></i>Cordova (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/crawler/"><i class="icon-tag"></i>Crawler (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css/"><i class="icon-tag"></i>CSS (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css3/"><i class="icon-tag"></i>CSS3 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cssfilter/"><i class="icon-tag"></i>CSSfilter (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/database/"><i class="icon-tag"></i>Database (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/docker/"><i class="icon-tag"></i>Docker (10)</a></li>
+        <li><a href="https://girigiribauer.com/tags/dom/"><i class="icon-tag"></i>DOM (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ecmascript/"><i class="icon-tag"></i>ECMAScript (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/electron/"><i class="icon-tag"></i>Electron (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/english/"><i class="icon-tag"></i>English (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/event-conference/"><i class="icon-tag"></i>event-conference (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fab/"><i class="icon-tag"></i>Fab (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/firebase/"><i class="icon-tag"></i>Firebase (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fish/"><i class="icon-tag"></i>fish (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/flyfree/"><i class="icon-tag"></i>FlyFree (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/font/"><i class="icon-tag"></i>Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ftp/"><i class="icon-tag"></i>FTP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/functionallanguage/"><i class="icon-tag"></i>FunctionalLanguage (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fusion360/"><i class="icon-tag"></i>Fusion360 (8)</a></li>
+        <li><a href="https://girigiribauer.com/tags/getusermedia/"><i class="icon-tag"></i>getUserMedia (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/git/"><i class="icon-tag"></i>Git (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/gitconfig/"><i class="icon-tag"></i>gitconfig (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/glsl/"><i class="icon-tag"></i>GLSL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/golang/"><i class="icon-tag"></i>Golang (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/googleappengine/"><i class="icon-tag"></i>GoogleAppEngine (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/homebrew/"><i class="icon-tag"></i>Homebrew (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html/"><i class="icon-tag"></i>HTML (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5/"><i class="icon-tag"></i>HTML5 (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5-outline/"><i class="icon-tag"></i>HTML5-outline (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/https/"><i class="icon-tag"></i>HTTPS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/hugo/"><i class="icon-tag"></i>Hugo (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/icon-font/"><i class="icon-tag"></i>Icon-Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/install/"><i class="icon-tag"></i>Install (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ionic/"><i class="icon-tag"></i>ionic (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ios/"><i class="icon-tag"></i>iOS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/iterm/"><i class="icon-tag"></i>iTerm (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/javascript/"><i class="icon-tag"></i>JavaScript (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jinja2/"><i class="icon-tag"></i>jinja2 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jq/"><i class="icon-tag"></i>jq (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jquery/"><i class="icon-tag"></i>jQuery (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jsperf/"><i class="icon-tag"></i>jsperf (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/lint/"><i class="icon-tag"></i>lint (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/linux/"><i class="icon-tag"></i>Linux (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mediaquery/"><i class="icon-tag"></i>mediaQuery (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mongodb/"><i class="icon-tag"></i>MongoDB (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mvc/"><i class="icon-tag"></i>MVC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mysql/"><i class="icon-tag"></i>MySQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/namespace/"><i class="icon-tag"></i>namespace (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/naming/"><i class="icon-tag"></i>naming (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/nativeapp/"><i class="icon-tag"></i>NativeApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/oldie/"><i class="icon-tag"></i>oldIE (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/openapi/"><i class="icon-tag"></i>OpenAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/opengraph/"><i class="icon-tag"></i>OpenGraph (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/output/"><i class="icon-tag"></i>output (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/php/"><i class="icon-tag"></i>PHP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/plasmo/"><i class="icon-tag"></i>plasmo (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/polyfills/"><i class="icon-tag"></i>polyfills (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/postgresql/"><i class="icon-tag"></i>PostgreSQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/preloader/"><i class="icon-tag"></i>preloader (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/python/"><i class="icon-tag"></i>Python (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rdfa/"><i class="icon-tag"></i>RDFa (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rsync/"><i class="icon-tag"></i>rsync (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/scala/"><i class="icon-tag"></i>Scala (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/setup/"><i class="icon-tag"></i>Setup (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/shellscript/"><i class="icon-tag"></i>ShellScript (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/slack/"><i class="icon-tag"></i>slack (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/smartphone/"><i class="icon-tag"></i>Smartphone (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/sns/"><i class="icon-tag"></i>SNS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ssh/"><i class="icon-tag"></i>SSH (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/static-site-generator/"><i class="icon-tag"></i>Static Site Generator (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/study/"><i class="icon-tag"></i>study (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/svg/"><i class="icon-tag"></i>SVG (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/tmux/"><i class="icon-tag"></i>tmux (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vagrant/"><i class="icon-tag"></i>Vagrant (15)</a></li>
+        <li><a href="https://girigiribauer.com/tags/viewport/"><i class="icon-tag"></i>viewport (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vim/"><i class="icon-tag"></i>Vim (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vimrc/"><i class="icon-tag"></i>vimrc (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualbox/"><i class="icon-tag"></i>VirtualBox (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualization/"><i class="icon-tag"></i>virtualization (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vscode/"><i class="icon-tag"></i>VSCode (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webapp/"><i class="icon-tag"></i>WebApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webaudioapi/"><i class="icon-tag"></i>WebAudioAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webfont/"><i class="icon-tag"></i>WebFont (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webgl/"><i class="icon-tag"></i>WebGL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webrtc/"><i class="icon-tag"></i>WebRTC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webserver/"><i class="icon-tag"></i>WebServer (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/wget/"><i class="icon-tag"></i>wget (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/yeoman/"><i class="icon-tag"></i>Yeoman (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/zsh/"><i class="icon-tag"></i>Zsh (3)</a></li>
+      </ul>
+
+      <h2>Categories</h2>
+      <ul class="tags">
+        <li><a href="/tech/"><i class="icon-book"></i>tech (102)</a></li>
+        <li><a href="/misc/"><i class="icon-book"></i>misc (26)</a></li>
+        <li><a href="/biz/"><i class="icon-book"></i>biz (42)</a></li>
+        <li><a href="/journey/"><i class="icon-book"></i>journey (0)</a></li>
+        <li><a href="https://curry.girigiribauer.com" target="_blank" rel="noreferer"><i
+              class="icon-book"></i>カレー（駄文）</a></li>
+      </ul>
+
+      <h2>RSS</h2>
+      <ul class="tags"><li><a href="https://girigiribauer.com/tech/index.xml"><i class="icon-rss"></i>tech</a></li><li><a href="https://girigiribauer.com/misc/index.xml"><i class="icon-rss"></i>misc</a></li><li><a href="https://girigiribauer.com/biz/index.xml"><i class="icon-rss"></i>biz</a></li>
+        <li><a href="/index.xml"><i class="icon-rss"></i>All Articles</a></li>
+      </ul>
+
+      <hr>
+
+      <ul>
+        <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+        <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+        <li>このサイトでは cookie および <a href="https://www.google.com/intl/ja/policies/privacy/partners/"
+            target="_blank">Google Analytics を利用しています</a></li>
+      </ul>
+      <p class="copyright">&copy; ばうあーろぐ</p>
+    </footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </div>
+</body>
+
+</html>

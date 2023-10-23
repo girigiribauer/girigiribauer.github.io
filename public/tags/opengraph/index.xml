@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>OpenGraph on ばうあーろぐ</title>
+    <link>https://girigiribauer.com/tags/opengraph/</link>
+    <description>Recent content in OpenGraph on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Mon, 11 Mar 2013 00:08:58 +0000</lastBuildDate><atom:link href="https://girigiribauer.com/tags/opengraph/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTMLの名前空間(namespace)について掘り下げてみる</title>
+      <link>https://girigiribauer.com/tech/20130311/</link>
+      <pubDate>Mon, 11 Mar 2013 00:08:58 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130311/</guid>
+      <description>例えば、 &amp;lt;html xmlns=&amp;quot;http://www.w3.org/1999/xhtml&amp;quot; xmlns:og=&amp;quot;http://ogp.me/ns#&amp;quot; xmlns:fb=&amp;quot;https://www.facebook.com/2008/fbml&amp;quot;&amp;gt; 『こういうのを HTML に埋め込んでください』とか、 &amp;lt;meta property=&amp;quot;og:title&amp;quot; content=&amp;quot;ソーシャル用のタイトルがここに入る&amp;quot;&amp;</description>
+    </item>
+    
+  </channel>
+</rss>

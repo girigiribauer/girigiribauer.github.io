@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vagrant on ばうあーろぐ</title>
+    <link>https://girigiribauer.com/tags/vagrant/</link>
+    <description>Recent content in Vagrant on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Tue, 29 Nov 2016 18:26:15 +0900</lastBuildDate><atom:link href="https://girigiribauer.com/tags/vagrant/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>nginx-proxy を使った Docker ベースの検証をしてたらリバースプロキシが急に表示できなくなった</title>
+      <link>https://girigiribauer.com/tech/20161129/</link>
+      <pubDate>Tue, 29 Nov 2016 18:26:15 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20161129/</guid>
+      <description>メモとして残しておきます。 ansible-playbook で急に表示できなくなった 本番環境の CentOS7 と、その検証環境（Vagrant on Mac）で Ansible 経由で Docker をインストールして使っ</description>
+    </item>
+    
+    <item>
+      <title>vagrant global-status の代替方法、あるいは jq コマンドの使い方</title>
+      <link>https://girigiribauer.com/tech/20160819/</link>
+      <pubDate>Fri, 19 Aug 2016 11:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20160819/</guid>
+      <description>VM（Docker も含む）が立ち上がっているかどうかを tmux の右下に表示しておくのはけっこう便利です。 tmux の set-option -g status-right で指定できるスクリプトは 一定間隔</description>
+    </item>
+    
+    <item>
+      <title>Docker と Vagrant の明確な違い</title>
+      <link>https://girigiribauer.com/tech/20150806/</link>
+      <pubDate>Thu, 06 Aug 2015 04:22:20 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20150806/</guid>
+      <description>そもそも比較するようなものではないものの、分かりづらい解説しかなかったので、 超個人的な主観でまとめておこうと思いました。 Docker の特徴 Linux 上でのみ動</description>
+    </item>
+    
+    <item>
+      <title>Chef を本番投入してみた</title>
+      <link>https://girigiribauer.com/tech/20150610/</link>
+      <pubDate>Tue, 09 Jun 2015 23:39:55 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20150610/</guid>
+      <description>メモレベルでごめんなさい。 サーバを移設してみました。 せっかくなので、移設ついでにブログのリニューアル（簡素化）と Chef cookbook を利用したプロビジョニン</description>
+    </item>
+    
+    <item>
+      <title>Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた</title>
+      <link>https://girigiribauer.com/tech/20150401/</link>
+      <pubDate>Wed, 01 Apr 2015 10:28:44 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20150401/</guid>
+      <description>2013年に書いていた、『Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話』（http://girigiribaue</description>
+    </item>
+    
+    <item>
+      <title>Vagrant を開発用 Web サーバとして利用するときの注意点</title>
+      <link>https://girigiribauer.com/tech/20150325/</link>
+      <pubDate>Wed, 25 Mar 2015 08:43:58 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20150325/</guid>
+      <description>罠があるのでまとめておきます。（体験談） なお、box ファイルは CentOS6 ベースのもの、Web サーバは apache です。（本番環境を想定した開発環境なので、ng</description>
+    </item>
+    
+    <item>
+      <title>Vagrant で個人的に必須なプラグイン</title>
+      <link>https://girigiribauer.com/tech/20150305/</link>
+      <pubDate>Wed, 04 Mar 2015 17:30:31 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20150305/</guid>
+      <description>先に Vagrant の使いどころ・考えどころ を見ると良いかもです。 先に列挙します。 Vagrant 1.6.5 時点で入れたやつなので、すぐに変わる可能性ありです。 vagrant-omnibus (1.4.1) vagrant-vbguest (0.10.0) sahara (0.0.17) vagrant-dnsmasq (0.1.1)</description>
+    </item>
+    
+    <item>
+      <title>Vagrant の使いどころ・考えどころ</title>
+      <link>https://girigiribauer.com/tech/20150303/</link>
+      <pubDate>Tue, 03 Mar 2015 10:17:52 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20150303/</guid>
+      <description>Vagrant, Chef 周りの知見が溜まってきたのでそろそろまとめていきたいと思っているのですが、 まだまだ自分の中で分からない部分も多く、 かつ自分はインフラエン</description>
+    </item>
+    
+    <item>
+      <title>Vagrant で SSH の接続ポート番号を変えると、けっこう複雑になるという話</title>
+      <link>https://girigiribauer.com/tech/20130726/</link>
+      <pubDate>Fri, 26 Jul 2013 11:35:52 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130726/</guid>
+      <description>2015/04/01追記：続き書きました。Vagrant で SSH の接続ポート番号を変える、という発想がそもそも間違ってた 最近は、隙を見つけて（あ</description>
+    </item>
+    
+    <item>
+      <title>Chef の サードパーティ Cookbook を利用して、yum のリポジトリを追加してみる</title>
+      <link>https://girigiribauer.com/tech/20130517/</link>
+      <pubDate>Fri, 17 May 2013 08:05:27 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130517/</guid>
+      <description>よーし、いろいろアプリケーションのインストールの自動化しちゃうぞー！ と思っていましたが、 先に試しておいた方が良さそうなものがあったので、そち</description>
+    </item>
+    
+    <item>
+      <title>Chef の Data Bag を使ってユーザー作成の自動化をしてみる</title>
+      <link>https://girigiribauer.com/tech/20130514/</link>
+      <pubDate>Tue, 14 May 2013 11:00:29 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130514/</guid>
+      <description>Chef のユーザー管理を突き詰めてみるだけでも、色々と勉強になっていますね。 前回までで、Chef の Cookbook にユーザー作成やグループ作成のレシピを記述する</description>
+    </item>
+    
+    <item>
+      <title>Vagrant と Chef でユーザー作成の自動化をしてみる</title>
+      <link>https://girigiribauer.com/tech/20130513/</link>
+      <pubDate>Mon, 13 May 2013 00:24:37 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130513/</guid>
+      <description>だんだんと Chef いじりが楽しくなってきた girigiribauer です、こんにちは。 この前**『入門 Chef Solo』**というKindle本（電子書籍）を購入して、休憩時な</description>
+    </item>
+    
+    <item>
+      <title>Vagrant と Chef で仮想マシンの環境をいろいろいじれるようにしたい！</title>
+      <link>https://girigiribauer.com/tech/20130510/</link>
+      <pubDate>Fri, 10 May 2013 03:11:38 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130510/</guid>
+      <description>前々回、前回までで、ようやく気軽に作って壊せる仮想環境が用意できたので、 ここからは実際に仮想環境に作っていくところをやりたいと思います。 ※ま</description>
+    </item>
+    
+    <item>
+      <title>Vagrant に仮想マシンのスナップショットがとれる sahara というプラグインを入れた</title>
+      <link>https://girigiribauer.com/tech/20130507/</link>
+      <pubDate>Tue, 07 May 2013 01:06:17 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130507/</guid>
+      <description>個々の仮想マシンのアプリケーションを入れていく前に、仮想マシンの操作でよくある**『スナップショット機能』**的なものが使えるように、 Vagrant のプ</description>
+    </item>
+    
+    <item>
+      <title>仮想環境を CUI（コマンドライン）でいじれる Vagrant を試してみた</title>
+      <link>https://girigiribauer.com/tech/20130505/</link>
+      <pubDate>Sun, 05 May 2013 12:53:44 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130505/</guid>
+      <description>もう最近では、OSの上にOSを動かす仮想環境が当たり前になってきていますが、そのソフトウェアの1つに VirtualBox というものがあります。 Vagrant は、元々この VirtualBox</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SNS on ばうあーろぐ</title>
+    <link>https://girigiribauer.com/tags/sns/</link>
+    <description>Recent content in SNS on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Tue, 24 Oct 2023 08:00:00 +0900</lastBuildDate><atom:link href="https://girigiribauer.com/tags/sns/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Twitter と Bluesky にマルチポストできるツールを作ってみた</title>
+      <link>https://girigiribauer.com/tech/20231024/</link>
+      <pubDate>Tue, 24 Oct 2023 08:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20231024/</guid>
+      <description>超お久しぶりです！ お久しぶりとか言ってるうちに Twitter が無くなってしまいましたね。わお！ 🤗 SNS に関連したツールを作ってみたので、今日はその紹介記事で</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ShellScript on ばうあーろぐ</title>
+    <link>https://girigiribauer.com/tags/shellscript/</link>
+    <description>Recent content in ShellScript on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Mon, 27 Apr 2020 08:00:00 +0900</lastBuildDate><atom:link href="https://girigiribauer.com/tags/shellscript/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ターミナル（黒い画面）を分割して使う tmux 超入門</title>
+      <link>https://girigiribauer.com/tech/20200427/</link>
+      <pubDate>Mon, 27 Apr 2020 08:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20200427/</guid>
+      <description>tmux に関する記事はちょくちょく書くものの、 tmux 導入そのものに関する記事はそういえば書いてなかったなーと。 というのも、ちょうど直近で tmux を含む環境構</description>
+    </item>
+    
+    <item>
+      <title>シェルで alias を設定するときは abbr の方が良い、という思想を学んだ話</title>
+      <link>https://girigiribauer.com/tech/20200420/</link>
+      <pubDate>Mon, 20 Apr 2020 08:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20200420/</guid>
+      <description>つい最近、長らく使っていた fish から、再び zsh への改宗を果たしました。 Bye bye, fish! 🐟 こんな感じの遍歴です。 bash tcsh zsh fish zsh &amp;lt;= いまここ 前半の方（bash とか tcsh と</description>
+    </item>
+    
+    <item>
+      <title>zsh で日付などを補完・入力補助する方法</title>
+      <link>https://girigiribauer.com/tech/20170208/</link>
+      <pubDate>Wed, 08 Feb 2017 18:10:11 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20170208/</guid>
+      <description>その場で展開したいのです。 結論から先に書いておきます。 function print_date() { zle -U `date &amp;quot;+%y%m%d&amp;quot;` } zle -N print_date bindkey &amp;quot;^Xd&amp;quot; print_date zsh における入力バッファの概念だとか、 zle (zsh line editor) だとか、 その辺</description>
+    </item>
+    
+    <item>
+      <title>tmux でプロジェクト用のウィンドウをたくさん扱いたい</title>
+      <link>https://girigiribauer.com/tech/20150119/</link>
+      <pubDate>Mon, 19 Jan 2015 08:28:33 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20150119/</guid>
+      <description>2015年最初の投稿です。本年もよろしくお願いいたします。 全然書いてなかったので書きます。 ブログは定期的に書いてないと書き方を忘れてしまいが</description>
+    </item>
+    
+    <item>
+      <title>コマンドラインでcdとかしたら勝手にlsするシェルスクリプト</title>
+      <link>https://girigiribauer.com/tech/20130130_2/</link>
+      <pubDate>Wed, 30 Jan 2013 14:15:23 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130130_2/</guid>
+      <description>ちょっと書いてみました！ # 移動したらすぐls -lah # ただしファイルなどが20より多かった場合は # lsで簡易表示 function chpwd() { if [ 20 -gt `ls -1 | wc -l` ]; then ls -lah else</description>
+    </item>
+    
+  </channel>
+</rss>

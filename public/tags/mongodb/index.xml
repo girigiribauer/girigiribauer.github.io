@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MongoDB on ばうあーろぐ</title>
+    <link>https://girigiribauer.com/tags/mongodb/</link>
+    <description>Recent content in MongoDB on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Thu, 19 Apr 2018 20:42:30 +0900</lastBuildDate><atom:link href="https://girigiribauer.com/tags/mongodb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MongoDB 内のデータの編集方法について （bson ファイルは直接いじれない）</title>
+      <link>https://girigiribauer.com/tech/20180419/</link>
+      <pubDate>Thu, 19 Apr 2018 20:42:30 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20180419/</guid>
+      <description>crowi （正確には crowi-plus）をローカルで動かしているのですが、 ユーザー名周りや一定の記事のパスを変えたくなってきてしまいました。 で、 crowi</description>
+    </item>
+    
+  </channel>
+</rss>

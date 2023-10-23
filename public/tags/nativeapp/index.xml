@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>NativeApp on ばうあーろぐ</title>
+    <link>https://girigiribauer.com/tags/nativeapp/</link>
+    <description>Recent content in NativeApp on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Fri, 02 Dec 2022 08:00:00 +0900</lastBuildDate><atom:link href="https://girigiribauer.com/tags/nativeapp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Capacitor を知ってほしい</title>
+      <link>https://girigiribauer.com/tech/20221202/</link>
+      <pubDate>Fri, 02 Dec 2022 08:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20221202/</guid>
+      <description>知ってほしい技術 Advent Calendar 2022 の2日目より。 3行まとめ Capacitor はそれ単体で使える Web コンテンツをラッピングしてネイティブアプリにする技術・仕組み Ionic という UI フ</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>HTML5 on ばうあーろぐ</title>
+    <link>https://girigiribauer.com/tags/html5/</link>
+    <description>Recent content in HTML5 on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Sun, 24 Mar 2013 00:26:26 +0000</lastBuildDate><atom:link href="https://girigiribauer.com/tags/html5/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>関西のHTML5など勉強会に参加してきた話</title>
+      <link>https://girigiribauer.com/tech/20130324/</link>
+      <pubDate>Sun, 24 Mar 2013 00:26:26 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130324/</guid>
+      <description>最近、こんな勉強会に参加して、 こんなこと話しました、こんなこと聞きましたという記事を けっこう頻繁にアウトプット出来るようになってきて、個人的</description>
+    </item>
+    
+    <item>
+      <title>スマートフォンサイト構築に役立ちそうな本を読んでみた</title>
+      <link>https://girigiribauer.com/tech/20130211/</link>
+      <pubDate>Mon, 11 Feb 2013 11:16:14 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130211/</guid>
+      <description>知り合いの方が本を出されたと聞いたので、早速読んでみました。 簡単に内容をさらっと紹介しつつ、どんな人向けの本なのかも考えてみようと思います。</description>
+    </item>
+    
+    <item>
+      <title>HTML5勉強会 名古屋 #1 に参加してきた話</title>
+      <link>https://girigiribauer.com/tech/20130209/</link>
+      <pubDate>Sat, 09 Feb 2013 05:52:26 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130209/</guid>
+      <description>特にしゃべってもないので、参加者目線でログを残したいなと思います。 HTML5勉強会 名古屋 #1 今まで名古屋でこういう会が無かったので、こういう月</description>
+    </item>
+    
+    <item>
+      <title>html5shiv.jsの使いどころ</title>
+      <link>https://girigiribauer.com/tech/20130204/</link>
+      <pubDate>Mon, 04 Feb 2013 14:00:12 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130204/</guid>
+      <description>HTML5のタグで書いてはいけないレアケース にて、『html5shiv.jsを読み込んで・・・』みたいな記事を書いたのですが、そもそも html5shiv.js とは</description>
+    </item>
+    
+    <item>
+      <title>HTML5のタグで書いてはいけないレアケース</title>
+      <link>https://girigiribauer.com/tech/20130130/</link>
+      <pubDate>Tue, 29 Jan 2013 17:22:07 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130130/</guid>
+      <description>個人的には、 IE8以前 のブラウザが対応ブラウザに入っていて、 かなり公共性の高いと思われる（≒ JavaScriptの動作によらず閲覧できる 必要</description>
+    </item>
+    
+    <item>
+      <title>HTML5のタグを見直してみる（骨格編）</title>
+      <link>https://girigiribauer.com/tech/20130114/</link>
+      <pubDate>Mon, 14 Jan 2013 08:12:04 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130114/</guid>
+      <description>HTML5カルタ大会にて思ったこと。 分からないものを分からないままにするの、良くなーい！！ ってことで、少しあやふやなところもあったHTML5</description>
+    </item>
+    
+    <item>
+      <title>『新春!!HTML5KARUTA大会』名古屋も盛況でした！</title>
+      <link>https://girigiribauer.com/tech/20130107/</link>
+      <pubDate>Sun, 06 Jan 2013 17:00:51 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130107/</guid>
+      <description>新年あけましておめでとうございます！ 今年もぎりぎりで行くのでどうぞよろしくお願いします！ 今年初のブログ記事は、HTML5のカルタ大会というイ</description>
+    </item>
+    
+  </channel>
+</rss>

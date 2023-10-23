@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>jQuery から卒業するための第1歩を polyfills から学ぼう - ばうあーろぐ</title>
+  <meta name="description" content="IT / Web に関するメモ、あるいは Twentyfour あるいは人生の diff">
+  <meta itemprop="name" content="jQuery から卒業するための第1歩を polyfills から学ぼう">
+<meta itemprop="description" content="jQuery というライブラリは非常に便利な JavaScript ライブラリであります。 jQuery 便利！ いやー、便利ですよね。便利すぎて、JavaScript を書いてHTML要素を"><meta itemprop="datePublished" content="2014-01-30T15:00:53+00:00" />
+<meta itemprop="dateModified" content="2014-01-30T15:00:53+00:00" />
+<meta itemprop="wordCount" content="2926"><meta itemprop="image" content="https://girigiribauer.com/img/ogimage.png"/>
+<meta itemprop="keywords" content="JavaScript,jQuery,polyfills," />
+  <meta property="og:title" content="jQuery から卒業するための第1歩を polyfills から学ぼう" />
+<meta property="og:description" content="jQuery というライブラリは非常に便利な JavaScript ライブラリであります。 jQuery 便利！ いやー、便利ですよね。便利すぎて、JavaScript を書いてHTML要素を" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://girigiribauer.com/tech/20140131/" /><meta property="og:image" content="https://girigiribauer.com/img/ogimage.png"/><meta property="article:section" content="tech" />
+<meta property="article:published_time" content="2014-01-30T15:00:53+00:00" />
+<meta property="article:modified_time" content="2014-01-30T15:00:53+00:00" />
+
+
+  <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://girigiribauer.com/img/ogimage.png"/>
+
+<meta name="twitter:title" content="jQuery から卒業するための第1歩を polyfills から学ぼう"/>
+<meta name="twitter:description" content="jQuery というライブラリは非常に便利な JavaScript ライブラリであります。 jQuery 便利！ いやー、便利ですよね。便利すぎて、JavaScript を書いてHTML要素を"/>
+
+  <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+  <meta name="theme-color" content="#d9d9d0">
+  <meta name="generator" content="Hugo 0.91.2" />
+</head>
+
+<body class="theme-tech">
+  <div class="container">
+    <header class="globalheader"><a href="/" title="TOP へ戻る">TOP</a></header>
+
+    <main class="maincontents" role="main">
+      
+<h1 class="heading">jQuery から卒業するための第1歩を polyfills から学ぼう</h1>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2014-01-31 00:00:53">2014/01/31</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/jquery/"><i class="icon-tag"></i>jQuery</a></li>
+    <li><a href="/tags/polyfills/"><i class="icon-tag"></i>polyfills</a></li>
+  </ul>
+</div>
+
+<div class="article">
+  <p>jQuery というライブラリは非常に便利な JavaScript ライブラリであります。</p>
+<h2 id="jquery-便利">jQuery 便利！</h2>
+<p>いやー、便利ですよね。便利すぎて、JavaScript を書いてHTML要素を何かしようと思ったときに、無条件で使用してしまうケースもけっこう多いのではないでしょうか。</p>
+<p>ただ、知っている人は、jQuery のファイルサイズが若干重いことも知っています。</p>
+<p>2014年2月時点での jQuery の最新バージョンでファイルサイズを見てみると、</p>
+<ul>
+<li>jquery-1.11.0.js (277KB)</li>
+<li>jquery-1.11.0.min.js (95KB)</li>
+<li>jquery-2.1.0.js (240KB)</li>
+<li>jquery-2.1.0.min.js (82KB)</li>
+</ul>
+<p>IE8未満をばっさり切った 2.x 系だと、圧縮したもので 82KB あります。IE8未満も含めた 1.x 系だと、圧縮したもので 95KB もあります。</p>
+<p>また、jQuery にはプラグイン機構があるため、ライブラリのファイルに続けて、プラグイン用のファイルをいくつか読み込むことが多いと思います。</p>
+<p>ファイルサイズの問題うんぬんもあるのですが、それに加えて<strong>同時リクエスト数の問題</strong>もあります。例えば画像ファイルなどであれば、例えば6ファイルなどを同時にリクエストすることが出来ますが、スクリプトのファイルだと、実行順などの問題もあるので、<strong>スクリプトファイルを読み込んでいる最中は他スクリプトがストップしてしまう</strong>ので、あれこれとプラグイン用のファイルを読み込んでいると、いつまでたっても全体の処理が終わらないことになります。</p>
+<p>そのあたりの説明は、以下に詳しく載ってます。</p>
+<p><a href="https://developers.google.com/speed/docs/best-practices/rtt?hl=ja&amp;csw=1#CombineExternalJS">https://developers.google.com/speed/docs/best-practices/rtt?hl=ja&amp;csw=1#CombineExternalJS</a></p>
+<h3 id="jquery-は甘えという風潮">「jQuery は甘え」という風潮</h3>
+<p>便利なライブラリである一方で、安易に使いまくる人に対して、甘えだーという人も一定数居ます。</p>
+<p>個人的には、無理に使用を縛らずケースバイケースで普通に使っていくべきだとは思いますが、 ちょっとした処理をしたいときに毎回 「jQuery がないとダメ、何にもできない・・・。」みたいなのも少しずつ改めていくべきだとは思います。</p>
+<p>例えば、class=”toggle” がついている要素を取得して何かしたい場合、 jQuery であれば以下のように書きます。</p>
+<pre><code>var toggles = $('.toggle');
+</code></pre>
+<p>ただ、これくらいであれば、jQuery を介さずとも簡単に取得できます。</p>
+<pre><code>var toggles = document.querySelectorAll('.toggle');
+</code></pre>
+<p>どちらもそれほど変わらない記述で class=”toggle” を含む要素を取得できるので、その後の処理によってはわざわざ jQuery を読み込まずとも、素の JavaScript でも問題なかったりしますね。</p>
+<h3 id="クロスブラウザという現実的な問題">クロスブラウザという現実的な問題</h3>
+<p>・・・という理想郷の話だったわけですが、現実はそう簡単にはいかないケースも多いです。</p>
+<p>jQuery が吸収してくれているのは、こういったブラウザ間の JavaScript の実装差異だったりします。</p>
+<p>例えば、先ほど書いた document.querySelectorAll の例ですが、 IE8未満では実はサポートされていません。</p>
+<p><a href="http://caniuse.com/#feat=queryselector">http://caniuse.com/#feat=queryselector</a></p>
+<p><img src="resource01.jpg" alt=""></p>
+<p>この例だと、たまたま IE8 以上か IE7 以下かで分けられるので、 IE7 以前なんていいじゃん、というケースも出てくるかもしれませんが、 ブラウザの対応度合いは様々なので、その都度対応しているかどうかを考えて、 この場合はこうして・・・などと毎回考えていくのはあまり本質的ではありませんね。 やりたいことを解決するために時間を使った方が良いと思います。</p>
+<h2 id="jquery-から卒業するための第1歩を-polyfills-から学ぼう">jQuery から卒業するための第1歩を polyfills から学ぼう</h2>
+<p>そこで本記事のタイトルです。</p>
+<p>**polyfills（ポリフィル）**というのは、数年前から言われている概念なので、 知っている人もいくらかいるのではないかと思いますが、 モダンブラウザで普通に出来て、レガシーブラウザで出来ない機能を、既存の技術で（あるいはそれらの組み合わせで）同等のものを提供する、という手法です。</p>
+<p>※ちなみに fallback（フォールバック）は、提供が難しいものに対してそれに近しいもので代替することを指すので、ちょっと違うと思います。</p>
+<p>つまり、polyfills を利用して、レガシーブラウザ用に機能が足りてない部分を 補完してやることで、レガシーブラウザの場合にああしてこうして・・・といった部分の 考えるコストを一定低減することが出来ます。</p>
+<h3 id="polyfills-を知ることでブラウザの実装の歴史を知る">polyfills を知ることでブラウザの実装の歴史を知る</h3>
+<p>色んな方が polyfills を公開しています。</p>
+<p>まとめられているページがこちら。</p>
+<p><a href="https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-browser-Polyfills">https://github.com/Modernizr/Modernizr/wiki/HTML5-Cross-browser-Polyfills</a></p>
+<p>たくさんあるのですが、今回読んだのがこちら。</p>
+<p><a href="https://github.com/inexorabletash/polyfill">https://github.com/inexorabletash/polyfill</a></p>
+<p><img src="resource02.jpg" alt=""></p>
+<p>こちらでは、例えば JavaScript の仕様である ECMAScript の、 バージョン5に相当する ECMAScript5 (ES5) と見比べて、 不足している実装部分を <strong>es5.js</strong> として提供されていたり、 あるいは バイナリデータ（映像、音声など）を効率良く扱うための Typed Array の polyfills が <strong>typedarray.js</strong> として提供されていたりします。</p>
+<p><img src="resource03.jpg" alt=""></p>
+<p>その中で、<strong>Web Standards / Browser</strong> として提供されている polyfills、<strong>web.js</strong> というのがあります。</p>
+<p>こちらは、上記に挙げたようなある特定の仕様に対して不足があるかどうか？というよりは、一般的に Web 標準で考えた場合に不足があるかどうか？を元に polyfills がまとめられています。 なので、こちらのコードを追っていくことで<strong>逆にブラウザの実装の歴史が分かるのではないでしょうか。</strong></p>
+<p>・・・ということで、前振りが長かったですが、一言で言うと、**『このリポジトリの web.js というファイルを順に読んでブラウザの実装差異について理解していこう！』**という記事になります。</p>
+<h2 id="polyfills-のソースコードリーディングを始めよう">polyfills のソースコードリーディングを始めよう</h2>
+<p>早速10行目と613行目を抜粋します。</p>
+<pre><code>if ('window' in this &amp;&amp; 'document' in this) {
+  //（中略）
+}
+</code></pre>
+<p>this は、通常ブラウザで読み込むと global に相当しますので、global に window と document がある場合にのみ処理されます。（要するに処理されます）</p>
+<p>次は、18行目から21行目です。簡単なところから始まってて（ブログ書きやすくて）良かったですね。</p>
+<pre><code>//
+// document.head (HTML5)
+//
+</code></pre>
+<p>document.head = document.head || document.getElementsByTagName(‘head’)[0]; 僕これ知らなかったのですが、HTML5 だと document オブジェクトに head プロパティがあり、 それが HTML 内の head 要素を指すのですね。</p>
+<p>対応しているものは、document.head がそのまま使われるのですが、対応してないものは undefined を返すので、|| の後ろが実行されます。</p>
+<p>document.getElementsByTagName は、getElementById と同じく 古いIEでも普通に使えます。 読んで字のごとく、要素（複数）をタグ名で取得するってことで、 head 要素を取得してから、それの一番最初のやつを使いますってことですね。</p>
+<p>このように論理和（||）を用いて実装の差異を埋めてやることで、polyfills を上手く実現していることが見てとれます。</p>
+<h2 id="まとめ">まとめ</h2>
+<p>ちょっと前振りが長かったので一旦切りたいと思います。</p>
+<p>このように、polyfills を順に追っていくことで、ブラウザの実装の歴史を知るのもなかなかお手軽で良いのではないでしょうか。</p>
+<p>こちらのコードに書かれているような実装差異の吸収の仕方、テクニックを見ていくことで、ついでに自分が書くときにもプラスになるのでは？と思うので、これから順に見ていきたいと思います。</p>
+<p>なお、最初の8行のコメントにもあるように、</p>
+<pre><code>//----------------------------------------------------------------------
+//
+// Browser Polyfills
+//
+// This assumes ES5 or ES3 + es5.js
+// (polyfill.js is es5.js + web.js for convenience)
+//
+//----------------------------------------------------------------------
+</code></pre>
+<p>正確には polyfill.js 全体が es5.js と web.js の組み合わせで出来ていますが、今回は ES5 に注目して読むよりも、Web Standards な方に注目して見てみたい、という意図があったので、web.js の方を見ています。</p>
+<p>なので、このまま読んでいくと、ES5 前提の記述をちらほら見かけます。これは予め es5.js の機能を読み込んでいるためです。次回以降の続きの記事でたぶん出てきますので予めご了承ください。</p>
+<p>たぶん続きます。</p>
+<p>追記： <a href="/tech/20140203/">続き書きました。</a></p>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = "https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2014-01-31 00:00:53">2014/01/31</time>
+</p>
+  <p class="expired"><strong>この記事は書かれてから1年以上が経過しており、最新の情報とは異なる可能性があります</strong></p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/jquery/"><i class="icon-tag"></i>jQuery</a></li>
+    <li><a href="/tags/polyfills/"><i class="icon-tag"></i>polyfills</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <del><a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a></del> <a href="https://bsky.app/profile/girigiribauer.bsky.social" target="_blank">@girigiribauer.bsky.social</a> までご一報いただけると助かります。</small>
+
+
+
+<h2>Related articles</h2>
+<ul class="article-list">
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2013-03-01 23:14:23">2013/03/01</time>
+ <br> <a href="https://girigiribauer.com/tech/20130301/">大なごやJS vol.5 に行ってきたまとめ</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/mvc/"><i class="icon-tag"></i>MVC</a></li>
+    <li><a href="/tags/output/"><i class="icon-tag"></i>output</a></li>
+    <li><a href="/tags/functionallanguage/"><i class="icon-tag"></i>FunctionalLanguage</a></li>
+    <li><a href="/tags/event-conference/"><i class="icon-tag"></i>event-conference</a></li>
+  </ul>
+</li>
+
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2013-02-11 20:16:14">2013/02/11</time>
+ <br> <a href="https://girigiribauer.com/tech/20130211/">スマートフォンサイト構築に役立ちそうな本を読んでみた</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/html5/"><i class="icon-tag"></i>HTML5</a></li>
+    <li><a href="/tags/javascript/"><i class="icon-tag"></i>JavaScript</a></li>
+    <li><a href="/tags/smartphone/"><i class="icon-tag"></i>Smartphone</a></li>
+  </ul>
+</li>
+
+  
+</ul>
+
+    </main>
+
+    <footer class="globalfooter">
+      <h2>Tags</h2>
+      <ul class="tags">
+        <li><a href="https://girigiribauer.com/tags/ajax/"><i class="icon-tag"></i>ajax (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/angular/"><i class="icon-tag"></i>Angular (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ansible/"><i class="icon-tag"></i>Ansible (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/anyenv/"><i class="icon-tag"></i>anyenv (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apache/"><i class="icon-tag"></i>Apache (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/api/"><i class="icon-tag"></i>API (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apps/"><i class="icon-tag"></i>Apps (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/auth/"><i class="icon-tag"></i>auth (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/automation/"><i class="icon-tag"></i>automation (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bot/"><i class="icon-tag"></i>bot (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/browserextension/"><i class="icon-tag"></i>BrowserExtension (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bugs/"><i class="icon-tag"></i>bugs (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/canvas/"><i class="icon-tag"></i>Canvas (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/capacitor/"><i class="icon-tag"></i>Capacitor (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/chef/"><i class="icon-tag"></i>Chef (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cli/"><i class="icon-tag"></i>CLI (13)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cordova/"><i class="icon-tag"></i>Cordova (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/crawler/"><i class="icon-tag"></i>Crawler (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css/"><i class="icon-tag"></i>CSS (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css3/"><i class="icon-tag"></i>CSS3 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cssfilter/"><i class="icon-tag"></i>CSSfilter (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/database/"><i class="icon-tag"></i>Database (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/docker/"><i class="icon-tag"></i>Docker (10)</a></li>
+        <li><a href="https://girigiribauer.com/tags/dom/"><i class="icon-tag"></i>DOM (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ecmascript/"><i class="icon-tag"></i>ECMAScript (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/electron/"><i class="icon-tag"></i>Electron (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/english/"><i class="icon-tag"></i>English (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/event-conference/"><i class="icon-tag"></i>event-conference (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fab/"><i class="icon-tag"></i>Fab (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/firebase/"><i class="icon-tag"></i>Firebase (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fish/"><i class="icon-tag"></i>fish (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/flyfree/"><i class="icon-tag"></i>FlyFree (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/font/"><i class="icon-tag"></i>Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ftp/"><i class="icon-tag"></i>FTP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/functionallanguage/"><i class="icon-tag"></i>FunctionalLanguage (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fusion360/"><i class="icon-tag"></i>Fusion360 (8)</a></li>
+        <li><a href="https://girigiribauer.com/tags/getusermedia/"><i class="icon-tag"></i>getUserMedia (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/git/"><i class="icon-tag"></i>Git (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/gitconfig/"><i class="icon-tag"></i>gitconfig (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/glsl/"><i class="icon-tag"></i>GLSL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/golang/"><i class="icon-tag"></i>Golang (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/googleappengine/"><i class="icon-tag"></i>GoogleAppEngine (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/homebrew/"><i class="icon-tag"></i>Homebrew (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html/"><i class="icon-tag"></i>HTML (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5/"><i class="icon-tag"></i>HTML5 (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5-outline/"><i class="icon-tag"></i>HTML5-outline (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/https/"><i class="icon-tag"></i>HTTPS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/hugo/"><i class="icon-tag"></i>Hugo (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/icon-font/"><i class="icon-tag"></i>Icon-Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/install/"><i class="icon-tag"></i>Install (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ionic/"><i class="icon-tag"></i>ionic (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ios/"><i class="icon-tag"></i>iOS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/iterm/"><i class="icon-tag"></i>iTerm (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/javascript/"><i class="icon-tag"></i>JavaScript (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jinja2/"><i class="icon-tag"></i>jinja2 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jq/"><i class="icon-tag"></i>jq (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jquery/"><i class="icon-tag"></i>jQuery (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jsperf/"><i class="icon-tag"></i>jsperf (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/lint/"><i class="icon-tag"></i>lint (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/linux/"><i class="icon-tag"></i>Linux (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mediaquery/"><i class="icon-tag"></i>mediaQuery (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mongodb/"><i class="icon-tag"></i>MongoDB (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mvc/"><i class="icon-tag"></i>MVC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mysql/"><i class="icon-tag"></i>MySQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/namespace/"><i class="icon-tag"></i>namespace (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/naming/"><i class="icon-tag"></i>naming (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/nativeapp/"><i class="icon-tag"></i>NativeApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/oldie/"><i class="icon-tag"></i>oldIE (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/openapi/"><i class="icon-tag"></i>OpenAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/opengraph/"><i class="icon-tag"></i>OpenGraph (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/output/"><i class="icon-tag"></i>output (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/php/"><i class="icon-tag"></i>PHP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/plasmo/"><i class="icon-tag"></i>plasmo (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/polyfills/"><i class="icon-tag"></i>polyfills (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/postgresql/"><i class="icon-tag"></i>PostgreSQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/preloader/"><i class="icon-tag"></i>preloader (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/python/"><i class="icon-tag"></i>Python (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rdfa/"><i class="icon-tag"></i>RDFa (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rsync/"><i class="icon-tag"></i>rsync (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/scala/"><i class="icon-tag"></i>Scala (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/setup/"><i class="icon-tag"></i>Setup (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/shellscript/"><i class="icon-tag"></i>ShellScript (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/slack/"><i class="icon-tag"></i>slack (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/smartphone/"><i class="icon-tag"></i>Smartphone (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/sns/"><i class="icon-tag"></i>SNS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ssh/"><i class="icon-tag"></i>SSH (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/static-site-generator/"><i class="icon-tag"></i>Static Site Generator (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/study/"><i class="icon-tag"></i>study (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/svg/"><i class="icon-tag"></i>SVG (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/tmux/"><i class="icon-tag"></i>tmux (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vagrant/"><i class="icon-tag"></i>Vagrant (15)</a></li>
+        <li><a href="https://girigiribauer.com/tags/viewport/"><i class="icon-tag"></i>viewport (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vim/"><i class="icon-tag"></i>Vim (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vimrc/"><i class="icon-tag"></i>vimrc (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualbox/"><i class="icon-tag"></i>VirtualBox (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualization/"><i class="icon-tag"></i>virtualization (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vscode/"><i class="icon-tag"></i>VSCode (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webapp/"><i class="icon-tag"></i>WebApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webaudioapi/"><i class="icon-tag"></i>WebAudioAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webfont/"><i class="icon-tag"></i>WebFont (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webgl/"><i class="icon-tag"></i>WebGL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webrtc/"><i class="icon-tag"></i>WebRTC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webserver/"><i class="icon-tag"></i>WebServer (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/wget/"><i class="icon-tag"></i>wget (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/yeoman/"><i class="icon-tag"></i>Yeoman (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/zsh/"><i class="icon-tag"></i>Zsh (3)</a></li>
+      </ul>
+
+      <h2>Categories</h2>
+      <ul class="tags">
+        <li><a href="/tech/"><i class="icon-book"></i>tech (102)</a></li>
+        <li><a href="/misc/"><i class="icon-book"></i>misc (26)</a></li>
+        <li><a href="/biz/"><i class="icon-book"></i>biz (42)</a></li>
+        <li><a href="/journey/"><i class="icon-book"></i>journey (0)</a></li>
+        <li><a href="https://curry.girigiribauer.com" target="_blank" rel="noreferer"><i
+              class="icon-book"></i>カレー（駄文）</a></li>
+      </ul>
+
+      <h2>RSS</h2>
+      <ul class="tags"><li><a href="https://girigiribauer.com/tech/index.xml"><i class="icon-rss"></i>tech</a></li><li><a href="https://girigiribauer.com/misc/index.xml"><i class="icon-rss"></i>misc</a></li><li><a href="https://girigiribauer.com/biz/index.xml"><i class="icon-rss"></i>biz</a></li>
+        <li><a href="/index.xml"><i class="icon-rss"></i>All Articles</a></li>
+      </ul>
+
+      <hr>
+
+      <ul>
+        <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+        <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+        <li>このサイトでは cookie および <a href="https://www.google.com/intl/ja/policies/privacy/partners/"
+            target="_blank">Google Analytics を利用しています</a></li>
+      </ul>
+      <p class="copyright">&copy; ばうあーろぐ</p>
+    </footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>3Dものづくり(7) - 音楽プレーヤーのスイッチカバーを作る・前編 - ばうあーろぐ</title>
+  <meta name="description" content="電源ボタンが出っ張っているせいで勝手に電源入っちゃうのをなんとかしたいの巻">
+  <meta itemprop="name" content="3Dものづくり(7) - 音楽プレーヤーのスイッチカバーを作る・前編">
+<meta itemprop="description" content="電源ボタンが出っ張っているせいで勝手に電源入っちゃうのをなんとかしたいの巻"><meta itemprop="datePublished" content="2023-01-18T08:00:00+09:00" />
+<meta itemprop="dateModified" content="2023-01-18T08:00:00+09:00" />
+<meta itemprop="wordCount" content="2317"><meta itemprop="image" content="https://girigiribauer.com/tech/20230118/feature.jpg">
+<meta itemprop="keywords" content="Fab,Fusion360," />
+  <meta property="og:title" content="3Dものづくり(7) - 音楽プレーヤーのスイッチカバーを作る・前編" />
+<meta property="og:description" content="電源ボタンが出っ張っているせいで勝手に電源入っちゃうのをなんとかしたいの巻" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://girigiribauer.com/tech/20230118/" /><meta property="og:image" content="https://girigiribauer.com/tech/20230118/feature.jpg"/><meta property="article:section" content="tech" />
+<meta property="article:published_time" content="2023-01-18T08:00:00+09:00" />
+<meta property="article:modified_time" content="2023-01-18T08:00:00+09:00" />
+
+
+  <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://girigiribauer.com/tech/20230118/feature.jpg"/>
+<meta name="twitter:title" content="3Dものづくり(7) - 音楽プレーヤーのスイッチカバーを作る・前編"/>
+<meta name="twitter:description" content="電源ボタンが出っ張っているせいで勝手に電源入っちゃうのをなんとかしたいの巻"/>
+
+  <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+  <meta name="theme-color" content="#d9d9d0">
+  <meta name="generator" content="Hugo 0.91.2" />
+</head>
+
+<body class="theme-tech">
+  <div class="container">
+    <header class="globalheader"><a href="/" title="TOP へ戻る">TOP</a></header>
+
+    <main class="maincontents" role="main">
+      
+<h1 class="heading">3Dものづくり(7) - 音楽プレーヤーのスイッチカバーを作る・前編</h1>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2023-01-18 08:00:00">2023/01/18</time>
+</p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/fab/"><i class="icon-tag"></i>Fab</a></li>
+    <li><a href="/tags/fusion360/"><i class="icon-tag"></i>Fusion360</a></li>
+  </ul>
+</div>
+
+<div class="article">
+  <p>前回の突っ張り棒の設置台と並行して、
+実は別のものも作っておりましたので、そちらもメモ。</p>
+<ul>
+<li><a href="/tech/20221001/">3Dものづくり始めました</a></li>
+<li><a href="/tech/20221117/">3Dものづくり(2) - Fusion 360 をいじり倒す</a></li>
+<li><a href="/tech/20221120/">3Dものづくり(3) - 検証用データを印刷してみた！</a></li>
+<li><a href="/tech/20221203/">3Dものづくり(4) - カチッとはまる機構の検証</a></li>
+<li><a href="/tech/20221216/">3Dものづくり(5) - 別の素材だったらどうなるの（透明レジン）</a></li>
+<li><a href="/tech/20230109/">3Dものづくり(6) - 突っ張り棒の設置台を作る・前編</a></li>
+</ul>
+<h2 id="音楽プレーヤーの電源が勝手に-on-になっちゃう問題">音楽プレーヤーの電源が勝手に ON になっちゃう問題</h2>
+<p>こちらも現物を見てもらった方が話が早いので、まずはこちらをご覧ください。</p>
+<p><img src="resource01.jpg" alt="音楽プレーヤーの役割を与えられた通信機"></p>
+<p>ざっくり音楽プレーヤーと呼んじゃってますが、
+正確には <strong>Bluetooth の通信機</strong> です。
+（以下正確じゃないけどこれを音楽プレーヤーと呼びます）</p>
+<p>以前、首にかけるタイプの音楽プレーヤーの無線機器を使っていたのですが、
+色々不満があり（話が大きく逸れるのでカット）、
+スマートフォンとの通信機能だけを持ち、
+有線ケーブルをそこに指すという運用にして概ね満足しておりました。</p>
+<p>ただ、そこにも <strong>弱点</strong> があり・・・</p>
+<p><img src="resource02.jpg" alt="電源ボタンの出っ張り"></p>
+<p>そう、 <strong>電源ボタンが出っ張っているのです。</strong></p>
+<p>これにより何が起きるのかというと、</p>
+<a href="resource03.mp4" target="_blank">
+    <video width="854" height="480" autoplay muted loop controls>
+        <source src="resource03.mp4" type="video/mp4">
+    </video>
+</a>
+<p><strong>鞄の中に入れておくと、結構な頻度で電源が入った状態・音楽が再生された状態になってしまう</strong> のですね。</p>
+<p>これはよくない、よくないと思いつつ早幾年・・・。</p>
+<p>こういうところで、補助パーツを作るのがものづくりなのではないか？ということで、
+電源ボタンのスイッチカバーを何かしら作ってみようと思います。</p>
+<p>（なお、これも形状によってはカバーじゃないかもですが、便宜上スイッチカバーと呼びます）</p>
+<h2 id="まずは実測">まずは実測</h2>
+<p>前回に引き続き、今回も <strong>デジタルノギス</strong> を使ってまずは測っていきます。</p>
+<p>電源ボタン付近に何らかカバーをつけることまではほぼ確定してるので、
+形状はまだ未定なまでも、とりあえず実測だけしていきます。</p>
+<p><img src="resource04.jpg" alt="実測"></p>
+<p>横幅の一番出っ張ってるところ、 32.8mm 。</p>
+<p>ただし音量ボタンの出っ張りは除く。
+（電源ボタン含むと 33.2mm だったけど多分使わない）</p>
+<p><img src="resource05.jpg" alt="実測"></p>
+<p>高さ、 57.9mm 。</p>
+<p><img src="resource06.jpg" alt="実測"></p>
+<p>奥行き、 11.4mm 。</p>
+<p><img src="resource07.jpg" alt="実測"></p>
+<p>電源ボタンの幅、 12.2mm 。</p>
+<p><img src="resource08.jpg" alt="実測"></p>
+<p>電源ボタンの高さも 12.2mm 。</p>
+<p>いやーデジタルノギス便利ですね。こんなとこ定規じゃ測れないでしょ。</p>
+<p><img src="resource09.jpg" alt="実測"></p>
+<p>ついでに電源ボタン込みの奥行きは 11.8mm でした。</p>
+<p>つまり奥行き 11.4mm との差分を取ると、 電源ボタンの厚みは 0.4mm っぽいです。</p>
+<p><img src="resource10.jpg" alt="実測"></p>
+<p><img src="resource11.jpg" alt="実測"></p>
+<p>電源ボタンと上部までの距離、  11.5mm 。</p>
+<p>デプスバー、地味に便利・・・。</p>
+<p><img src="resource12.jpg" alt="実測"></p>
+<p>最後に、使うかどうか分からんけど、
+角丸になってるので、外側のレール部分の厚みもついでに測っておきます。</p>
+<p>11.4mm に対して 9.1mm ですね。なるほど。</p>
+<h3 id="実測した結果">実測した結果</h3>
+<p>数値まとめ。</p>
+<ul>
+<li>幅: 32.8mm</li>
+<li>高さ: 57.9mm</li>
+<li>奥行き: 11.4mm</li>
+<li>電源ボタンの幅: 12.2mm</li>
+<li>電源ボタンの高さ: 12.2mm</li>
+<li>電源ボタンの出っ張りの奥行き: 0.4mm</li>
+<li>電源ボタンと上部との距離: 11.5mm</li>
+</ul>
+<p>こんなとこですかね？</p>
+<p>対象の音楽プレーヤーがそんなに大きくはないので、
+スイッチカバーもそこまで大きくはならなさそうです。</p>
+<h2 id="形状を考えてモデリングする">形状を考えてモデリングする</h2>
+<p>ここまでやって、大きく2パターンかなと思いました。</p>
+<ol>
+<li><strong>電源ボタンを左右に囲うようにカバーを巻く（バンド型）</strong></li>
+<li>電源ボタンの上に囲うような形で挟む（クリップ型）</li>
+</ol>
+<p>バンドのようにぐるっと巻いて固定することで安定するのではないかなと思い、
+最初に 1. の形を考えました。</p>
+<p>ですが、再びこちらを見てほしいです。</p>
+<p><img src="resource07.jpg" alt="実測"></p>
+<p>音量ボタンが右側についてまして、その高さが微妙に電源ボタンと異なっており、
+若干下に長い形なんですよね。</p>
+<p>そうなると、左右にカバーを巻く形にすると、電源ボタンを活かしつつ巻くことになるので、
+けっこう <strong>造形がめんどくさくなりそうな予感</strong> です。</p>
+<ol>
+<li>電源ボタンを左右に囲うようにカバーを巻く（バンド型）</li>
+<li><strong>電源ボタンの上に囲うような形で挟む（クリップ型）</strong></li>
+</ol>
+<p>そこで 2. なんですが、 1. に比べて <strong>巻くことがやりづらい = 固定できないのがデメリット</strong> なんですよね。</p>
+<p>ただ、上方向はボタンやケーブルが何もなくスペースが空いており、なんとか活用したいところです。</p>
+<p>そこであれこれ考えて、 <strong>素材のしなりを利用してクリップのように留めてしまえば良いのでは？</strong> とひとアイデア思いつきます。</p>
+<p>たぶん今までの検証の通りなら、 <strong>厚みを 1〜1.5mm 程度にすると、壊れはしないがある程度の柔軟性も残ってる</strong> 、くらいの強度になるはずなので、その辺を実践で試してみるのも面白そうです。</p>
+<p>ダメなら作り直せばいいしね。でぃーあーいわーい 🤗</p>
+<h3 id="クリップ型のスイッチカバーをモデリング">クリップ型のスイッチカバーをモデリング</h3>
+<p>ここから先はダイジェストでお届け！</p>
+<p><img src="resource13.jpg" alt="スイッチカバーのモデリング"></p>
+<p>まずは実際に押す部分から。</p>
+<p>実際の穴の補助線引きつつ、スイッチカバーのサイズ感を探ってみる。</p>
+<p><img src="resource14.jpg" alt="スイッチカバーのモデリング"></p>
+<p>こんなもんじゃあ〜 🤗</p>
+<p><img src="resource15.jpg" alt="スイッチカバーのモデリング"></p>
+<p>丸くなってないと押しづらいからね。</p>
+<p><img src="resource16.jpg" alt="スイッチカバーのモデリング"></p>
+<p>本体との距離を指定しつつ、徐々に立体的に・・・</p>
+<p><img src="resource17.jpg" alt="スイッチカバーのモデリング"></p>
+<p>横から見るとこんな感じ。まずはサイズ通りに。</p>
+<p><img src="resource18.jpg" alt="スイッチカバーのモデリング"></p>
+<p>この先どうするか迷ったけど、クリップ風だとなんか外に出っ張ってる部分あるよね。</p>
+<p><img src="resource19.jpg" alt="スイッチカバーのモデリング"></p>
+<p>てきとーに角度つけてそれっぽく。</p>
+<p>うぇーい 🤗</p>
+<p><img src="resource20.jpg" alt="スイッチカバーのモデリング"></p>
+<p>ただ余白がなさすぎてクリップにならないっぽいので、
+上部に少しずらすことに。ちょっとだけ延伸。</p>
+<p><img src="resource21.jpg" alt="スイッチカバーのモデリング"></p>
+<p>全体的に延伸して、実際のサイズの補助線も引いておきます。</p>
+<p><img src="resource22.jpg" alt="スイッチカバーのモデリング"></p>
+<p>ここでぐいっと！ぐいっと曲げる・・・！</p>
+<p>クリップ部分の厚みが 1.5mm なので、計算通りならほどよくしなって留まる感じになるのでは？？？</p>
+<p><img src="resource23.jpg" alt="スイッチカバーのモデリング"></p>
+<p>音楽プレーヤーを囲う部分は、ほどよく角丸にしておきます。</p>
+<p><img src="resource24.jpg" alt="スイッチカバーのモデリング"></p>
+<p>おお〜それっぽい。</p>
+<p><img src="resource25.jpg" alt="スイッチカバーのモデリング"></p>
+<p>あとはクリップで実際に本体に留める部分が尖っていると、傷がつきやすそうだったので、
+設置面もほどよく角丸にしておくことに。</p>
+<p><img src="resource26.jpg" alt="スイッチカバーのモデリング"></p>
+<p><strong>かんせーい！ 🤗</strong></p>
+<p>いい感じにできたんじゃないかなと！</p>
+<p><strong>作る前にどういう方向性で作るか考える</strong> ところ、意外に大事そうな気がしますね。
+今回はクリップ型にしたらいいんじゃないか、みたいなところは中々に良いアイデアだった気がします。</p>
+<h2 id="後編に続く">後編に続く</h2>
+<p>スイッチカバー後編も不定期で書いていきます。不定期ですよ？</p>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = "https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2023-01-18 08:00:00">2023/01/18</time>
+</p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/fab/"><i class="icon-tag"></i>Fab</a></li>
+    <li><a href="/tags/fusion360/"><i class="icon-tag"></i>Fusion360</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <del><a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a></del> <a href="https://bsky.app/profile/girigiribauer.bsky.social" target="_blank">@girigiribauer.bsky.social</a> までご一報いただけると助かります。</small>
+
+
+
+<h2>Related articles</h2>
+<ul class="article-list">
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2023-01-09 09:30:00">2023/01/09</time>
+ <br> <a href="https://girigiribauer.com/tech/20230109/">3Dものづくり(6) - 突っ張り棒の設置台を作る・前編</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/fab/"><i class="icon-tag"></i>Fab</a></li>
+    <li><a href="/tags/fusion360/"><i class="icon-tag"></i>Fusion360</a></li>
+  </ul>
+</li>
+
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2022-12-16 07:00:00">2022/12/16</time>
+ <br> <a href="https://girigiribauer.com/tech/20221216/">3Dものづくり(5) - 別の素材だったらどうなるの（透明レジン）</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/fab/"><i class="icon-tag"></i>Fab</a></li>
+    <li><a href="/tags/fusion360/"><i class="icon-tag"></i>Fusion360</a></li>
+  </ul>
+</li>
+
+  
+  <li>
+  <h2 class="heading-listitem">
+<time datetime="2022-12-03 07:50:00">2022/12/03</time>
+ <br> <a href="https://girigiribauer.com/tech/20221203/">3Dものづくり(4) - カチッとはまる機構の検証</a></h2>
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/fab/"><i class="icon-tag"></i>Fab</a></li>
+    <li><a href="/tags/fusion360/"><i class="icon-tag"></i>Fusion360</a></li>
+  </ul>
+</li>
+
+  
+</ul>
+
+    </main>
+
+    <footer class="globalfooter">
+      <h2>Tags</h2>
+      <ul class="tags">
+        <li><a href="https://girigiribauer.com/tags/ajax/"><i class="icon-tag"></i>ajax (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/angular/"><i class="icon-tag"></i>Angular (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ansible/"><i class="icon-tag"></i>Ansible (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/anyenv/"><i class="icon-tag"></i>anyenv (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apache/"><i class="icon-tag"></i>Apache (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/api/"><i class="icon-tag"></i>API (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apps/"><i class="icon-tag"></i>Apps (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/auth/"><i class="icon-tag"></i>auth (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/automation/"><i class="icon-tag"></i>automation (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bot/"><i class="icon-tag"></i>bot (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/browserextension/"><i class="icon-tag"></i>BrowserExtension (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bugs/"><i class="icon-tag"></i>bugs (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/canvas/"><i class="icon-tag"></i>Canvas (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/capacitor/"><i class="icon-tag"></i>Capacitor (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/chef/"><i class="icon-tag"></i>Chef (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cli/"><i class="icon-tag"></i>CLI (13)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cordova/"><i class="icon-tag"></i>Cordova (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/crawler/"><i class="icon-tag"></i>Crawler (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css/"><i class="icon-tag"></i>CSS (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css3/"><i class="icon-tag"></i>CSS3 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cssfilter/"><i class="icon-tag"></i>CSSfilter (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/database/"><i class="icon-tag"></i>Database (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/docker/"><i class="icon-tag"></i>Docker (10)</a></li>
+        <li><a href="https://girigiribauer.com/tags/dom/"><i class="icon-tag"></i>DOM (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ecmascript/"><i class="icon-tag"></i>ECMAScript (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/electron/"><i class="icon-tag"></i>Electron (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/english/"><i class="icon-tag"></i>English (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/event-conference/"><i class="icon-tag"></i>event-conference (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fab/"><i class="icon-tag"></i>Fab (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/firebase/"><i class="icon-tag"></i>Firebase (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fish/"><i class="icon-tag"></i>fish (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/flyfree/"><i class="icon-tag"></i>FlyFree (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/font/"><i class="icon-tag"></i>Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ftp/"><i class="icon-tag"></i>FTP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/functionallanguage/"><i class="icon-tag"></i>FunctionalLanguage (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fusion360/"><i class="icon-tag"></i>Fusion360 (8)</a></li>
+        <li><a href="https://girigiribauer.com/tags/getusermedia/"><i class="icon-tag"></i>getUserMedia (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/git/"><i class="icon-tag"></i>Git (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/gitconfig/"><i class="icon-tag"></i>gitconfig (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/glsl/"><i class="icon-tag"></i>GLSL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/golang/"><i class="icon-tag"></i>Golang (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/googleappengine/"><i class="icon-tag"></i>GoogleAppEngine (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/homebrew/"><i class="icon-tag"></i>Homebrew (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html/"><i class="icon-tag"></i>HTML (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5/"><i class="icon-tag"></i>HTML5 (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5-outline/"><i class="icon-tag"></i>HTML5-outline (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/https/"><i class="icon-tag"></i>HTTPS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/hugo/"><i class="icon-tag"></i>Hugo (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/icon-font/"><i class="icon-tag"></i>Icon-Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/install/"><i class="icon-tag"></i>Install (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ionic/"><i class="icon-tag"></i>ionic (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ios/"><i class="icon-tag"></i>iOS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/iterm/"><i class="icon-tag"></i>iTerm (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/javascript/"><i class="icon-tag"></i>JavaScript (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jinja2/"><i class="icon-tag"></i>jinja2 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jq/"><i class="icon-tag"></i>jq (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jquery/"><i class="icon-tag"></i>jQuery (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jsperf/"><i class="icon-tag"></i>jsperf (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/lint/"><i class="icon-tag"></i>lint (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/linux/"><i class="icon-tag"></i>Linux (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mediaquery/"><i class="icon-tag"></i>mediaQuery (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mongodb/"><i class="icon-tag"></i>MongoDB (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mvc/"><i class="icon-tag"></i>MVC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mysql/"><i class="icon-tag"></i>MySQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/namespace/"><i class="icon-tag"></i>namespace (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/naming/"><i class="icon-tag"></i>naming (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/nativeapp/"><i class="icon-tag"></i>NativeApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/oldie/"><i class="icon-tag"></i>oldIE (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/openapi/"><i class="icon-tag"></i>OpenAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/opengraph/"><i class="icon-tag"></i>OpenGraph (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/output/"><i class="icon-tag"></i>output (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/php/"><i class="icon-tag"></i>PHP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/plasmo/"><i class="icon-tag"></i>plasmo (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/polyfills/"><i class="icon-tag"></i>polyfills (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/postgresql/"><i class="icon-tag"></i>PostgreSQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/preloader/"><i class="icon-tag"></i>preloader (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/python/"><i class="icon-tag"></i>Python (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rdfa/"><i class="icon-tag"></i>RDFa (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rsync/"><i class="icon-tag"></i>rsync (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/scala/"><i class="icon-tag"></i>Scala (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/setup/"><i class="icon-tag"></i>Setup (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/shellscript/"><i class="icon-tag"></i>ShellScript (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/slack/"><i class="icon-tag"></i>slack (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/smartphone/"><i class="icon-tag"></i>Smartphone (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/sns/"><i class="icon-tag"></i>SNS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ssh/"><i class="icon-tag"></i>SSH (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/static-site-generator/"><i class="icon-tag"></i>Static Site Generator (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/study/"><i class="icon-tag"></i>study (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/svg/"><i class="icon-tag"></i>SVG (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/tmux/"><i class="icon-tag"></i>tmux (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vagrant/"><i class="icon-tag"></i>Vagrant (15)</a></li>
+        <li><a href="https://girigiribauer.com/tags/viewport/"><i class="icon-tag"></i>viewport (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vim/"><i class="icon-tag"></i>Vim (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vimrc/"><i class="icon-tag"></i>vimrc (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualbox/"><i class="icon-tag"></i>VirtualBox (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualization/"><i class="icon-tag"></i>virtualization (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vscode/"><i class="icon-tag"></i>VSCode (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webapp/"><i class="icon-tag"></i>WebApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webaudioapi/"><i class="icon-tag"></i>WebAudioAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webfont/"><i class="icon-tag"></i>WebFont (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webgl/"><i class="icon-tag"></i>WebGL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webrtc/"><i class="icon-tag"></i>WebRTC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webserver/"><i class="icon-tag"></i>WebServer (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/wget/"><i class="icon-tag"></i>wget (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/yeoman/"><i class="icon-tag"></i>Yeoman (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/zsh/"><i class="icon-tag"></i>Zsh (3)</a></li>
+      </ul>
+
+      <h2>Categories</h2>
+      <ul class="tags">
+        <li><a href="/tech/"><i class="icon-book"></i>tech (102)</a></li>
+        <li><a href="/misc/"><i class="icon-book"></i>misc (26)</a></li>
+        <li><a href="/biz/"><i class="icon-book"></i>biz (42)</a></li>
+        <li><a href="/journey/"><i class="icon-book"></i>journey (0)</a></li>
+        <li><a href="https://curry.girigiribauer.com" target="_blank" rel="noreferer"><i
+              class="icon-book"></i>カレー（駄文）</a></li>
+      </ul>
+
+      <h2>RSS</h2>
+      <ul class="tags"><li><a href="https://girigiribauer.com/tech/index.xml"><i class="icon-rss"></i>tech</a></li><li><a href="https://girigiribauer.com/misc/index.xml"><i class="icon-rss"></i>misc</a></li><li><a href="https://girigiribauer.com/biz/index.xml"><i class="icon-rss"></i>biz</a></li>
+        <li><a href="/index.xml"><i class="icon-rss"></i>All Articles</a></li>
+      </ul>
+
+      <hr>
+
+      <ul>
+        <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+        <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+        <li>このサイトでは cookie および <a href="https://www.google.com/intl/ja/policies/privacy/partners/"
+            target="_blank">Google Analytics を利用しています</a></li>
+      </ul>
+      <p class="copyright">&copy; ばうあーろぐ</p>
+    </footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </div>
+</body>
+
+</html>

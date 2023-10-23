@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Scala on ばうあーろぐ</title>
+    <link>https://girigiribauer.com/tags/scala/</link>
+    <description>Recent content in Scala on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Mon, 14 Jan 2013 07:17:05 +0000</lastBuildDate><atom:link href="https://girigiribauer.com/tags/scala/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ScalaでFizzBuzz（Scalaことはじめ）</title>
+      <link>https://girigiribauer.com/tech/20130114_2/</link>
+      <pubDate>Mon, 14 Jan 2013 07:17:05 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20130114_2/</guid>
+      <description>（ことはじめ、って書いておいたらたぶん叩かれることはないだろうと思って・・・） ScalaでFizzBuzz書いてみる まだまだScalaは書き</description>
+    </item>
+    
+    <item>
+      <title>関数脳の考え方の重要性（なごやかScala勉強会に参加してみた）</title>
+      <link>https://girigiribauer.com/tech/20120916/</link>
+      <pubDate>Sun, 16 Sep 2012 09:14:15 +0000</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20120916/</guid>
+      <description>そもそもScalaとは何か？ まだまだ素人レベルなので、あんまり下手なことを言うとここちがうよーと言われてしまうのでちゃんとしたことは言えない</description>
+    </item>
+    
+  </channel>
+</rss>

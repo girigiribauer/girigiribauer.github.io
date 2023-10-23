@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Twitter と Bluesky にマルチポストできるツールを作ってみた - ばうあーろぐ</title>
+  <meta name="description" content="SNS の檻から逃れて自由に飛ぶためのツールを拡張機能で作ってみましたというお話">
+  <meta itemprop="name" content="Twitter と Bluesky にマルチポストできるツールを作ってみた">
+<meta itemprop="description" content="SNS の檻から逃れて自由に飛ぶためのツールを拡張機能で作ってみましたというお話"><meta itemprop="datePublished" content="2023-10-24T08:00:00+09:00" />
+<meta itemprop="dateModified" content="2023-10-24T08:00:00+09:00" />
+<meta itemprop="wordCount" content="2273"><meta itemprop="image" content="https://girigiribauer.com/tech/20231024/feature.jpg">
+<meta itemprop="keywords" content="BrowserExtension,plasmo,FlyFree,SNS," />
+  <meta property="og:title" content="Twitter と Bluesky にマルチポストできるツールを作ってみた" />
+<meta property="og:description" content="SNS の檻から逃れて自由に飛ぶためのツールを拡張機能で作ってみましたというお話" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://girigiribauer.com/tech/20231024/" /><meta property="og:image" content="https://girigiribauer.com/tech/20231024/feature.jpg"/><meta property="article:section" content="tech" />
+<meta property="article:published_time" content="2023-10-24T08:00:00+09:00" />
+<meta property="article:modified_time" content="2023-10-24T08:00:00+09:00" />
+
+
+  <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://girigiribauer.com/tech/20231024/feature.jpg"/>
+<meta name="twitter:title" content="Twitter と Bluesky にマルチポストできるツールを作ってみた"/>
+<meta name="twitter:description" content="SNS の檻から逃れて自由に飛ぶためのツールを拡張機能で作ってみましたというお話"/>
+
+  <link rel="stylesheet" href="/css/style.css" type="text/css" media="all">
+  <meta name="theme-color" content="#d9d9d0">
+  <meta name="generator" content="Hugo 0.91.2" />
+</head>
+
+<body class="theme-tech">
+  <div class="container">
+    <header class="globalheader"><a href="/" title="TOP へ戻る">TOP</a></header>
+
+    <main class="maincontents" role="main">
+      
+<h1 class="heading">Twitter と Bluesky にマルチポストできるツールを作ってみた</h1>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2023-10-24 08:00:00">2023/10/24</time>
+</p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/browserextension/"><i class="icon-tag"></i>BrowserExtension</a></li>
+    <li><a href="/tags/plasmo/"><i class="icon-tag"></i>plasmo</a></li>
+    <li><a href="/tags/flyfree/"><i class="icon-tag"></i>FlyFree</a></li>
+    <li><a href="/tags/sns/"><i class="icon-tag"></i>SNS</a></li>
+  </ul>
+</div>
+
+<div class="article">
+  <p>超お久しぶりです！</p>
+<p>お久しぶりとか言ってるうちに <strong>Twitter が無くなってしまいましたね。わお！ 🤗</strong></p>
+<p>SNS に関連したツールを作ってみたので、今日はその紹介記事です！</p>
+<h2 id="ねんがんの-bluesky-アカウントをてにいれたぞ">ねんがんの Bluesky アカウントをてにいれたぞ</h2>
+<p>2023 年の 3 月か 4 月ごろだったでしょうか。</p>
+<p>ようやく <strong>Bluesky のアカウント</strong> を手に入れました！わーい 🙌</p>
+<p>さてどうやって活用しようかと考えていたのですが、とりあえず <strong>両方に投稿</strong> してみて、色々考えてみようという考えに至りました。</p>
+<ul>
+<li>同じ投稿を <strong>Twitter と Bluesky</strong> に投稿</li>
+<li>画像付きの投稿も極力同じように投げる</li>
+<li>一旦手動でやってみる</li>
+</ul>
+<p>両方に同じ内容を投稿して、全く違和感なく Bluesky の方が使えるのなら、もはや Bluesky で良いわけです。</p>
+<h3 id="同時投稿をしてからの気づき">同時投稿をしてからの気づき</h3>
+<p>気付いたことを書き出してみます。</p>
+<ul>
+<li><strong>同時投稿はめんどい</strong>
+<ul>
+<li>超めんどい 🥺</li>
+</ul>
+</li>
+<li>僕が同時投稿したいときは、大まかに 2 通り
+<ul>
+<li>仕事をしながら仕事に関連した調べごとを流すとき</li>
+<li>外に出ているときに思ったことや見たものを流すとき</li>
+</ul>
+</li>
+</ul>
+<h4 id="仕事をしながら仕事に関連した調べごとを流すとき">仕事をしながら仕事に関連した調べごとを流すとき</h4>
+<ul>
+<li>よく使う技術だったり、調べてみて意外と知らなかったこととか</li>
+<li>大部分が PC からの投稿</li>
+<li>URL を含むのでリンクカード、たまに画像のシェア</li>
+</ul>
+<h4 id="外に出ているときに思ったことや見たものを流すとき">外に出ているときに思ったことや見たものを流すとき</h4>
+<ul>
+<li>大部分がスマートフォンからの投稿</li>
+<li>画像とテキストが中心</li>
+</ul>
+<h4 id="いずれにしても同時投稿はめんどい">いずれにしても同時投稿はめんどい</h4>
+<p><strong>同じ情報を複数の SNS に流すのはとにかくめんどいです 🥺</strong></p>
+<p>そして 7 月ごろになり、本格的に <strong>Twitter が壊れ始めた</strong> のをみて、</p>
+<blockquote>
+<p>なぜわざわざ手間をかけてまで Twitter にも投げているのだろう？</p>
+<p>もはや Bluesky だけでいいのでは・・・？</p>
+</blockquote>
+<p>と思うようになり、それから Twitter における本格的な投稿はやめてしまったのでした。</p>
+<p>（実はこのタイミングで今の原形的なツールは作ってたんですが、 Twitter を見に行かなくなってしまい、同時投稿のツールを作る理由も無くなって少し放置気味になっていたのは別の話）</p>
+<h2 id="sns-の檻に閉じ込められる">SNS の檻に閉じ込められる</h2>
+<p>同時投稿を試してる間に、同じように Bluesky と Twitter の両方を活用してる人を何人か見かけたのですが、大半の人は Twitter に再び戻ってしまい、 Bluesky を <strong>休眠アカウントのように保持しているだけ</strong> 、という状態になってしまっていました。</p>
+<p>まあ、誰がどの SNS にどれだけ投稿するか？なんて、それこそ <strong>その人の自由</strong> なので、僕を含む <strong>外野がとやかく言うことではない</strong> のですが、それにしても <strong>人はなぜ Twitter から逃れられないのでしょうか？</strong></p>
+<p>その頃から少しまじめに考え始めました。</p>
+<h3 id="twitter-に戻ってしまう理由">Twitter に戻ってしまう理由</h3>
+<ul>
+<li>あの人の投稿は Twitter でしか見られないから</li>
+<li>Bluesky の知り合いを見ても、アカウントはあるのに投稿してないから</li>
+<li>投稿に対する反応が気になりすぎてやめられない</li>
+</ul>
+<p>こんなところでしょうか？</p>
+<p>そう！まさしく <a href="https://girigiribauer.com/biz/20200130/#%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%BC%E3%81%AF%E6%A6%82%E3%81%AD%E5%AE%8C%E5%85%A8%E7%8B%AC%E5%8D%A0%E3%81%AB%E8%BF%91%E3%81%84">ネットワーク効果</a> ！なんて恐ろしい子・・・！</p>
+<h2 id="ネットワーク効果から抜け出すには">ネットワーク効果から抜け出すには？</h2>
+<p>Bluesky でよくアカウント数が議論にされるんですけど、重要なのは <strong>アカウント数よりも投稿数・投稿量</strong> だと思うんですよね。
+SNS における <strong>存在というのは投稿と同義</strong> であり、投稿していなければ存在していないのと等しいわけです。</p>
+<p>つまり、アカウントはあるけど、投稿してないから存在してないのと同じ、存在してないから見に行かないわけです。</p>
+<p>道理ですね 🤔</p>
+<p>ではネットワーク効果から抜け出すにはどうすれば良いのでしょうか？とある 1 つの <strong>巨大 SNS のネットワーク効果を打破するには、別のネットワークを強化すれば良い</strong> のです 🤗</p>
+<p>そう、パン 🍞 が無ければケーキ 🍰 を食べればいいじゃない！ 😋</p>
+<p>せめて PC 使ってるときに、 <strong>仕事をしながら仕事に関連した調べごとを Bluesky にもコストゼロで流すことができれば</strong> 、もっと Bluesky においてもその人の存在が認識され、 Bluesky が活用されやすくなるのかもしれないと、そう考えました。</p>
+<h3 id="sns-の檻から逃れる方法">SNS の檻から逃れる方法</h3>
+<p>上記で触れたネットワーク効果、つまりは SNS の檻から逃れる方法を画像 1 枚でまとめると以下です。</p>
+<p><img src="feature.jpg" alt="Step 1 You can multipost on Twitter with Bluesky at no cost. / Step 2 Start increasing Bluesky posts&hellip;! / Step 3 Switch your timeline from Twitter to Bluesky! / Step 4 Fly Free!"></p>
+<ol>
+<li>いつも Twitter に投稿しているように Bluesky にも <strong>ついでにノーコストで投稿</strong> できるようにする
+<ul>
+<li><strong>ノーコスト</strong> ってところが超大事</li>
+<li>PC だけで割り切って作る（≒ 拡張機能）</li>
+</ul>
+</li>
+<li>使うと Bluesky の投稿数が増え始める
+<ul>
+<li><strong>投稿は存在と同義</strong> なので、実際に Bluesky にいる人が増えるように見える</li>
+<li>休眠アカウントが息を吹き返し始める</li>
+</ul>
+</li>
+<li>そのうち <strong>Bluesky の方がメインでも良くね？</strong> となる
+<ul>
+<li>同じ情報が Twitter と Bluesky に流れてるのなら、どっち見てもいいじゃん</li>
+<li>もう Twitter 見たくないニャン・・・ 🐱</li>
+<li>SNS ごとに蛇口をつけて流量をコントロールするイメージ</li>
+</ul>
+</li>
+<li>SNS の檻から逃れて <strong>自由に空を飛べる</strong> ようになる 🪶 🪶
+<ul>
+<li>Twitter に軸足を置き続けてもいいし、 Bluesky に軸足移しても良し</li>
+</ul>
+</li>
+</ol>
+<p>という思想を元に作られたツールなので、 <strong>FlyFree</strong> という名前にしました。</p>
+<p><img src="resource01.png" alt="スクリーンショット1"></p>
+<p>こんな感じで（僕の場合は） Twitter に一時停止させつつ、 Bluesky にだけ投稿してます。</p>
+<p><img src="resource02.png" alt="スクリーンショット2"></p>
+<p>両方に投稿するとこんな感じにそれぞれの投稿結果（Success / Error）が表示されます。</p>
+<hr>
+<p>ということで、ぜひとも使ってみてください！ <strong>感想お待ちしてます！</strong></p>
+<ul>
+<li><a href="https://chrome.google.com/webstore/detail/flyfree/mjlfkhenobdjdonefhdbpigopndgeogm">https://chrome.google.com/webstore/detail/flyfree/mjlfkhenobdjdonefhdbpigopndgeogm</a></li>
+<li><a href="https://github.com/girigiribauer/fly-free">https://github.com/girigiribauer/fly-free</a></li>
+</ul>
+<p>あっ感想は Twitter の方じゃなく Bluesky の方でお願いしますね 🙏</p>
+<p><a href="https://bsky.app/profile/girigiribauer.bsky.social">https://bsky.app/profile/girigiribauer.bsky.social</a> （もう Twitter の方見たくないニャン 🐱 ）</p>
+<h2 id="おまけ">おまけ</h2>
+<p>作りがいろいろ雑でごめんなさい。というか拡張機能周りがまだよく分かってません。 🥺</p>
+<ul>
+<li>エラーハンドリングが雑</li>
+<li>DOM 周りの処理が雑</li>
+<li>テストが少ない</li>
+<li>plasmo （拡張のフレームワーク）は便利な反面、クセがある</li>
+<li>拡張 (Chrome Web Store) の公開フローがいまいちよく分かってない
+<ul>
+<li>リジェクト疲れた 🥺</li>
+<li>これってリポジトリをそのまま公開とか無理なんだっけ・・・？</li>
+<li>毎回 zip で渡すのめんどいのだが？ CI/CD は？</li>
+</ul>
+</li>
+<li>タイッツーも対応していきたい
+<ul>
+<li>API が足りない 🥺</li>
+</ul>
+</li>
+</ul>
+<p><strong>少しずつアップデート</strong> かけていくつもりではいるので、長い目で見てもらえればと思います。（気が向いたらお手伝いもしてくれたら嬉しいです）</p>
+<p>このツールの実装面については、長くなっちゃうのでまた改めて書きたいと思います！</p>
+
+</div>
+<ul class="socialbuttons">
+  <li>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-lang="ja" data-count="vertical">Tweet</a>
+    <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = "https://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
+  </li>
+  <li>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard-balloon" data-hatena-bookmark-lang="en" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+  </li>
+</ul>
+<div class="poststatus">
+  <p class="time">
+<time datetime="2023-10-24 08:00:00">2023/10/24</time>
+</p>
+
+  <ul class="tags">
+    <li class="section"><a href="/tech/"><i class="icon-book"></i>tech</a></li>
+    <li><a href="/tags/browserextension/"><i class="icon-tag"></i>BrowserExtension</a></li>
+    <li><a href="/tags/plasmo/"><i class="icon-tag"></i>plasmo</a></li>
+    <li><a href="/tags/flyfree/"><i class="icon-tag"></i>FlyFree</a></li>
+    <li><a href="/tags/sns/"><i class="icon-tag"></i>SNS</a></li>
+  </ul>
+</div>
+
+<small>もし記事内に誤りなどございましたら、 <del><a href="https://twitter.com/girigiribauer" target="_blank">@girigiribauer</a></del> <a href="https://bsky.app/profile/girigiribauer.bsky.social" target="_blank">@girigiribauer.bsky.social</a> までご一報いただけると助かります。</small>
+
+
+
+    </main>
+
+    <footer class="globalfooter">
+      <h2>Tags</h2>
+      <ul class="tags">
+        <li><a href="https://girigiribauer.com/tags/ajax/"><i class="icon-tag"></i>ajax (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/angular/"><i class="icon-tag"></i>Angular (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ansible/"><i class="icon-tag"></i>Ansible (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/anyenv/"><i class="icon-tag"></i>anyenv (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apache/"><i class="icon-tag"></i>Apache (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/api/"><i class="icon-tag"></i>API (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/apps/"><i class="icon-tag"></i>Apps (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/auth/"><i class="icon-tag"></i>auth (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/automation/"><i class="icon-tag"></i>automation (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bot/"><i class="icon-tag"></i>bot (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/browserextension/"><i class="icon-tag"></i>BrowserExtension (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/bugs/"><i class="icon-tag"></i>bugs (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/canvas/"><i class="icon-tag"></i>Canvas (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/capacitor/"><i class="icon-tag"></i>Capacitor (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/chef/"><i class="icon-tag"></i>Chef (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cli/"><i class="icon-tag"></i>CLI (13)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cordova/"><i class="icon-tag"></i>Cordova (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/crawler/"><i class="icon-tag"></i>Crawler (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css/"><i class="icon-tag"></i>CSS (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/css3/"><i class="icon-tag"></i>CSS3 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/cssfilter/"><i class="icon-tag"></i>CSSfilter (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/database/"><i class="icon-tag"></i>Database (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/docker/"><i class="icon-tag"></i>Docker (10)</a></li>
+        <li><a href="https://girigiribauer.com/tags/dom/"><i class="icon-tag"></i>DOM (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ecmascript/"><i class="icon-tag"></i>ECMAScript (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/electron/"><i class="icon-tag"></i>Electron (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/english/"><i class="icon-tag"></i>English (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/event-conference/"><i class="icon-tag"></i>event-conference (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fab/"><i class="icon-tag"></i>Fab (9)</a></li>
+        <li><a href="https://girigiribauer.com/tags/firebase/"><i class="icon-tag"></i>Firebase (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fish/"><i class="icon-tag"></i>fish (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/flyfree/"><i class="icon-tag"></i>FlyFree (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/font/"><i class="icon-tag"></i>Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ftp/"><i class="icon-tag"></i>FTP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/functionallanguage/"><i class="icon-tag"></i>FunctionalLanguage (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/fusion360/"><i class="icon-tag"></i>Fusion360 (8)</a></li>
+        <li><a href="https://girigiribauer.com/tags/getusermedia/"><i class="icon-tag"></i>getUserMedia (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/git/"><i class="icon-tag"></i>Git (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/gitconfig/"><i class="icon-tag"></i>gitconfig (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/glsl/"><i class="icon-tag"></i>GLSL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/golang/"><i class="icon-tag"></i>Golang (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/googleappengine/"><i class="icon-tag"></i>GoogleAppEngine (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/homebrew/"><i class="icon-tag"></i>Homebrew (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html/"><i class="icon-tag"></i>HTML (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5/"><i class="icon-tag"></i>HTML5 (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/html5-outline/"><i class="icon-tag"></i>HTML5-outline (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/https/"><i class="icon-tag"></i>HTTPS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/hugo/"><i class="icon-tag"></i>Hugo (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/icon-font/"><i class="icon-tag"></i>Icon-Font (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/install/"><i class="icon-tag"></i>Install (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ionic/"><i class="icon-tag"></i>ionic (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ios/"><i class="icon-tag"></i>iOS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/iterm/"><i class="icon-tag"></i>iTerm (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/javascript/"><i class="icon-tag"></i>JavaScript (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jinja2/"><i class="icon-tag"></i>jinja2 (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jq/"><i class="icon-tag"></i>jq (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jquery/"><i class="icon-tag"></i>jQuery (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/jsperf/"><i class="icon-tag"></i>jsperf (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/lint/"><i class="icon-tag"></i>lint (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/linux/"><i class="icon-tag"></i>Linux (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mediaquery/"><i class="icon-tag"></i>mediaQuery (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mongodb/"><i class="icon-tag"></i>MongoDB (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mvc/"><i class="icon-tag"></i>MVC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/mysql/"><i class="icon-tag"></i>MySQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/namespace/"><i class="icon-tag"></i>namespace (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/naming/"><i class="icon-tag"></i>naming (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/nativeapp/"><i class="icon-tag"></i>NativeApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/oldie/"><i class="icon-tag"></i>oldIE (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/openapi/"><i class="icon-tag"></i>OpenAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/opengraph/"><i class="icon-tag"></i>OpenGraph (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/output/"><i class="icon-tag"></i>output (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/php/"><i class="icon-tag"></i>PHP (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/plasmo/"><i class="icon-tag"></i>plasmo (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/polyfills/"><i class="icon-tag"></i>polyfills (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/postgresql/"><i class="icon-tag"></i>PostgreSQL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/preloader/"><i class="icon-tag"></i>preloader (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/python/"><i class="icon-tag"></i>Python (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rdfa/"><i class="icon-tag"></i>RDFa (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/rsync/"><i class="icon-tag"></i>rsync (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/scala/"><i class="icon-tag"></i>Scala (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/setup/"><i class="icon-tag"></i>Setup (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/shellscript/"><i class="icon-tag"></i>ShellScript (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/slack/"><i class="icon-tag"></i>slack (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/smartphone/"><i class="icon-tag"></i>Smartphone (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/sns/"><i class="icon-tag"></i>SNS (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/ssh/"><i class="icon-tag"></i>SSH (4)</a></li>
+        <li><a href="https://girigiribauer.com/tags/static-site-generator/"><i class="icon-tag"></i>Static Site Generator (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/study/"><i class="icon-tag"></i>study (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/svg/"><i class="icon-tag"></i>SVG (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/tmux/"><i class="icon-tag"></i>tmux (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vagrant/"><i class="icon-tag"></i>Vagrant (15)</a></li>
+        <li><a href="https://girigiribauer.com/tags/viewport/"><i class="icon-tag"></i>viewport (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vim/"><i class="icon-tag"></i>Vim (5)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vimrc/"><i class="icon-tag"></i>vimrc (2)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualbox/"><i class="icon-tag"></i>VirtualBox (3)</a></li>
+        <li><a href="https://girigiribauer.com/tags/virtualization/"><i class="icon-tag"></i>virtualization (7)</a></li>
+        <li><a href="https://girigiribauer.com/tags/vscode/"><i class="icon-tag"></i>VSCode (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webapp/"><i class="icon-tag"></i>WebApp (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webaudioapi/"><i class="icon-tag"></i>WebAudioAPI (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webfont/"><i class="icon-tag"></i>WebFont (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webgl/"><i class="icon-tag"></i>WebGL (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webrtc/"><i class="icon-tag"></i>WebRTC (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/webserver/"><i class="icon-tag"></i>WebServer (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/wget/"><i class="icon-tag"></i>wget (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/yeoman/"><i class="icon-tag"></i>Yeoman (1)</a></li>
+        <li><a href="https://girigiribauer.com/tags/zsh/"><i class="icon-tag"></i>Zsh (3)</a></li>
+      </ul>
+
+      <h2>Categories</h2>
+      <ul class="tags">
+        <li><a href="/tech/"><i class="icon-book"></i>tech (102)</a></li>
+        <li><a href="/misc/"><i class="icon-book"></i>misc (26)</a></li>
+        <li><a href="/biz/"><i class="icon-book"></i>biz (42)</a></li>
+        <li><a href="/journey/"><i class="icon-book"></i>journey (0)</a></li>
+        <li><a href="https://curry.girigiribauer.com" target="_blank" rel="noreferer"><i
+              class="icon-book"></i>カレー（駄文）</a></li>
+      </ul>
+
+      <h2>RSS</h2>
+      <ul class="tags"><li><a href="https://girigiribauer.com/tech/index.xml"><i class="icon-rss"></i>tech</a></li><li><a href="https://girigiribauer.com/misc/index.xml"><i class="icon-rss"></i>misc</a></li><li><a href="https://girigiribauer.com/biz/index.xml"><i class="icon-rss"></i>biz</a></li>
+        <li><a href="/index.xml"><i class="icon-rss"></i>All Articles</a></li>
+      </ul>
+
+      <hr>
+
+      <ul>
+        <li>このブログは個人の見解であり、所属する組織、団体等の公式見解ではありません</li>
+        <li>自分がひっかかった技術的なことをメモってインターネット上に解き放ち、忘れた頃に自分含む誰かがググったときの助けになれば、というポリシーでブログを書いています</li>
+        <li>このサイトでは cookie および <a href="https://www.google.com/intl/ja/policies/privacy/partners/"
+            target="_blank">Google Analytics を利用しています</a></li>
+      </ul>
+      <p class="copyright">&copy; ばうあーろぐ</p>
+    </footer>
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-36767095-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+  </div>
+</body>
+
+</html>
