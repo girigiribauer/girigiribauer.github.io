@@ -4,7 +4,7 @@ description = "テザリングをオフって有線で繋いでおけば大丈�
 date = "2023-11-26T13:00:00+0900"
 # lastmod = "2023-11-26T13:00:00+0900"
 draft = false
-tags = ["BrowserExtension", "plasmo", "FlyFree", "SNS", "plasmo"]
+tags = ["Xcode"]
 +++
 
 もはやタイトルと説明文の通りなんですが、いつからか分からないものの、テザリングをオンにしながら Xcode を立ち上げると、実機が認識されません。
