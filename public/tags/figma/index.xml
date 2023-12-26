@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>figma on ばうあーろぐ</title>
+    <link>https://girigiribauer.com/tags/figma/</link>
+    <description>Recent content in figma on ばうあーろぐ</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Tue, 26 Dec 2023 09:00:00 +0900</lastBuildDate><atom:link href="https://girigiribauer.com/tags/figma/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>figma でフォントサイズやエフェクトがリサイズ対応出来なかったのが悩みだった</title>
+      <link>https://girigiribauer.com/tech/20231226/</link>
+      <pubDate>Tue, 26 Dec 2023 09:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20231226/</guid>
+      <description>単に僕が今までその機能を知らずにずっと困っていて、つい最近それに気づいて 全てが解決した というだけの話です。 figma design は便利 最近はとても仲良くできて</description>
+    </item>
+    
+  </channel>
+</rss>

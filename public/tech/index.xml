@@ -6,7 +6,43 @@
     <description>Recent content in tech on ばうあーろぐ</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Tue, 24 Oct 2023 08:00:00 +0900</lastBuildDate><atom:link href="https://girigiribauer.com/tech/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 26 Dec 2023 09:00:00 +0900</lastBuildDate><atom:link href="https://girigiribauer.com/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>figma でフォントサイズやエフェクトがリサイズ対応出来なかったのが悩みだった</title>
+      <link>https://girigiribauer.com/tech/20231226/</link>
+      <pubDate>Tue, 26 Dec 2023 09:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20231226/</guid>
+      <description>単に僕が今までその機能を知らずにずっと困っていて、つい最近それに気づいて 全てが解決した というだけの話です。 figma design は便利 最近はとても仲良くできて</description>
+    </item>
+    
+    <item>
+      <title>SNS を段階的に移行しよう！</title>
+      <link>https://girigiribauer.com/tech/20231206/</link>
+      <pubDate>Wed, 06 Dec 2023 08:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20231206/</guid>
+      <description>Bluesky Advent Calendar 2023 の 6 日目の記事です。 Bluesky 界隈には、元々知り合いはそんなに多くない中移動してきたので、 そんな中ちょいちょい絡んでくれるみなさん！ありがと</description>
+    </item>
+    
+    <item>
+      <title>メモ: テザリングしながら iOS で実機ビルドはできなかった</title>
+      <link>https://girigiribauer.com/tech/20231126/</link>
+      <pubDate>Sun, 26 Nov 2023 13:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20231126/</guid>
+      <description>もはやタイトルと説明文の通りなんですが、いつからか分からないものの、テザリングをオンにしながら Xcode を立ち上げると、実機が認識されません。 テザリ</description>
+    </item>
+    
+    <item>
+      <title>Twitter API を使わずに Twitter と Bluesky に投稿する裏技</title>
+      <link>https://girigiribauer.com/tech/20231030/</link>
+      <pubDate>Mon, 30 Oct 2023 08:00:00 +0900</pubDate>
+      
+      <guid>https://girigiribauer.com/tech/20231030/</guid>
+      <description>Twitter が来年出会い系サービス になっちゃうらしいですね。 わおわお 🤗 前回 は FlyFree というツールの紹介の話しかできなかったので、今回はその続きの発想と実装の</description>
+    </item>
+    
     <item>
       <title>Twitter と Bluesky にマルチポストできるツールを作ってみた</title>
       <link>https://girigiribauer.com/tech/20231024/</link>
