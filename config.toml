@@ -10,6 +10,7 @@ pluralizelisttitles = false
 googleAnalytics = "UA-36767095-1"
 disableKinds = ["taxonomyTerm"]
 enableEmoji = true
+enableRobotsTXT = false
 
 [taxonomies]
 tag = "tags"

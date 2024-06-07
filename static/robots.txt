@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /tags/
+Sitemap: https://girigiribauer.com/sitemap.xml
