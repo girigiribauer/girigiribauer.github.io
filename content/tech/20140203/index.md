@@ -2,7 +2,7 @@
 title: jQuery から卒業するための第1歩を polyfills から学ぼう – その2
 author: girigiribauer
 date: 2014-02-02T15:00:10+00:00
-lastmod: 2017-09-12T15:00:00+09:00
+lastmod: 2024-06-29T19:00:00+09:00
 categories:
   - tech
 tags:
@@ -12,13 +12,14 @@ tags:
   - jsperf
   - polyfills
 aliases:
-  - '/archives/1254'
+  - "/archives/1254"
 ---
-前回からの続きです。 [jQuery から卒業するための第1歩を polyfills から学ぼう](/tech/20140131/)
+
+（2024 年追記）古い記事なので誰も見てないと思いますが、現在 polyfills を使うのは危険なのでやめましょう。もはや機能が足りなくて困るケースはないようなので、使う意味もないかと思います。 https://www.itmedia.co.jp/enterprise/articles/2406/29/news057.html （追記終わり）
+
+前回からの続きです。 [jQuery から卒業するための第 1 歩を polyfills から学ぼう](/tech/20140131/)
 
 https://github.com/inexorabletash/polyfill にある web.js をソースコードリーディングしています。 また、es5.js は予め読み込まれている前提となります。
-
-
 
 ## XMLHttpRequest（XHR）
 
@@ -32,8 +33,8 @@ http://ja.wikipedia.org/wiki/XMLHttpRequest
 $.ajax({
   type: "POST",
   url: "some.php",
-  data: { name: "John", location: "Boston" }
-})
+  data: { name: "John", location: "Boston" },
+});
 ```
 
 http://api.jquery.com/jQuery.ajax/ の Examples からの引用です。
@@ -42,19 +43,27 @@ http://api.jquery.com/jQuery.ajax/ の Examples からの引用です。
 
 `window.XMLHttpRequest` は、IE7 から使えるのですが、IE6 以前では使えはするものの、同じ記述ではできません。
 
-23〜37行目を抜粋します。
+23〜37 行目を抜粋します。
 
 ```javascript
 //
 // XMLHttpRequest (http://www.w3.org/TR/XMLHttpRequest/)
 //
-window.XMLHttpRequest = window.XMLHttpRequest || function () {
-  /*global ActiveXObject*/
-  try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); } catch (e1) { }
-  try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); } catch (e2) { }
-  try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch (e3) { }
-  throw Error("This browser does not support XMLHttpRequest.");
-};
+window.XMLHttpRequest =
+  window.XMLHttpRequest ||
+  function () {
+    /*global ActiveXObject*/
+    try {
+      return new ActiveXObject("Msxml2.XMLHTTP.6.0");
+    } catch (e1) {}
+    try {
+      return new ActiveXObject("Msxml2.XMLHTTP.3.0");
+    } catch (e2) {}
+    try {
+      return new ActiveXObject("Msxml2.XMLHTTP");
+    } catch (e3) {}
+    throw Error("This browser does not support XMLHttpRequest.");
+  };
 XMLHttpRequest.UNSENT = 0;
 XMLHttpRequest.OPENED = 1;
 XMLHttpRequest.HEADERS_RECEIVED = 2;
@@ -78,10 +87,10 @@ http://ja.wikipedia.org/wiki/XMLHttpRequest#.E5.88.A9.E7.94.A8.E6.B3.95
 
 上記のパワーアップ版です。
 
-先に42行目、73行目を抜粋します。
+先に 42 行目、73 行目を抜粋します。
 
 ```javascript
-if (!('FormData' in window)) {
+if (!("FormData" in window)) {
 }
 ```
 
@@ -126,7 +135,7 @@ function sendForm() {
 さっきの抜粋だと、
 
 ```javascript
-if (!('FormData' in window)) {
+if (!("FormData" in window)) {
 }
 ```
 
@@ -134,7 +143,7 @@ FormData オブジェクトがあるかどうかチェックしているため�
 
 ### 即時関数と jsperf
 
-さらにもう内側、43行目、72行目
+さらにもう内側、43 行目、72 行目
 
 ```javascript
 (function(global) {
@@ -156,7 +165,7 @@ http://jsperf.com/writing-to-global-objects
 
 IE8 にて動作させた結果のキャプチャです。
 
-そのまま global として扱った場合と、一度即時関数内でローカル変数として扱った場合とでは、**IE8 にて約5%のパフォーマンスの差異**が出るようです。（もちろんブラウザによって異なります）
+そのまま global として扱った場合と、一度即時関数内でローカル変数として扱った場合とでは、**IE8 にて約 5%のパフォーマンスの差異**が出るようです。（もちろんブラウザによって異なります）
 
 なので、こういった頻繁に window オブジェクトにアクセスするようなものは、 予め即時関数でラッピングしてどうこうする、みたいに書かれることが多いですね。勉強になります。
 
@@ -164,7 +173,7 @@ IE8 にて動作させた結果のキャプチャです。
 
 大分寄り道しましたが、中身を読んでいきます。 とはいえ、全部紹介してたらきりがないので、ポイントだけ抜粋します。
 
-44〜49行目の抜粋です。
+44〜49 行目の抜粋です。
 
 ```javascript
 function FormData(form) {
@@ -177,11 +186,12 @@ function FormData(form) {
 
 new するための FormData オブジェクトを用意しています。 そもそもの FormData オブジェクトの使い方として、引数に HTMLFormElement を取ることが出来るので、引数が無ければそのまま return、あれば append を呼ぶ、となってます。
 
-続いて51〜55行目です。
+続いて 51〜55 行目です。
 
 ```javascript
-FormData.prototype.append = function(name, value /*, filename */) {
-  if ('Blob' in global && value instanceof global.Blob) throw TypeError("Blob not supported");
+FormData.prototype.append = function (name, value /*, filename */) {
+  if ("Blob" in global && value instanceof global.Blob)
+    throw TypeError("Blob not supported");
   name = String(name);
   this._data.push([name, value]);
 };
@@ -189,7 +199,7 @@ FormData.prototype.append = function(name, value /*, filename */) {
 
 後追いでフォームの名前と値を追加できるメソッドを用意しています。XHR2 になって、Blob データも送ることが出来るようになったので、Blob 関連の記述もあります。
 
-63行目です。
+63 行目です。
 
 ```javascript
 global.FormData = FormData;
@@ -197,13 +207,13 @@ global.FormData = FormData;
 
 global のプロパティに紐付けてやることで、即時関数内で定義したものを外からも呼べるようになります。
 
-最後に64〜71行目の抜粋です。
+最後に 64〜71 行目の抜粋です。
 
 ```javascript
 var send = global.XMLHttpRequest.prototype.send;
-global.XMLHttpRequest.prototype.send = function(body) {
+global.XMLHttpRequest.prototype.send = function (body) {
   if (body instanceof FormData) {
-    this.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    this.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     arguments[0] = body.toString();
   }
   return send.apply(this, arguments);
@@ -218,13 +228,11 @@ global.XMLHttpRequest.prototype.send = function(body) {
 
 ・・・とこんな感じで XHR, XHR2 と通信周りを順に読んでみましたが、polyfills を追っていくだけでも色々と勉強になりますね。 いやぁ、けっこう長くなりました。
 
-
-
 ## requestAnimationFrame
 
 お次は requestAnimationFrame です。
 
-HTMLベースのアニメーションは、ほとんどパラパラアニメの仕組みと同じで、 フレームごとに再描画して動いているわけですが、 長らく setTimeout, setInterval などのタイマーを用いてそれが行われていました。
+HTML ベースのアニメーションは、ほとんどパラパラアニメの仕組みと同じで、 フレームごとに再描画して動いているわけですが、 長らく setTimeout, setInterval などのタイマーを用いてそれが行われていました。
 
 これはもう名前のごとく、アニメーションフレームをリクエストするためのメソッドですね。
 
@@ -234,7 +242,7 @@ https://developer.mozilla.org/ja/docs/Web/API/window.requestAnimationFrame
 
 これも元々 setTimeout, setInterval があるので、polyfills として問題なく提供できるはずですね。
 
-流れは XHR とほとんど同じで、即時関数にラッピングして最後に global に紐付けする形です。 requestAnimationFrame が global に紐付けされる前までに、即時関数内だけで使われている処理、94行目から106行目を抜粋します。
+流れは XHR とほとんど同じで、即時関数にラッピングして最後に global に紐付けする形です。 requestAnimationFrame が global に紐付けされる前までに、即時関数内だけで使われている処理、94 行目から 106 行目を抜粋します。
 
 ```javascript
 function onFrameTimer() {
@@ -243,7 +251,7 @@ function onFrameTimer() {
   requests = Object.create(null);
   timeout_handle = -1;
 
-  Object.keys(cur_requests).forEach(function(id) {
+  Object.keys(cur_requests).forEach(function (id) {
     var request = cur_requests[id];
     if (!request.element || isVisible(request.element)) {
       request.callback(Date.now());
@@ -278,7 +286,7 @@ a === b; // => ?
 ```javascript
 var a = {};
 var b = {};
-a === b // => ?
+a === b; // => ?
 ```
 
 そもそもこれでも **false** になりますね。
@@ -296,7 +304,7 @@ a === b // => ?
 ```javascript
 var a = Object.create(null);
 var b = {};
-Object.getPrototypeOf(a)===Object.getPrototypeOf(b); // => false
+Object.getPrototypeOf(a) === Object.getPrototypeOf(b); // => false
 ```
 
 と比較すると良いですね。あとは以下に続くように実際に console.dir などでオブジェクトの中身を見て見ると分かりやすいかと思います。
@@ -317,7 +325,7 @@ Object.getPrototypeOf(a)===Object.getPrototypeOf(b); // => false
 
 ```javascript
 var buz = {
-  fog: 'stack'
+  fog: "stack",
 };
 
 for (var name in buz) {
@@ -337,9 +345,9 @@ https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Ob
 
 だいぶ話がそれましたが、Object.keys で cur_requests のキーだけの配列を取得し、それぞれ callback を呼んでいます。
 
-いまいち element が何なのか分からなかったのですが、 （仕様には callback しかなく、第2引数に element を指定するような仕組みはないっぽい・・・）element が無ければ if の中がそのまま実行されるので無視しても良さそうです。
+いまいち element が何なのか分からなかったのですが、 （仕様には callback しかなく、第 2 引数に element を指定するような仕組みはないっぽい・・・）element が無ければ if の中がそのまま実行されるので無視しても良さそうです。
 
-最後に128〜134行目の抜粋です。
+最後に 128〜134 行目の抜粋です。
 
 ```javascript
 global.requestAnimationFrame =
@@ -355,18 +363,16 @@ global.requestAnimationFrame =
 
 論理和ごとに順に使えるかどうかチェックして、使えるものがあればそれ、なければ次のものを見ていき、最終的にどれも使えなければ、今即時関数内に用意している requestAnimationFrame を使う、といった流れです。
 
-
-
 ## setImmediate
 
 似たような API として、今のところ IE だけが対応している setImmediate というのがあります。
 
-ほぼ requestAnimationFrame と同じでそれよりもシンプルなので、 149〜154行目だけ抜粋しておきます。
+ほぼ requestAnimationFrame と同じでそれよりもシンプルなので、 149〜154 行目だけ抜粋しておきます。
 
 ```javascript
-function setImmediate(callback/*, args*/) {
+function setImmediate(callback /*, args*/) {
   var params = [].slice.call(arguments, 1);
-  return global.setTimeout(function() {
+  return global.setTimeout(function () {
     callback.apply(null, params);
   }, 0);
 }
@@ -374,11 +380,9 @@ function setImmediate(callback/*, args*/) {
 
 同様に setTimeout を用いて実現しています。
 
-`[].slice.call(arguments, 1)` は何をしているかというと、 arguments がその関数内における仮引数のリスト（配列っぽいオブジェクト）に相当するので、 それを実際に配列オブジェクトに用意されている slice メソッドを使って 1つだけ切り出してます。
+`[].slice.call(arguments, 1)` は何をしているかというと、 arguments がその関数内における仮引数のリスト（配列っぽいオブジェクト）に相当するので、 それを実際に配列オブジェクトに用意されている slice メソッドを使って 1 つだけ切り出してます。
 
 `[0, 1, 2].slice(1) // => [1, 2]` このまま使えばこんな感じですが、arguments はあくまで配列っぽいオブジェクトであるため、 slice メソッドなどは持ち合わせてませんので、call を使って実現しています。
-
-
 
 ## まとめ
 
@@ -386,7 +390,7 @@ function setImmediate(callback/*, args*/) {
 
 ソースコードを読むこと自体は、そんなに時間のかかる行為ではないんですが、それをブログに説明として分かりやすく載せるとなると、意外に時間かかっちゃうものですね。
 
-たぶんその4、その5あたりまで行っちゃうかもしれません。
+たぶんその 4、その 5 あたりまで行っちゃうかもしれません。
 
 お次は DOM 周りの polyfills です。イベントもいけたらいいな。
 
