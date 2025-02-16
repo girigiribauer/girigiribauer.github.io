@@ -1,4 +1,4 @@
-name: Deploy
+name: Release Static Site
 
 on:
   push:
@@ -6,12 +6,12 @@ on:
       - main
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Hugo のセットアップ
         uses: peaceiris/actions-hugo@v2
@@ -44,8 +44,12 @@ jobs:
       - name: シンボリックリンクの貼り替え
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          DOMAIN: girigiribauer.com
+          DOMAIN: ${{ secrets.DOMAIN }}
           RELEASE_TIMESTAMP: ${{ env.RELEASE_TIMESTAMP }}
           SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
         run: |
           ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_IP }} "ln -snf /var/www/${{ secrets.DOMAIN }}/releases/${{ env.RELEASE_TIMESTAMP }} /var/www/${{ secrets.DOMAIN }}/current"
+
+      - name: 秘密鍵の削除
+        if: always()
+        run: rm -f ~/.ssh/id_rsa
