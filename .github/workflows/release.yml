@@ -29,7 +29,7 @@ jobs:
       - name: Deploy
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          DOMAIN: girigiribauer.com
+          DOMAIN: ${{ secrets.DOMAIN }}
           RELEASE_TIMESTAMP: ${{ env.RELEASE_TIMESTAMP }}
           SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
         run: |
