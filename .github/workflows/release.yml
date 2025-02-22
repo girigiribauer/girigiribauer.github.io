@@ -22,7 +22,7 @@ jobs:
         run: |
           hugo --buildFuture
 
-      - name: リリースディレクトリの作成
+      - name: リリースディレクトリ名を時刻から作成
         id: timestamp
         run: echo "RELEASE_TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
