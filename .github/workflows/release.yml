@@ -1,31 +1,26 @@
 name: Release Static Site
-
 on:
   push:
     branches:
       - main
-
 jobs:
   release:
     runs-on: ubuntu-latest
-
+    env:
+      PATH_PREFIX: /var/www/
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Hugo のセットアップ
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: "0.91.2"
-
       - name: Build
         run: |
           hugo --buildFuture
-
       - name: リリースディレクトリ名を時刻から作成
         id: timestamp
         run: echo "RELEASE_TIMESTAMP=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
       - name: Deploy
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -37,10 +32,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-
           # rsync でカスタムポートを指定してアップロード
-          rsync -avz --delete --exclude '.git*' -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no" ./public/ ubuntu@${{ secrets.VPS_IP }}:/var/www/${{ secrets.DOMAIN }}/releases/${{ env.RELEASE_TIMESTAMP }}
-
+          rsync -avz --delete --exclude '.git*' -e "ssh -p $SSH_PORT -o StrictHostKeyChecking=no" ./public/ ubuntu@${{ secrets.VPS_IP }}:${{ env.PATH_PREFIX }}${{ secrets.DOMAIN }}/releases/${{ env.RELEASE_TIMESTAMP }}
       - name: シンボリックリンクの貼り替え
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -48,8 +41,14 @@ jobs:
           RELEASE_TIMESTAMP: ${{ env.RELEASE_TIMESTAMP }}
           SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
         run: |
-          ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_IP }} "ln -snf /var/www/${{ secrets.DOMAIN }}/releases/${{ env.RELEASE_TIMESTAMP }} /var/www/${{ secrets.DOMAIN }}/current"
-
+          ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_IP }} "ln -snf ${{ env.PATH_PREFIX }}${{ secrets.DOMAIN }}/releases/${{ env.RELEASE_TIMESTAMP }} ${{ env.PATH_PREFIX }}${{ secrets.DOMAIN }}/current"
+      - name: 古いリリースを削除 (最新5つを残す)
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          DOMAIN: ${{ secrets.DOMAIN }}
+          SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
+        run: |
+          ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_IP }} "cd ${{ env.PATH_PREFIX }}${{ secrets.DOMAIN }}/releases && ls -t | tail -n +6 | xargs -r rm -rf"
       - name: 秘密鍵の削除
         if: always()
         run: rm -f ~/.ssh/id_rsa
