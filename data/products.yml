@@ -1,0 +1,11 @@
+enable: true
+title: "Products"
+items:
+  - title: "FlyFree"
+    description: "X(Twitter)とBlueskyにクロスポストしつつ地獄からの段階的脱出をサポートする Chrome 拡張機能"
+    image: "icons/flyfree.png"
+    link: "https://chromewebstore.google.com/detail/flyfree/mjlfkhenobdjdonefhdbpigopndgeogm"
+  - title: "おみくじラベラー"
+    description: "Bluesky 上で毎日1回おみくじが引けるラベラー"
+    image: "icons/omikuji-labeler.jpg"
+    link: "https://bsky.app/profile/random-labeler.bsky.girigiribauer.com"

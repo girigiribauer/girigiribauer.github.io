@@ -135,7 +135,7 @@ https://make.dmm.com/print/
 
 ナイロンのものとサイズは同じなので、交互にはめることも可能です。
 
-うぇーい :hugging_face:
+うぇーい 🤗
 
 
 

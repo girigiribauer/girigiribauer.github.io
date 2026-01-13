@@ -1,41 +1,25 @@
-baseurl = "https://girigiribauer.com/"
+baseURL = "https://girigiribauer.com/"
 languageCode = "ja-jp"
 title = "ばうあーろぐ"
-theme = "bauerlog"
-hasCJKLanguage = true
-Paginate = 25
-preserveTaxonomyNames = true
-EnableGitInfo = false
-pluralizelisttitles = false
-googleAnalytics = "UA-36767095-1"
-disableKinds = ["taxonomyTerm"]
-enableEmoji = true
 enableRobotsTXT = true
+enableEmoji = true
+
+# Preserve legacy URL structure
+[permalinks]
+tech = "/tech/:contentbasename/"
+biz = "/biz/:contentbasename/"
+misc = "/misc/:year:month:day/"
 
 [taxonomies]
 tag = "tags"
 
-[params]
-author = "girigiribauer"
-description = "IT / Web に関するメモ、あるいは Twentyfour あるいは人生の diff"
-images = ["/img/ogimage.png"]
-
-[permalinks]
-tech = "/tech/:filename/"
-biz = "/biz/:filename/"
-misc = "/misc/:filename/"
-journey = "/journey/:filename/"
-
-[imaging]
-resampleFilter = "box" # https://github.com/disintegration/imaging
-quality = 75
-anchor = "smart" # https://github.com/muesli/smartcrop
-bgColor = "#ffffff"
-[imaging.exif]
-includeFields = ""
-excludeFields = ""
-disableDate = true
-disableLatLong = true
-
 [markup.goldmark.renderer]
 unsafe= true
+
+[params]
+    author = "girigiribauer"
+    description = "IT / Web に関するメモ、あるいは Twentyfour あるいは人生の diff"
+    images = ["/img/ogimage.png"]
+    twitter = "@girigiribauer"
+
+

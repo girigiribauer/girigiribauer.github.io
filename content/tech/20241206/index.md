@@ -19,7 +19,7 @@ tags = ["Bluesky", "Notion"]
 
 <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:tsvcmd72oxp47wtixs4qllyi/app.bsky.feed.post/3kkq3fuewsn2f" data-bluesky-cid="bafyreiawbbt7juy7soiflhzvnixmv27ktnjist24mvuyivkkprnuegj6va"><p lang="ja">やったー from:me 使えた便利ー！🤗<br><br><a href="https://bsky.app/profile/did:plc:tsvcmd72oxp47wtixs4qllyi/post/3kkq3fuewsn2f?ref_src=embed">[image or embed]</a></p>&mdash; girigiribauer (<a href="https://bsky.app/profile/did:plc:tsvcmd72oxp47wtixs4qllyi?ref_src=embed">@girigiribauer.com</a>) <a href="https://bsky.app/profile/did:plc:tsvcmd72oxp47wtixs4qllyi/post/3kkq3fuewsn2f?ref_src=embed">February 6, 2024 at 3:03 PM</a></blockquote>
 
-あばばばば :hugging_face:
+あばばばば 🤗
 
 ## 2024 年 1〜2 月: まとめサイトの立ち上げ
 
@@ -51,7 +51,7 @@ www.notion-easy-form.com<br><br><a href="https://bsky.app/profile/did:plc:tsvcmd
 
 そして札幌に降り立ちつつ、網走に向かう列車内で、 Notion で移行まとめの仕組みを構築するのでした。
 
-特急オホーツクで移動して、合計 5 時間 20 分の長旅だったので、読書用の本は持ってきてはいたものの、それだけだと疲れてしまうしでちょうど良かったです :hugging_face:
+特急オホーツクで移動して、合計 5 時間 20 分の長旅だったので、読書用の本は持ってきてはいたものの、それだけだと疲れてしまうしでちょうど良かったです 🤗
 
 <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:tsvcmd72oxp47wtixs4qllyi/app.bsky.feed.post/3kkhomsgo4s2q" data-bluesky-cid="bafyreiem2lhmbtldzkhwg7qt3xedymlkguoqjuuzs53sshsusa7dw5sqze"><p lang="ja">ということで特急オホーツクで網走に向かいます！発車ー🤗🚃<br><br><a href="https://bsky.app/profile/did:plc:tsvcmd72oxp47wtixs4qllyi/post/3kkhomsgo4s2q?ref_src=embed">[image or embed]</a></p>&mdash; girigiribauer (<a href="https://bsky.app/profile/did:plc:tsvcmd72oxp47wtixs4qllyi?ref_src=embed">@girigiribauer.com</a>) <a href="https://bsky.app/profile/did:plc:tsvcmd72oxp47wtixs4qllyi/post/3kkhomsgo4s2q?ref_src=embed">February 3, 2024 at 6:53 AM</a></blockquote>
 
@@ -219,7 +219,7 @@ Bluesky 上で毎日見てるだけだと中々気づきづらい部分ではあ
 <blockquote class="bluesky-embed" data-bluesky-uri="at://did:plc:tsvcmd72oxp47wtixs4qllyi/app.bsky.feed.post/3l7uenhhum22r" data-bluesky-cid="bafyreicf7pgqtnbtm6lnafnvivf5tew7lv2ktlvng5okwmbzuygemhh6ia"><p lang="ja">移行まとめのやつ、数の多い少ないはあまり問題ではなくて、移行状況がまとめられて可視化されていることに意味があるんですよ
 一番大事なのは企業の SNS 担当の人が議題に挙げるための材料にできることです</p>&mdash; girigiribauer (<a href="https://bsky.app/profile/did:plc:tsvcmd72oxp47wtixs4qllyi?ref_src=embed">@girigiribauer.com</a>) <a href="https://bsky.app/profile/did:plc:tsvcmd72oxp47wtixs4qllyi/post/3l7uenhhum22r?ref_src=embed">November 1, 2024 at 1:48 PM</a></blockquote>
 
-移行まとめを見て、これなら自分も移行しようかな？と思ってくれた方も多いのではないかと思います。このリストの力はたかが知れてますが（地獄が自爆した理由の方がはるかに大きい）、わずかでも（Threads ではなく） <strong>Bluesky に移行しようと思った方の背中を押すことに繋がったのなら幸いです</strong> :hugging_face:
+移行まとめを見て、これなら自分も移行しようかな？と思ってくれた方も多いのではないかと思います。このリストの力はたかが知れてますが（地獄が自爆した理由の方がはるかに大きい）、わずかでも（Threads ではなく） <strong>Bluesky に移行しようと思った方の背中を押すことに繋がったのなら幸いです</strong> 🤗
 
 - フォームから投稿してくれた方々 :pray: （ちゃんと全部見えてますよ！）
 - チェックや分類を手伝ってくれた神々 :pray: （有志の方々）
