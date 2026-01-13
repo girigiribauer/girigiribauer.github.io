@@ -265,6 +265,18 @@ h6 {
 
 .content code {
     font-family: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    background-color: var(--color-slate-3);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+.content pre code {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+    color: inherit;
 }
 
 .content ul,
