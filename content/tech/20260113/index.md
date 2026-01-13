@@ -3,7 +3,7 @@ title = "超分かりやすい Bluesky ラベラーの解説"
 description = "Bluesky のラベラーというたまに聞くけどよくわからない機能の筆頭について、超分かりやすくまとめてみます"
 date = "2026-01-13T17:00:00+0900"
 # lastmod = "2026-01-13T17:00:00+0900"
-draft = true
+draft = false
 tags = ["Bluesky", "SNS"]
 +++
 
