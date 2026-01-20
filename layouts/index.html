@@ -1,23 +1,26 @@
 {{ define "main" }}
 
 <!-- Projects -->
-{{ if .Site.Data.products.enable }}
+{{ $projects := where .Site.RegularPages "Section" "projects" }}
+{{ if gt (len $projects) 0 }}
 <section class="section-mb">
-    <h2 class="section-title">{{ .Site.Data.products.title }}</h2>
+    <h2 class="section-title">Products</h2>
     <div class="projects-list">
-        {{ range .Site.Data.products.items }}
-        <a href="{{.link}}" target="_blank" rel="noopener" class="project-item project-link">
-            <!-- Icon Placeholder (First letter of title if no image) -->
+        {{ range $projects }}
+        <!-- Link to internal detail page -->
+        <a href="{{ .Permalink }}" class="project-item project-link">
+            <!-- Icon -->
             <div class="project-icon">
-                {{ if .image }}
-                <img src="{{ .image }}" alt="{{ .title }}" class="project-img">
+                {{ $img := .Resources.GetMatch .Params.image }}
+                {{ if $img }}
+                <img src="{{ $img.RelPermalink }}" alt="{{ .Title }}" class="project-img">
                 {{ else }}
-                {{ substr .title 0 1 }}
+                {{ substr .Title 0 1 }}
                 {{ end }}
             </div>
             <div class="project-content">
-                <h3 class="project-title">{{ .title }}</h3>
-                <p class="project-desc">{{ .description }}</p>
+                <h3 class="project-title">{{ .Title }}</h3>
+                <p class="project-desc">{{ .Params.description }}</p>
             </div>
         </a>
         {{ end }}
