@@ -26,25 +26,28 @@
         <div class="header-body">
             <p class="project-desc">{{ .Params.description }}</p>
 
-            <div class="project-actions">
-                <!-- View Site button removed as requested -->
-                {{ if .Params.github }}
-                <a href="{{ .Params.github }}" target="_blank" rel="noopener noreferrer" class="btn btn-github">
-                    GitHub
-                </a>
-                {{ end }}
-            </div>
+            <!-- Buttons removed as requested -->
         </div>
     </header>
 
     <div class="content">
         {{ .Content }}
 
-        {{ if .Params.link }}
-        <div class="project-footer-link">
-            <a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer">{{ .Params.link }}</a>
+        <div class="project-footer-links">
+            {{ if .Params.link }}
+            <div class="project-footer-link-item">
+                <span class="link-label">link:</span>
+                <a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer">{{ .Params.link }}</a>
+            </div>
+            {{ end }}
+
+            {{ if .Params.github }}
+            <div class="project-footer-link-item">
+                <span class="link-label">github:</span>
+                <a href="{{ .Params.github }}" target="_blank" rel="noopener noreferrer">{{ .Params.github }}</a>
+            </div>
+            {{ end }}
         </div>
-        {{ end }}
     </div>
 
 </article>
@@ -134,42 +137,7 @@
         line-height: 1.6;
     }
 
-    /* Buttons */
-    .project-actions {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-    }
-
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem 1.25rem;
-        border-radius: 999px;
-        font-weight: 500;
-        text-decoration: none;
-        transition: transform 0.2s, background-color 0.2s;
-        font-size: 0.9rem;
-    }
-
-    .btn-primary {
-        background-color: var(--color-blue-11);
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background-color: var(--color-blue-10);
-    }
-
-    .btn-github {
-        background-color: #24292f;
-        color: white;
-    }
-
-    .btn-github:hover {
-        background-color: #333;
-    }
+    /* Buttons removed */
 
     /* Body Content */
     /* .project-body styles removed to use standard .content class */
@@ -185,16 +153,32 @@
         }
     }
 
-    .project-footer-link {
+    .project-footer-links {
         margin-top: 3rem;
         padding-top: 1.5rem;
         border-top: 1px solid var(--color-slate-6);
-        word-break: break-all;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
-    .project-footer-link a {
+    .project-footer-link-item {
+        word-break: break-all;
+        font-size: 0.95rem;
+        color: var(--color-slate-11);
+    }
+
+    .link-label {
+        font-weight: 600;
+        margin-right: 0.25rem;
+        color: var(--color-slate-11);
+    }
+
+    .project-footer-link-item a {
         color: var(--color-cyan-11);
         font-weight: 500;
+        text-decoration: underline;
+        text-underline-offset: 4px;
     }
 </style>
 {{ end }}
