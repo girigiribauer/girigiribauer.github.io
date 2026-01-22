@@ -582,3 +582,159 @@ h6 {
     text-decoration: underline;
     text-underline-offset: 4px;
 }
+
+/* Link Card Styles */
+a.link-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    /* Ensure children stretch to full height */
+    border: 1px solid var(--color-slate-6);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    text-decoration: none !important;
+    /* Override default underline */
+    margin: 1.5rem 0;
+    max-width: 600px;
+    /* Max width 600px */
+    width: 100%;
+    /* Responsive width */
+    background-color: var(--bg-color);
+    transition: background-color 0.2s, border-color 0.2s;
+    height: 140px;
+    /* Fixed height for desktop */
+}
+
+a.link-card:hover {
+    background-color: var(--color-slate-3);
+    border-color: var(--color-slate-11);
+}
+
+.link-card__main {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Center content vertically if short */
+    min-width: 0;
+    /* Enable text truncation */
+    gap: 0.25rem;
+    /* Reduced gap to fit content */
+}
+
+.link-card__title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-slate-12);
+    margin: 0;
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    max-height: 2.8em;
+}
+
+.link-card__desc {
+    font-size: 0.85rem;
+    color: var(--color-slate-11);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+    margin: 0;
+}
+
+
+.link-card__url {
+    font-size: 0.75rem;
+    color: var(--color-slate-11);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.25rem;
+}
+
+.link-card__favicon {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+}
+
+.link-card__image {
+    width: 140px;
+    /* Fixed width 140px */
+    flex-shrink: 0;
+    border-left: 1px solid var(--color-slate-6);
+    background-color: var(--color-slate-3);
+    position: relative;
+    display: flex;
+}
+
+.link-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0 !important;
+    /* Override global img styles */
+    margin: 0 !important;
+    display: block;
+}
+
+.link-card__image--no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-slate-3);
+    color: var(--color-slate-6);
+    width: 140px;
+    /* Fixed width 140px */
+    flex-shrink: 0;
+    border-left: 1px solid var(--color-slate-6);
+}
+
+.link-card__image--no-image::after {
+    content: "No Image";
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Mobile Responsiveness for Link Card */
+@media (max-width: 640px) {
+    a.link-card {
+        flex-direction: column-reverse;
+        /* Image on top */
+        height: auto;
+        /* Allow auto height on mobile */
+    }
+
+    .link-card__image,
+    .link-card__image--no-image {
+        width: 100%;
+        height: 140px;
+        /* Fixed height for mobile image */
+        border-left: none;
+        border-bottom: 1px solid var(--color-slate-6);
+    }
+
+    .link-card__main {
+        padding: 1rem;
+    }
+}
+
+.broken-link {
+    display: inline-block;
+    color: #aaa;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.broken-link__label {
+    margin-left: 0.25rem;
+    font-size: 0.875rem;
+}

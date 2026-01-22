@@ -1,4 +1,69 @@
 {{ $link := .Destination }}
+{{ $text := .Text }}
 {{ $isRemote := (findRE "^https?://" $link) }}
-<a href="{{ $link | safeURL }}" {{ with .Title}} title="{{ . }}" {{ end }} {{ if $isRemote }} target="_blank"
-    rel="noopener noreferrer" {{ end }}>{{ .Text | safeHTML }}</a>
+{{ $isBare := eq $text $link }}
+
+{{- if and $isRemote $isBare -}}
+{{- $s := newScratch -}}
+{{- $s.Set "isBroken" false -}}
+{{- $s.Set "title" "" -}}
+{{- $s.Set "desc" "" -}}
+{{- $s.Set "image" "" -}}
+
+{{- with try (resources.GetRemote $link) -}}
+{{- with .Err -}}
+{{- $s.Set "isBroken" true -}}
+{{- else with .Value -}}
+{{- $content := .Content -}}
+
+{{- /* Title */ -}}
+{{- $tM := findRE `(?i)<meta\s+property=["']og:title["']\s+content=["']([^"']+)["']` $content 1 -}} {{- if $tM -}} {{-
+    $s.Set "title" (index $tM 0 | replaceRE `(?i)<meta\s+property=["']og:title["']\s+content=["']([^"']+)["']` "$1" )
+    -}} {{- else -}} {{- $tM2 :=findRE `(?i)<title>(.*?)</title>` $content 1 -}}
+    {{- if $tM2 -}}
+    {{- $s.Set "title" (index $tM2 0 | replaceRE `(?i)<title>(.*?)</title>` "$1") -}}
+    {{- end -}}
+    {{- end -}}
+
+    {{- /* Description */ -}}
+    {{- $dM := findRE `(?i)<meta\s+property=["']og:description["']\s+content=["']([^"']+)["']` $content 1 -}} {{- if $dM
+        -}} {{- $s.Set "desc" (index $dM 0 | replaceRE
+        `(?i)<meta\s+property=["']og:description["']\s+content=["']([^"']+)["']` "$1" ) -}} {{- else -}} {{- $dM2
+        :=findRE `(?i)<meta\s+name=["']description["']\s+content=["']([^"']+)["']` $content 1 -}} {{- if $dM2 -}} {{-
+        $s.Set "desc" (index $dM2 0 | replaceRE `(?i)<meta\s+name=["']description["']\s+content=["']([^"']+)["']` "$1" )
+        -}} {{- end -}} {{- end -}} {{- /* Image */ -}} {{- $iM :=findRE
+        `(?i)<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']` $content 1 -}} {{- if $iM -}} {{-
+        $s.Set "image" (index $iM 0 | replaceRE `(?i)<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']` "$1"
+        ) -}} {{- end -}} {{- $s.Set "title" ($s.Get "title" | htmlUnescape) -}} {{- $s.Set "desc" ($s.Get "desc" |
+        htmlUnescape) -}} {{- end -}} {{- end -}} {{- if $s.Get "isBroken" -}} <span class="broken-link">
+        {{ $link }} <span class="broken-link__label">(リンク切れ)</span>
+        </span>
+        {{- else -}}
+        {{- $title := $s.Get "title" -}} {{- $desc := $s.Get "desc" -}} {{-
+        $image := $s.Get "image" -}} {{- if $title -}} <a href="{{ $link | safeURL }}" class="link-card" target="_blank"
+            rel="noopener noreferrer">
+            <span class="link-card__main">
+                <span class="link-card__title">{{ $title }}</span>
+                <span class="link-card__desc">{{ $desc | truncate 100 }}</span>
+                <span class="link-card__url">
+                    <img src="https://www.google.com/s2/favicons?domain={{ $link | safeURL }}" alt=""
+                        class="link-card__favicon" />
+                    {{ $link | replaceRE "^https?://([^/]+).*" "$1" }}
+                </span>
+            </span>
+            {{- if $image -}}
+            <span class="link-card__image">
+                <img src="{{ $image }}" alt="{{ $title }}" loading="lazy" />
+            </span>
+            {{- else -}}
+            <span class="link-card__image link-card__image--no-image"></span>
+            {{- end -}}
+        </a>
+        {{- else -}}
+        <a href="{{ $link | safeURL }}" target="_blank" rel="noopener noreferrer">{{ .Text | safeHTML }}</a>
+        {{- end -}}
+        {{- end -}}
+        {{- else -}}
+        <a href="{{ $link | safeURL }}" {{ with .Title}} title="{{ . }}" {{ end }} {{ if $isRemote }} target="_blank"
+            rel="noopener noreferrer" {{ end }}>{{ .Text | safeHTML }}</a>
+        {{- end -}}

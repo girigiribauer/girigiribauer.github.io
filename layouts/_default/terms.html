@@ -4,7 +4,8 @@
 
     <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; line-height: 1.8;">
         {{ range .Data.Terms.ByCount }}
-        <a href="{{ .Page.Permalink }}" style="color: var(--color-cyan-12); font-weight: 500; text-decoration: none;">
+        <a href="{{ .Page.RelPermalink }}"
+            style="color: var(--color-cyan-12); font-weight: 500; text-decoration: none;">
             #{{ .Page.Title }}
             <span style="color: var(--color-slate-11); font-weight: 400; font-size: 0.9em;">({{ .Count }})</span>
         </a>
