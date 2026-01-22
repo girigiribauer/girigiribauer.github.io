@@ -41,13 +41,18 @@
     <meta property="og:url" content="{{ .Permalink }}">
     <meta property="og:site_name" content="{{ .Site.Title }}">
     {{ if eq .Section "products" }}
-    <meta property="og:image" content="{{ (printf "/images/ogp/%s.png" .File.ContentBaseName) | absURL }}">
+    <meta property="og:image" content="{{ (printf " /images/ogp/%s.png" .File.ContentBaseName) | absURL }}">
     {{ else }}
     {{ with .Params.images }}
     <meta property="og:image" content="{{ index . 0 | absURL }}">
     {{ else }}
+    {{- $feature := .Resources.GetMatch "feature.{jpg,jpeg,png,gif}" -}}
+    {{ if $feature }}
+    <meta property="og:image" content="{{ $feature.RelPermalink | absURL }}">
+    {{ else }}
     {{ with .Site.Params.images }}
     <meta property="og:image" content="{{ index . 0 | absURL }}">
+    {{ end }}
     {{ end }}
     {{ end }}
     {{ end }}
@@ -62,13 +67,18 @@
     <meta name="twitter:creator" content="{{ . }}">
     {{ end }}
     {{ if eq .Section "products" }}
-    <meta name="twitter:image" content="{{ (printf "/images/ogp/%s.png" .File.ContentBaseName) | absURL }}">
+    <meta name="twitter:image" content="{{ (printf " /images/ogp/%s.png" .File.ContentBaseName) | absURL }}">
     {{ else }}
     {{ with .Params.images }}
     <meta name="twitter:image" content="{{ index . 0 | absURL }}">
     {{ else }}
+    {{- $feature := .Resources.GetMatch "feature.{jpg,jpeg,png,gif}" -}}
+    {{ if $feature }}
+    <meta name="twitter:image" content="{{ $feature.RelPermalink | absURL }}">
+    {{ else }}
     {{ with .Site.Params.images }}
     <meta name="twitter:image" content="{{ index . 0 | absURL }}">
+    {{ end }}
     {{ end }}
     {{ end }}
     {{ end }}
