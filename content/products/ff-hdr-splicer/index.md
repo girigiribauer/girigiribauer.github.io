@@ -2,7 +2,7 @@
 title: "FF HDR Splicer"
 date: 2026-01-21
 description: "HDR動画専用の簡易的な動画編集デスクトップアプリ"
-layout: "projects"
+layout: "products"
 image: "icon.png"
 link: "https://github.com/girigiribauer/ff-hdr-splicer/releases"
 github: "https://github.com/girigiribauer/ff-hdr-splicer"

@@ -2,7 +2,7 @@
 title: "FlyFree"
 date: 2023-10-07
 description: "X(Twitter)とBlueskyにクロスポストしつつ地獄からの段階的脱出をサポートする Chrome 拡張機能"
-layout: "projects"
+layout: "products"
 image: "icon.png"
 link: "https://chromewebstore.google.com/detail/flyfree/mjlfkhenobdjdonefhdbpigopndgeogm"
 github: "https://github.com/girigiribauer/fly-free"

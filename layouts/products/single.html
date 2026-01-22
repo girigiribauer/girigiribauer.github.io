@@ -1,0 +1,52 @@
+{{ define "main" }}
+<article class="product-container">
+    <header class="product-header-clean">
+        {{ if .Params.link }}
+        <a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer"
+            class="header-top-row header-link-wrapper">
+            {{ else }}
+            <div class="header-top-row">
+                {{ end }}
+                <div class="header-icon">
+                    {{ $img := .Resources.GetMatch .Params.image }}
+                    {{ if $img }}
+                    <img src="{{ $img.RelPermalink }}" alt="{{ .Title }}">
+                    {{ else if .Params.image }}
+                    <img src="{{ .Params.image }}" alt="{{ .Title }}">
+                    {{ else }}
+                    <span class="placeholder-icon">{{ substr .Title 0 1 }}</span>
+                    {{ end }}
+                </div>
+                <h1 class="product-title">{{ .Title }}</h1>
+                {{ if .Params.link }}
+        </a>
+        {{ else }}
+        </div>
+        {{ end }}
+
+        <div class="header-body">
+            <p class="product-desc">{{ .Params.description }}</p>
+        </div>
+    </header>
+
+    <div class="content">
+        {{ .Content }}
+
+        <div class="product-footer-links">
+            {{ if .Params.link }}
+            <div class="product-footer-link-item">
+                <span class="link-label">link:</span>
+                <a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer">{{ .Params.link }}</a>
+            </div>
+            {{ end }}
+
+            {{ if .Params.github }}
+            <div class="product-footer-link-item">
+                <span class="link-label">github:</span>
+                <a href="{{ .Params.github }}" target="_blank" rel="noopener noreferrer">{{ .Params.github }}</a>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</article>
+{{ end }}

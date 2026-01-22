@@ -6,7 +6,8 @@
     /* Main Text */
     --color-slate-11: #60646c;
     /* Muted Text / Meta */
-    --color-slate-6: #e1e4e8;  /* Defined border color */
+    --color-slate-6: #e1e4e8;
+    /* Defined border color */
     --color-slate-3: #f0f4f8;
     /* Hover bg */
     --color-cyan-11: #0B7285;
@@ -158,14 +159,14 @@ h6 {
     margin: 0;
 }
 
-/* Projects List (Sam Robbins Style) */
-.projects-list {
+/* Products List (Sam Robbins Style) */
+.products-list {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
-.project-item {
+.product-item {
     display: flex;
     gap: 1.5rem;
     padding: 1rem;
@@ -174,14 +175,14 @@ h6 {
     border-radius: 0.5rem;
 }
 
-.project-item:hover {
+.product-item:hover {
     background-color: var(--color-slate-3);
 }
 
-.project-icon {
+.product-icon {
     width: 3rem;
     height: 3rem;
-    background-color: transparent; /* Changed from var(--color-slate-3) */
+    background-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -191,18 +192,18 @@ h6 {
     flex-shrink: 0;
 }
 
-.project-content {
+.product-content {
     display: grid;
 }
 
-.project-title {
+.product-title {
     font-weight: 600;
     color: var(--color-cyan-11);
     margin-bottom: 0.25rem;
     line-height: 1.2;
 }
 
-.project-desc {
+.product-desc {
     color: var(--color-slate-11);
     font-size: 0.9rem;
     margin: 0;
@@ -306,7 +307,7 @@ h6 {
         /* text-4xl/5xl */
     }
 
-    .projects-list {
+    .products-list {
         grid-template-columns: repeat(2, 1fr);
         /* sm:grid-cols-2 */
     }
@@ -332,12 +333,12 @@ h6 {
     margin-bottom: 4rem;
 }
 
-.project-link {
+.product-link {
     text-decoration: none;
     color: inherit;
 }
 
-.project-img {
+.product-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -455,4 +456,129 @@ h6 {
 
 .disclaimer-item {
     margin-bottom: 0.5rem;
+}
+
+/* Product Single Page Styles */
+.product-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    /* Matched standard container padding-x */
+}
+
+/* Header V4 Style */
+.product-header-clean {
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+/* Top Row: Icon + Title */
+.header-top-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-slate-6);
+    /* Separator border */
+    color: inherit;
+    /* Ensure link color inheritance */
+    text-decoration: none;
+    /* Ensure no underline */
+}
+
+/* Additional link styling if needed */
+.header-link-wrapper {
+    cursor: pointer;
+}
+
+.header-icon {
+    width: 3rem;
+    /* Match list view size */
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    /* Removed bg for icon only */
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.header-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* List uses contain */
+}
+
+.placeholder-icon {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-slate-11);
+}
+
+/* Scoped to avoid conflict with list view .product-title */
+.product-container .product-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+    color: var(--color-slate-12);
+    word-break: break-word;
+    /* Ensure functionality on small screens */
+}
+
+.header-body {
+    width: 100%;
+}
+
+/* Scoped to avoid conflict with list view .product-desc */
+.product-container .product-desc {
+    font-size: 1rem;
+    color: var(--color-slate-11);
+    margin: 0 0 1rem 0;
+    line-height: 1.6;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+    .product-header-clean {
+        gap: 1.25rem;
+    }
+
+    .product-container .product-title {
+        font-size: 1.5rem;
+    }
+}
+
+.product-footer-links {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-slate-6);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.product-footer-link-item {
+    word-break: break-all;
+    font-size: 0.95rem;
+    color: var(--color-slate-11);
+}
+
+.link-label {
+    font-weight: 600;
+    margin-right: 0.25rem;
+    color: var(--color-slate-11);
+}
+
+.product-footer-link-item a {
+    color: var(--color-cyan-11);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 4px;
 }

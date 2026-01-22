@@ -2,7 +2,7 @@
 title: "おみくじラベラー"
 date: 2025-12-25
 description: "Bluesky 上で毎日1回おみくじが引けるラベラーサービス"
-layout: "projects"
+layout: "products"
 image: "icon.jpg"
 link: "https://bsky.app/profile/random-labeler.bsky.girigiribauer.com"
 github: "https://github.com/girigiribauer/bluesky-random-labeler"
