@@ -1,12 +1,30 @@
-# Stage 1: Runtime (Nginx)
-# We use a standard Nginx Alpine image for minimum memory footprint
-FROM klakegg/hugo:ext-alpine AS builder
+# Stage 1: Builder
+FROM debian:bookworm-slim AS builder
+
+# Install Git, Curl, and ca-certificates
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Hugo Extended
+ARG HUGO_VERSION=0.154.5
+# Detect architecture and download appropriate binary
+RUN ARCH=$(dpkg --print-architecture) && \
+    case "$ARCH" in \
+      "amd64") FILE_ARCH="linux-amd64" ;; \
+      "arm64") FILE_ARCH="linux-arm64" ;; \
+      *) echo "Unsupported architecture: $ARCH"; exit 1 ;; \
+    esac && \
+    curl -L -o hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_${FILE_ARCH}.deb \
+    && dpkg -i hugo.deb \
+    && rm hugo.deb
 
 WORKDIR /src
 COPY . .
 
 # Build the site
-# Using --buildFuture as seen in build.sh
 RUN hugo --buildFuture --minify
 
 # Stage 2: Runtime (Nginx)
