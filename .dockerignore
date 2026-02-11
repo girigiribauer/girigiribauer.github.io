@@ -1,0 +1,10 @@
+.git
+.github
+.gitignore
+.gitmodules
+node_modules
+resources
+public
+generate-ogp
+build.log
+.DS_Store
