@@ -41,7 +41,7 @@
             <div class="article-meta">
                 <time datetime="{{ .Date }}">{{ .Date.Format "2006/01/02" }}</time>
             </div>
-            <p class="article-description">{{ .Description | default .Summary | truncate 100 }}</p>
+            <p class="article-description">{{ .Description | default (.Summary | plainify) | truncate 100 }}</p>
         </article>
         {{ end }}
     </div>
