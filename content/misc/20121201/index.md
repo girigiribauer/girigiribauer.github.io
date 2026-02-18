@@ -1,7 +1,7 @@
 ---
 title: 'ジャックバウアーの名言 #1'
 author: girigiribauer
-date: 2012-12-01T14:46:21+09:00
+date: 2012-12-01T00:00:00+09:00
 categories:
   - misc
 aliases:
@@ -12,38 +12,6 @@ aliases:
 ジャックバウアーの名言 Advent Calendar なるものをやることになりました。 techではないっぽいのに、なぜかgihyoに載っていて ちょっとやばいだろと思いながらも、気にせずやっていきたいと思います。
 
 [ジャックバウアーの名言 Advent Calendar](http://www.adventar.org/calendars/44)
-
-ちなみにきっかけなどはこちらから。
-
-<blockquote class="twitter-tweet" lang="ja">
-  <p lang="ja" dir="ltr">
-    ジャックバウアーの名言AdventCalender
-  </p>
-
-  <p>
-    &mdash; お寿司@きよっち@名古屋は旅行先 (@kiyotchi) <a href="https://twitter.com/kiyotchi/status/274440067404152832">2012, 11月 30</a>
-  </p>
-</blockquote>
-
-<blockquote class="twitter-tweet" lang="ja">
-  <p lang="ja" dir="ltr">
-    <a href="https://twitter.com/kiyotchi">@kiyotchi</a> シリーズ通して、1話目の名言、2話目の名言・・・24話目の名言を24日に分けて書いて、最後の日に総括するAdventCalendarのことですか？
-  </p>
-
-  <p>
-    &mdash; ばうあー (@girigiribauer) <a href="https://twitter.com/girigiribauer/status/274440806050439168">2012, 11月 30</a>
-  </p>
-</blockquote>
-
-<blockquote class="twitter-tweet" lang="ja">
-  <p lang="ja" dir="ltr">
-    ジャックバウアーの名言 Advent Calendar 2012 <a href="http://t.co/7lN0Ow0W">http://t.co/7lN0Ow0W</a>
-  </p>
-
-  <p>
-    &mdash; ばうあー (@girigiribauer) <a href="https://twitter.com/girigiribauer/status/274444489928634368">2012, 11月 30</a>
-  </p>
-</blockquote>
 
 ジャックバウアーのディレクション能力はピカイチです。 Web制作に参考になるところも大いにあることでしょう！ という謳い文句で、むりやりWeb制作に紐付けられるところは紐付けつつ、 おもしろおかしく書いていきます。
 

@@ -1,7 +1,7 @@
 ---
 title: 'ジャックバウアーの名言 #3'
 author: girigiribauer
-date: 2012-12-03T13:31:14+09:00
+date: 2012-12-03T00:00:00+09:00
 categories:
   - misc
 aliases:
