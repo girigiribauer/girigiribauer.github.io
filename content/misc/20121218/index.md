@@ -1,7 +1,7 @@
 ---
 title: 'ジャックバウアーの名言 #18'
 author: girigiribauer
-date: 2012-12-18T14:25:47+00:00
+date: 2012-12-18T14:25:47+09:00
 categories:
   - misc
 aliases:

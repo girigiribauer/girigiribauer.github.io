@@ -1,7 +1,7 @@
 ---
 title: 'ジャックバウアーの名言 #5'
 author: girigiribauer
-date: 2012-12-05T13:03:54+00:00
+date: 2012-12-05T13:03:54+09:00
 categories:
   - misc
 aliases:

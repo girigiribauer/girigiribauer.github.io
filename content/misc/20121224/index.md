@@ -1,7 +1,7 @@
 ---
 title: 'ジャックバウアーの名言 #24'
 author: girigiribauer
-date: 2012-12-24T00:00:00+00:00
+date: 2012-12-24T00:00:00+09:00
 categories:
   - misc
 aliases:

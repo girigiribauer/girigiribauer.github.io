@@ -1,7 +1,7 @@
 ---
 title: 'ジャックバウアーの名言 #21'
 author: girigiribauer
-date: 2012-12-21T12:41:51+00:00
+date: 2012-12-21T12:41:51+09:00
 categories:
   - misc
 aliases:
