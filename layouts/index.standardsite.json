@@ -1,0 +1,18 @@
+{{- /* standard.site reconcile スクリプト用の記事一覧。tech/biz/misc の記事だけを出力する。 */ -}}
+{{- $sections := slice "tech" "biz" "misc" -}}
+{{- $list := slice -}}
+{{- range (where .Site.RegularPages "Section" "in" $sections) -}}
+  {{- $rkey := replaceRE "/" "-" (strings.Trim .RelPermalink "/") -}}
+  {{- $desc := cond (ne .Description "") .Description (.Summary | plainify | chomp) -}}
+  {{- $item := dict
+      "rkey" $rkey
+      "path" .RelPermalink
+      "url" .Permalink
+      "title" .Title
+      "description" $desc
+      "publishedAt" (.Date.Format "2006-01-02T15:04:05Z07:00")
+      "tags" (or .Params.tags (slice))
+  -}}
+  {{- $list = $list | append $item -}}
+{{- end -}}
+{{ $list | jsonify (dict "indent" "  ") }}

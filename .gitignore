@@ -3,3 +3,4 @@ static/**/_*
 .hugo_build.lock
 resources/
 public/
+.env

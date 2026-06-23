@@ -1,0 +1,17 @@
+{
+  "name": "standardsite-tools",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "standard.site のレコードを Bluesky リポジトリへ投入/同期するツール",
+  "scripts": {
+    "test-login": "node --env-file=../../.env test-login.mjs",
+    "publication:dry": "node --env-file=../../.env publish-publication.mjs --dry-run",
+    "publication": "node --env-file=../../.env publish-publication.mjs",
+    "documents:dry": "node --env-file=../../.env reconcile-documents.mjs --dry-run",
+    "documents": "node --env-file=../../.env reconcile-documents.mjs"
+  },
+  "dependencies": {
+    "@atproto/api": "^0.13.0"
+  }
+}

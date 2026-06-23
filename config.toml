@@ -21,5 +21,17 @@ unsafe= true
     description = "IT / Web に関するメモ、あるいは Twentyfour あるいは人生の diff"
     images = ["/img/ogimage.png"]
     twitter = "@girigiribauer"
+    # standard.site (AT Protocol) 連携用。倉庫(リポジトリ)の DID
+    standardSiteDid = "did:plc:tsvcmd72oxp47wtixs4qllyi"
+
+# standard.site 用の記事一覧 JSON を /standardsite.json として出力する
+[outputs]
+home = ["HTML", "RSS", "standardsite"]
+
+[outputFormats.standardsite]
+mediaType = "application/json"
+baseName = "standardsite"
+isPlainText = true
+notAlternative = true
 
 

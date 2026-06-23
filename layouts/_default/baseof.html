@@ -14,6 +14,16 @@
     <!-- Canonical -->
     <link rel="canonical" href="{{ .Permalink }}">
 
+    <!-- standard.site (AT Protocol) link -->
+    {{ with .Site.Params.standardSiteDid }}
+    {{ if $.IsHome }}
+    <link rel="site.standard.publication" href="at://{{ . }}/site.standard.publication/self">
+    {{ else if and $.IsPage (in (slice "tech" "biz" "misc") $.Section) }}
+    {{ $rkey := replaceRE "/" "-" (strings.Trim $.RelPermalink "/") }}
+    <link rel="site.standard.document" href="at://{{ . }}/site.standard.document/{{ $rkey }}">
+    {{ end }}
+    {{ end }}
+
     <!-- RSS -->
     {{ with .OutputFormats.Get "RSS" }}
     <link rel="alternate" type="{{ .MediaType.Type }}" href="{{ .Permalink }}" title="{{ $.Site.Title }}">
