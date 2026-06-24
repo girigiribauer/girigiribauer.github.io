@@ -18,7 +18,7 @@
     {{ with .Site.Params.standardSiteDid }}
     {{ if $.IsHome }}
     <link rel="site.standard.publication" href="at://{{ . }}/site.standard.publication/self">
-    {{ else if and $.IsPage (in (slice "tech" "biz" "misc") $.Section) }}
+    {{ else if and $.IsPage (in (slice "tech" "biz" "misc" "products") $.Section) }}
     {{ $rkey := replaceRE "/" "-" (strings.Trim $.RelPermalink "/") }}
     <link rel="site.standard.document" href="at://{{ . }}/site.standard.document/{{ $rkey }}">
     {{ end }}

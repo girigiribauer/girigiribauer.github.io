@@ -57,6 +57,24 @@ jobs:
           ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no ubuntu@${{ secrets.VPS_IP }} "cd /opt/services/${{ secrets.DOMAIN }} && \
           docker compose pull app && docker compose up -d"
 
+      - name: Hugo セットアップ（standard.site レコード同期用）
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.154.5'
+          extended: true
+
+      - name: 記事一覧 JSON を生成
+        run: hugo --buildFuture --minify
+
+      - name: standard.site レコードを同期
+        run: |
+          cd scripts/standardsite
+          npm ci
+          node reconcile-documents.mjs
+        env:
+          BSKY_HANDLE: ${{ secrets.BSKY_HANDLE }}
+          BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
+
       - name: 秘密鍵の削除
         if: always()
         run: rm -f ~/.ssh/id_rsa
