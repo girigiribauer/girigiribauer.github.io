@@ -4,8 +4,11 @@ date: 2026-01-21
 description: "HDR動画専用の簡易的な動画編集デスクトップアプリ"
 layout: "products"
 image: "icon.png"
-link: "https://github.com/girigiribauer/ff-hdr-splicer/releases"
-github: "https://github.com/girigiribauer/ff-hdr-splicer"
+links:
+  - name: "link"
+    url: "https://github.com/girigiribauer/ff-hdr-splicer/releases"
+  - name: "github"
+    url: "https://github.com/girigiribauer/ff-hdr-splicer"
 ---
 
 内部に FFmpeg を内包した、HDR動画専用の簡易的な動画編集デスクトップアプリです。 FFmpeg でできる範囲のみカバーします。

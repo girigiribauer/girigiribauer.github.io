@@ -4,8 +4,11 @@ date: 2023-10-07
 description: "X(Twitter)とBlueskyにクロスポストしつつ地獄からの段階的脱出をサポートする Chrome 拡張機能"
 layout: "products"
 image: "icon.png"
-link: "https://chromewebstore.google.com/detail/flyfree/mjlfkhenobdjdonefhdbpigopndgeogm"
-github: "https://github.com/girigiribauer/fly-free"
+links:
+  - name: "chrome"
+    url: "https://chromewebstore.google.com/detail/flyfree/mjlfkhenobdjdonefhdbpigopndgeogm"
+  - name: "github"
+    url: "https://github.com/girigiribauer/fly-free"
 ---
 
 FlyFree は、X(Twitter) と Bluesky への同時投稿を支援し、徐々に新しいSNSへの移行を促すための Chrome 拡張機能です。

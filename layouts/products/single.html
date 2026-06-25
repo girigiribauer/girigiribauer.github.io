@@ -1,8 +1,12 @@
 {{ define "main" }}
 <article class="product-container">
     <header class="product-header-clean">
-        {{ if .Params.link }}
-        <a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer"
+        {{ $mainLink := "" }}
+        {{ if and .Params.links (gt (len .Params.links) 0) }}
+            {{ $mainLink = (index .Params.links 0).url }}
+        {{ end }}
+        {{ if $mainLink }}
+        <a href="{{ $mainLink }}" target="_blank" rel="noopener noreferrer"
             class="header-top-row header-link-wrapper">
             {{ else }}
             <div class="header-top-row">
@@ -18,7 +22,7 @@
                     {{ end }}
                 </div>
                 <h1 class="product-title">{{ .Title }}</h1>
-                {{ if .Params.link }}
+                {{ if $mainLink }}
         </a>
         {{ else }}
         </div>
@@ -33,17 +37,10 @@
         {{ .Content }}
 
         <div class="product-footer-links">
-            {{ if .Params.link }}
+            {{ range .Params.links }}
             <div class="product-footer-link-item">
-                <span class="link-label">link:</span>
-                <a href="{{ .Params.link }}" target="_blank" rel="noopener noreferrer">{{ .Params.link }}</a>
-            </div>
-            {{ end }}
-
-            {{ if .Params.github }}
-            <div class="product-footer-link-item">
-                <span class="link-label">github:</span>
-                <a href="{{ .Params.github }}" target="_blank" rel="noopener noreferrer">{{ .Params.github }}</a>
+                <span class="link-label">{{ .name }}:</span>
+                <a href="{{ .url }}" target="_blank" rel="noopener noreferrer">{{ .url }}</a>
             </div>
             {{ end }}
         </div>

@@ -4,8 +4,11 @@ date: 2025-12-25
 description: "Bluesky 上で毎日1回おみくじが引けるラベラーサービス"
 layout: "products"
 image: "icon.jpg"
-link: "https://bsky.app/profile/random-labeler.bsky.girigiribauer.com"
-github: "https://github.com/girigiribauer/bluesky-random-labeler"
+links:
+  - name: "link"
+    url: "https://bsky.app/profile/random-labeler.bsky.girigiribauer.com"
+  - name: "github"
+    url: "https://github.com/girigiribauer/bluesky-random-labeler"
 ---
 
 おみくじラベラーは、Blueskyユーザーが毎日1回運勢を占えるラベラーサービスです。
