@@ -10,32 +10,16 @@
 {{- $s.Set "desc" "" -}}
 {{- $s.Set "image" "" -}}
 
-{{- with try (resources.GetRemote $link) -}}
-{{- with .Err -}}
-{{- $s.Set "isBroken" true -}}
-{{- else with .Value -}}
-{{- $content := .Content -}}
+{{- $ogp := false -}}
+{{- if isset site.Data "linkcards" -}}
+  {{- $ogp = index site.Data.linkcards $link -}}
+{{- end -}}
 
-{{- /* Title */ -}}
-{{- $tM := findRE `(?i)<meta\s+property=["']og:title["']\s+content=["']([^"']+)["']` $content 1 -}} {{- if $tM -}} {{-
-    $s.Set "title" (index $tM 0 | replaceRE `(?i)<meta\s+property=["']og:title["']\s+content=["']([^"']+)["']` "$1" )
-    -}} {{- else -}} {{- $tM2 :=findRE `(?i)<title>(.*?)</title>` $content 1 -}}
-    {{- if $tM2 -}}
-    {{- $s.Set "title" (index $tM2 0 | replaceRE `(?i)<title>(.*?)</title>` "$1") -}}
-    {{- end -}}
-    {{- end -}}
-
-    {{- /* Description */ -}}
-    {{- $dM := findRE `(?i)<meta\s+property=["']og:description["']\s+content=["']([^"']+)["']` $content 1 -}} {{- if $dM
-        -}} {{- $s.Set "desc" (index $dM 0 | replaceRE
-        `(?i)<meta\s+property=["']og:description["']\s+content=["']([^"']+)["']` "$1" ) -}} {{- else -}} {{- $dM2
-        :=findRE `(?i)<meta\s+name=["']description["']\s+content=["']([^"']+)["']` $content 1 -}} {{- if $dM2 -}} {{-
-        $s.Set "desc" (index $dM2 0 | replaceRE `(?i)<meta\s+name=["']description["']\s+content=["']([^"']+)["']` "$1" )
-        -}} {{- end -}} {{- end -}} {{- /* Image */ -}} {{- $iM :=findRE
-        `(?i)<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']` $content 1 -}} {{- if $iM -}} {{-
-        $s.Set "image" (index $iM 0 | replaceRE `(?i)<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']` "$1"
-        ) -}} {{- end -}} {{- $s.Set "title" ($s.Get "title" | htmlUnescape) -}} {{- $s.Set "desc" ($s.Get "desc" |
-        htmlUnescape) -}} {{- end -}} {{- end -}} {{- if $s.Get "isBroken" -}} <span class="broken-link">
+{{- if $ogp -}}
+  {{- $s.Set "title" $ogp.title -}}
+  {{- $s.Set "desc" $ogp.desc -}}
+  {{- $s.Set "image" $ogp.image -}}
+{{- end -}} {{- if $s.Get "isBroken" -}} <span class="broken-link">
         {{ $link }} <span class="broken-link__label">(リンク切れ)</span>
         </span>
         {{- else -}}
